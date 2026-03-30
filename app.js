@@ -2,8 +2,8 @@ let invEditIndex = null;
 
 // Usuarios permitidos
 const invUsers = {
-  "sdcomayagua": "199311",
-  "jarco": "jarco"
+  "GaboHN": "199311",
+  "JarCoHN": "jarco"
 };
 
 /* ============================

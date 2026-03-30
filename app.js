@@ -3,7 +3,7 @@ let invEditIndex = null;
 // Usuarios permitidos
 const invUsers = {
   "GaboHN": "199311",
-  "JarCoHN": "jarco"
+  "JarCo": "jarcohn"
 };
 
 /* ============================

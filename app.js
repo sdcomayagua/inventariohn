@@ -3,7 +3,7 @@ let invEditIndex = null;
 // Usuarios permitidos
 const invUsers = {
   "GaboHN": "199311",
-  "JarCoHN": "jarco"
+  "JarCoHN": "jarcohn"
 };
 
 /* ============================
@@ -69,17 +69,43 @@ function invSearch() {
 }
 
 /* ============================
+   ORDENAR
+============================ */
+function invSort(list) {
+  const sort = document.getElementById("inv-sort").value;
+
+  switch (sort) {
+    case "price-asc":
+      return list.sort((a, b) => a.price - b.price);
+    case "price-desc":
+      return list.sort((a, b) => b.price - a.price);
+    case "qty-asc":
+      return list.sort((a, b) => a.qty - b.qty);
+    case "qty-desc":
+      return list.sort((a, b) => b.qty - a.qty);
+    case "date-new":
+      return list.sort((a, b) => b.createdAt - a.createdAt);
+    case "date-old":
+      return list.sort((a, b) => a.createdAt - b.createdAt);
+    default:
+      return list;
+  }
+}
+
+/* ============================
    CARGAR PRODUCTOS
 ============================ */
 function invLoadProducts() {
-  const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
+  let list = JSON.parse(localStorage.getItem("inv-products") || "[]");
   const filter = document.getElementById("inv-filter").value;
 
-  const filtered = list.filter(p =>
+  list = list.filter(p =>
     filter === "all" || p.category === filter
   );
 
-  invRenderProducts(filtered);
+  list = invSort(list);
+
+  invRenderProducts(list);
 }
 
 /* ============================
@@ -111,6 +137,8 @@ function invRenderProducts(list) {
         <p>Categoría: ${p.category}</p>
         <p>Precio: <b>Lps. ${p.price}</b></p>
         <p>Stock: <b>${p.qty}</b></p>
+        <p>Creado: ${new Date(p.createdAt).toLocaleString()}</p>
+        <p>Editado: ${new Date(p.updatedAt).toLocaleString()}</p>
         <div class="inv-uploaded">Subido por: ${p.uploadedBy}</div>
         <button class="inv-edit-btn" onclick="invEdit(${i})">Editar</button>
       </div>
@@ -143,8 +171,8 @@ function invCloseModal() {
 ============================ */
 function invSaveProduct() {
   const name = document.getElementById("inv-name").value;
-  const price = document.getElementById("inv-price").value;
-  const qty = document.getElementById("inv-qty").value;
+  const price = parseFloat(document.getElementById("inv-price").value);
+  const qty = parseInt(document.getElementById("inv-qty").value);
   const category = document.getElementById("inv-category").value;
 
   if (!name || !price || !qty || !category) {
@@ -185,13 +213,17 @@ function invSaveProduct() {
   Promise.all(readers).then(() => {
     newImages = newImages.filter(img => img);
 
+    const now = Date.now();
+
     const product = { 
       name, 
       price, 
       qty, 
       category, 
       images: newImages,
-      uploadedBy: localStorage.getItem("inv-logged")
+      uploadedBy: localStorage.getItem("inv-logged"),
+      createdAt: invEditIndex !== null ? list[invEditIndex].createdAt : now,
+      updatedAt: now
     };
 
     if (invEditIndex !== null) {
@@ -246,6 +278,28 @@ function invDeleteImage(idx) {
   list[invEditIndex].images.splice(idx, 1);
   localStorage.setItem("inv-products", JSON.stringify(list));
   invEdit(invEditIndex);
+}
+
+/* ============================
+   EXPORTAR A WHATSAPP
+============================ */
+function invExportWhatsApp() {
+  const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
+
+  let text = "📦 *INVENTARIO HN*\n\n";
+
+  list.forEach(p => {
+    text += `🔹 *${p.name}*\n`;
+    text += `   Precio: Lps. ${p.price}\n`;
+    text += `   Stock: ${p.qty}\n`;
+    text += `   Categoría: ${p.category}\n`;
+    text += `   Subido por: ${p.uploadedBy}\n`;
+    text += `   Creado: ${new Date(p.createdAt).toLocaleString()}\n`;
+    text += `   Editado: ${new Date(p.updatedAt).toLocaleString()}\n\n`;
+  });
+
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
 }
 
 /* ============================

@@ -1,39 +1,22 @@
-
 /* ============================
-   VARIABLES DE COLOR (TEMAS)
+   TEMA BLANCO GAMER
 ============================ */
 :root {
-  --bg-main: #05060a;
-  --bg-panel: #0b0f17;
-  --bg-header: #0a0f1a;
+  --bg-main: #f5f7fa;
+  --bg-panel: #ffffff;
+  --bg-header: #ffffff;
 
-  --color-text: #e6faff;
-  --color-border: #112233;
+  --color-text: #1a1a1a;
+  --color-border: #d0d4da;
 
-  --color-accent: #00f0ff;
-  --color-accent-hover: #00c8d6;
+  --color-accent: #00aaff;
+  --color-accent-hover: #0088cc;
 
   --color-danger: #ff004c;
   --color-danger-hover: #d60040;
 
-  --glow-accent: 0 0 10px var(--color-accent);
-  --glow-accent-strong: 0 0 15px var(--color-accent);
-}
-
-/* Tema Verde */
-body.theme-green {
-  --color-accent: #00ff85;
-  --color-accent-hover: #00d46d;
-  --glow-accent: 0 0 10px #00ff85;
-  --glow-accent-strong: 0 0 15px #00ff85;
-}
-
-/* Tema Morado */
-body.theme-purple {
-  --color-accent: #b400ff;
-  --color-accent-hover: #8c00cc;
-  --glow-accent: 0 0 10px #b400ff;
-  --glow-accent-strong: 0 0 15px #b400ff;
+  --glow-accent: 0 0 6px rgba(0,170,255,0.4);
+  --glow-accent-strong: 0 0 10px rgba(0,170,255,0.6);
 }
 
 /* ============================
@@ -76,15 +59,6 @@ body {
   letter-spacing: 2px;
 }
 
-#theme-switcher {
-  margin-left: 15px;
-  padding: 6px;
-  background: #0b0f17;
-  border: 1px solid var(--color-accent);
-  color: var(--color-accent);
-  border-radius: 6px;
-}
-
 /* ============================
    LOGIN Y PANEL
 ============================ */
@@ -95,7 +69,7 @@ body {
   border-radius: 12px;
   margin-top: 25px;
   border: 1px solid var(--color-border);
-  box-shadow: 0 0 20px rgba(0,255,255,0.08);
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
 }
 
 /* ============================
@@ -109,7 +83,7 @@ body {
   margin-top: 10px;
   border-radius: 8px;
   border: 1px solid var(--color-border);
-  background: #0a0e14;
+  background: #ffffff;
   color: var(--color-text);
   font-size: 16px;
 }
@@ -123,7 +97,7 @@ body {
 
 #inv-app button {
   background: var(--color-accent);
-  color: #001014;
+  color: #ffffff;
   cursor: pointer;
   font-weight: bold;
   border: none;
@@ -152,13 +126,39 @@ body {
   border-radius: 10px;
   text-align: center;
   border: 1px solid var(--color-border);
-  box-shadow: 0 0 15px rgba(0,255,255,0.05);
+  position: relative;
   transition: 0.2s;
 }
 
-.inv-item:hover {
-  box-shadow: 0 0 20px rgba(0,255,255,0.15);
-  transform: translateY(-3px);
+/* ============================
+   AGOTADO
+============================ */
+.inv-item.inv-out {
+  filter: grayscale(1) brightness(0.7);
+}
+
+.inv-out-tag {
+  position: absolute;
+  left: -35px;
+  top: 40%;
+  transform: rotate(-90deg);
+  background: var(--color-danger);
+  color: white;
+  padding: 5px 15px;
+  font-weight: bold;
+  border-radius: 6px;
+  box-shadow: 0 0 10px var(--color-danger);
+}
+
+/* ============================
+   SUBIDO POR
+============================ */
+.inv-uploaded {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  font-size: 12px;
+  opacity: 0.7;
 }
 
 /* ============================
@@ -189,12 +189,6 @@ body {
   border-radius: 6px;
   cursor: pointer;
   border: 1px solid var(--color-border);
-  transition: 0.2s;
-}
-
-.inv-thumbs img:hover {
-  box-shadow: var(--glow-accent);
-  transform: scale(1.05);
 }
 
 /* ============================
@@ -207,7 +201,7 @@ body {
   left: 0;
   width: 100%; 
   height: 100%;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.4);
   justify-content: center;
   align-items: center;
   z-index: 9999;
@@ -220,7 +214,6 @@ body {
   border-radius: 12px;
   color: var(--color-text);
   border: 1px solid var(--color-border);
-  box-shadow: 0 0 20px rgba(0,255,255,0.15);
 }
 
 /* ============================
@@ -248,20 +241,12 @@ body {
   cursor: pointer;
   font-size: 14px;
   color: white;
-  box-shadow: 0 0 10px var(--color-danger);
-  transition: 0.2s;
-}
-
-.inv-delete-img:hover {
-  background: var(--color-danger-hover);
-  box-shadow: 0 0 15px var(--color-danger);
 }
 
 /* ============================
-   RESPONSIVE REAL PARA MÓVIL
+   RESPONSIVE
 ============================ */
 @media (max-width: 768px) {
-
   #inv-app {
     max-width: 100%;
     padding: 10px;
@@ -273,19 +258,7 @@ body {
     overflow-y: auto;
   }
 
-  #inv-app input,
-  #inv-app select,
-  #inv-app button {
-    font-size: 15px;
-    padding: 10px;
-  }
-
   .inv-main-img {
     height: 180px;
-  }
-
-  .inv-thumbs img {
-    width: 38px;
-    height: 38px;
   }
 }

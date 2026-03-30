@@ -10,7 +10,14 @@
 
 <div id="inv-app">
 
-  <div id="inv-header">INVENTARIO HN</div>
+  <div id="inv-header">
+    INVENTARIO HN
+    <select id="theme-switcher" onchange="changeTheme(this.value)">
+      <option value="default">Cian Neón</option>
+      <option value="green">Verde Neón</option>
+      <option value="purple">Morado Neón</option>
+    </select>
+  </div>
 
   <!-- LOGIN -->
   <div id="inv-login">

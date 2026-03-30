@@ -32,6 +32,19 @@
       <option value="all">Todas las categorías</option>
     </select>
 
+    <!-- ORDENAR -->
+    <select id="inv-sort" onchange="invLoadProducts()">
+      <option value="none">Ordenar por…</option>
+      <option value="price-asc">Precio ↑</option>
+      <option value="price-desc">Precio ↓</option>
+      <option value="qty-asc">Stock ↑</option>
+      <option value="qty-desc">Stock ↓</option>
+      <option value="date-new">Fecha reciente</option>
+      <option value="date-old">Fecha antigua</option>
+    </select>
+
+    <button onclick="invExportWhatsApp()">Exportar a WhatsApp</button>
+
     <div id="inv-products"></div>
 
     <button onclick="invOpenModal()">Agregar Producto</button>

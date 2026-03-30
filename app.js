@@ -1,9 +1,37 @@
 let invEditIndex = null;
 
+/* ============================
+   REPARAR PRODUCTOS VIEJOS
+============================ */
+(function repairOldProducts() {
+  let list = JSON.parse(localStorage.getItem("inv-products") || "[]");
+  let changed = false;
+
+  list = list.map(p => {
+    if (!p.createdAt) {
+      p.createdAt = Date.now();
+      changed = true;
+    }
+    if (!p.updatedAt) {
+      p.updatedAt = p.createdAt;
+      changed = true;
+    }
+    if (!p.uploadedBy) {
+      p.uploadedBy = "Desconocido";
+      changed = true;
+    }
+    return p;
+  });
+
+  if (changed) {
+    localStorage.setItem("inv-products", JSON.stringify(list));
+  }
+})();
+
 // Usuarios permitidos
 const invUsers = {
   "GaboHN": "199311",
-  "JarCo": "jarcohn"
+  "JarCoHN": "jarco"
 };
 
 /* ============================
@@ -116,17 +144,23 @@ function invRenderProducts(list) {
   container.innerHTML = "";
 
   list.forEach((p, i) => {
-    const mainImg = p.images[0] || "https://via.placeholder.com/1200";
+    const mainImg = (p.images && p.images[0]) || "https://via.placeholder.com/1200";
 
     let thumbs = "";
-    p.images.forEach(img => {
-      if (img) {
-        thumbs += `<img src="${img}" onclick="this.parentNode.previousElementSibling.src='${img}'">`;
-      }
-    });
+    if (p.images && p.images.length) {
+      p.images.forEach(img => {
+        if (img) {
+          thumbs += `<img src="${img}" onclick="this.parentNode.previousElementSibling.src='${img}'">`;
+        }
+      });
+    }
 
     const outTag = p.qty == 0 ? `<div class="inv-out-tag">AGOTADO</div>` : "";
     const outClass = p.qty == 0 ? "inv-out" : "";
+
+    const createdText = p.createdAt ? new Date(p.createdAt).toLocaleString() : "N/D";
+    const updatedText = p.updatedAt ? new Date(p.updatedAt).toLocaleString() : "N/D";
+    const uploader = p.uploadedBy || "Desconocido";
 
     container.innerHTML += `
       <div class="inv-item ${outClass}">
@@ -137,9 +171,9 @@ function invRenderProducts(list) {
         <p>Categoría: ${p.category}</p>
         <p>Precio: <b>Lps. ${p.price}</b></p>
         <p>Stock: <b>${p.qty}</b></p>
-        <p>Creado: ${new Date(p.createdAt).toLocaleString()}</p>
-        <p>Editado: ${new Date(p.updatedAt).toLocaleString()}</p>
-        <div class="inv-uploaded">Subido por: ${p.uploadedBy}</div>
+        <p>Creado: ${createdText}</p>
+        <p>Editado: ${updatedText}</p>
+        <div class="inv-uploaded">Subido por: ${uploader}</div>
         <button class="inv-edit-btn" onclick="invEdit(${i})">Editar</button>
       </div>
     `;
@@ -156,7 +190,8 @@ function invOpenModal() {
   document.getElementById("inv-edit-images").innerHTML = "";
 
   ["inv-img1","inv-img2","inv-img3","inv-img4","inv-img5"].forEach(id=>{
-    document.getElementById(id).value = "";
+    const el = document.getElementById(id);
+    if (el) el.value = "";
   });
 
   document.getElementById("inv-modal").style.display = "flex";
@@ -175,14 +210,16 @@ function invSaveProduct() {
   const qty = parseInt(document.getElementById("inv-qty").value);
   const category = document.getElementById("inv-category").value;
 
-  if (!name || !price || !qty || !category) {
-    alert("Completa todos los campos");
+  if (!name || isNaN(price) || isNaN(qty) || !category) {
+    alert("Completa todos los campos correctamente");
     return;
   }
 
   const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
 
-  let images = invEditIndex !== null ? [...list[invEditIndex].images] : [];
+  let images = invEditIndex !== null && list[invEditIndex].images
+    ? [...list[invEditIndex].images]
+    : [];
 
   const fileInputs = [
     document.getElementById("inv-img1"),
@@ -196,7 +233,7 @@ function invSaveProduct() {
   let newImages = [...images];
 
   fileInputs.forEach((input, idx) => {
-    if (input.files.length > 0) {
+    if (input && input.files && input.files.length > 0) {
       const reader = new FileReader();
       readers.push(
         new Promise(resolve => {
@@ -215,14 +252,19 @@ function invSaveProduct() {
 
     const now = Date.now();
 
+    const oldCreatedAt =
+      invEditIndex !== null && list[invEditIndex].createdAt
+        ? list[invEditIndex].createdAt
+        : now;
+
     const product = { 
       name, 
       price, 
       qty, 
       category, 
       images: newImages,
-      uploadedBy: localStorage.getItem("inv-logged"),
-      createdAt: invEditIndex !== null ? list[invEditIndex].createdAt : now,
+      uploadedBy: localStorage.getItem("inv-logged") || "Desconocido",
+      createdAt: oldCreatedAt,
       updatedAt: now
     };
 
@@ -258,14 +300,16 @@ function invEdit(i) {
   const editBox = document.getElementById("inv-edit-images");
   editBox.innerHTML = "";
 
-  p.images.forEach((img, idx) => {
-    editBox.innerHTML += `
-      <div class="inv-mini-edit">
-        <img src="${img}">
-        <div class="inv-delete-img" onclick="invDeleteImage(${idx})">🗑 Quitar</div>
-      </div>
-    `;
-  });
+  if (p.images && p.images.length) {
+    p.images.forEach((img, idx) => {
+      editBox.innerHTML += `
+        <div class="inv-mini-edit">
+          <img src="${img}">
+          <div class="inv-delete-img" onclick="invDeleteImage(${idx})">🗑 Quitar</div>
+        </div>
+      `;
+    });
+  }
 
   document.getElementById("inv-modal").style.display = "flex";
 }
@@ -275,6 +319,7 @@ function invEdit(i) {
 ============================ */
 function invDeleteImage(idx) {
   const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
+  if (!list[invEditIndex].images) list[invEditIndex].images = [];
   list[invEditIndex].images.splice(idx, 1);
   localStorage.setItem("inv-products", JSON.stringify(list));
   invEdit(invEditIndex);
@@ -289,13 +334,17 @@ function invExportWhatsApp() {
   let text = "📦 *INVENTARIO HN*\n\n";
 
   list.forEach(p => {
+    const createdText = p.createdAt ? new Date(p.createdAt).toLocaleString() : "N/D";
+    const updatedText = p.updatedAt ? new Date(p.updatedAt).toLocaleString() : "N/D";
+    const uploader = p.uploadedBy || "Desconocido";
+
     text += `🔹 *${p.name}*\n`;
     text += `   Precio: Lps. ${p.price}\n`;
     text += `   Stock: ${p.qty}\n`;
     text += `   Categoría: ${p.category}\n`;
-    text += `   Subido por: ${p.uploadedBy}\n`;
-    text += `   Creado: ${new Date(p.createdAt).toLocaleString()}\n`;
-    text += `   Editado: ${new Date(p.updatedAt).toLocaleString()}\n\n`;
+    text += `   Subido por: ${uploader}\n`;
+    text += `   Creado: ${createdText}\n`;
+    text += `   Editado: ${updatedText}\n\n`;
   });
 
   const url = "https://wa.me/?text=" + encodeURIComponent(text);

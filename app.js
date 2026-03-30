@@ -2,8 +2,8 @@
    CONFIG
 ============================ */
 const API_URL = "https://script.google.com/macros/s/AKfycbzb6tcVvH-ZPfMf1fhbxbKRanhChthWBFV0OJ4mOdOMbW5MLGB7Mmrcnf-alAg0foeH/exec";
-let invEditIndex = null;
 let invProducts = [];
+let invEditIndex = null;
 
 /* ============================
    USUARIOS
@@ -129,6 +129,20 @@ function invLoadProducts() {
 }
 
 /* ============================
+   ACTUALIZAR STOCK EN TIEMPO REAL
+============================ */
+async function invChangeStock(i, val) {
+  const p = invProducts[i];
+
+  p.qty += val;
+  if (p.qty < 0) p.qty = 0;
+
+  p.updatedAt = Date.now();
+
+  await invSaveToSheet(p, true);
+}
+
+/* ============================
    RENDERIZAR PRODUCTOS
 ============================ */
 function invRenderProducts(list) {
@@ -151,14 +165,24 @@ function invRenderProducts(list) {
         ${outTag}
         <img class="inv-main-img" src="${mainImg}">
         <div class="inv-thumbs">${thumbs}</div>
+
         <h4>${p.name}</h4>
         <p>Categoría: ${p.category}</p>
         <p>Precio: <b>Lps. ${p.price}</b></p>
-        <p>Stock: <b>${p.qty}</b></p>
+
+        <p>Stock:</p>
+        <div class="inv-stock-row">
+          <button class="inv-stock-btn" onclick="invChangeStock(${i}, -1)">-</button>
+          <span class="inv-stock-num">${p.qty}</span>
+          <button class="inv-stock-btn" onclick="invChangeStock(${i}, 1)">+</button>
+        </div>
+
         <p>Creado: ${new Date(p.createdAt).toLocaleString()}</p>
         <p>Editado: ${new Date(p.updatedAt).toLocaleString()}</p>
         <div class="inv-uploaded">Subido por: ${p.uploadedBy}</div>
+
         <button class="inv-edit-btn" onclick="invEdit(${i})">Editar</button>
+        <button class="inv-wa-btn" onclick="invSendWA(${i})">WhatsApp</button>
       </div>
     `;
   });
@@ -176,6 +200,8 @@ function invOpenModal() {
   ["inv-img1","inv-img2","inv-img3","inv-img4","inv-img5"].forEach(id=>{
     document.getElementById(id).value = "";
   });
+
+  document.getElementById("inv-qty").value = 0;
 
   document.getElementById("inv-modal").style.display = "flex";
 }
@@ -287,22 +313,21 @@ async function invDeleteImage(idx) {
 }
 
 /* ============================
-   EXPORTAR A WHATSAPP
+   WHATSAPP POR PRODUCTO
 ============================ */
-function invExportWhatsApp() {
-  let text = "📦 *INVENTARIO HN*\n\n";
+function invSendWA(i) {
+  const p = invProducts[i];
 
-  invProducts.forEach(p => {
-    text += `🔹 *${p.name}*\n`;
-    text += `   Precio: Lps. ${p.price}\n`;
-    text += `   Stock: ${p.qty}\n`;
-    text += `   Categoría: ${p.category}\n`;
-    text += `   Subido por: ${p.uploadedBy}\n`;
-    text += `   Creado: ${new Date(p.createdAt).toLocaleString()}\n`;
-    text += `   Editado: ${new Date(p.updatedAt).toLocaleString()}\n\n`;
-  });
+  let text = `🔹 *${p.name}*\n`;
+  text += `Precio: Lps. ${p.price}\n`;
+  text += `Stock: ${p.qty}\n`;
+  text += `Categoría: ${p.category}\n`;
+  text += `Subido por: ${p.uploadedBy}\n`;
+  text += `Creado: ${new Date(p.createdAt).toLocaleString()}\n`;
+  text += `Editado: ${new Date(p.updatedAt).toLocaleString()}\n`;
 
-  window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
 }
 
 /* ============================

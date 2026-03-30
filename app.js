@@ -1,32 +1,9 @@
-let invEditIndex = null;
-
 /* ============================
-   REPARAR PRODUCTOS VIEJOS
+   CONFIG
 ============================ */
-(function repairOldProducts() {
-  let list = JSON.parse(localStorage.getItem("inv-products") || "[]");
-  let changed = false;
-
-  list = list.map(p => {
-    if (!p.createdAt) {
-      p.createdAt = Date.now();
-      changed = true;
-    }
-    if (!p.updatedAt) {
-      p.updatedAt = p.createdAt;
-      changed = true;
-    }
-    if (!p.uploadedBy) {
-      p.uploadedBy = "Desconocido";
-      changed = true;
-    }
-    return p;
-  });
-
-  if (changed) {
-    localStorage.setItem("inv-products", JSON.stringify(list));
-  }
-})();
+const API_URL = "https://script.google.com/macros/s/AKfycbzb6tcVvH-ZPfMf1fhbxbKRanhChthWBFV0OJ4mOdOMbW5MLGB7Mmrcnf-alAg0foeH/exec";
+let invEditIndex = null;
+let invProducts = [];
 
 /* ============================
    USUARIOS
@@ -47,8 +24,7 @@ function invLogin() {
     localStorage.setItem("inv-logged", u);
     document.getElementById("inv-login").style.display = "none";
     document.getElementById("inv-panel").style.display = "block";
-    invLoadProducts();
-    invLoadCategories();
+    invFetchProducts();
   } else {
     alert("Usuario o contraseña incorrectos");
   }
@@ -60,23 +36,48 @@ function invLogout() {
 }
 
 /* ============================
-   STOCK (+ / -)
+   CARGAR DESDE GOOGLE SHEETS
 ============================ */
-function invChangeQty(val) {
-  let qty = parseInt(document.getElementById("inv-qty").value || 0);
-  qty += val;
-  if (qty < 0) qty = 0;
-  document.getElementById("inv-qty").value = qty;
+async function invFetchProducts() {
+  const res = await fetch(API_URL);
+  const data = await res.json();
+
+  invProducts = data.map(p => ({
+    id: Number(p.id),
+    name: p.name,
+    price: Number(p.price),
+    qty: Number(p.qty),
+    category: p.category,
+    images: JSON.parse(p.images || "[]"),
+    uploadedBy: p.uploadedBy || "Desconocido",
+    createdAt: Number(p.createdAt),
+    updatedAt: Number(p.updatedAt)
+  }));
+
+  invLoadCategories();
+  invRenderProducts(invProducts);
+}
+
+/* ============================
+   GUARDAR EN GOOGLE SHEETS
+============================ */
+async function invSaveToSheet(product, isEdit) {
+  const method = isEdit ? "PUT" : "POST";
+
+  await fetch(API_URL, {
+    method,
+    body: JSON.stringify(product)
+  });
+
+  await invFetchProducts();
 }
 
 /* ============================
    CATEGORÍAS
 ============================ */
 function invLoadCategories() {
-  const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
   const filter = document.getElementById("inv-filter");
-
-  const cats = [...new Set(list.map(p => p.category))];
+  const cats = [...new Set(invProducts.map(p => p.category))];
 
   filter.innerHTML = `<option value="all">Todas las categorías</option>`;
   cats.forEach(c => {
@@ -85,16 +86,13 @@ function invLoadCategories() {
 }
 
 /* ============================
-   BUSCADOR POR NOMBRE
+   BUSCAR
 ============================ */
 function invSearch() {
   const term = document.getElementById("inv-search").value.toLowerCase();
-  const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
-
-  const filtered = list.filter(p =>
+  const filtered = invProducts.filter(p =>
     p.name.toLowerCase().includes(term)
   );
-
   invRenderProducts(filtered);
 }
 
@@ -116,13 +114,12 @@ function invSort(list) {
 }
 
 /* ============================
-   CARGAR PRODUCTOS
+   FILTRAR + ORDENAR
 ============================ */
 function invLoadProducts() {
-  let list = JSON.parse(localStorage.getItem("inv-products") || "[]");
   const filter = document.getElementById("inv-filter").value;
 
-  list = list.filter(p =>
+  let list = invProducts.filter(p =>
     filter === "all" || p.category === filter
   );
 
@@ -139,23 +136,15 @@ function invRenderProducts(list) {
   container.innerHTML = "";
 
   list.forEach((p, i) => {
-    const mainImg = (p.images && p.images[0]) || "https://via.placeholder.com/1200";
+    const mainImg = p.images[0] || "https://via.placeholder.com/1200";
 
     let thumbs = "";
-    if (p.images && p.images.length) {
-      p.images.forEach(img => {
-        if (img) {
-          thumbs += `<img src="${img}" onclick="this.parentNode.previousElementSibling.src='${img}'">`;
-        }
-      });
-    }
+    p.images.forEach(img => {
+      thumbs += `<img src="${img}" onclick="this.parentNode.previousElementSibling.src='${img}'">`;
+    });
 
     const outTag = p.qty == 0 ? `<div class="inv-out-tag">AGOTADO</div>` : "";
     const outClass = p.qty == 0 ? "inv-out" : "";
-
-    const createdText = p.createdAt ? new Date(p.createdAt).toLocaleString() : "N/D";
-    const updatedText = p.updatedAt ? new Date(p.updatedAt).toLocaleString() : "N/D";
-    const uploader = p.uploadedBy || "Desconocido";
 
     container.innerHTML += `
       <div class="inv-item ${outClass}">
@@ -166,9 +155,9 @@ function invRenderProducts(list) {
         <p>Categoría: ${p.category}</p>
         <p>Precio: <b>Lps. ${p.price}</b></p>
         <p>Stock: <b>${p.qty}</b></p>
-        <p>Creado: ${createdText}</p>
-        <p>Editado: ${updatedText}</p>
-        <div class="inv-uploaded">Subido por: ${uploader}</div>
+        <p>Creado: ${new Date(p.createdAt).toLocaleString()}</p>
+        <p>Editado: ${new Date(p.updatedAt).toLocaleString()}</p>
+        <div class="inv-uploaded">Subido por: ${p.uploadedBy}</div>
         <button class="inv-edit-btn" onclick="invEdit(${i})">Editar</button>
       </div>
     `;
@@ -185,8 +174,7 @@ function invOpenModal() {
   document.getElementById("inv-edit-images").innerHTML = "";
 
   ["inv-img1","inv-img2","inv-img3","inv-img4","inv-img5"].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.value = "";
+    document.getElementById(id).value = "";
   });
 
   document.getElementById("inv-modal").style.display = "flex";
@@ -201,20 +189,14 @@ function invCloseModal() {
 ============================ */
 function invSaveProduct() {
   const name = document.getElementById("inv-name").value;
-  const price = parseFloat(document.getElementById("inv-price").value);
-  const qty = parseInt(document.getElementById("inv-qty").value);
+  const price = Number(document.getElementById("inv-price").value);
+  const qty = Number(document.getElementById("inv-qty").value);
   const category = document.getElementById("inv-category").value;
 
-  if (!name || isNaN(price) || isNaN(qty) || !category) {
-    alert("Completa todos los campos correctamente");
+  if (!name || !price || qty < 0) {
+    alert("Completa todos los campos");
     return;
   }
-
-  const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
-
-  let images = invEditIndex !== null && list[invEditIndex].images
-    ? [...list[invEditIndex].images]
-    : [];
 
   const fileInputs = [
     document.getElementById("inv-img1"),
@@ -225,15 +207,15 @@ function invSaveProduct() {
   ];
 
   let readers = [];
-  let newImages = [...images];
+  let newImages = [];
 
   fileInputs.forEach((input, idx) => {
-    if (input && input.files && input.files.length > 0) {
+    if (input.files.length > 0) {
       const reader = new FileReader();
       readers.push(
         new Promise(resolve => {
           reader.onload = e => {
-            newImages[idx] = e.target.result;
+            newImages.push(e.target.result);
             resolve();
           };
           reader.readAsDataURL(input.files[0]);
@@ -242,38 +224,25 @@ function invSaveProduct() {
     }
   });
 
-  Promise.all(readers).then(() => {
-    newImages = newImages.filter(img => img);
-
+  Promise.all(readers).then(async () => {
     const now = Date.now();
+    const user = localStorage.getItem("inv-logged") || "Desconocido";
 
-    const oldCreatedAt =
-      invEditIndex !== null && list[invEditIndex].createdAt
-        ? list[invEditIndex].createdAt
-        : now;
-
-    const product = { 
-      name, 
-      price, 
-      qty, 
-      category, 
-      images: newImages,
-      uploadedBy: localStorage.getItem("inv-logged") || "Desconocido",
-      createdAt: oldCreatedAt,
+    let product = {
+      id: invEditIndex !== null ? invProducts[invEditIndex].id : now,
+      name,
+      price,
+      qty,
+      category,
+      images: invEditIndex !== null ? [...invProducts[invEditIndex].images, ...newImages] : newImages,
+      uploadedBy: user,
+      createdAt: invEditIndex !== null ? invProducts[invEditIndex].createdAt : now,
       updatedAt: now
     };
 
-    if (invEditIndex !== null) {
-      list[invEditIndex] = product;
-    } else {
-      list.push(product);
-    }
-
-    localStorage.setItem("inv-products", JSON.stringify(list));
+    await invSaveToSheet(product, invEditIndex !== null);
 
     invCloseModal();
-    invLoadProducts();
-    invLoadCategories();
   });
 }
 
@@ -281,10 +250,8 @@ function invSaveProduct() {
    EDITAR PRODUCTO
 ============================ */
 function invEdit(i) {
-  const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
-  const p = list[i];
-
   invEditIndex = i;
+  const p = invProducts[i];
 
   document.getElementById("inv-modal-title").innerText = "Editar Producto";
   document.getElementById("inv-name").value = p.name;
@@ -295,16 +262,14 @@ function invEdit(i) {
   const editBox = document.getElementById("inv-edit-images");
   editBox.innerHTML = "";
 
-  if (p.images && p.images.length) {
-    p.images.forEach((img, idx) => {
-      editBox.innerHTML += `
-        <div class="inv-mini-edit">
-          <img src="${img}">
-          <div class="inv-delete-img" onclick="invDeleteImage(${idx})">🗑 Quitar</div>
-        </div>
-      `;
-    });
-  }
+  p.images.forEach((img, idx) => {
+    editBox.innerHTML += `
+      <div class="inv-mini-edit">
+        <img src="${img}">
+        <div class="inv-delete-img" onclick="invDeleteImage(${idx})">🗑 Quitar</div>
+      </div>
+    `;
+  });
 
   document.getElementById("inv-modal").style.display = "flex";
 }
@@ -312,11 +277,12 @@ function invEdit(i) {
 /* ============================
    ELIMINAR IMAGEN
 ============================ */
-function invDeleteImage(idx) {
-  const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
-  if (!list[invEditIndex].images) list[invEditIndex].images = [];
-  list[invEditIndex].images.splice(idx, 1);
-  localStorage.setItem("inv-products", JSON.stringify(list));
+async function invDeleteImage(idx) {
+  const p = invProducts[invEditIndex];
+  p.images.splice(idx, 1);
+  p.updatedAt = Date.now();
+
+  await invSaveToSheet(p, true);
   invEdit(invEditIndex);
 }
 
@@ -324,34 +290,26 @@ function invDeleteImage(idx) {
    EXPORTAR A WHATSAPP
 ============================ */
 function invExportWhatsApp() {
-  const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
-
   let text = "📦 *INVENTARIO HN*\n\n";
 
-  list.forEach(p => {
-    const createdText = p.createdAt ? new Date(p.createdAt).toLocaleString() : "N/D";
-    const updatedText = p.updatedAt ? new Date(p.updatedAt).toLocaleString() : "N/D";
-    const uploader = p.uploadedBy || "Desconocido";
-
+  invProducts.forEach(p => {
     text += `🔹 *${p.name}*\n`;
     text += `   Precio: Lps. ${p.price}\n`;
     text += `   Stock: ${p.qty}\n`;
     text += `   Categoría: ${p.category}\n`;
-    text += `   Subido por: ${uploader}\n`;
-    text += `   Creado: ${createdText}\n`;
-    text += `   Editado: ${updatedText}\n\n`;
+    text += `   Subido por: ${p.uploadedBy}\n`;
+    text += `   Creado: ${new Date(p.createdAt).toLocaleString()}\n`;
+    text += `   Editado: ${new Date(p.updatedAt).toLocaleString()}\n\n`;
   });
 
-  const url = "https://wa.me/?text=" + encodeURIComponent(text);
-  window.open(url, "_blank");
+  window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
 }
 
 /* ============================
-   MANTENER SESIÓN
+   AUTO LOGIN
 ============================ */
 if (localStorage.getItem("inv-logged")) {
   document.getElementById("inv-login").style.display = "none";
   document.getElementById("inv-panel").style.display = "block";
-  invLoadProducts();
-  invLoadCategories();
+  invFetchProducts();
 }

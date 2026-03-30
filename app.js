@@ -122,6 +122,7 @@ function invOpenModal() {
   document.getElementById("inv-modal-title").innerText = "Agregar Producto";
   document.getElementById("inv-edit-images").innerHTML = "";
 
+  // Resetear inputs de archivo
   ["inv-img1","inv-img2","inv-img3","inv-img4","inv-img5"].forEach(id=>{
     document.getElementById(id).value = "";
   });
@@ -205,4 +206,65 @@ function invEdit(i) {
 
   invEditIndex = i;
 
-  document.getElement
+  document.getElementById("inv-modal-title").innerText = "Editar Producto";
+  document.getElementById("inv-name").value = p.name;
+  document.getElementById("inv-price").value = p.price;
+  document.getElementById("inv-qty").value = p.qty;
+  document.getElementById("inv-category").value = p.category;
+
+  const editBox = document.getElementById("inv-edit-images");
+  editBox.innerHTML = "";
+
+  p.images.forEach((img, idx) => {
+    editBox.innerHTML += `
+      <div class="inv-mini-edit">
+        <img src="${img}">
+        <div class="inv-delete-img" onclick="invDeleteImage(${idx})">🗑 Quitar</div>
+      </div>
+    `;
+  });
+
+  document.getElementById("inv-modal").style.display = "flex";
+}
+
+/* ============================
+   ELIMINAR IMAGEN
+============================ */
+function invDeleteImage(idx) {
+  const list = JSON.parse(localStorage.getItem("inv-products") || "[]");
+  list[invEditIndex].images.splice(idx, 1);
+  localStorage.setItem("inv-products", JSON.stringify(list));
+  invEdit(invEditIndex);
+}
+
+/* ============================
+   SELECTOR DE TEMAS
+============================ */
+function changeTheme(theme) {
+  document.body.classList.remove("theme-green", "theme-purple");
+
+  if (theme === "green") {
+    document.body.classList.add("theme-green");
+  } else if (theme === "purple") {
+    document.body.classList.add("theme-purple");
+  }
+
+  localStorage.setItem("inv-theme", theme);
+}
+
+// Cargar tema guardado
+const savedTheme = localStorage.getItem("inv-theme");
+if (savedTheme) {
+  document.getElementById("theme-switcher").value = savedTheme;
+  changeTheme(savedTheme);
+}
+
+/* ============================
+   MANTENER SESIÓN
+============================ */
+if (localStorage.getItem("inv-logged") === "true") {
+  document.getElementById("inv-login").style.display = "none";
+  document.getElementById("inv-panel").style.display = "block";
+  invLoadProducts();
+  invLoadCategories();
+}

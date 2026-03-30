@@ -14,7 +14,7 @@ function invLogin() {
   const p = document.getElementById("inv-pass").value;
 
   if (invUsers[u] && invUsers[u] === p) {
-    localStorage.setItem("inv-logged", "true");
+    localStorage.setItem("inv-logged", u);
     document.getElementById("inv-login").style.display = "none";
     document.getElementById("inv-panel").style.display = "block";
     invLoadProducts();
@@ -99,14 +99,19 @@ function invRenderProducts(list) {
       }
     });
 
+    const outTag = p.qty == 0 ? `<div class="inv-out-tag">AGOTADO</div>` : "";
+    const outClass = p.qty == 0 ? "inv-out" : "";
+
     container.innerHTML += `
-      <div class="inv-item">
+      <div class="inv-item ${outClass}">
+        ${outTag}
         <img class="inv-main-img" src="${mainImg}">
         <div class="inv-thumbs">${thumbs}</div>
         <h4>${p.name}</h4>
         <p>Categoría: ${p.category}</p>
         <p>Precio: <b>Lps. ${p.price}</b></p>
         <p>Stock: <b>${p.qty}</b></p>
+        <div class="inv-uploaded">Subido por: ${p.uploadedBy}</div>
         <button class="inv-edit-btn" onclick="invEdit(${i})">Editar</button>
       </div>
     `;
@@ -122,7 +127,6 @@ function invOpenModal() {
   document.getElementById("inv-modal-title").innerText = "Agregar Producto";
   document.getElementById("inv-edit-images").innerHTML = "";
 
-  // Resetear inputs de archivo
   ["inv-img1","inv-img2","inv-img3","inv-img4","inv-img5"].forEach(id=>{
     document.getElementById(id).value = "";
   });
@@ -181,7 +185,14 @@ function invSaveProduct() {
   Promise.all(readers).then(() => {
     newImages = newImages.filter(img => img);
 
-    const product = { name, price, qty, category, images: newImages };
+    const product = { 
+      name, 
+      price, 
+      qty, 
+      category, 
+      images: newImages,
+      uploadedBy: localStorage.getItem("inv-logged")
+    };
 
     if (invEditIndex !== null) {
       list[invEditIndex] = product;
@@ -238,31 +249,9 @@ function invDeleteImage(idx) {
 }
 
 /* ============================
-   SELECTOR DE TEMAS
-============================ */
-function changeTheme(theme) {
-  document.body.classList.remove("theme-green", "theme-purple");
-
-  if (theme === "green") {
-    document.body.classList.add("theme-green");
-  } else if (theme === "purple") {
-    document.body.classList.add("theme-purple");
-  }
-
-  localStorage.setItem("inv-theme", theme);
-}
-
-// Cargar tema guardado
-const savedTheme = localStorage.getItem("inv-theme");
-if (savedTheme) {
-  document.getElementById("theme-switcher").value = savedTheme;
-  changeTheme(savedTheme);
-}
-
-/* ============================
    MANTENER SESIÓN
 ============================ */
-if (localStorage.getItem("inv-logged") === "true") {
+if (localStorage.getItem("inv-logged")) {
   document.getElementById("inv-login").style.display = "none";
   document.getElementById("inv-panel").style.display = "block";
   invLoadProducts();

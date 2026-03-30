@@ -118,8 +118,15 @@ function invRenderProducts(list) {
 ============================ */
 function invOpenModal() {
   invEditIndex = null;
+
   document.getElementById("inv-modal-title").innerText = "Agregar Producto";
   document.getElementById("inv-edit-images").innerHTML = "";
+
+  // Resetear inputs de archivo SIEMPRE
+  ["inv-img1","inv-img2","inv-img3","inv-img4","inv-img5"].forEach(id=>{
+    document.getElementById(id).value = "";
+  });
+
   document.getElementById("inv-modal").style.display = "flex";
 }
 
@@ -128,7 +135,7 @@ function invCloseModal() {
 }
 
 /* ============================
-   GUARDAR PRODUCTO
+   GUARDAR PRODUCTO (CORREGIDO)
 ============================ */
 function invSaveProduct() {
   const name = document.getElementById("inv-name").value;
@@ -172,6 +179,7 @@ function invSaveProduct() {
   });
 
   Promise.all(readers).then(() => {
+    // Eliminar huecos
     newImages = newImages.filter(img => img);
 
     const product = { name, price, qty, category, images: newImages };

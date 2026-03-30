@@ -28,7 +28,9 @@ let invEditIndex = null;
   }
 })();
 
-// Usuarios permitidos
+/* ============================
+   USUARIOS
+============================ */
 const invUsers = {
   "GaboHN": "199311",
   "JarCoHN": "jarco"
@@ -103,20 +105,13 @@ function invSort(list) {
   const sort = document.getElementById("inv-sort").value;
 
   switch (sort) {
-    case "price-asc":
-      return list.sort((a, b) => a.price - b.price);
-    case "price-desc":
-      return list.sort((a, b) => b.price - a.price);
-    case "qty-asc":
-      return list.sort((a, b) => a.qty - b.qty);
-    case "qty-desc":
-      return list.sort((a, b) => b.qty - a.qty);
-    case "date-new":
-      return list.sort((a, b) => b.createdAt - a.createdAt);
-    case "date-old":
-      return list.sort((a, b) => a.createdAt - b.createdAt);
-    default:
-      return list;
+    case "price-asc": return list.sort((a, b) => a.price - b.price);
+    case "price-desc": return list.sort((a, b) => b.price - a.price);
+    case "qty-asc": return list.sort((a, b) => a.qty - b.qty);
+    case "qty-desc": return list.sort((a, b) => b.qty - a.qty);
+    case "date-new": return list.sort((a, b) => b.createdAt - a.createdAt);
+    case "date-old": return list.sort((a, b) => a.createdAt - b.createdAt);
+    default: return list;
   }
 }
 

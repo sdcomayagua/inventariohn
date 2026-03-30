@@ -55,7 +55,7 @@ async function invFetchProducts() {
   }));
 
   invLoadCategories();
-  invRenderProducts(invProducts);
+  invLoadProducts();
 }
 
 /* ============================
@@ -131,13 +131,29 @@ function invLoadProducts() {
 /* ============================
    ACTUALIZAR STOCK EN TIEMPO REAL
 ============================ */
-async function invChangeStock(i, val) {
-  const p = invProducts[i];
+async function invChangeStock(id, delta) {
+  const idx = invProducts.findIndex(p => p.id === id);
+  if (idx === -1) return;
 
-  p.qty += val;
+  const p = invProducts[idx];
+
+  p.qty += delta;
   if (p.qty < 0) p.qty = 0;
-
   p.updatedAt = Date.now();
+
+  // Actualizar DOM inmediatamente
+  const span = document.getElementById(`inv-stock-${p.id}`);
+  if (span) span.textContent = p.qty;
+
+  // Actualizar estilo AGOTADO
+  const card = document.getElementById(`inv-item-${p.id}`);
+  if (card) {
+    if (p.qty === 0) {
+      card.classList.add("inv-out");
+    } else {
+      card.classList.remove("inv-out");
+    }
+  }
 
   await invSaveToSheet(p, true);
 }
@@ -149,7 +165,7 @@ function invRenderProducts(list) {
   const container = document.getElementById("inv-products");
   container.innerHTML = "";
 
-  list.forEach((p, i) => {
+  list.forEach((p) => {
     const mainImg = p.images[0] || "https://via.placeholder.com/1200";
 
     let thumbs = "";
@@ -161,7 +177,7 @@ function invRenderProducts(list) {
     const outClass = p.qty == 0 ? "inv-out" : "";
 
     container.innerHTML += `
-      <div class="inv-item ${outClass}">
+      <div class="inv-item ${outClass}" id="inv-item-${p.id}">
         ${outTag}
         <img class="inv-main-img" src="${mainImg}">
         <div class="inv-thumbs">${thumbs}</div>
@@ -172,17 +188,17 @@ function invRenderProducts(list) {
 
         <p>Stock:</p>
         <div class="inv-stock-row">
-          <button class="inv-stock-btn" onclick="invChangeStock(${i}, -1)">-</button>
-          <span class="inv-stock-num">${p.qty}</span>
-          <button class="inv-stock-btn" onclick="invChangeStock(${i}, 1)">+</button>
+          <button class="inv-stock-btn" onclick="invChangeStock(${p.id}, -1)">-</button>
+          <span class="inv-stock-num" id="inv-stock-${p.id}">${p.qty}</span>
+          <button class="inv-stock-btn" onclick="invChangeStock(${p.id}, 1)">+</button>
         </div>
 
         <p>Creado: ${new Date(p.createdAt).toLocaleString()}</p>
         <p>Editado: ${new Date(p.updatedAt).toLocaleString()}</p>
         <div class="inv-uploaded">Subido por: ${p.uploadedBy}</div>
 
-        <button class="inv-edit-btn" onclick="invEdit(${i})">Editar</button>
-        <button class="inv-wa-btn" onclick="invSendWA(${i})">WhatsApp</button>
+        <button class="inv-edit-btn" onclick="invEditById(${p.id})">Editar</button>
+        <button class="inv-wa-btn" onclick="invSendWAById(${p.id})">WhatsApp</button>
       </div>
     `;
   });
@@ -198,10 +214,14 @@ function invOpenModal() {
   document.getElementById("inv-edit-images").innerHTML = "";
 
   ["inv-img1","inv-img2","inv-img3","inv-img4","inv-img5"].forEach(id=>{
-    document.getElementById(id).value = "";
+    const el = document.getElementById(id);
+    if (el) el.value = "";
   });
 
+  document.getElementById("inv-name").value = "";
+  document.getElementById("inv-price").value = "";
   document.getElementById("inv-qty").value = 0;
+  document.getElementById("inv-category").value = "";
 
   document.getElementById("inv-modal").style.display = "flex";
 }
@@ -219,8 +239,8 @@ function invSaveProduct() {
   const qty = Number(document.getElementById("inv-qty").value);
   const category = document.getElementById("inv-category").value;
 
-  if (!name || !price || qty < 0) {
-    alert("Completa todos los campos");
+  if (!name || isNaN(price) || isNaN(qty) || !category) {
+    alert("Completa todos los campos correctamente");
     return;
   }
 
@@ -235,8 +255,8 @@ function invSaveProduct() {
   let readers = [];
   let newImages = [];
 
-  fileInputs.forEach((input, idx) => {
-    if (input.files.length > 0) {
+  fileInputs.forEach((input) => {
+    if (input && input.files && input.files.length > 0) {
       const reader = new FileReader();
       readers.push(
         new Promise(resolve => {
@@ -254,17 +274,33 @@ function invSaveProduct() {
     const now = Date.now();
     const user = localStorage.getItem("inv-logged") || "Desconocido";
 
-    let product = {
-      id: invEditIndex !== null ? invProducts[invEditIndex].id : now,
-      name,
-      price,
-      qty,
-      category,
-      images: invEditIndex !== null ? [...invProducts[invEditIndex].images, ...newImages] : newImages,
-      uploadedBy: user,
-      createdAt: invEditIndex !== null ? invProducts[invEditIndex].createdAt : now,
-      updatedAt: now
-    };
+    let product;
+    if (invEditIndex !== null) {
+      const old = invProducts[invEditIndex];
+      product = {
+        id: old.id,
+        name,
+        price,
+        qty,
+        category,
+        images: [...old.images, ...newImages],
+        uploadedBy: old.uploadedBy || user,
+        createdAt: old.createdAt,
+        updatedAt: now
+      };
+    } else {
+      product = {
+        id: now,
+        name,
+        price,
+        qty,
+        category,
+        images: newImages,
+        uploadedBy: user,
+        createdAt: now,
+        updatedAt: now
+      };
+    }
 
     await invSaveToSheet(product, invEditIndex !== null);
 
@@ -273,8 +309,14 @@ function invSaveProduct() {
 }
 
 /* ============================
-   EDITAR PRODUCTO
+   EDITAR PRODUCTO (POR ID)
 ============================ */
+function invEditById(id) {
+  const idx = invProducts.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  invEdit(idx);
+}
+
 function invEdit(i) {
   invEditIndex = i;
   const p = invProducts[i];
@@ -288,14 +330,16 @@ function invEdit(i) {
   const editBox = document.getElementById("inv-edit-images");
   editBox.innerHTML = "";
 
-  p.images.forEach((img, idx) => {
-    editBox.innerHTML += `
-      <div class="inv-mini-edit">
-        <img src="${img}">
-        <div class="inv-delete-img" onclick="invDeleteImage(${idx})">🗑 Quitar</div>
-      </div>
-    `;
-  });
+  if (p.images && p.images.length) {
+    p.images.forEach((img, idx) => {
+      editBox.innerHTML += `
+        <div class="inv-mini-edit">
+          <img src="${img}">
+          <div class="inv-delete-img" onclick="invDeleteImage(${idx})">🗑 Quitar</div>
+        </div>
+      `;
+    });
+  }
 
   document.getElementById("inv-modal").style.display = "flex";
 }
@@ -305,6 +349,7 @@ function invEdit(i) {
 ============================ */
 async function invDeleteImage(idx) {
   const p = invProducts[invEditIndex];
+  if (!p.images) p.images = [];
   p.images.splice(idx, 1);
   p.updatedAt = Date.now();
 
@@ -313,10 +358,11 @@ async function invDeleteImage(idx) {
 }
 
 /* ============================
-   WHATSAPP POR PRODUCTO
+   WHATSAPP POR PRODUCTO (POR ID)
 ============================ */
-function invSendWA(i) {
-  const p = invProducts[i];
+function invSendWAById(id) {
+  const p = invProducts.find(p => p.id === id);
+  if (!p) return;
 
   let text = `🔹 *${p.name}*\n`;
   text += `Precio: Lps. ${p.price}\n`;

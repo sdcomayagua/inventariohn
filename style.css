@@ -9,7 +9,7 @@
 body {
   margin: 0;
   padding: 0;
-  background: #0d0f17;
+  background: #0b0e14;
   color: #fff;
 }
 
@@ -26,12 +26,15 @@ body {
    ENCABEZADO
 ============================ */
 #inv-header {
-  background: linear-gradient(90deg, #6a00ff, #00eaff);
+  background: #0f1724;
+  border: 1px solid #1f2a3a;
   padding: 18px;
   text-align: center;
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 26px;
+  font-weight: 700;
+  color: #00eaff;
   border-radius: 8px;
+  letter-spacing: 1px;
 }
 
 /* ============================
@@ -39,11 +42,12 @@ body {
 ============================ */
 #inv-login,
 #inv-panel {
-  background: #1a1d29;
+  background: #141a26;
   padding: 25px;
   border-radius: 12px;
   margin-top: 25px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.45);
+  border: 1px solid #1f2a3a;
 }
 
 /* ============================
@@ -56,20 +60,21 @@ body {
   padding: 12px;
   margin-top: 10px;
   border-radius: 8px;
-  border: 1px solid #333;
-  background: #0f111a;
+  border: 1px solid #2a3548;
+  background: #0f131b;
   color: #fff;
   font-size: 16px;
 }
 
 #inv-app button {
-  background: #6a00ff;
+  background: #009fbf;
   cursor: pointer;
   font-weight: bold;
+  border: none;
 }
 
 #inv-app button:hover {
-  background: #5200cc;
+  background: #007e99;
 }
 
 /* ============================
@@ -83,11 +88,12 @@ body {
 }
 
 .inv-item {
-  background: #11131c;
+  background: #111722;
   padding: 15px;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  border: 1px solid #1f2a3a;
 }
 
 /* ============================
@@ -145,11 +151,12 @@ body {
 }
 
 #inv-modal-content {
-  background: #1a1d29;
+  background: #141a26;
   padding: 25px;
   width: 420px;
   border-radius: 12px;
   color: #fff;
+  border: 1px solid #1f2a3a;
 }
 
 /* ============================
@@ -182,7 +189,7 @@ body {
 ============================ */
 #inv-search {
   margin-bottom: 15px;
-  border: 1px solid #444;
+  border: 1px solid #2a3548;
 }
 
 /* ============================

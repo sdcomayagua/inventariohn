@@ -75,27 +75,55 @@
 <!-- MODAL -->
 <div id="inv-modal" class="modal">
   <div class="modal-content">
-    <h2 id="inv-modal-title"></h2>
 
-    <input id="inv-name" placeholder="Nombre">
+    <h2 id="inv-modal-title">Agregar Producto</h2>
+
+    <!-- CAMPOS PRINCIPALES -->
+    <input id="inv-name" placeholder="Nombre del producto">
     <input id="inv-price" type="number" placeholder="Precio">
     <input id="inv-qty" type="number" placeholder="Cantidad">
     <input id="inv-category" placeholder="Categoría">
 
-    <div id="inv-edit-images"></div>
+    <!-- IMÁGENES -->
+    <h3 class="section-title">Imágenes del producto</h3>
 
-    <label>Imágenes nuevas:</label>
-    <input type="file" id="inv-img1">
-    <input type="file" id="inv-img2">
-    <input type="file" id="inv-img3">
-    <input type="file" id="inv-img4">
-    <input type="file" id="inv-img5">
+    <div class="image-upload-box">
 
+      <div class="image-slot">
+        <label class="img-label">Imagen 1</label>
+        <input type="file" id="inv-img1" accept="image/*" onchange="invPreviewImage(this, 'prev1')">
+        <img id="prev1" class="img-preview" alt="">
+      </div>
+
+      <div class="image-slot">
+        <label class="img-label">Imagen 2</label>
+        <input type="file" id="inv-img2" accept="image/*" onchange="invPreviewImage(this, 'prev2')">
+        <img id="prev2" class="img-preview" alt="">
+      </div>
+
+      <div class="image-slot">
+        <label class="img-label">Imagen 3</label>
+        <input type="file" id="inv-img3" accept="image/*" onchange="invPreviewImage(this, 'prev3')">
+        <img id="prev3" class="img-preview" alt="">
+      </div>
+
+      <div class="image-slot">
+        <label class="img-label">Imagen 4</label>
+        <input type="file" id="inv-img4" accept="image/*" onchange="invPreviewImage(this, 'prev4')">
+        <img id="prev4" class="img-preview" alt="">
+      </div>
+
+      <div class="image-slot">
+        <label class="img-label">Imagen 5</label>
+        <input type="file" id="inv-img5" accept="image/*" onchange="invPreviewImage(this, 'prev5')">
+        <img id="prev5" class="img-preview" alt="">
+      </div>
+
+    </div>
+
+    <!-- BOTONES -->
     <button onclick="invSaveProduct()">Guardar</button>
     <button onclick="invCloseModal()">Cerrar</button>
+
   </div>
 </div>
-
-<script src="app.js"></script>
-</body>
-</html>

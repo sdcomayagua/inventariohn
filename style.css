@@ -1,264 +1,130 @@
-/* ============================
-   TEMA BLANCO GAMER
-============================ */
-:root {
-  --bg-main: #f5f7fa;
-  --bg-panel: #ffffff;
-  --bg-header: #ffffff;
-
-  --color-text: #1a1a1a;
-  --color-border: #d0d4da;
-
-  --color-accent: #00aaff;
-  --color-accent-hover: #0088cc;
-
-  --color-danger: #ff004c;
-  --color-danger-hover: #d60040;
-
-  --glow-accent: 0 0 6px rgba(0,170,255,0.4);
-  --glow-accent-strong: 0 0 10px rgba(0,170,255,0.6);
-}
-
-/* ============================
-   BASE
-============================ */
-* {
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-
 body {
+  background: #111;
+  color: white;
+  font-family: Arial;
   margin: 0;
   padding: 0;
-  background: var(--bg-main);
-  color: var(--color-text);
 }
 
-/* ============================
-   CONTENEDOR PRINCIPAL
-============================ */
-#inv-app {
-  max-width: 1200px;
-  margin: auto;
+.login-box {
+  width: 300px;
+  margin: 120px auto;
+  background: #222;
   padding: 20px;
-}
-
-/* ============================
-   ENCABEZADO
-============================ */
-#inv-header {
-  background: var(--bg-header);
-  border: 2px solid var(--color-accent);
-  padding: 20px;
-  text-align: center;
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--color-accent);
   border-radius: 10px;
-  text-shadow: var(--glow-accent);
-  letter-spacing: 2px;
+  text-align: center;
 }
 
-/* ============================
-   LOGIN Y PANEL
-============================ */
-#inv-login,
-#inv-panel {
-  background: var(--bg-panel);
-  padding: 25px;
-  border-radius: 12px;
-  margin-top: 25px;
-  border: 1px solid var(--color-border);
-  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+.login-box input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
 }
 
-/* ============================
-   INPUTS Y BOTONES
-============================ */
-#inv-app input,
-#inv-app select,
-#inv-app button {
+.login-box button {
   width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  background: #ffffff;
-  color: var(--color-text);
-  font-size: 16px;
-}
-
-#inv-app input:focus,
-#inv-app select:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: var(--glow-accent);
-}
-
-#inv-app button {
-  background: var(--color-accent);
-  color: #ffffff;
-  cursor: pointer;
-  font-weight: bold;
+  padding: 10px;
+  background: #0af;
   border: none;
-  box-shadow: var(--glow-accent);
-  transition: 0.2s;
+  color: white;
+  cursor: pointer;
 }
 
-#inv-app button:hover {
-  background: var(--color-accent-hover);
-  box-shadow: var(--glow-accent-strong);
+#inv-panel {
+  padding: 20px;
 }
 
-/* ============================
-   GRID DE PRODUCTOS
-============================ */
+.top-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
 #inv-products {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
-  margin-top: 20px;
 }
 
 .inv-item {
-  background: var(--bg-panel);
+  background: #222;
   padding: 15px;
   border-radius: 10px;
-  text-align: center;
-  border: 1px solid var(--color-border);
   position: relative;
-  transition: 0.2s;
-}
-
-/* ============================
-   AGOTADO
-============================ */
-.inv-item.inv-out {
-  filter: grayscale(1) brightness(0.7);
 }
 
 .inv-out-tag {
   position: absolute;
-  left: -35px;
-  top: 40%;
-  transform: rotate(-90deg);
-  background: var(--color-danger);
-  color: white;
-  padding: 5px 15px;
-  font-weight: bold;
-  border-radius: 6px;
-  box-shadow: 0 0 10px var(--color-danger);
-}
-
-/* ============================
-   SUBIDO POR
-============================ */
-.inv-uploaded {
-  position: absolute;
-  bottom: 8px;
+  top: 10px;
   right: 10px;
+  background: red;
+  padding: 5px;
   font-size: 12px;
-  opacity: 0.7;
 }
 
-/* ============================
-   IMAGEN PRINCIPAL
-============================ */
 .inv-main-img {
   width: 100%;
-  height: 240px;
+  height: 180px;
   object-fit: cover;
   border-radius: 8px;
-  border: 1px solid var(--color-border);
-}
-
-/* ============================
-   MINIATURAS
-============================ */
-.inv-thumbs {
-  display: flex;
-  gap: 6px;
-  margin-top: 10px;
-  justify-content: center;
 }
 
 .inv-thumbs img {
-  width: 45px;
-  height: 45px;
-  object-fit: cover;
-  border-radius: 6px;
+  width: 40px;
+  height: 40px;
+  margin: 5px;
   cursor: pointer;
-  border: 1px solid var(--color-border);
+  border-radius: 5px;
 }
 
-/* ============================
-   MODAL
-============================ */
-#inv-modal {
-  display: none;
-  position: fixed;
-  top: 0; 
-  left: 0;
-  width: 100%; 
-  height: 100%;
-  background: rgba(0,0,0,0.4);
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-#inv-modal-content {
-  background: var(--bg-panel);
-  padding: 25px;
-  width: 420px;
-  border-radius: 12px;
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-}
-
-/* ============================
-   MINIATURAS EN EDICIÓN
-============================ */
-.inv-mini-edit {
+.inv-stock-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 8px;
 }
 
-.inv-mini-edit img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 6px;
-  border: 1px solid var(--color-border);
-}
-
-.inv-delete-img {
-  background: var(--color-danger);
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
+.inv-stock-row button {
+  width: 30px;
+  height: 30px;
+  background: #0af;
+  border: none;
   color: white;
+  cursor: pointer;
 }
 
-/* ============================
-   RESPONSIVE
-============================ */
-@media (max-width: 768px) {
-  #inv-app {
-    max-width: 100%;
-    padding: 10px;
-  }
+.inv-delete-btn {
+  background: red;
+  border: none;
+  padding: 8px;
+  color: white;
+  width: 100%;
+  margin-top: 10px;
+  cursor: pointer;
+}
 
-  #inv-modal-content {
-    width: 95%;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
+#inv-pagination {
+  margin-top: 20px;
+  text-align: center;
+}
 
-  .inv-main-img {
-    height: 180px;
-  }
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #222;
+  padding: 20px;
+  width: 350px;
+  border-radius: 10px;
 }

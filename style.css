@@ -6,8 +6,9 @@
 body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-  background: #f2f3f7;
-  color: #111827;
+  background: #0f172a;
+  color: #f8fafc;
+  padding-bottom: 90px; /* FIX para botón flotante */
 }
 
 .app-wrapper {
@@ -21,15 +22,16 @@ body {
   max-width: 380px;
   margin: 80px auto;
   padding: 24px 20px 28px;
-  background: #f5f6fb;
+  background: #1e293b;
   border-radius: 18px;
-  box-shadow: 8px 8px 18px rgba(0,0,0,0.08), -6px -6px 16px rgba(255,255,255,0.9);
+  box-shadow: 8px 8px 18px rgba(0,0,0,0.4), -6px -6px 16px rgba(255,255,255,0.05);
 }
 
 .login-card h1 {
   font-size: 22px;
   margin-bottom: 20px;
   text-align: center;
+  color: #e2e8f0;
 }
 
 /* CAMPOS */
@@ -47,7 +49,7 @@ body {
 .field-group label {
   font-size: 13px;
   margin-bottom: 4px;
-  color: #4b5563;
+  color: #94a3b8;
 }
 
 input,
@@ -56,8 +58,9 @@ select {
   outline: none;
   padding: 10px 12px;
   border-radius: 12px;
-  background: #f2f3f7;
-  box-shadow: inset 3px 3px 6px rgba(0,0,0,0.08), inset -3px -3px 6px rgba(255,255,255,0.9);
+  background: #0f172a;
+  color: #f1f5f9;
+  box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -3px -3px 6px rgba(255,255,255,0.05);
   font-size: 14px;
 }
 
@@ -79,19 +82,28 @@ button:active {
 .btn-primary {
   width: 100%;
   margin-top: 8px;
-  background: linear-gradient(135deg, #00c8ff, #00a0e0);
-  color: #ffffff;
-  box-shadow: 4px 4px 10px rgba(0,0,0,0.18), -3px -3px 8px rgba(255,255,255,0.9);
+  background: linear-gradient(135deg, #00eaff, #00bcd4);
+  color: #0f172a;
+  font-weight: bold;
+  box-shadow: 0 0 12px rgba(0,234,255,0.4);
 }
 
 .btn-secondary {
-  background: #f2f3f7;
-  color: #374151;
-  box-shadow: 3px 3px 8px rgba(0,0,0,0.08), -3px -3px 8px rgba(255,255,255,0.9);
+  background: #1e293b;
+  color: #e2e8f0;
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.4), -3px -3px 8px rgba(255,255,255,0.05);
 }
 
 .btn-add {
-  white-space: nowrap;
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10000;
+  padding: 14px 22px;
+  background: linear-gradient(135deg, #00eaff, #00bcd4);
+  color: #0f172a;
+  font-weight: bold;
+  box-shadow: 0 0 16px rgba(0,234,255,0.6);
 }
 
 /* TOP BAR */
@@ -114,14 +126,14 @@ button:active {
 .dash-card {
   padding: 12px 14px;
   border-radius: 18px;
-  background: #f5f6fb;
-  box-shadow: 6px 6px 14px rgba(0,0,0,0.08), -5px -5px 14px rgba(255,255,255,0.9);
+  background: #1e293b;
+  box-shadow: 6px 6px 14px rgba(0,0,0,0.4), -5px -5px 14px rgba(255,255,255,0.05);
 }
 
 .dash-card p {
   margin: 0 0 4px;
   font-size: 13px;
-  color: #6b7280;
+  color: #94a3b8;
 }
 
 .dash-card h2 {
@@ -148,19 +160,20 @@ button:active {
 .inv-item {
   padding: 12px;
   border-radius: 18px;
-  background: #f5f6fb;
-  box-shadow: 6px 6px 14px rgba(0,0,0,0.08), -5px -5px 14px rgba(255,255,255,0.9);
+  background: #1e293b;
+  box-shadow: 6px 6px 14px rgba(0,0,0,0.4), -5px -5px 14px rgba(255,255,255,0.05);
 }
 
 .inv-item h4 {
   margin: 8px 0 4px;
   font-size: 15px;
+  color: #e2e8f0;
 }
 
 .inv-item p {
   margin: 2px 0;
   font-size: 13px;
-  color: #4b5563;
+  color: #94a3b8;
 }
 
 .inv-main-img {
@@ -180,24 +193,6 @@ button:active {
   cursor: pointer;
 }
 
-.inv-stock-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 8px 0;
-}
-
-.inv-stock-row button {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-}
-
-.inv-stock-row span {
-  min-width: 32px;
-  text-align: center;
-}
-
 /* PAGINACIÓN */
 .pagination {
   display: flex;
@@ -207,21 +202,18 @@ button:active {
   margin-bottom: 16px;
 }
 
-.pagination button {
-  padding-inline: 14px;
-}
-
 /* HISTORIAL */
 .history-card {
   padding: 14px;
   border-radius: 18px;
-  background: #f5f6fb;
-  box-shadow: 6px 6px 14px rgba(0,0,0,0.08), -5px -5px 14px rgba(255,255,255,0.9);
+  background: #1e293b;
+  box-shadow: 6px 6px 14px rgba(0,0,0,0.4), -5px -5px 14px rgba(255,255,255,0.05);
 }
 
 .history-card h3 {
   margin-top: 0;
   margin-bottom: 8px;
+  color: #e2e8f0;
 }
 
 #inv-history-list {
@@ -231,6 +223,7 @@ button:active {
   max-height: 220px;
   overflow-y: auto;
   font-size: 13px;
+  color: #94a3b8;
 }
 
 /* MODAL */
@@ -238,27 +231,27 @@ button:active {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.35);
-  display: none;
+  background: rgba(15, 23, 42, 0.65);
   justify-content: center;
   align-items: center;
   padding: 16px;
-  z-index: 999;
+  z-index: 9999 !important;
 }
 
 .modal-content {
   width: 100%;
   max-width: 380px;
-  background: #f5f6fb;
+  background: #1e293b;
   border-radius: 20px;
   padding: 18px 16px 20px;
-  box-shadow: 10px 10px 24px rgba(0,0,0,0.18), -8px -8px 20px rgba(255,255,255,0.95);
+  box-shadow: 10px 10px 24px rgba(0,0,0,0.5), -8px -8px 20px rgba(255,255,255,0.05);
 }
 
 .modal-content h2 {
   margin-top: 0;
   margin-bottom: 10px;
   text-align: center;
+  color: #e2e8f0;
 }
 
 /* IMÁGENES */
@@ -267,6 +260,7 @@ button:active {
   font-weight: 600;
   margin: 10px 0;
   text-align: center;
+  color: #e2e8f0;
 }
 
 .image-upload-box {
@@ -279,8 +273,8 @@ button:active {
 .image-slot {
   padding: 8px;
   border-radius: 16px;
-  background: #f2f3f7;
-  box-shadow: inset 3px 3px 6px rgba(0,0,0,0.06), inset -3px -3px 6px rgba(255,255,255,0.9);
+  background: #0f172a;
+  box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -3px -3px 6px rgba(255,255,255,0.05);
   text-align: center;
 }
 
@@ -288,14 +282,16 @@ button:active {
   font-size: 12px;
   margin-bottom: 4px;
   display: block;
+  color: #94a3b8;
 }
 
 .image-slot input[type="file"] {
   font-size: 11px;
   padding: 6px;
   border-radius: 10px;
-  background: #f5f6fb;
-  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.06), inset -2px -2px 4px rgba(255,255,255,0.9);
+  background: #1e293b;
+  color: #e2e8f0;
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.05);
 }
 
 .img-preview {
@@ -319,16 +315,5 @@ button:active {
 
   .top-bar {
     gap: 6px;
-  }
-
-  .btn-add {
-    position: fixed;
-    right: 16px;
-    bottom: 16px;
-    z-index: 1000;
-  }
-
-  .app-wrapper {
-    padding-bottom: 70px;
   }
 }

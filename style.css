@@ -1,183 +1,84 @@
 /* ============================
-   MODO CLARO GAMER
+   MODAL — MODO CLARO GAMER
 ============================ */
-body {
-  background: #eef1ff;
-  color: #111322;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-/* CONTENEDOR PRINCIPAL */
-#inv-panel {
-  max-width: 900px;
-  margin: auto;
-  padding: 15px;
-}
-
-/* LOGIN */
-.login-box {
-  width: 90%;
-  max-width: 350px;
-  margin: 120px auto;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-}
-
-.login-box input {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 6px;
-  border: 1px solid #c3c7ff;
-}
-
-.login-box button {
-  width: 100%;
-  padding: 10px;
-  background: linear-gradient(135deg, #00e0ff, #7b5cff);
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 6px;
-  font-weight: bold;
-}
-
-/* TOP BAR */
-.top-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.top-bar button,
-.top-bar select {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #c3c7ff;
-  background: #ffffff;
-}
-
-.top-bar button {
-  background: linear-gradient(135deg, #00e0ff, #7b5cff);
-  color: white;
-  border: none;
-}
-
-/* DASHBOARD */
-.dashboard {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-  margin: 20px 0;
-}
-
-.dash-card {
-  background: #ffffff;
-  padding: 12px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-
-/* FILTROS */
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.filters select,
-.filters input {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #c3c7ff;
-  background: #ffffff;
-}
-
-/* PRODUCTOS */
-#inv-products {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 15px;
-}
-
-.inv-item {
-  background: #ffffff;
-  padding: 12px;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-
-.inv-main-img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* STOCK */
-.inv-stock-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.inv-stock-row button {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #00e0ff, #7b5cff);
-  border: none;
-  color: white;
-  border-radius: 6px;
-  font-weight: bold;
-}
-
-/* HISTORIAL */
-.history-box {
-  background: #ffffff;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 20px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-
-#inv-history-list {
-  max-height: 200px;
-  overflow-y: auto;
-  padding-left: 0;
-  list-style: none;
-}
-
-/* MODAL */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
   justify-content: center;
   align-items: center;
+  padding: 20px;
+  z-index: 9999;
 }
 
 .modal-content {
+  width: 100%;
+  max-width: 380px;
   background: #ffffff;
-  padding: 20px;
-  width: 90%;
-  max-width: 350px;
-  border-radius: 10px;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  animation: modalPop 0.25s ease-out;
 }
 
-/* RESPONSIVE */
-@media (max-width: 480px) {
-  #inv-products {
-    grid-template-columns: 1fr;
-  }
+@keyframes modalPop {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
 
-  .inv-main-img {
-    height: 140px;
-  }
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #111322;
+  text-align: center;
+  font-weight: bold;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 14px 0;
+  border-radius: 10px;
+  border: 1px solid #c3c7ff;
+  background: #f7f8ff;
+  font-size: 15px;
+}
+
+.modal-content label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 10px;
+  display: block;
+}
+
+.modal-content input[type="file"] {
+  padding: 8px;
+  background: #eef1ff;
+  border-radius: 8px;
+  border: 1px dashed #b8befc;
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-content button:nth-of-type(1) {
+  background: linear-gradient(135deg, #00e0ff, #7b5cff);
+  color: white;
+}
+
+.modal-content button:nth-of-type(2) {
+  background: #e8eaff;
+  color: #333;
 }

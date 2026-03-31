@@ -8,21 +8,30 @@ let FILTERED = [];
 let CURRENT_PAGE = 1;
 let ITEMS_PER_PAGE = 10;
 
+let CURRENT_USER = null;
+
 /* ============================
-   LOGIN
+   LOGIN POR PIN (6 dígitos)
 ============================ */
 function invLogin() {
-  const user = document.getElementById("inv-user").value.trim();
-  const pass = document.getElementById("inv-pass").value.trim();
+  const pin = document.getElementById("inv-user").value.trim();
 
-  if (user === "admin" && pass === "1234") {
+  const users = {
+    "199311": "Gabriel",
+    "123456": "JarCo"
+  };
+
+  if (users[pin]) {
+    CURRENT_USER = users[pin];
+    localStorage.setItem("invUser", CURRENT_USER);
     window.location.href = "inventario.html";
   } else {
-    alert("Credenciales incorrectas");
+    alert("PIN incorrecto");
   }
 }
 
 function invLogout() {
+  localStorage.removeItem("invUser");
   window.location.href = "index.html";
 }
 
@@ -124,7 +133,8 @@ async function invSaveProduct() {
     price,
     qty,
     category,
-    images: JSON.stringify(images)
+    images: JSON.stringify(images),
+    user: CURRENT_USER
   };
 
   await fetch(API_URL, {
@@ -242,7 +252,8 @@ async function updateStock(id, change) {
     body: JSON.stringify({
       action: "stock",
       id,
-      change
+      change,
+      user: CURRENT_USER
     })
   });
 
@@ -331,6 +342,8 @@ function renderHistory(history) {
 ============================ */
 if (window.location.pathname.includes("inventario.html")) {
   window.addEventListener("load", () => {
+    CURRENT_USER = localStorage.getItem("invUser") || "ADMIN";
+
     const catSel = document.getElementById("inv-filter");
     const stockSel = document.getElementById("inv-stock-filter");
     const minPriceInput = document.getElementById("inv-min-price");

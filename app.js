@@ -9,11 +9,11 @@ let CURRENT_PAGE = 1;
 let ITEMS_PER_PAGE = 10;
 
 let CURRENT_USER = null;
-let CURRENT_ROLE = "ADMIN"; // por ahora ambos son admin
+let CURRENT_ROLE = "ADMIN";
 let EDITING_ID = null;
 
 /* ============================
-   LOGIN POR PIN (6 dígitos)
+   LOGIN POR PIN
 ============================ */
 function invLogin() {
   const pin = document.getElementById("inv-user").value.trim();
@@ -117,7 +117,7 @@ async function loadProducts() {
     PRODUCTS = data.products || [];
     FILTERED = [...PRODUCTS];
 
-    applyFilters(); // incluye búsqueda y orden
+    applyFilters();
     updateDashboard();
     loadCategories();
     renderHistory(data.history || []);
@@ -373,7 +373,6 @@ function applyFilters() {
     return ok;
   });
 
-  // Ordenar
   FILTERED.sort((a, b) => {
     if (sortBy === "name") {
       return a.name.localeCompare(b.name);

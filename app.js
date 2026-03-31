@@ -1,17 +1,23 @@
 /* ============================
    CONFIG
 ============================ */
-const API_URL = "https://script.google.com/macros/s/AKfycbzb6tcVvH-ZPfMf1fhbxbKRanhChthWBFV0OJ4mOdOMbW5MLGB7Mmrcnf-alAg0foeH/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyki7otdBUFr_FYQzEREb52DwNBlyuQADj4Y9qg8rwn841rokXFus0sqk2Qf_4M_tOg/exec";
+
 let invProducts = [];
 let invEditIndex = null;
+let invCurrentPage = 1;
+let invItemsPerPage = 10;
 
 /* ============================
-   USUARIOS
+   ROLES Y USUARIOS
 ============================ */
 const invUsers = {
-  "GaboHN": "199311",
-  "JarCoHN": "jarco"
+  "Renee":   { pass: "TU_CLAVE", role: "admin" },
+  "GaboHN":  { pass: "199311",   role: "admin" },
+  "JarcoHN": { pass: "jarco",    role: "admin" }
 };
+
+let invCurrentUser = null;
 
 /* ============================
    LOGIN
@@ -20,10 +26,13 @@ function invLogin() {
   const u = document.getElementById("inv-user").value;
   const p = document.getElementById("inv-pass").value;
 
-  if (invUsers[u] && invUsers[u] === p) {
-    localStorage.setItem("inv-logged", u);
+  if (invUsers[u] && invUsers[u].pass === p) {
+    invCurrentUser = { name: u, role: invUsers[u].role };
+    localStorage.setItem("inv-logged", JSON.stringify(invCurrentUser));
+
     document.getElementById("inv-login").style.display = "none";
     document.getElementById("inv-panel").style.display = "block";
+
     invFetchProducts();
   } else {
     alert("Usuario o contraseña incorrectos");
@@ -55,7 +64,7 @@ async function invFetchProducts() {
   }));
 
   invLoadCategories();
-  invLoadProducts();
+  invRenderProducts();
 }
 
 /* ============================
@@ -73,87 +82,105 @@ async function invSaveToSheet(product, isEdit) {
 }
 
 /* ============================
-   CATEGORÍAS
+   ELIMINAR PRODUCTO
+============================ */
+async function invDeleteProduct(id) {
+  if (!confirm("¿Eliminar este producto?")) return;
+
+  await fetch(API_URL, {
+    method: "DELETE",
+    body: JSON.stringify({ id })
+  });
+
+  await invFetchProducts();
+}
+
+/* ============================
+   FILTROS AVANZADOS
 ============================ */
 function invLoadCategories() {
   const filter = document.getElementById("inv-filter");
   const cats = [...new Set(invProducts.map(p => p.category))];
 
-  filter.innerHTML = `<option value="all">Todas las categorías</option>`;
+  filter.innerHTML = `<option value="all">Todas</option>`;
   cats.forEach(c => {
     filter.innerHTML += `<option value="${c}">${c}</option>`;
   });
 }
 
-/* ============================
-   BUSCAR
-============================ */
-function invSearch() {
-  const term = document.getElementById("inv-search").value.toLowerCase();
-  const filtered = invProducts.filter(p =>
-    p.name.toLowerCase().includes(term)
-  );
-  invRenderProducts(filtered);
+function invApplyFilters(list) {
+  const cat = document.getElementById("inv-filter").value;
+  const stock = document.getElementById("inv-stock-filter").value;
+  const min = Number(document.getElementById("inv-min-price").value);
+  const max = Number(document.getElementById("inv-max-price").value);
+
+  return list.filter(p => {
+    if (cat !== "all" && p.category !== cat) return false;
+    if (stock === "out" && p.qty > 0) return false;
+    if (stock === "in" && p.qty === 0) return false;
+    if (min && p.price < min) return false;
+    if (max && p.price > max) return false;
+    return true;
+  });
 }
 
 /* ============================
-   ORDENAR
+   PAGINACIÓN
 ============================ */
-function invSort(list) {
-  const sort = document.getElementById("inv-sort").value;
+function invRenderProducts() {
+  let list = invApplyFilters(invProducts);
 
-  switch (sort) {
-    case "price-asc": return list.sort((a, b) => a.price - b.price);
-    case "price-desc": return list.sort((a, b) => b.price - a.price);
-    case "qty-asc": return list.sort((a, b) => a.qty - b.qty);
-    case "qty-desc": return list.sort((a, b) => b.qty - a.qty);
-    case "date-new": return list.sort((a, b) => b.createdAt - a.createdAt);
-    case "date-old": return list.sort((a, b) => a.createdAt - b.createdAt);
-    default: return list;
+  const start = (invCurrentPage - 1) * invItemsPerPage;
+  const end = start + invItemsPerPage;
+  const pageItems = list.slice(start, end);
+
+  invRenderPagination(list.length);
+  invRenderList(pageItems);
+}
+
+function invRenderPagination(total) {
+  const pages = Math.ceil(total / invItemsPerPage);
+  const box = document.getElementById("inv-pagination");
+
+  box.innerHTML = `
+    <button onclick="invPrevPage()" ${invCurrentPage === 1 ? "disabled" : ""}>Anterior</button>
+    <span>Página ${invCurrentPage} de ${pages}</span>
+    <button onclick="invNextPage(${pages})" ${invCurrentPage === pages ? "disabled" : ""}>Siguiente</button>
+  `;
+}
+
+function invPrevPage() {
+  if (invCurrentPage > 1) {
+    invCurrentPage--;
+    invRenderProducts();
   }
 }
 
-/* ============================
-   FILTRAR + ORDENAR
-============================ */
-function invLoadProducts() {
-  const filter = document.getElementById("inv-filter").value;
+function invNextPage(max) {
+  if (invCurrentPage < max) {
+    invCurrentPage++;
+    invRenderProducts();
+  }
+}
 
-  let list = invProducts.filter(p =>
-    filter === "all" || p.category === filter
-  );
-
-  list = invSort(list);
-
-  invRenderProducts(list);
+function invChangeItemsPerPage() {
+  invItemsPerPage = Number(document.getElementById("inv-items-per-page").value);
+  invCurrentPage = 1;
+  invRenderProducts();
 }
 
 /* ============================
-   ACTUALIZAR STOCK EN TIEMPO REAL
+   STOCK EN TIEMPO REAL
 ============================ */
 async function invChangeStock(id, delta) {
-  const idx = invProducts.findIndex(p => p.id === id);
-  if (idx === -1) return;
-
-  const p = invProducts[idx];
+  const p = invProducts.find(x => x.id === id);
+  if (!p) return;
 
   p.qty += delta;
   if (p.qty < 0) p.qty = 0;
   p.updatedAt = Date.now();
 
-  // Actualizar DOM inmediatamente
-  const span = document.getElementById(`inv-stock-${p.id}`);
-  if (span) span.textContent = p.qty;
-
-  // Actualizar estilo AGOTADO
-  const card = document.getElementById(`inv-item-${p.id}`);
-  if (card) {
-    if (p.qty === 0) {
-      card.classList.add("inv-out");
-    } else {
-      card.classList.remove("inv-out");
-    }
-  }
+  document.getElementById(`inv-stock-${id}`).textContent = p.qty;
 
   await invSaveToSheet(p, true);
 }
@@ -161,11 +188,11 @@ async function invChangeStock(id, delta) {
 /* ============================
    RENDERIZAR PRODUCTOS
 ============================ */
-function invRenderProducts(list) {
+function invRenderList(list) {
   const container = document.getElementById("inv-products");
   container.innerHTML = "";
 
-  list.forEach((p) => {
+  list.forEach(p => {
     const mainImg = p.images[0] || "https://via.placeholder.com/1200";
 
     let thumbs = "";
@@ -173,32 +200,29 @@ function invRenderProducts(list) {
       thumbs += `<img src="${img}" onclick="this.parentNode.previousElementSibling.src='${img}'">`;
     });
 
-    const outTag = p.qty == 0 ? `<div class="inv-out-tag">AGOTADO</div>` : "";
-    const outClass = p.qty == 0 ? "inv-out" : "";
+    const isAdmin = invCurrentUser?.role === "admin";
 
     container.innerHTML += `
-      <div class="inv-item ${outClass}" id="inv-item-${p.id}">
-        ${outTag}
+      <div class="inv-item ${p.qty === 0 ? "inv-out" : ""}">
+        ${p.qty === 0 ? `<div class="inv-out-tag">AGOTADO</div>` : ""}
+        
         <img class="inv-main-img" src="${mainImg}">
         <div class="inv-thumbs">${thumbs}</div>
 
         <h4>${p.name}</h4>
         <p>Categoría: ${p.category}</p>
-        <p>Precio: <b>Lps. ${p.price}</b></p>
+        <p>Precio: Lps. ${p.price}</p>
 
-        <p>Stock:</p>
         <div class="inv-stock-row">
-          <button class="inv-stock-btn" onclick="invChangeStock(${p.id}, -1)">-</button>
-          <span class="inv-stock-num" id="inv-stock-${p.id}">${p.qty}</span>
-          <button class="inv-stock-btn" onclick="invChangeStock(${p.id}, 1)">+</button>
+          <button onclick="invChangeStock(${p.id}, -1)">-</button>
+          <span id="inv-stock-${p.id}">${p.qty}</span>
+          <button onclick="invChangeStock(${p.id}, 1)">+</button>
         </div>
 
-        <p>Creado: ${new Date(p.createdAt).toLocaleString()}</p>
-        <p>Editado: ${new Date(p.updatedAt).toLocaleString()}</p>
-        <div class="inv-uploaded">Subido por: ${p.uploadedBy}</div>
+        <button onclick="invEditById(${p.id})">Editar</button>
+        <button onclick="invSendWAById(${p.id})">WhatsApp</button>
 
-        <button class="inv-edit-btn" onclick="invEditById(${p.id})">Editar</button>
-        <button class="inv-wa-btn" onclick="invSendWAById(${p.id})">WhatsApp</button>
+        ${isAdmin ? `<button class="inv-delete-btn" onclick="invDeleteProduct(${p.id})">Eliminar</button>` : ""}
       </div>
     `;
   });
@@ -214,8 +238,7 @@ function invOpenModal() {
   document.getElementById("inv-edit-images").innerHTML = "";
 
   ["inv-img1","inv-img2","inv-img3","inv-img4","inv-img5"].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.value = "";
+    document.getElementById(id).value = "";
   });
 
   document.getElementById("inv-name").value = "";
@@ -255,8 +278,8 @@ function invSaveProduct() {
   let readers = [];
   let newImages = [];
 
-  fileInputs.forEach((input) => {
-    if (input && input.files && input.files.length > 0) {
+  fileInputs.forEach(input => {
+    if (input.files.length > 0) {
       const reader = new FileReader();
       readers.push(
         new Promise(resolve => {
@@ -272,9 +295,10 @@ function invSaveProduct() {
 
   Promise.all(readers).then(async () => {
     const now = Date.now();
-    const user = localStorage.getItem("inv-logged") || "Desconocido";
+    const user = invCurrentUser?.name || "Desconocido";
 
     let product;
+
     if (invEditIndex !== null) {
       const old = invProducts[invEditIndex];
       product = {
@@ -284,7 +308,7 @@ function invSaveProduct() {
         qty,
         category,
         images: [...old.images, ...newImages],
-        uploadedBy: old.uploadedBy || user,
+        uploadedBy: old.uploadedBy,
         createdAt: old.createdAt,
         updatedAt: now
       };
@@ -309,7 +333,7 @@ function invSaveProduct() {
 }
 
 /* ============================
-   EDITAR PRODUCTO (POR ID)
+   EDITAR PRODUCTO
 ============================ */
 function invEditById(id) {
   const idx = invProducts.findIndex(p => p.id === id);
@@ -330,16 +354,14 @@ function invEdit(i) {
   const editBox = document.getElementById("inv-edit-images");
   editBox.innerHTML = "";
 
-  if (p.images && p.images.length) {
-    p.images.forEach((img, idx) => {
-      editBox.innerHTML += `
-        <div class="inv-mini-edit">
-          <img src="${img}">
-          <div class="inv-delete-img" onclick="invDeleteImage(${idx})">🗑 Quitar</div>
-        </div>
-      `;
-    });
-  }
+  p.images.forEach((img, idx) => {
+    editBox.innerHTML += `
+      <div class="inv-mini-edit">
+        <img src="${img}">
+        <div class="inv-delete-img" onclick="invDeleteImage(${idx})">🗑 Quitar</div>
+      </div>
+    `;
+  });
 
   document.getElementById("inv-modal").style.display = "flex";
 }
@@ -349,7 +371,6 @@ function invEdit(i) {
 ============================ */
 async function invDeleteImage(idx) {
   const p = invProducts[invEditIndex];
-  if (!p.images) p.images = [];
   p.images.splice(idx, 1);
   p.updatedAt = Date.now();
 
@@ -358,7 +379,7 @@ async function invDeleteImage(idx) {
 }
 
 /* ============================
-   WHATSAPP POR PRODUCTO (POR ID)
+   WHATSAPP POR PRODUCTO
 ============================ */
 function invSendWAById(id) {
   const p = invProducts.find(p => p.id === id);
@@ -372,14 +393,15 @@ function invSendWAById(id) {
   text += `Creado: ${new Date(p.createdAt).toLocaleString()}\n`;
   text += `Editado: ${new Date(p.updatedAt).toLocaleString()}\n`;
 
-  const url = "https://wa.me/?text=" + encodeURIComponent(text);
-  window.open(url, "_blank");
+  window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
 }
 
 /* ============================
    AUTO LOGIN
 ============================ */
-if (localStorage.getItem("inv-logged")) {
+const savedUser = localStorage.getItem("inv-logged");
+if (savedUser) {
+  invCurrentUser = JSON.parse(savedUser);
   document.getElementById("inv-login").style.display = "none";
   document.getElementById("inv-panel").style.display = "block";
   invFetchProducts();

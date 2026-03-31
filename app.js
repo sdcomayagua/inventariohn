@@ -9,7 +9,7 @@ let invCurrentPage = 1;
 let invItemsPerPage = 10;
 
 /* ============================
-   ROLES Y USUARIOS
+   ROLES
 ============================ */
 const invUsers = {
   "Renee":   { pass: "TU_CLAVE", role: "admin" },
@@ -29,11 +29,7 @@ function invLogin() {
   if (invUsers[u] && invUsers[u].pass === p) {
     invCurrentUser = { name: u, role: invUsers[u].role };
     localStorage.setItem("inv-logged", JSON.stringify(invCurrentUser));
-
-    document.getElementById("inv-login").style.display = "none";
-    document.getElementById("inv-panel").style.display = "block";
-
-    invFetchProducts();
+    window.location.href = "inventario.html";
   } else {
     alert("Usuario o contraseña incorrectos");
   }
@@ -41,11 +37,11 @@ function invLogin() {
 
 function invLogout() {
   localStorage.removeItem("inv-logged");
-  location.reload();
+  window.location.href = "index.html";
 }
 
 /* ============================
-   CARGAR DESDE GOOGLE SHEETS
+   CARGAR PRODUCTOS
 ============================ */
 async function invFetchProducts() {
   const res = await fetch(API_URL);
@@ -68,16 +64,13 @@ async function invFetchProducts() {
 }
 
 /* ============================
-   GUARDAR EN GOOGLE SHEETS
-   (solo POST, Apps Script-friendly)
+   GUARDAR EN SHEETS
 ============================ */
 async function invSaveToSheet(product) {
   await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify(product)
   });
-
-  await invFetchProducts();
 }
 
 /* ============================
@@ -85,8 +78,6 @@ async function invSaveToSheet(product) {
 ============================ */
 function invLoadCategories() {
   const filter = document.getElementById("inv-filter");
-  if (!filter) return;
-
   const cats = [...new Set(invProducts.map(p => p.category))];
 
   filter.innerHTML = `<option value="all">Todas</option>`;
@@ -96,15 +87,10 @@ function invLoadCategories() {
 }
 
 function invApplyFilters(list) {
-  const catEl   = document.getElementById("inv-filter");
-  const stockEl = document.getElementById("inv-stock-filter");
-  const minEl   = document.getElementById("inv-min-price");
-  const maxEl   = document.getElementById("inv-max-price");
-
-  const cat   = catEl   ? catEl.value   : "all";
-  const stock = stockEl ? stockEl.value : "all";
-  const min   = minEl   ? Number(minEl.value) : 0;
-  const max   = maxEl   ? Number(maxEl.value) : 0;
+  const cat = document.getElementById("inv-filter").value;
+  const stock = document.getElementById("inv-stock-filter").value;
+  const min = Number(document.getElementById("inv-min-price").value);
+  const max = Number(document.getElementById("inv-max-price").value);
 
   return list.filter(p => {
     if (cat !== "all" && p.category !== cat) return false;
@@ -123,19 +109,16 @@ function invRenderProducts() {
   let list = invApplyFilters(invProducts);
 
   const start = (invCurrentPage - 1) * invItemsPerPage;
-  const end   = start + invItemsPerPage;
+  const end = start + invItemsPerPage;
   const pageItems = list.slice(start, end);
 
   invRenderPagination(list.length);
-  invRenderList(pageItems, start); // le paso el offset para que el índice sea global
+  invRenderList(pageItems, start);
 }
 
 function invRenderPagination(total) {
+  const pages = Math.ceil(total / invItemsPerPage);
   const box = document.getElementById("inv-pagination");
-  if (!box) return;
-
-  const pages = Math.max(1, Math.ceil(total / invItemsPerPage));
-  if (invCurrentPage > pages) invCurrentPage = pages;
 
   box.innerHTML = `
     <button onclick="invPrevPage()" ${invCurrentPage === 1 ? "disabled" : ""}>Anterior</button>
@@ -159,15 +142,13 @@ function invNextPage(max) {
 }
 
 function invChangeItemsPerPage() {
-  const sel = document.getElementById("inv-items-per-page");
-  if (!sel) return;
-  invItemsPerPage = Number(sel.value) || 10;
+  invItemsPerPage = Number(document.getElementById("inv-items-per-page").value);
   invCurrentPage = 1;
   invRenderProducts();
 }
 
 /* ============================
-   STOCK EN TIEMPO REAL (POR ÍNDICE)
+   STOCK (FUNCIONA)
 ============================ */
 async function invChangeStock(index, delta) {
   const p = invProducts[index];
@@ -177,26 +158,22 @@ async function invChangeStock(index, delta) {
   if (p.qty < 0) p.qty = 0;
   p.updatedAt = Date.now();
 
-  const span = document.getElementById(`inv-stock-${index}`);
-  if (span) span.textContent = p.qty;
+  document.getElementById(`inv-stock-${index}`).textContent = p.qty;
 
-  // Guardar en Sheets (POST)
   await invSaveToSheet(p);
 }
 
 /* ============================
-   RENDERIZAR PRODUCTOS
+   RENDER
 ============================ */
 function invRenderList(list, offset) {
   const container = document.getElementById("inv-products");
-  if (!container) return;
-
   container.innerHTML = "";
 
   const isAdmin = invCurrentUser?.role === "admin";
 
   list.forEach((p, localIndex) => {
-    const globalIndex = offset + localIndex; // índice real en invProducts
+    const index = offset + localIndex;
     const mainImg = p.images[0] || "https://via.placeholder.com/1200";
 
     let thumbs = "";
@@ -216,203 +193,25 @@ function invRenderList(list, offset) {
         <p>Precio: Lps. ${p.price}</p>
 
         <div class="inv-stock-row">
-          <button onclick="invChangeStock(${globalIndex}, -1)">-</button>
-          <span id="inv-stock-${globalIndex}">${p.qty}</span>
-          <button onclick="invChangeStock(${globalIndex}, 1)">+</button>
+          <button onclick="invChangeStock(${index}, -1)">-</button>
+          <span id="inv-stock-${index}">${p.qty}</span>
+          <button onclick="invChangeStock(${index}, 1)">+</button>
         </div>
 
-        <button onclick="invEditByIndex(${globalIndex})">Editar</button>
-        <button onclick="invSendWAByIndex(${globalIndex})">WhatsApp</button>
+        <button onclick="invEditByIndex(${index})">Editar</button>
+        <button onclick="invSendWAByIndex(${index})">WhatsApp</button>
 
-        ${isAdmin ? `<button class="inv-delete-btn" onclick="invDeleteByIndex(${globalIndex})">Eliminar</button>` : ""}
+        ${isAdmin ? `<button class="inv-delete-btn" onclick="invDeleteByIndex(${index})">Eliminar</button>` : ""}
       </div>
     `;
   });
-}
-
-/* ============================
-   MODAL
-============================ */
-function invOpenModal() {
-  invEditIndex = null;
-
-  document.getElementById("inv-modal-title").innerText = "Agregar Producto";
-  document.getElementById("inv-edit-images").innerHTML = "";
-
-  ["inv-img1","inv-img2","inv-img3","inv-img4","inv-img5"].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.value = "";
-  });
-
-  document.getElementById("inv-name").value = "";
-  document.getElementById("inv-price").value = "";
-  document.getElementById("inv-qty").value = 0;
-  document.getElementById("inv-category").value = "";
-
-  document.getElementById("inv-modal").style.display = "flex";
-}
-
-function invCloseModal() {
-  document.getElementById("inv-modal").style.display = "none";
-}
-
-/* ============================
-   GUARDAR PRODUCTO
-============================ */
-function invSaveProduct() {
-  const name = document.getElementById("inv-name").value;
-  const price = Number(document.getElementById("inv-price").value);
-  const qty = Number(document.getElementById("inv-qty").value);
-  const category = document.getElementById("inv-category").value;
-
-  if (!name || isNaN(price) || isNaN(qty) || !category) {
-    alert("Completa todos los campos correctamente");
-    return;
-  }
-
-  const fileInputs = [
-    document.getElementById("inv-img1"),
-    document.getElementById("inv-img2"),
-    document.getElementById("inv-img3"),
-    document.getElementById("inv-img4"),
-    document.getElementById("inv-img5")
-  ];
-
-  let readers = [];
-  let newImages = [];
-
-  fileInputs.forEach(input => {
-    if (input && input.files && input.files.length > 0) {
-      const reader = new FileReader();
-      readers.push(
-        new Promise(resolve => {
-          reader.onload = e => {
-            newImages.push(e.target.result);
-            resolve();
-          };
-          reader.readAsDataURL(input.files[0]);
-        })
-      );
-    }
-  });
-
-  Promise.all(readers).then(async () => {
-    const now = Date.now();
-    const user = invCurrentUser?.name || "Desconocido";
-
-    let product;
-
-    if (invEditIndex !== null) {
-      const old = invProducts[invEditIndex];
-      product = {
-        id: old.id,
-        name,
-        price,
-        qty,
-        category,
-        images: [...old.images, ...newImages],
-        uploadedBy: old.uploadedBy,
-        createdAt: old.createdAt,
-        updatedAt: now
-      };
-    } else {
-      product = {
-        id: now,
-        name,
-        price,
-        qty,
-        category,
-        images: newImages,
-        uploadedBy: user,
-        createdAt: now,
-        updatedAt: now
-      };
-    }
-
-    await invSaveToSheet(product);
-    invCloseModal();
-  });
-}
-
-/* ============================
-   EDITAR / ELIMINAR POR ÍNDICE
-============================ */
-function invEditByIndex(index) {
-  invEditIndex = index;
-  const p = invProducts[index];
-
-  document.getElementById("inv-modal-title").innerText = "Editar Producto";
-  document.getElementById("inv-name").value = p.name;
-  document.getElementById("inv-price").value = p.price;
-  document.getElementById("inv-qty").value = p.qty;
-  document.getElementById("inv-category").value = p.category;
-
-  const editBox = document.getElementById("inv-edit-images");
-  editBox.innerHTML = "";
-
-  p.images.forEach((img, idx) => {
-    editBox.innerHTML += `
-      <div class="inv-mini-edit">
-        <img src="${img}">
-        <div class="inv-delete-img" onclick="invDeleteImage(${idx})">🗑 Quitar</div>
-      </div>
-    `;
-  });
-
-  document.getElementById("inv-modal").style.display = "flex";
-}
-
-async function invDeleteByIndex(index) {
-  if (!confirm("¿Eliminar este producto?")) return;
-
-  const p = invProducts[index];
-  // Para simplificar: marcamos qty = 0 y nombre con [ELIMINADO]
-  p.name = "[ELIMINADO] " + p.name;
-  p.qty = 0;
-  p.updatedAt = Date.now();
-
-  await invSaveToSheet(p);
-}
-
-/* ============================
-   ELIMINAR IMAGEN
-============================ */
-async function invDeleteImage(idx) {
-  const p = invProducts[invEditIndex];
-  p.images.splice(idx, 1);
-  p.updatedAt = Date.now();
-
-  await invSaveToSheet(p);
-  invEditByIndex(invEditIndex);
-}
-
-/* ============================
-   WHATSAPP POR ÍNDICE
-============================ */
-function invSendWAByIndex(index) {
-  const p = invProducts[index];
-  if (!p) return;
-
-  let text = `🔹 *${p.name}*\n`;
-  text += `Precio: Lps. ${p.price}\n`;
-  text += `Stock: ${p.qty}\n`;
-  text += `Categoría: ${p.category}\n`;
-  text += `Subido por: ${p.uploadedBy}\n`;
-  text += `Creado: ${new Date(p.createdAt).toLocaleString()}\n`;
-  text += `Editado: ${new Date(p.updatedAt).toLocaleString()}\n`;
-
-  window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
 }
 
 /* ============================
    AUTO LOGIN
 ============================ */
 const savedUser = localStorage.getItem("inv-logged");
-if (savedUser) {
+if (savedUser && window.location.pathname.includes("inventario")) {
   invCurrentUser = JSON.parse(savedUser);
-  const login = document.getElementById("inv-login");
-  const panel = document.getElementById("inv-panel");
-  if (login) login.style.display = "none";
-  if (panel) panel.style.display = "block";
   invFetchProducts();
 }

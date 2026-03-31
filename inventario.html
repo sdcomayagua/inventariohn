@@ -3,15 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- PWA -->
+  <meta name="theme-color" content="#0b1020">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon-192.png">
+
   <title>Inventario SD-Comayagua</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="inv-panel">
+<div id="inv-panel" class="fade-in">
 
   <!-- BARRA SUPERIOR -->
-  <div class="top-bar">
+  <div class="top-bar slide-down">
     <button onclick="invLogout()">Cerrar sesión</button>
 
     <select id="inv-items-per-page" onchange="invChangeItemsPerPage()">
@@ -26,26 +32,26 @@
 
   <!-- DASHBOARD -->
   <div id="inv-dashboard" class="dashboard">
-    <div class="dash-card">
+    <div class="dash-card glow-card">
       <h3>Total productos</h3>
       <span id="dash-total-products">0</span>
     </div>
-    <div class="dash-card">
+    <div class="dash-card glow-card">
       <h3>Unidades en stock</h3>
       <span id="dash-total-qty">0</span>
     </div>
-    <div class="dash-card">
+    <div class="dash-card glow-card">
       <h3>Valor total (Lps.)</h3>
       <span id="dash-total-value">0</span>
     </div>
-    <div class="dash-card">
+    <div class="dash-card glow-card">
       <h3>Agotados</h3>
       <span id="dash-out-count">0</span>
     </div>
   </div>
 
   <!-- FILTROS -->
-  <div class="filters">
+  <div class="filters slide-up">
     <select id="inv-filter">
       <option value="all">Todas</option>
     </select>
@@ -67,28 +73,24 @@
   <div id="inv-pagination"></div>
 
   <!-- HISTORIAL -->
-  <div id="inv-history" class="history-box">
+  <div id="inv-history" class="history-box fade-in">
     <h3>Historial reciente</h3>
     <ul id="inv-history-list"></ul>
   </div>
 
 </div>
 
-<!-- ============================
-     MODAL COMPLETO
-============================ -->
+<!-- MODAL GAMER -->
 <div id="inv-modal" class="modal">
-  <div class="modal-content">
+  <div class="modal-content pop-in">
 
     <h2 id="inv-modal-title">Agregar Producto</h2>
 
-    <!-- CAMPOS PRINCIPALES -->
     <input id="inv-name" placeholder="Nombre del producto">
     <input id="inv-price" type="number" placeholder="Precio">
     <input id="inv-qty" type="number" placeholder="Cantidad">
     <input id="inv-category" placeholder="Categoría">
 
-    <!-- IMÁGENES -->
     <h3 class="section-title">Imágenes del producto</h3>
 
     <div class="image-upload-box">
@@ -125,7 +127,6 @@
 
     </div>
 
-    <!-- BOTONES -->
     <button onclick="invSaveProduct()">Guardar</button>
     <button onclick="invCloseModal()">Cerrar</button>
 

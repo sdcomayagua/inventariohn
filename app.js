@@ -15,7 +15,7 @@ let invHistory = [];
 const invUsers = {
   "Renee":   { pass: "TU_CLAVE", role: "admin" },
   "GaboHN":  { pass: "199311",   role: "admin" },
-  "JarcoHN": { pass: "jarco",    role: "admin" }
+  "JarCoHN": { pass: "jarco",    role: "admin" }
 };
 
 let invCurrentUser = null;
@@ -93,15 +93,10 @@ function invLoadCategories() {
 }
 
 function invApplyFilters(list) {
-  const catEl   = document.getElementById("inv-filter");
-  const stockEl = document.getElementById("inv-stock-filter");
-  const minEl   = document.getElementById("inv-min-price");
-  const maxEl   = document.getElementById("inv-max-price");
-
-  const cat   = catEl   ? catEl.value   : "all";
-  const stock = stockEl ? stockEl.value : "all";
-  const min   = minEl   ? Number(minEl.value) : 0;
-  const max   = maxEl   ? Number(maxEl.value) : 0;
+  const cat = document.getElementById("inv-filter").value;
+  const stock = document.getElementById("inv-stock-filter").value;
+  const min = Number(document.getElementById("inv-min-price").value);
+  const max = Number(document.getElementById("inv-max-price").value);
 
   return list.filter(p => {
     if (cat !== "all" && p.category !== cat) return false;
@@ -120,7 +115,7 @@ function invRenderProducts() {
   let list = invApplyFilters(invProducts);
 
   const start = (invCurrentPage - 1) * invItemsPerPage;
-  const end   = start + invItemsPerPage;
+  const end = start + invItemsPerPage;
   const pageItems = list.slice(start, end);
 
   invRenderPagination(list.length);
@@ -156,15 +151,13 @@ function invNextPage(max) {
 }
 
 function invChangeItemsPerPage() {
-  const sel = document.getElementById("inv-items-per-page");
-  if (!sel) return;
-  invItemsPerPage = Number(sel.value) || 10;
+  invItemsPerPage = Number(document.getElementById("inv-items-per-page").value);
   invCurrentPage = 1;
   invRenderProducts();
 }
 
 /* ============================
-   STOCK + HISTORIAL LOCAL
+   STOCK + HISTORIAL
 ============================ */
 async function invChangeStock(index, delta) {
   const p = invProducts[index];
@@ -175,12 +168,10 @@ async function invChangeStock(index, delta) {
   if (p.qty < 0) p.qty = 0;
   p.updatedAt = Date.now();
 
-  const span = document.getElementById(`inv-stock-${index}`);
-  if (span) span.textContent = p.qty;
+  document.getElementById(`inv-stock-${index}`).textContent = p.qty;
 
   await invSaveToSheet(p);
 
-  // Registrar movimiento en historial local
   invAddHistory({
     type: "stock",
     productId: p.id,
@@ -201,8 +192,6 @@ async function invChangeStock(index, delta) {
 ============================ */
 function invRenderList(list, offset) {
   const container = document.getElementById("inv-products");
-  if (!container) return;
-
   container.innerHTML = "";
 
   const isAdmin = invCurrentUser?.role === "admin";
@@ -285,7 +274,7 @@ function invSaveProduct() {
   const fileInputs = [
     document.getElementById("inv-img1"),
     document.getElementById("inv-img2"),
-    document.getElementById("inv-img3"),
+    document.get.getElementById("inv-img3"),
     document.getElementById("inv-img4"),
     document.getElementById("inv-img5")
   ];
@@ -343,7 +332,6 @@ function invSaveProduct() {
 
     await invSaveToSheet(product);
 
-    // Historial
     invAddHistory({
       type: invEditIndex !== null ? "edit" : "new",
       productId: product.id,
@@ -361,7 +349,7 @@ function invSaveProduct() {
 }
 
 /* ============================
-   EDITAR / ELIMINAR (SUAVE)
+   EDITAR / ELIMINAR
 ============================ */
 function invEditByIndex(index) {
   invEditIndex = index;
@@ -452,15 +440,10 @@ function invUpdateDashboard() {
   const totalValue = invProducts.reduce((sum, p) => sum + p.qty * p.price, 0);
   const outCount = invProducts.filter(p => p.qty === 0).length;
 
-  const tp = document.getElementById("dash-total-products");
-  const tq = document.getElementById("dash-total-qty");
-  const tv = document.getElementById("dash-total-value");
-  const oc = document.getElementById("dash-out-count");
-
-  if (tp) tp.textContent = totalProducts;
-  if (tq) tq.textContent = totalQty;
-  if (tv) tv.textContent = totalValue.toFixed(2);
-  if (oc) oc.textContent = outCount;
+  document.getElementById("dash-total-products").textContent = totalProducts;
+  document.getElementById("dash-total-qty").textContent = totalQty;
+  document.getElementById("dash-total-value").textContent = totalValue.toFixed(2);
+  document.getElementById("dash-out-count").textContent = outCount;
 }
 
 /* ============================
@@ -495,7 +478,7 @@ function invRenderHistory() {
     } else if (m.type === "edit") {
       text = `${date} — ${m.user} editó ${m.name}`;
     } else if (m.type === "delete") {
-      text = `${date} — ${m.user} marcó como eliminado ${m.name}`;
+      text = `${date} — ${m.user} eliminó ${m.name}`;
     }
 
     ul.innerHTML += `<li>${text}</li>`;
@@ -503,7 +486,7 @@ function invRenderHistory() {
 }
 
 /* ============================
-   AUTO LOGIN EN INVENTARIO
+   AUTO LOGIN
 ============================ */
 const savedUser = localStorage.getItem("inv-logged");
 if (savedUser && window.location.pathname.includes("inventario")) {

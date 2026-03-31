@@ -2,91 +2,18 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INVENTARIO HN</title>
+  <title>Login Inventario</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="inv-app">
+<div id="inv-login" class="login-box">
+  <h2>Inventario SD-Comayagua</h2>
 
-  <div id="inv-header">
-    INVENTARIO HN
-  </div>
+  <input id="inv-user" placeholder="Usuario">
+  <input id="inv-pass" type="password" placeholder="Contraseña">
 
-  <!-- LOGIN -->
-  <div id="inv-login">
-    <h2>Iniciar sesión</h2>
-    <input id="inv-user" placeholder="Usuario">
-    <input id="inv-pass" type="password" placeholder="Contraseña">
-    <button onclick="invLogin()">Entrar</button>
-  </div>
-
-  <!-- PANEL -->
-  <div id="inv-panel" style="display:none;">
-    <h2>Productos Gamer</h2>
-
-    <input id="inv-search" placeholder="Buscar por nombre..." oninput="invSearch()">
-
-    <select id="inv-filter" onchange="invLoadProducts()">
-      <option value="all">Todas las categorías</option>
-    </select>
-
-    <!-- ORDENAR -->
-    <select id="inv-sort" onchange="invLoadProducts()">
-      <option value="none">Ordenar por…</option>
-      <option value="price-asc">Precio ↑</option>
-      <option value="price-desc">Precio ↓</option>
-      <option value="qty-asc">Stock ↑</option>
-      <option value="qty-desc">Stock ↓</option>
-      <option value="date-new">Fecha reciente</option>
-      <option value="date-old">Fecha antigua</option>
-    </select>
-
-    <button onclick="invExportWhatsApp()">Exportar a WhatsApp</button>
-
-    <div id="inv-products"></div>
-
-    <button onclick="invOpenModal()">Agregar Producto</button>
-    <button style="background:#ff004c;" onclick="invLogout()">Cerrar sesión</button>
-  </div>
-
-  <!-- MODAL -->
-  <div id="inv-modal">
-    <div id="inv-modal-content">
-      <h3 id="inv-modal-title">Agregar Producto</h3>
-
-      <input id="inv-name" placeholder="Nombre del producto">
-      <input id="inv-price" type="number" placeholder="Precio (Lps.)">
-
-      <label>Stock:</label>
-      <div style="display:flex; gap:10px; align-items:center;">
-        <button style="width:50px;" onclick="invChangeQty(-1)">➖</button>
-        <input id="inv-qty" type="number" style="width:80px; text-align:center;">
-        <button style="width:50px;" onclick="invChangeQty(1)">➕</button>
-      </div>
-
-      <select id="inv-category">
-        <option value="Dedales">Dedales</option>
-        <option value="Coolers">Coolers</option>
-        <option value="Accesorios">Accesorios</option>
-        <option value="Otros">Otros</option>
-      </select>
-
-      <h4>Imágenes (hasta 5)</h4>
-      <input id="inv-img1" type="file" accept="image/*">
-      <input id="inv-img2" type="file" accept="image/*">
-      <input id="inv-img3" type="file" accept="image/*">
-      <input id="inv-img4" type="file" accept="image/*">
-      <input id="inv-img5" type="file" accept="image/*">
-
-      <div id="inv-edit-images"></div>
-
-      <button onclick="invSaveProduct()">Guardar</button>
-      <button style="background:#555;" onclick="invCloseModal()">Cancelar</button>
-    </div>
-  </div>
-
+  <button onclick="invLogin()">Ingresar</button>
 </div>
 
 <script src="app.js"></script>

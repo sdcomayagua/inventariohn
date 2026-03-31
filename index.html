@@ -3,24 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- PWA -->
-  <meta name="theme-color" content="#0b1020">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" href="icon-192.png">
-
   <title>Inventario SD-Comayagua</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="inv-login" class="login-box fade-in">
-  <h2>Inventario SD-Comayagua</h2>
+<div class="app-wrapper">
+  <div class="login-card">
+    <h1>Inventario SD-Comayagua</h1>
 
-  <input id="inv-user" placeholder="Usuario">
-  <input id="inv-pass" type="password" placeholder="Contraseña">
+    <div class="field-group">
+      <label for="inv-user">Usuario</label>
+      <input id="inv-user" placeholder="Ingresa tu usuario">
+    </div>
 
-  <button onclick="invLogin()">Ingresar</button>
+    <div class="field-group">
+      <label for="inv-pass">Contraseña</label>
+      <input id="inv-pass" type="password" placeholder="Ingresa tu contraseña">
+    </div>
+
+    <button class="btn-primary" onclick="invLogin()">Ingresar</button>
+  </div>
 </div>
 
 <script src="app.js"></script>

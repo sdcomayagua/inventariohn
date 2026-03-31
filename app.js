@@ -9,6 +9,8 @@ let CURRENT_PAGE = 1;
 let ITEMS_PER_PAGE = 10;
 
 let CURRENT_USER = null;
+let CURRENT_ROLE = "ADMIN"; // por ahora ambos son admin
+let EDITING_ID = null;
 
 /* ============================
    LOGIN POR PIN (6 dígitos)
@@ -17,13 +19,15 @@ function invLogin() {
   const pin = document.getElementById("inv-user").value.trim();
 
   const users = {
-    "199311": "Gabriel",
-    "123456": "JarCo"
+    "199311": { name: "Gabriel", role: "ADMIN" },
+    "123456": { name: "JarCo", role: "ADMIN" }
   };
 
   if (users[pin]) {
-    CURRENT_USER = users[pin];
+    CURRENT_USER = users[pin].name;
+    CURRENT_ROLE = users[pin].role;
     localStorage.setItem("invUser", CURRENT_USER);
+    localStorage.setItem("invRole", CURRENT_ROLE);
     window.location.href = "inventario.html";
   } else {
     alert("PIN incorrecto");
@@ -32,19 +36,37 @@ function invLogin() {
 
 function invLogout() {
   localStorage.removeItem("invUser");
+  localStorage.removeItem("invRole");
   window.location.href = "index.html";
 }
 
 /* ============================
    MODAL
 ============================ */
-function invOpenModal() {
-  document.getElementById("inv-modal").style.display = "flex";
+function invOpenModal(isEdit = false, product = null) {
+  const modal = document.getElementById("inv-modal");
+  const title = document.getElementById("inv-modal-title");
+
+  if (isEdit && product) {
+    EDITING_ID = product.id;
+    title.textContent = "Editar producto";
+    document.getElementById("inv-name").value = product.name;
+    document.getElementById("inv-price").value = product.price;
+    document.getElementById("inv-qty").value = product.qty;
+    document.getElementById("inv-category").value = product.category;
+  } else {
+    EDITING_ID = null;
+    title.textContent = "Agregar producto";
+    clearModalFields();
+  }
+
+  modal.style.display = "flex";
 }
 
 function invCloseModal() {
   document.getElementById("inv-modal").style.display = "none";
   clearModalFields();
+  EDITING_ID = null;
 }
 
 function clearModalFields() {
@@ -95,7 +117,7 @@ async function loadProducts() {
     PRODUCTS = data.products || [];
     FILTERED = [...PRODUCTS];
 
-    applyFilters();
+    applyFilters(); // incluye búsqueda y orden
     updateDashboard();
     loadCategories();
     renderHistory(data.history || []);
@@ -105,7 +127,7 @@ async function loadProducts() {
 }
 
 /* ============================
-   GUARDAR PRODUCTO
+   GUARDAR / EDITAR PRODUCTO
 ============================ */
 async function invSaveProduct() {
   const name = document.getElementById("inv-name").value.trim();
@@ -128,7 +150,8 @@ async function invSaveProduct() {
   }
 
   const payload = {
-    action: "add",
+    action: EDITING_ID ? "edit" : "add",
+    id: EDITING_ID,
     name,
     price,
     qty,
@@ -156,6 +179,24 @@ function fileToBase64(file) {
 }
 
 /* ============================
+   ELIMINAR PRODUCTO
+============================ */
+async function deleteProduct(id) {
+  if (!confirm("¿Eliminar este producto?")) return;
+
+  await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "delete",
+      id,
+      user: CURRENT_USER
+    })
+  });
+
+  await loadProducts();
+}
+
+/* ============================
    RENDER DE PRODUCTOS
 ============================ */
 function renderProducts() {
@@ -178,7 +219,7 @@ function renderProducts() {
 
         ${thumbs.length ? `
           <div class="inv-thumbs">
-            ${thumbs.map((t, i) => `<img src="${t}" onclick="swapMainImage(this)" data-id="${p.id}">`).join("")}
+            ${thumbs.map((t) => `<img src="${t}" onclick="swapMainImage(this)">`).join("")}
           </div>
         ` : ""}
 
@@ -190,6 +231,11 @@ function renderProducts() {
           <button onclick="updateStock('${p.id}', -1)">-</button>
           <span>${p.qty}</span>
           <button onclick="updateStock('${p.id}', 1)">+</button>
+        </div>
+
+        <div class="inv-actions-row">
+          <button class="btn-secondary" onclick='invOpenModal(true, ${JSON.stringify(p)})'>Editar</button>
+          <button class="btn-secondary" onclick="deleteProduct('${p.id}')">Eliminar</button>
         </div>
       </div>
     `;
@@ -281,7 +327,7 @@ function setText(id, value) {
 }
 
 /* ============================
-   CATEGORÍAS Y FILTROS
+   CATEGORÍAS, FILTROS, BÚSQUEDA, ORDEN
 ============================ */
 function loadCategories() {
   const select = document.getElementById("inv-filter");
@@ -300,11 +346,15 @@ function applyFilters() {
   const stockSel = document.getElementById("inv-stock-filter");
   const minPriceInput = document.getElementById("inv-min-price");
   const maxPriceInput = document.getElementById("inv-max-price");
+  const searchInput = document.getElementById("inv-search");
+  const sortSel = document.getElementById("inv-sort");
 
   const cat = catSel ? catSel.value : "all";
   const stock = stockSel ? stockSel.value : "all";
   const minPrice = minPriceInput && minPriceInput.value ? parseFloat(minPriceInput.value) : null;
   const maxPrice = maxPriceInput && maxPriceInput.value ? parseFloat(maxPriceInput.value) : null;
+  const search = searchInput ? searchInput.value.trim().toLowerCase() : "";
+  const sortBy = sortSel ? sortSel.value : "name";
 
   FILTERED = PRODUCTS.filter(p => {
     let ok = true;
@@ -315,7 +365,24 @@ function applyFilters() {
     if (minPrice !== null && Number(p.price) < minPrice) ok = false;
     if (maxPrice !== null && Number(p.price) > maxPrice) ok = false;
 
+    if (search) {
+      const text = (p.name + " " + p.category).toLowerCase();
+      if (!text.includes(search)) ok = false;
+    }
+
     return ok;
+  });
+
+  // Ordenar
+  FILTERED.sort((a, b) => {
+    if (sortBy === "name") {
+      return a.name.localeCompare(b.name);
+    } else if (sortBy === "price") {
+      return Number(a.price) - Number(b.price);
+    } else if (sortBy === "qty") {
+      return Number(a.qty) - Number(b.qty);
+    }
+    return 0;
   });
 
   CURRENT_PAGE = 1;
@@ -343,18 +410,22 @@ function renderHistory(history) {
 if (window.location.pathname.includes("inventario.html")) {
   window.addEventListener("load", () => {
     CURRENT_USER = localStorage.getItem("invUser") || "ADMIN";
+    CURRENT_ROLE = localStorage.getItem("invRole") || "ADMIN";
 
     const catSel = document.getElementById("inv-filter");
     const stockSel = document.getElementById("inv-stock-filter");
     const minPriceInput = document.getElementById("inv-min-price");
     const maxPriceInput = document.getElementById("inv-max-price");
+    const searchInput = document.getElementById("inv-search");
+    const sortSel = document.getElementById("inv-sort");
+    const selItems = document.getElementById("inv-items-per-page");
 
     if (catSel) catSel.addEventListener("change", applyFilters);
     if (stockSel) stockSel.addEventListener("change", applyFilters);
     if (minPriceInput) minPriceInput.addEventListener("input", applyFilters);
     if (maxPriceInput) maxPriceInput.addEventListener("input", applyFilters);
-
-    const selItems = document.getElementById("inv-items-per-page");
+    if (searchInput) searchInput.addEventListener("input", applyFilters);
+    if (sortSel) sortSel.addEventListener("change", applyFilters);
     if (selItems) ITEMS_PER_PAGE = parseInt(selItems.value || "10");
 
     loadProducts();

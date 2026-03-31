@@ -10,20 +10,20 @@
 
 <div class="app-wrapper">
 
-  <header class="top-bar">
+  <div class="top-bar">
     <button class="btn-secondary" onclick="invLogout()">Cerrar sesión</button>
 
-    <select id="inv-items-per-page" onchange="invChangeItemsPerPage()">
-      <option value="5">5 por página</option>
-      <option value="10" selected>10 por página</option>
-      <option value="20">20 por página</option>
-      <option value="50">50 por página</option>
-    </select>
+    <div class="field-group inline">
+      <label for="inv-items-per-page">Por página</label>
+      <select id="inv-items-per-page" onchange="invChangeItemsPerPage()">
+        <option value="10">10 por página</option>
+        <option value="20">20 por página</option>
+        <option value="50">50 por página</option>
+      </select>
+    </div>
+  </div>
 
-    <button class="btn-primary btn-add" onclick="invOpenModal()">Agregar producto</button>
-  </header>
-
-  <section class="dashboard">
+  <div class="dashboard">
     <div class="dash-card">
       <p>Total productos</p>
       <h2 id="dash-total-products">0</h2>
@@ -34,15 +34,15 @@
     </div>
     <div class="dash-card">
       <p>Valor total (Lps.)</p>
-      <h2 id="dash-total-value">0</h2>
+      <h2 id="dash-total-value">0.00</h2>
     </div>
     <div class="dash-card">
       <p>Agotados</p>
       <h2 id="dash-out-count">0</h2>
     </div>
-  </section>
+  </div>
 
-  <section class="filters">
+  <div class="filters">
     <div class="field-group inline">
       <label>Categoría</label>
       <select id="inv-filter">
@@ -54,51 +54,67 @@
       <label>Stock</label>
       <select id="inv-stock-filter">
         <option value="all">Todo</option>
-        <option value="in">Disponible</option>
-        <option value="out">Agotado</option>
+        <option value="in">Con stock</option>
+        <option value="out">Agotados</option>
       </select>
     </div>
 
     <div class="field-group inline">
       <label>Precio mínimo</label>
-      <input id="inv-min-price" type="number" placeholder="0">
+      <input id="inv-min-price" type="number" value="0">
     </div>
 
     <div class="field-group inline">
       <label>Precio máximo</label>
-      <input id="inv-max-price" type="number" placeholder="0">
+      <input id="inv-max-price" type="number" value="0">
     </div>
-  </section>
 
-  <section id="inv-products" class="products-list"></section>
+    <div class="field-group inline">
+      <label>Buscar</label>
+      <input id="inv-search" placeholder="Nombre o categoría">
+    </div>
 
-  <section id="inv-pagination" class="pagination"></section>
+    <div class="field-group inline">
+      <label>Ordenar por</label>
+      <select id="inv-sort">
+        <option value="name">Nombre</option>
+        <option value="price">Precio</option>
+        <option value="qty">Stock</option>
+      </select>
+    </div>
+  </div>
 
-  <section class="history-card">
+  <div class="products-list" id="inv-products"></div>
+
+  <div class="pagination" id="inv-pagination"></div>
+
+  <div class="history-card">
     <h3>Historial reciente</h3>
     <ul id="inv-history-list"></ul>
-  </section>
+  </div>
+
+  <button class="btn-add" onclick="invOpenModal(false)">Agregar producto</button>
 
 </div>
 
 <!-- MODAL -->
-<div id="inv-modal" class="modal">
+<div class="modal" id="inv-modal">
   <div class="modal-content">
     <h2 id="inv-modal-title">Agregar producto</h2>
 
     <div class="field-group">
-      <label>Nombre</label>
-      <input id="inv-name" placeholder="Nombre del producto">
+      <label>Nombre del producto</label>
+      <input id="inv-name" placeholder="Ej: Audífonos gamer RGB">
     </div>
 
     <div class="field-group">
       <label>Precio</label>
-      <input id="inv-price" type="number" placeholder="0.00">
+      <input id="inv-price" type="number" step="0.01" value="0.00">
     </div>
 
     <div class="field-group">
       <label>Cantidad</label>
-      <input id="inv-qty" type="number" placeholder="0">
+      <input id="inv-qty" type="number" value="0">
     </div>
 
     <div class="field-group">
@@ -106,42 +122,38 @@
       <input id="inv-category" placeholder="Ej: Audífonos, Mouse, Teclado">
     </div>
 
-    <h3 class="section-title">Imágenes del producto</h3>
+    <p class="section-title">Imágenes del producto</p>
 
     <div class="image-upload-box">
       <div class="image-slot">
-        <label class="img-label">Imagen 1</label>
-        <input type="file" id="inv-img1" accept="image/*" onchange="invPreviewImage(this, 'prev1')">
-        <img id="prev1" class="img-preview" alt="">
+        <span class="img-label">Imagen 1</span>
+        <input id="inv-img1" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev1')">
+        <img id="prev1" class="img-preview">
       </div>
-
       <div class="image-slot">
-        <label class="img-label">Imagen 2</label>
-        <input type="file" id="inv-img2" accept="image/*" onchange="invPreviewImage(this, 'prev2')">
-        <img id="prev2" class="img-preview" alt="">
+        <span class="img-label">Imagen 2</span>
+        <input id="inv-img2" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev2')">
+        <img id="prev2" class="img-preview">
       </div>
-
       <div class="image-slot">
-        <label class="img-label">Imagen 3</label>
-        <input type="file" id="inv-img3" accept="image/*" onchange="invPreviewImage(this, 'prev3')">
-        <img id="prev3" class="img-preview" alt="">
+        <span class="img-label">Imagen 3</span>
+        <input id="inv-img3" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev3')">
+        <img id="prev3" class="img-preview">
       </div>
-
       <div class="image-slot">
-        <label class="img-label">Imagen 4</label>
-        <input type="file" id="inv-img4" accept="image/*" onchange="invPreviewImage(this, 'prev4')">
-        <img id="prev4" class="img-preview" alt="">
+        <span class="img-label">Imagen 4</span>
+        <input id="inv-img4" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev4')">
+        <img id="prev4" class="img-preview">
       </div>
-
       <div class="image-slot">
-        <label class="img-label">Imagen 5</label>
-        <input type="file" id="inv-img5" accept="image/*" onchange="invPreviewImage(this, 'prev5')">
-        <img id="prev5" class="img-preview" alt="">
+        <span class="img-label">Imagen 5</span>
+        <input id="inv-img5" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev5')">
+        <img id="prev5" class="img-preview">
       </div>
     </div>
 
     <button class="btn-primary" onclick="invSaveProduct()">Guardar</button>
-    <button class="btn-secondary" onclick="invCloseModal()">Cerrar</button>
+    <button class="btn-secondary" onclick="invCloseModal()">Cancelar</button>
   </div>
 </div>
 

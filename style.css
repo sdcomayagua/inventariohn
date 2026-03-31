@@ -1,71 +1,143 @@
+/* MODO CLARO GAMER */
 body {
-  background: #111;
-  color: white;
-  font-family: Arial;
+  background: #f3f5ff;
+  color: #111322;
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
 }
 
+/* LOGIN */
 .login-box {
-  width: 300px;
+  width: 320px;
   margin: 120px auto;
-  background: #222;
+  background: #ffffff;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 12px;
   text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.login-box h2 {
+  margin-bottom: 15px;
 }
 
 .login-box input {
   width: 90%;
   padding: 10px;
   margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #c3c7ff;
 }
 
 .login-box button {
   width: 100%;
   padding: 10px;
-  background: #0af;
+  background: linear-gradient(135deg, #00e0ff, #7b5cff);
   border: none;
-  color: white;
+  color: #f5f7ff;
   cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
 }
 
+/* PANEL */
 #inv-panel {
   padding: 20px;
 }
 
+/* TOP BAR */
 .top-bar {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  align-items: center;
 }
 
+.top-bar button,
+.top-bar select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #c3c7ff;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.top-bar button {
+  background: linear-gradient(135deg, #00e0ff, #7b5cff);
+  color: #f5f7ff;
+  border: none;
+}
+
+/* FILTROS */
 .filters {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
+.filters select,
+.filters input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #c3c7ff;
+  background: #ffffff;
+}
+
+/* DASHBOARD */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.dash-card {
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.dash-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.dash-card span {
+  font-size: 18px;
+  font-weight: bold;
+  color: #111322;
+}
+
+/* GRID DE PRODUCTOS */
 #inv-products {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
 }
 
+/* TARJETA DE PRODUCTO */
 .inv-item {
-  background: #222;
+  background: #ffffff;
   padding: 15px;
   border-radius: 10px;
   position: relative;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
 }
 
 .inv-out-tag {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: red;
-  padding: 5px;
-  font-size: 12px;
+  background: #ff3366;
+  padding: 5px 8px;
+  font-size: 11px;
+  color: #fff;
+  border-radius: 6px;
 }
 
 .inv-main-img {
@@ -75,56 +147,155 @@ body {
   border-radius: 8px;
 }
 
+.inv-thumbs {
+  margin-top: 8px;
+}
+
 .inv-thumbs img {
   width: 40px;
   height: 40px;
-  margin: 5px;
+  margin: 3px;
   cursor: pointer;
   border-radius: 5px;
+  border: 1px solid #c3c7ff;
 }
 
+/* STOCK */
 .inv-stock-row {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin: 10px 0;
 }
 
 .inv-stock-row button {
   width: 30px;
   height: 30px;
-  background: #0af;
+  background: linear-gradient(135deg, #00e0ff, #7b5cff);
   border: none;
   color: white;
   cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.inv-stock-row span {
+  min-width: 30px;
+  text-align: center;
+}
+
+/* BOTONES TARJETA */
+.inv-item button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.inv-item button:nth-of-type(1) {
+  background: #e0e4ff;
+}
+
+.inv-item button:nth-of-type(2) {
+  background: #c2f0ff;
 }
 
 .inv-delete-btn {
-  background: red;
-  border: none;
-  padding: 8px;
-  color: white;
-  width: 100%;
-  margin-top: 10px;
-  cursor: pointer;
+  background: #ff3366 !important;
+  color: #fff;
 }
 
+/* PAGINACIÓN */
 #inv-pagination {
   margin-top: 20px;
   text-align: center;
 }
 
+#inv-pagination button {
+  padding: 6px 10px;
+  margin: 0 5px;
+  border-radius: 6px;
+  border: 1px solid #c3c7ff;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+/* HISTORIAL */
+.history-box {
+  margin-top: 30px;
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+}
+
+.history-box h3 {
+  margin-top: 0;
+}
+
+#inv-history-list {
+  list-style: none;
+  padding-left: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+#inv-history-list li {
+  margin-bottom: 6px;
+}
+
+/* MODAL */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.6);
   justify-content: center;
   align-items: center;
 }
 
 .modal-content {
-  background: #222;
+  background: #ffffff;
   padding: 20px;
   width: 350px;
   border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-content input {
+  width: 100%;
+  margin: 6px 0;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #c3c7ff;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .top-bar,
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #inv-products {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .inv-main-img {
+    height: 160px;
+  }
 }

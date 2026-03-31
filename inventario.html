@@ -3,22 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- PWA -->
-  <meta name="theme-color" content="#0b1020">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" href="icon-192.png">
-
   <title>Inventario SD-Comayagua</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="inv-panel" class="fade-in">
+<div class="app-wrapper">
 
-  <!-- BARRA SUPERIOR -->
-  <div class="top-bar slide-down">
-    <button onclick="invLogout()">Cerrar sesión</button>
+  <header class="top-bar">
+    <button class="btn-secondary" onclick="invLogout()">Cerrar sesión</button>
 
     <select id="inv-items-per-page" onchange="invChangeItemsPerPage()">
       <option value="5">5 por página</option>
@@ -27,74 +20,95 @@
       <option value="50">50 por página</option>
     </select>
 
-    <button onclick="invOpenModal()">Agregar producto</button>
-  </div>
+    <button class="btn-primary btn-add" onclick="invOpenModal()">Agregar producto</button>
+  </header>
 
-  <!-- DASHBOARD -->
-  <div id="inv-dashboard" class="dashboard">
-    <div class="dash-card glow-card">
-      <h3>Total productos</h3>
-      <span id="dash-total-products">0</span>
+  <section class="dashboard">
+    <div class="dash-card">
+      <p>Total productos</p>
+      <h2 id="dash-total-products">0</h2>
     </div>
-    <div class="dash-card glow-card">
-      <h3>Unidades en stock</h3>
-      <span id="dash-total-qty">0</span>
+    <div class="dash-card">
+      <p>Unidades en stock</p>
+      <h2 id="dash-total-qty">0</h2>
     </div>
-    <div class="dash-card glow-card">
-      <h3>Valor total (Lps.)</h3>
-      <span id="dash-total-value">0</span>
+    <div class="dash-card">
+      <p>Valor total (Lps.)</p>
+      <h2 id="dash-total-value">0</h2>
     </div>
-    <div class="dash-card glow-card">
-      <h3>Agotados</h3>
-      <span id="dash-out-count">0</span>
+    <div class="dash-card">
+      <p>Agotados</p>
+      <h2 id="dash-out-count">0</h2>
     </div>
-  </div>
+  </section>
 
-  <!-- FILTROS -->
-  <div class="filters slide-up">
-    <select id="inv-filter">
-      <option value="all">Todas</option>
-    </select>
+  <section class="filters">
+    <div class="field-group inline">
+      <label>Categoría</label>
+      <select id="inv-filter">
+        <option value="all">Todas</option>
+      </select>
+    </div>
 
-    <select id="inv-stock-filter">
-      <option value="all">Todo</option>
-      <option value="in">Disponible</option>
-      <option value="out">Agotado</option>
-    </select>
+    <div class="field-group inline">
+      <label>Stock</label>
+      <select id="inv-stock-filter">
+        <option value="all">Todo</option>
+        <option value="in">Disponible</option>
+        <option value="out">Agotado</option>
+      </select>
+    </div>
 
-    <input id="inv-min-price" type="number" placeholder="Precio mínimo">
-    <input id="inv-max-price" type="number" placeholder="Precio máximo">
-  </div>
+    <div class="field-group inline">
+      <label>Precio mínimo</label>
+      <input id="inv-min-price" type="number" placeholder="0">
+    </div>
 
-  <!-- LISTA DE PRODUCTOS -->
-  <div id="inv-products"></div>
+    <div class="field-group inline">
+      <label>Precio máximo</label>
+      <input id="inv-max-price" type="number" placeholder="0">
+    </div>
+  </section>
 
-  <!-- PAGINACIÓN -->
-  <div id="inv-pagination"></div>
+  <section id="inv-products" class="products-list"></section>
 
-  <!-- HISTORIAL -->
-  <div id="inv-history" class="history-box fade-in">
+  <section id="inv-pagination" class="pagination"></section>
+
+  <section class="history-card">
     <h3>Historial reciente</h3>
     <ul id="inv-history-list"></ul>
-  </div>
+  </section>
 
 </div>
 
-<!-- MODAL GAMER -->
+<!-- MODAL -->
 <div id="inv-modal" class="modal">
-  <div class="modal-content pop-in">
+  <div class="modal-content">
+    <h2 id="inv-modal-title">Agregar producto</h2>
 
-    <h2 id="inv-modal-title">Agregar Producto</h2>
+    <div class="field-group">
+      <label>Nombre</label>
+      <input id="inv-name" placeholder="Nombre del producto">
+    </div>
 
-    <input id="inv-name" placeholder="Nombre del producto">
-    <input id="inv-price" type="number" placeholder="Precio">
-    <input id="inv-qty" type="number" placeholder="Cantidad">
-    <input id="inv-category" placeholder="Categoría">
+    <div class="field-group">
+      <label>Precio</label>
+      <input id="inv-price" type="number" placeholder="0.00">
+    </div>
+
+    <div class="field-group">
+      <label>Cantidad</label>
+      <input id="inv-qty" type="number" placeholder="0">
+    </div>
+
+    <div class="field-group">
+      <label>Categoría</label>
+      <input id="inv-category" placeholder="Ej: Audífonos, Mouse, Teclado">
+    </div>
 
     <h3 class="section-title">Imágenes del producto</h3>
 
     <div class="image-upload-box">
-
       <div class="image-slot">
         <label class="img-label">Imagen 1</label>
         <input type="file" id="inv-img1" accept="image/*" onchange="invPreviewImage(this, 'prev1')">
@@ -124,12 +138,10 @@
         <input type="file" id="inv-img5" accept="image/*" onchange="invPreviewImage(this, 'prev5')">
         <img id="prev5" class="img-preview" alt="">
       </div>
-
     </div>
 
-    <button onclick="invSaveProduct()">Guardar</button>
-    <button onclick="invCloseModal()">Cerrar</button>
-
+    <button class="btn-primary" onclick="invSaveProduct()">Guardar</button>
+    <button class="btn-secondary" onclick="invCloseModal()">Cerrar</button>
   </div>
 </div>
 

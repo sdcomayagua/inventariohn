@@ -22,6 +22,27 @@
     <button onclick="invOpenModal()">Agregar producto</button>
   </div>
 
+  <!-- DASHBOARD -->
+  <div id="inv-dashboard" class="dashboard">
+    <div class="dash-card">
+      <h3>Total productos</h3>
+      <span id="dash-total-products">0</span>
+    </div>
+    <div class="dash-card">
+      <h3>Unidades en stock</h3>
+      <span id="dash-total-qty">0</span>
+    </div>
+    <div class="dash-card">
+      <h3>Valor total (Lps.)</h3>
+      <span id="dash-total-value">0</span>
+    </div>
+    <div class="dash-card">
+      <h3>Agotados</h3>
+      <span id="dash-out-count">0</span>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
   <div class="filters">
     <select id="inv-filter">
       <option value="all">Todas</option>
@@ -37,9 +58,17 @@
     <input id="inv-max-price" type="number" placeholder="Precio máximo">
   </div>
 
+  <!-- LISTA DE PRODUCTOS -->
   <div id="inv-products"></div>
 
+  <!-- PAGINACIÓN -->
   <div id="inv-pagination"></div>
+
+  <!-- HISTORIAL -->
+  <div id="inv-history" class="history-box">
+    <h3>Historial reciente</h3>
+    <ul id="inv-history-list"></ul>
+  </div>
 </div>
 
 <!-- MODAL -->

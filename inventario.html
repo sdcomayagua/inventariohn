@@ -6,13 +6,28 @@
   <title>Inventario SD-Comayagua</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="theme-dark">
 
 <div class="app-wrapper">
 
-  <div class="top-bar">
-    <button class="btn-secondary" onclick="invLogout()">Cerrar sesión</button>
+  <header class="main-header glass">
+    <div class="user-info">
+      <div class="avatar" id="inv-avatar">GH</div>
+      <div>
+        <p class="user-greeting" id="inv-welcome">Hola 👋</p>
+        <p class="user-role" id="inv-role">Administrador</p>
+      </div>
+    </div>
 
+    <div class="header-actions">
+      <button class="btn-secondary small" onclick="toggleTheme()" id="theme-toggle">
+        Modo Día
+      </button>
+      <button class="btn-secondary small" onclick="invLogout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="top-bar">
     <div class="field-group inline">
       <label for="inv-items-per-page">Por página</label>
       <select id="inv-items-per-page" onchange="invChangeItemsPerPage()">
@@ -24,25 +39,25 @@
   </div>
 
   <div class="dashboard">
-    <div class="dash-card">
+    <div class="dash-card glass">
       <p>Total productos</p>
       <h2 id="dash-total-products">0</h2>
     </div>
-    <div class="dash-card">
+    <div class="dash-card glass">
       <p>Unidades en stock</p>
       <h2 id="dash-total-qty">0</h2>
     </div>
-    <div class="dash-card">
+    <div class="dash-card glass">
       <p>Valor total (Lps.)</p>
       <h2 id="dash-total-value">0.00</h2>
     </div>
-    <div class="dash-card">
+    <div class="dash-card glass">
       <p>Agotados</p>
       <h2 id="dash-out-count">0</h2>
     </div>
   </div>
 
-  <div class="filters">
+  <div class="filters glass">
     <div class="field-group inline">
       <label>Categoría</label>
       <select id="inv-filter">
@@ -88,12 +103,12 @@
 
   <div class="pagination" id="inv-pagination"></div>
 
-  <div class="history-card">
+  <div class="history-card glass">
     <h3>Historial reciente</h3>
     <ul id="inv-history-list"></ul>
   </div>
 
-  <button class="btn-add" onclick="invOpenModal(false)">Agregar producto</button>
+  <button class="btn-add" onclick="invOpenModal(false)">＋ Agregar producto</button>
 
 </div>
 

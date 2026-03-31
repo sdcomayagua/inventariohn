@@ -69,12 +69,11 @@ async function invFetchProducts() {
 
 /* ============================
    GUARDAR EN GOOGLE SHEETS
+   (solo POST, Apps Script-friendly)
 ============================ */
-async function invSaveToSheet(product, isEdit) {
-  const method = isEdit ? "PUT" : "POST";
-
+async function invSaveToSheet(product) {
   await fetch(API_URL, {
-    method,
+    method: "POST",
     body: JSON.stringify(product)
   });
 
@@ -82,24 +81,12 @@ async function invSaveToSheet(product, isEdit) {
 }
 
 /* ============================
-   ELIMINAR PRODUCTO
-============================ */
-async function invDeleteProduct(id) {
-  if (!confirm("¿Eliminar este producto?")) return;
-
-  await fetch(API_URL, {
-    method: "DELETE",
-    body: JSON.stringify({ id })
-  });
-
-  await invFetchProducts();
-}
-
-/* ============================
-   FILTROS AVANZADOS
+   FILTROS
 ============================ */
 function invLoadCategories() {
   const filter = document.getElementById("inv-filter");
+  if (!filter) return;
+
   const cats = [...new Set(invProducts.map(p => p.category))];
 
   filter.innerHTML = `<option value="all">Todas</option>`;
@@ -109,10 +96,15 @@ function invLoadCategories() {
 }
 
 function invApplyFilters(list) {
-  const cat = document.getElementById("inv-filter").value;
-  const stock = document.getElementById("inv-stock-filter").value;
-  const min = Number(document.getElementById("inv-min-price").value);
-  const max = Number(document.getElementById("inv-max-price").value);
+  const catEl   = document.getElementById("inv-filter");
+  const stockEl = document.getElementById("inv-stock-filter");
+  const minEl   = document.getElementById("inv-min-price");
+  const maxEl   = document.getElementById("inv-max-price");
+
+  const cat   = catEl   ? catEl.value   : "all";
+  const stock = stockEl ? stockEl.value : "all";
+  const min   = minEl   ? Number(minEl.value) : 0;
+  const max   = maxEl   ? Number(maxEl.value) : 0;
 
   return list.filter(p => {
     if (cat !== "all" && p.category !== cat) return false;
@@ -131,16 +123,19 @@ function invRenderProducts() {
   let list = invApplyFilters(invProducts);
 
   const start = (invCurrentPage - 1) * invItemsPerPage;
-  const end = start + invItemsPerPage;
+  const end   = start + invItemsPerPage;
   const pageItems = list.slice(start, end);
 
   invRenderPagination(list.length);
-  invRenderList(pageItems);
+  invRenderList(pageItems, start); // le paso el offset para que el índice sea global
 }
 
 function invRenderPagination(total) {
-  const pages = Math.ceil(total / invItemsPerPage);
   const box = document.getElementById("inv-pagination");
+  if (!box) return;
+
+  const pages = Math.max(1, Math.ceil(total / invItemsPerPage));
+  if (invCurrentPage > pages) invCurrentPage = pages;
 
   box.innerHTML = `
     <button onclick="invPrevPage()" ${invCurrentPage === 1 ? "disabled" : ""}>Anterior</button>
@@ -164,43 +159,50 @@ function invNextPage(max) {
 }
 
 function invChangeItemsPerPage() {
-  invItemsPerPage = Number(document.getElementById("inv-items-per-page").value);
+  const sel = document.getElementById("inv-items-per-page");
+  if (!sel) return;
+  invItemsPerPage = Number(sel.value) || 10;
   invCurrentPage = 1;
   invRenderProducts();
 }
 
 /* ============================
-   STOCK EN TIEMPO REAL
+   STOCK EN TIEMPO REAL (POR ÍNDICE)
 ============================ */
-async function invChangeStock(id, delta) {
-  const p = invProducts.find(x => x.id === id);
+async function invChangeStock(index, delta) {
+  const p = invProducts[index];
   if (!p) return;
 
   p.qty += delta;
   if (p.qty < 0) p.qty = 0;
   p.updatedAt = Date.now();
 
-  document.getElementById(`inv-stock-${id}`).textContent = p.qty;
+  const span = document.getElementById(`inv-stock-${index}`);
+  if (span) span.textContent = p.qty;
 
-  await invSaveToSheet(p, true);
+  // Guardar en Sheets (POST)
+  await invSaveToSheet(p);
 }
 
 /* ============================
    RENDERIZAR PRODUCTOS
 ============================ */
-function invRenderList(list) {
+function invRenderList(list, offset) {
   const container = document.getElementById("inv-products");
+  if (!container) return;
+
   container.innerHTML = "";
 
-  list.forEach(p => {
+  const isAdmin = invCurrentUser?.role === "admin";
+
+  list.forEach((p, localIndex) => {
+    const globalIndex = offset + localIndex; // índice real en invProducts
     const mainImg = p.images[0] || "https://via.placeholder.com/1200";
 
     let thumbs = "";
     p.images.forEach(img => {
       thumbs += `<img src="${img}" onclick="this.parentNode.previousElementSibling.src='${img}'">`;
     });
-
-    const isAdmin = invCurrentUser?.role === "admin";
 
     container.innerHTML += `
       <div class="inv-item ${p.qty === 0 ? "inv-out" : ""}">
@@ -214,15 +216,15 @@ function invRenderList(list) {
         <p>Precio: Lps. ${p.price}</p>
 
         <div class="inv-stock-row">
-          <button onclick="invChangeStock(${p.id}, -1)">-</button>
-          <span id="inv-stock-${p.id}">${p.qty}</span>
-          <button onclick="invChangeStock(${p.id}, 1)">+</button>
+          <button onclick="invChangeStock(${globalIndex}, -1)">-</button>
+          <span id="inv-stock-${globalIndex}">${p.qty}</span>
+          <button onclick="invChangeStock(${globalIndex}, 1)">+</button>
         </div>
 
-        <button onclick="invEditById(${p.id})">Editar</button>
-        <button onclick="invSendWAById(${p.id})">WhatsApp</button>
+        <button onclick="invEditByIndex(${globalIndex})">Editar</button>
+        <button onclick="invSendWAByIndex(${globalIndex})">WhatsApp</button>
 
-        ${isAdmin ? `<button class="inv-delete-btn" onclick="invDeleteProduct(${p.id})">Eliminar</button>` : ""}
+        ${isAdmin ? `<button class="inv-delete-btn" onclick="invDeleteByIndex(${globalIndex})">Eliminar</button>` : ""}
       </div>
     `;
   });
@@ -238,7 +240,8 @@ function invOpenModal() {
   document.getElementById("inv-edit-images").innerHTML = "";
 
   ["inv-img1","inv-img2","inv-img3","inv-img4","inv-img5"].forEach(id=>{
-    document.getElementById(id).value = "";
+    const el = document.getElementById(id);
+    if (el) el.value = "";
   });
 
   document.getElementById("inv-name").value = "";
@@ -279,7 +282,7 @@ function invSaveProduct() {
   let newImages = [];
 
   fileInputs.forEach(input => {
-    if (input.files.length > 0) {
+    if (input && input.files && input.files.length > 0) {
       const reader = new FileReader();
       readers.push(
         new Promise(resolve => {
@@ -326,24 +329,17 @@ function invSaveProduct() {
       };
     }
 
-    await invSaveToSheet(product, invEditIndex !== null);
-
+    await invSaveToSheet(product);
     invCloseModal();
   });
 }
 
 /* ============================
-   EDITAR PRODUCTO
+   EDITAR / ELIMINAR POR ÍNDICE
 ============================ */
-function invEditById(id) {
-  const idx = invProducts.findIndex(p => p.id === id);
-  if (idx === -1) return;
-  invEdit(idx);
-}
-
-function invEdit(i) {
-  invEditIndex = i;
-  const p = invProducts[i];
+function invEditByIndex(index) {
+  invEditIndex = index;
+  const p = invProducts[index];
 
   document.getElementById("inv-modal-title").innerText = "Editar Producto";
   document.getElementById("inv-name").value = p.name;
@@ -366,6 +362,18 @@ function invEdit(i) {
   document.getElementById("inv-modal").style.display = "flex";
 }
 
+async function invDeleteByIndex(index) {
+  if (!confirm("¿Eliminar este producto?")) return;
+
+  const p = invProducts[index];
+  // Para simplificar: marcamos qty = 0 y nombre con [ELIMINADO]
+  p.name = "[ELIMINADO] " + p.name;
+  p.qty = 0;
+  p.updatedAt = Date.now();
+
+  await invSaveToSheet(p);
+}
+
 /* ============================
    ELIMINAR IMAGEN
 ============================ */
@@ -374,15 +382,15 @@ async function invDeleteImage(idx) {
   p.images.splice(idx, 1);
   p.updatedAt = Date.now();
 
-  await invSaveToSheet(p, true);
-  invEdit(invEditIndex);
+  await invSaveToSheet(p);
+  invEditByIndex(invEditIndex);
 }
 
 /* ============================
-   WHATSAPP POR PRODUCTO
+   WHATSAPP POR ÍNDICE
 ============================ */
-function invSendWAById(id) {
-  const p = invProducts.find(p => p.id === id);
+function invSendWAByIndex(index) {
+  const p = invProducts[index];
   if (!p) return;
 
   let text = `🔹 *${p.name}*\n`;
@@ -402,7 +410,9 @@ function invSendWAById(id) {
 const savedUser = localStorage.getItem("inv-logged");
 if (savedUser) {
   invCurrentUser = JSON.parse(savedUser);
-  document.getElementById("inv-login").style.display = "none";
-  document.getElementById("inv-panel").style.display = "block";
+  const login = document.getElementById("inv-login");
+  const panel = document.getElementById("inv-panel");
+  if (login) login.style.display = "none";
+  if (panel) panel.style.display = "block";
   invFetchProducts();
 }

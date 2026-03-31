@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventario SD-Comayagua</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="inv-panel">
+
+  <div class="top-bar">
+    <button onclick="invLogout()">Cerrar sesión</button>
+
+    <select id="inv-items-per-page" onchange="invChangeItemsPerPage()">
+      <option value="5">5 por página</option>
+      <option value="10" selected>10 por página</option>
+      <option value="20">20 por página</option>
+      <option value="50">50 por página</option>
+    </select>
+
+    <button onclick="invOpenModal()">Agregar producto</button>
+  </div>
+
+  <div class="filters">
+    <select id="inv-filter">
+      <option value="all">Todas</option>
+    </select>
+
+    <select id="inv-stock-filter">
+      <option value="all">Todo</option>
+      <option value="in">Disponible</option>
+      <option value="out">Agotado</option>
+    </select>
+
+    <input id="inv-min-price" type="number" placeholder="Precio mínimo">
+    <input id="inv-max-price" type="number" placeholder="Precio máximo">
+  </div>
+
+  <div id="inv-products"></div>
+
+  <div id="inv-pagination"></div>
+</div>
+
+<!-- MODAL -->
+<div id="inv-modal" class="modal">
+  <div class="modal-content">
+    <h2 id="inv-modal-title"></h2>
+
+    <input id="inv-name" placeholder="Nombre">
+    <input id="inv-price" type="number" placeholder="Precio">
+    <input id="inv-qty" type="number" placeholder="Cantidad">
+    <input id="inv-category" placeholder="Categoría">
+
+    <div id="inv-edit-images"></div>
+
+    <label>Imágenes nuevas:</label>
+    <input type="file" id="inv-img1">
+    <input type="file" id="inv-img2">
+    <input type="file" id="inv-img3">
+    <input type="file" id="inv-img4">
+    <input type="file" id="inv-img5">
+
+    <button onclick="invSaveProduct()">Guardar</button>
+    <button onclick="invCloseModal()">Cerrar</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

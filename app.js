@@ -8,7 +8,7 @@ let FILTERED = [];
 let CURRENT_PAGE = 1;
 let ITEMS_PER_PAGE = 10;
 
-let CURRENT_USER = null;
+let CURRENT_USER = null;   // alias visible (GaboHN / JarCo)
 let CURRENT_ROLE = "ADMIN";
 let EDITING_ID = null;
 
@@ -19,15 +19,17 @@ function invLogin() {
   const pin = document.getElementById("inv-user").value.trim();
 
   const users = {
-    "199311": { name: "Gabriel", role: "ADMIN" },
-    "123456": { name: "JarCo", role: "ADMIN" }
+    "199311": { name: "Gabriel", alias: "GaboHN", role: "ADMIN" },
+    "123456": { name: "JarCo", alias: "JarCo", role: "ADMIN" }
   };
 
   if (users[pin]) {
-    CURRENT_USER = users[pin].name;
+    CURRENT_USER = users[pin].alias;
     CURRENT_ROLE = users[pin].role;
+
     localStorage.setItem("invUser", CURRENT_USER);
     localStorage.setItem("invRole", CURRENT_ROLE);
+
     window.location.href = "inventario.html";
   } else {
     alert("PIN incorrecto");
@@ -38,6 +40,42 @@ function invLogout() {
   localStorage.removeItem("invUser");
   localStorage.removeItem("invRole");
   window.location.href = "index.html";
+}
+
+/* ============================
+   TEMA DÍA / NOCHE
+============================ */
+function toggleTheme() {
+  const body = document.body;
+  const btn = document.getElementById("theme-toggle");
+
+  if (body.classList.contains("theme-dark")) {
+    body.classList.remove("theme-dark");
+    body.classList.add("theme-light");
+    btn.textContent = "Modo Noche";
+    localStorage.setItem("invTheme", "light");
+  } else {
+    body.classList.remove("theme-light");
+    body.classList.add("theme-dark");
+    btn.textContent = "Modo Día";
+    localStorage.setItem("invTheme", "dark");
+  }
+}
+
+function applySavedTheme() {
+  const saved = localStorage.getItem("invTheme") || "dark";
+  const body = document.body;
+  const btn = document.getElementById("theme-toggle");
+
+  if (saved === "light") {
+    body.classList.remove("theme-dark");
+    body.classList.add("theme-light");
+    if (btn) btn.textContent = "Modo Noche";
+  } else {
+    body.classList.remove("theme-light");
+    body.classList.add("theme-dark");
+    if (btn) btn.textContent = "Modo Día";
+  }
 }
 
 /* ============================
@@ -404,12 +442,40 @@ function renderHistory(history) {
 }
 
 /* ============================
+   HEADER: SALUDO Y AVATAR
+============================ */
+function setupHeader() {
+  const welcome = document.getElementById("inv-welcome");
+  const role = document.getElementById("inv-role");
+  const avatar = document.getElementById("inv-avatar");
+
+  if (!welcome || !role || !avatar) return;
+
+  if (CURRENT_USER === "GaboHN") {
+    welcome.textContent = "Hola, GaboHN 👋";
+    role.textContent = "Administrador principal";
+    avatar.textContent = "GH";
+  } else if (CURRENT_USER === "JarCo") {
+    welcome.textContent = "Hola, JarCo 👋";
+    role.textContent = "Administrador";
+    avatar.textContent = "JC";
+  } else {
+    welcome.textContent = "Hola 👋";
+    role.textContent = "Usuario";
+    avatar.textContent = "US";
+  }
+}
+
+/* ============================
    INICIO
 ============================ */
 if (window.location.pathname.includes("inventario.html")) {
   window.addEventListener("load", () => {
     CURRENT_USER = localStorage.getItem("invUser") || "ADMIN";
     CURRENT_ROLE = localStorage.getItem("invRole") || "ADMIN";
+
+    applySavedTheme();
+    setupHeader();
 
     const catSel = document.getElementById("inv-filter");
     const stockSel = document.getElementById("inv-stock-filter");
@@ -428,5 +494,10 @@ if (window.location.pathname.includes("inventario.html")) {
     if (selItems) ITEMS_PER_PAGE = parseInt(selItems.value || "10");
 
     loadProducts();
+  });
+} else {
+  // En login también aplicamos tema guardado
+  window.addEventListener("load", () => {
+    applySavedTheme();
   });
 }

@@ -1,7 +1,7 @@
 /* ============================
    CONFIG
 ============================ */
-const API_URL = "https://script.google.com/macros/s/AKfycbxU1xN9rA2ztR-rxYcIcSVSAodBksHXe5LoRXqY0lcXRTxop9MIeYUrkqy8SMlVvUZs/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyL-7yiraIZB0f0xqA5axDv-emMYCyNcT66mhOQ7sjxyDVeF2KWijPxm49VMhT3lxQ/exec";
 
 let PRODUCTS = [];
 let FILTERED = [];

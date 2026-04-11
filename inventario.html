@@ -222,28 +222,38 @@
       <div class="field-group">
         <label>Imágenes del producto</label>
         <div class="image-upload-box">
-          <label class="image-slot">
+          <label class="image-slot" id="slot1">
             <span class="img-label">Imagen 1</span>
+            <span class="upload-btn">Seleccionar foto</span>
+            <span class="img-hint" id="hint1">Sin archivo</span>
             <input id="inv-img1" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev1')">
             <img id="prev1" class="img-preview" alt="Preview 1">
           </label>
-          <label class="image-slot">
+          <label class="image-slot" id="slot2">
             <span class="img-label">Imagen 2</span>
+            <span class="upload-btn">Seleccionar foto</span>
+            <span class="img-hint" id="hint2">Sin archivo</span>
             <input id="inv-img2" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev2')">
             <img id="prev2" class="img-preview" alt="Preview 2">
           </label>
-          <label class="image-slot">
+          <label class="image-slot" id="slot3">
             <span class="img-label">Imagen 3</span>
+            <span class="upload-btn">Seleccionar foto</span>
+            <span class="img-hint" id="hint3">Sin archivo</span>
             <input id="inv-img3" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev3')">
             <img id="prev3" class="img-preview" alt="Preview 3">
           </label>
-          <label class="image-slot">
+          <label class="image-slot" id="slot4">
             <span class="img-label">Imagen 4</span>
+            <span class="upload-btn">Seleccionar foto</span>
+            <span class="img-hint" id="hint4">Sin archivo</span>
             <input id="inv-img4" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev4')">
             <img id="prev4" class="img-preview" alt="Preview 4">
           </label>
-          <label class="image-slot">
+          <label class="image-slot" id="slot5">
             <span class="img-label">Imagen 5</span>
+            <span class="upload-btn">Seleccionar foto</span>
+            <span class="img-hint" id="hint5">Sin archivo</span>
             <input id="inv-img5" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev5')">
             <img id="prev5" class="img-preview" alt="Preview 5">
           </label>
@@ -251,7 +261,7 @@
       </div>
 
       <div class="modal-actions">
-        <button class="btn-primary" onclick="invSaveProduct()">Guardar producto</button>
+        <button class="btn-primary" id="save-product-btn" onclick="invSaveProduct()">Guardar producto</button>
         <button class="btn-secondary" onclick="invCloseModal()">Cancelar</button>
       </div>
     </div>

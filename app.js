@@ -31,6 +31,7 @@ let EDITING_ID = null;
 let INSTALL_PROMPT = null;
 let ACTIVE_DETAIL_ID = null;
 let LAST_SYNC_AT = null;
+let CURRENT_EDIT_IMAGES = [];
 
 function getSession() {
   try {
@@ -217,6 +218,10 @@ function parseImages(raw) {
   }
 }
 
+function getPlaceholderImage(label = "Sin imagen") {
+  return `https://placehold.co/700x700/101725/e8f0ff?text=${encodeURIComponent(label)}`;
+}
+
 function getProductById(id) {
   return PRODUCTS.find((item) => String(item.id) === String(id));
 }
@@ -342,7 +347,6 @@ function applyFilters() {
 function renderProducts() {
   const container = document.getElementById("inv-products");
   const empty = document.getElementById("inv-empty");
-  const results = document.getElementById("results-count");
   if (!container) return;
 
   container.innerHTML = "";
@@ -361,54 +365,50 @@ function renderProducts() {
 
   pageItems.forEach((product) => {
     const images = parseImages(product.images);
-    const mainImage = images[0] || "https://via.placeholder.com/700x700?text=Sin+imagen";
+    const mainImage = images[0] || getPlaceholderImage("Sin imagen");
     const qty = Number(product.qty || 0);
     const price = Number(product.price || 0);
     const imageCount = Math.max(images.length, 1);
-    const stockRatio = Math.min(100, Math.max(6, qty <= 0 ? 6 : Math.round((qty / Math.max(qty, 10)) * 100)));
+    const stockRatio = Math.min(100, Math.max(8, qty <= 0 ? 8 : Math.round((qty / Math.max(qty, 10)) * 100)));
+    const safeId = String(product.id || "");
+    const safeName = escapeHtml(product.name || "Sin nombre");
+    const safeCategory = escapeHtml(product.category || "Sin categoría");
+
     const card = document.createElement("article");
-    card.className = "product-card glass-panel product-card-luxe";
+    card.className = "product-card glass-panel product-card-luxe product-card-compact";
 
     card.innerHTML = `
-      <div class="product-media">
-        <span class="product-status ${qty > 0 ? "in" : "out"}">${qty > 0 ? "Disponible" : "Agotado"}</span>
-        <span class="product-image-count">${imageCount} foto${imageCount === 1 ? "" : "s"}</span>
-        <img class="product-main-img" src="${mainImage}" alt="${escapeHtml(product.name || "Producto")}">
-      </div>
-      ${images.length > 1 ? `
-        <div class="thumb-row thumb-row-luxe">
-          ${images.map((img, index) => `
-            <button class="thumb-btn ${index === 0 ? "is-active" : ""}" type="button" onclick="swapCardImage(this, '${escapeHtml(img)}')">
-              <img src="${img}" alt="Miniatura">
-            </button>
-          `).join("")}
+      <button class="product-tile" type="button" onclick="viewProduct('${safeId}')" aria-label="Abrir ${safeName}">
+        <div class="product-media product-media-compact">
+          <span class="product-status ${qty > 0 ? "in" : "out"}">${qty > 0 ? "Disponible" : "Agotado"}</span>
+          <span class="product-image-count">${imageCount}</span>
+          <img class="product-main-img" src="${mainImage}" alt="${safeName}">
         </div>
-      ` : ""}
-      <div class="product-head product-head-luxe">
-        <div>
-          <h3 class="product-name">${escapeHtml(product.name || "Sin nombre")}</h3>
-          <div class="category-pill">${escapeHtml(product.category || "Sin categoría")}</div>
+        <div class="product-compact-copy">
+          <h3 class="product-name product-name-compact">${safeName}</h3>
+          <p class="category-pill">${safeCategory}</p>
+          <p class="product-price product-price-compact">Lps. ${money.format(price)}</p>
         </div>
-        <p class="product-price">Lps. ${money.format(price)}</p>
+      </button>
+
+      <div class="product-card-meta compact">
+        <span class="stock-pill">Stock ${qty}</span>
+        <span class="mini-badge">ID ${escapeHtml(safeId).slice(-4) || '--'}</span>
       </div>
-      <div class="product-meta-row">
-        <span class="stock-pill">Stock: ${qty}</span>
-        <span class="product-code">ID ${escapeHtml(String(product.id || "--")).slice(-6)}</span>
-      </div>
-      <div class="product-stock-progress">
+
+      <div class="product-stock-progress compact">
         <span style="width:${stockRatio}%"></span>
       </div>
-      <div class="price-stock-row price-stock-row-luxe">
-        <div class="stock-editor">
-          <button type="button" onclick="updateStock('${String(product.id)}', -1)">−</button>
-          <span class="stock-count">${qty}</span>
-          <button type="button" onclick="updateStock('${String(product.id)}', 1)">＋</button>
-        </div>
-        <button class="quick-view-btn" type="button" onclick="viewProduct('${String(product.id)}')">Ver ficha</button>
+
+      <div class="stock-editor stock-editor-compact">
+        <button type="button" onclick="updateStock('${safeId}', -1)">−</button>
+        <span class="stock-count">${qty}</span>
+        <button type="button" onclick="updateStock('${safeId}', 1)">＋</button>
       </div>
-      <div class="card-actions card-actions-luxe">
-        <button class="btn-secondary" type="button" onclick="startEditById('${String(product.id)}')">Editar</button>
-        <button class="btn-secondary" type="button" onclick="deleteProduct('${String(product.id)}')">Eliminar</button>
+
+      <div class="card-actions card-actions-luxe card-actions-compact">
+        <button class="btn-secondary" type="button" onclick="startEditById('${safeId}')">Editar</button>
+        <button class="btn-secondary" type="button" onclick="deleteProduct('${safeId}')">Eliminar</button>
       </div>
     `;
 
@@ -457,14 +457,11 @@ function invChangeItemsPerPage() {
 async function updateStock(id, change) {
   try {
     showLoading(true, "Actualizando stock...");
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "stock",
-        id,
-        change,
-        user: CURRENT_USER.alias
-      })
+    await postToApi({
+      action: "stock",
+      id,
+      change,
+      user: CURRENT_USER.alias
     });
     await loadProducts();
   } catch (error) {
@@ -475,10 +472,36 @@ async function updateStock(id, change) {
   }
 }
 
+function setImageSlotState(index, options = {}) {
+  const { src = "", label = "Sin archivo", filled = false } = options;
+  const preview = document.getElementById(`prev${index}`);
+  const hint = document.getElementById(`hint${index}`);
+  const slot = document.getElementById(`slot${index}`);
+
+  if (preview) {
+    preview.src = src || "";
+    preview.style.display = src ? "block" : "none";
+  }
+  if (hint) hint.textContent = label;
+  if (slot) slot.classList.toggle("has-image", Boolean(filled || src));
+}
+
+function populateExistingImages(images = []) {
+  CURRENT_EDIT_IMAGES = Array.isArray(images) ? [...images] : [];
+  for (let i = 1; i <= 5; i += 1) {
+    const existing = CURRENT_EDIT_IMAGES[i - 1] || "";
+    if (existing) {
+      setImageSlotState(i, { src: existing, label: "Imagen actual", filled: true });
+    }
+  }
+}
+
 function invOpenModal(isEdit = false, product = null) {
   const modal = document.getElementById("inv-modal");
   const title = document.getElementById("inv-modal-title");
   if (!modal || !title) return;
+
+  clearModalFields();
 
   if (isEdit && product) {
     EDITING_ID = product.id;
@@ -487,10 +510,11 @@ function invOpenModal(isEdit = false, product = null) {
     document.getElementById("inv-price").value = product.price || "";
     document.getElementById("inv-qty").value = product.qty || "";
     document.getElementById("inv-category").value = product.category || "";
+    populateExistingImages(parseImages(product.images));
   } else {
     EDITING_ID = null;
     title.textContent = "Agregar producto";
-    clearModalFields();
+    CURRENT_EDIT_IMAGES = [];
   }
 
   modal.style.display = "flex";
@@ -500,6 +524,7 @@ function invCloseModal() {
   document.getElementById("inv-modal").style.display = "none";
   clearModalFields();
   EDITING_ID = null;
+  CURRENT_EDIT_IMAGES = [];
 }
 
 function clearModalFields() {
@@ -510,12 +535,8 @@ function clearModalFields() {
 
   for (let i = 1; i <= 5; i += 1) {
     const input = document.getElementById(`inv-img${i}`);
-    const preview = document.getElementById(`prev${i}`);
     if (input) input.value = "";
-    if (preview) {
-      preview.src = "";
-      preview.style.display = "none";
-    }
+    setImageSlotState(i, { src: "", label: "Sin archivo", filled: false });
   }
 }
 
@@ -528,31 +549,109 @@ function startEditById(id) {
 
 function invPreviewImage(input, previewId) {
   const file = input.files?.[0];
-  const preview = document.getElementById(previewId);
-  if (!preview) return;
+  const index = Number(String(previewId).replace("prev", "")) || 1;
   if (!file) {
-    preview.style.display = "none";
-    preview.src = "";
+    const existing = CURRENT_EDIT_IMAGES[index - 1] || "";
+    if (existing) {
+      setImageSlotState(index, { src: existing, label: "Imagen actual", filled: true });
+    } else {
+      setImageSlotState(index, { src: "", label: "Sin archivo", filled: false });
+    }
     return;
   }
 
   const reader = new FileReader();
   reader.onload = (event) => {
-    preview.src = event.target?.result;
-    preview.style.display = "block";
+    setImageSlotState(index, {
+      src: event.target?.result || "",
+      label: file.name,
+      filled: true
+    });
   };
   reader.readAsDataURL(file);
 }
 
 function fileToBase64(file) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("No se pudo leer la imagen."));
     reader.readAsDataURL(file);
   });
 }
 
+async function compressImageForUpload(file) {
+  if (!file?.type?.startsWith("image/")) {
+    return fileToBase64(file);
+  }
+
+  const source = await fileToBase64(file);
+  const image = new Image();
+  image.decoding = "async";
+
+  await new Promise((resolve, reject) => {
+    image.onload = resolve;
+    image.onerror = () => reject(new Error("No se pudo procesar la imagen."));
+    image.src = source;
+  });
+
+  const maxSide = file.size > 3_000_000 ? 1280 : 1600;
+  const ratio = Math.min(1, maxSide / Math.max(image.width, image.height));
+  let width = Math.max(1, Math.round(image.width * ratio));
+  let height = Math.max(1, Math.round(image.height * ratio));
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d", { alpha: false });
+  if (!ctx) return source;
+
+  const render = (quality) => {
+    canvas.width = width;
+    canvas.height = height;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(image, 0, 0, width, height);
+    return canvas.toDataURL("image/jpeg", quality);
+  };
+
+  let output = render(0.82);
+  if (output.length > 1_500_000) {
+    output = render(0.72);
+  }
+  if (output.length > 1_500_000) {
+    width = Math.max(900, Math.round(width * 0.85));
+    height = Math.max(900, Math.round(height * 0.85));
+    output = render(0.68);
+  }
+
+  return output;
+}
+
+async function postToApi(payload) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 45000);
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    });
+
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(text || "La operación falló.");
+    }
+
+    return text;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function invSaveProduct() {
+  const saveBtn = document.getElementById("save-product-btn");
   const name = document.getElementById("inv-name")?.value.trim();
   const price = parseFloat(document.getElementById("inv-price")?.value || "");
   const qty = parseInt(document.getElementById("inv-qty")?.value || "", 10);
@@ -563,40 +662,46 @@ async function invSaveProduct() {
     return;
   }
 
-  const existingProduct = EDITING_ID ? getProductById(EDITING_ID) : null;
-  const existingImages = existingProduct ? parseImages(existingProduct.images) : [];
-  const newImages = [];
-
-  for (let i = 1; i <= 5; i += 1) {
-    const input = document.getElementById(`inv-img${i}`);
-    if (input?.files?.length) {
-      newImages.push(await fileToBase64(input.files[0]));
-    }
-  }
-
-  const payload = {
-    action: EDITING_ID ? "edit" : "add",
-    id: EDITING_ID,
-    name,
-    price,
-    qty,
-    category,
-    images: JSON.stringify(newImages.length ? newImages : existingImages),
-    user: CURRENT_USER.alias
-  };
+  const finalImages = [];
 
   try {
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Guardando...";
+    }
     showLoading(true, EDITING_ID ? "Guardando cambios..." : "Agregando producto...");
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
+
+    for (let i = 1; i <= 5; i += 1) {
+      const input = document.getElementById(`inv-img${i}`);
+      if (input?.files?.length) {
+        finalImages.push(await compressImageForUpload(input.files[0]));
+      } else if (CURRENT_EDIT_IMAGES[i - 1]) {
+        finalImages.push(CURRENT_EDIT_IMAGES[i - 1]);
+      }
+    }
+
+    const payload = {
+      action: EDITING_ID ? "edit" : "add",
+      id: EDITING_ID,
+      name,
+      price,
+      qty,
+      category,
+      images: JSON.stringify(finalImages),
+      user: CURRENT_USER.alias
+    };
+
+    await postToApi(payload);
     invCloseModal();
     await loadProducts();
   } catch (error) {
     console.error(error);
-    alert("No se pudo guardar el producto.");
+    alert("No se pudo guardar el producto. Intenta con una foto más liviana o vuelve a probar.");
   } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Guardar producto";
+    }
     showLoading(false);
   }
 }
@@ -605,10 +710,7 @@ async function deleteProduct(id) {
   if (!confirm("¿Eliminar este producto?")) return;
   try {
     showLoading(true, "Eliminando producto...");
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "delete", id, user: CURRENT_USER.alias })
-    });
+    await postToApi({ action: "delete", id, user: CURRENT_USER.alias });
     closeDetailModal();
     await loadProducts();
   } catch (error) {
@@ -735,14 +837,11 @@ async function quickAdjustDetailStock(change) {
   if (!ACTIVE_DETAIL_ID) return;
   try {
     showLoading(true, change > 0 ? "Sumando unidad..." : "Restando unidad...");
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "stock",
-        id: ACTIVE_DETAIL_ID,
-        change,
-        user: CURRENT_USER.alias
-      })
+    await postToApi({
+      action: "stock",
+      id: ACTIVE_DETAIL_ID,
+      change,
+      user: CURRENT_USER.alias
     });
     await loadProducts();
     viewProduct(ACTIVE_DETAIL_ID);

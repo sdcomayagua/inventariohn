@@ -29,6 +29,8 @@ let ITEMS_PER_PAGE = 12;
 let CURRENT_USER = null;
 let EDITING_ID = null;
 let INSTALL_PROMPT = null;
+let ACTIVE_DETAIL_ID = null;
+let LAST_SYNC_AT = null;
 
 function getSession() {
   try {
@@ -246,6 +248,7 @@ async function loadProducts(showRefreshFeedback = false) {
     const data = await res.json();
     PRODUCTS = Array.isArray(data.products) ? data.products : [];
     FILTERED = [...PRODUCTS];
+    LAST_SYNC_AT = new Date();
     updateDashboard();
     loadCategories();
     renderHistory(data.history || []);
@@ -263,11 +266,18 @@ function updateDashboard() {
   const totalQty = PRODUCTS.reduce((sum, product) => sum + Number(product.qty || 0), 0);
   const totalValue = PRODUCTS.reduce((sum, product) => sum + (Number(product.qty || 0) * Number(product.price || 0)), 0);
   const outCount = PRODUCTS.filter((product) => Number(product.qty || 0) <= 0).length;
+  const inStock = PRODUCTS.filter((product) => Number(product.qty || 0) > 0).length;
+  const categoryCount = new Set(PRODUCTS.map((product) => String(product.category || "").trim()).filter(Boolean)).size;
+  const avgPrice = totalProducts ? PRODUCTS.reduce((sum, product) => sum + Number(product.price || 0), 0) / totalProducts : 0;
 
   setText("dash-total-products", totalProducts);
   setText("dash-total-qty", totalQty);
   setText("dash-total-value", `Lps. ${money.format(totalValue)}`);
   setText("dash-out-count", outCount);
+  setText("dash-category-count", categoryCount);
+  setText("dash-in-stock", inStock);
+  setText("dash-avg-price", `Lps. ${money.format(avgPrice)}`);
+  updateSyncMeta();
 }
 
 function setText(id, value) {
@@ -352,40 +362,51 @@ function renderProducts() {
   pageItems.forEach((product) => {
     const images = parseImages(product.images);
     const mainImage = images[0] || "https://via.placeholder.com/700x700?text=Sin+imagen";
+    const qty = Number(product.qty || 0);
+    const price = Number(product.price || 0);
+    const imageCount = Math.max(images.length, 1);
+    const stockRatio = Math.min(100, Math.max(6, qty <= 0 ? 6 : Math.round((qty / Math.max(qty, 10)) * 100)));
     const card = document.createElement("article");
-    card.className = "product-card glass-panel";
+    card.className = "product-card glass-panel product-card-luxe";
 
     card.innerHTML = `
       <div class="product-media">
-        <span class="product-status ${Number(product.qty || 0) > 0 ? "in" : "out"}">${Number(product.qty || 0) > 0 ? "Disponible" : "Agotado"}</span>
+        <span class="product-status ${qty > 0 ? "in" : "out"}">${qty > 0 ? "Disponible" : "Agotado"}</span>
+        <span class="product-image-count">${imageCount} foto${imageCount === 1 ? "" : "s"}</span>
         <img class="product-main-img" src="${mainImage}" alt="${escapeHtml(product.name || "Producto")}">
       </div>
       ${images.length > 1 ? `
-        <div class="thumb-row">
-          ${images.map((img) => `
-            <button class="thumb-btn" type="button" onclick="swapCardImage(this, '${escapeHtml(img)}')">
+        <div class="thumb-row thumb-row-luxe">
+          ${images.map((img, index) => `
+            <button class="thumb-btn ${index === 0 ? "is-active" : ""}" type="button" onclick="swapCardImage(this, '${escapeHtml(img)}')">
               <img src="${img}" alt="Miniatura">
             </button>
           `).join("")}
         </div>
       ` : ""}
-      <div class="product-head">
+      <div class="product-head product-head-luxe">
         <div>
           <h3 class="product-name">${escapeHtml(product.name || "Sin nombre")}</h3>
           <div class="category-pill">${escapeHtml(product.category || "Sin categoría")}</div>
         </div>
-        <p class="product-price">Lps. ${money.format(Number(product.price || 0))}</p>
+        <p class="product-price">Lps. ${money.format(price)}</p>
       </div>
-      <div class="price-stock-row">
-        <span class="stock-pill">Stock actual: ${Number(product.qty || 0)}</span>
+      <div class="product-meta-row">
+        <span class="stock-pill">Stock: ${qty}</span>
+        <span class="product-code">ID ${escapeHtml(String(product.id || "--")).slice(-6)}</span>
+      </div>
+      <div class="product-stock-progress">
+        <span style="width:${stockRatio}%"></span>
+      </div>
+      <div class="price-stock-row price-stock-row-luxe">
         <div class="stock-editor">
           <button type="button" onclick="updateStock('${String(product.id)}', -1)">−</button>
-          <span class="stock-count">${Number(product.qty || 0)}</span>
+          <span class="stock-count">${qty}</span>
           <button type="button" onclick="updateStock('${String(product.id)}', 1)">＋</button>
         </div>
+        <button class="quick-view-btn" type="button" onclick="viewProduct('${String(product.id)}')">Ver ficha</button>
       </div>
-      <div class="card-actions">
-        <button class="btn-secondary" type="button" onclick="viewProduct('${String(product.id)}')">Ver</button>
+      <div class="card-actions card-actions-luxe">
         <button class="btn-secondary" type="button" onclick="startEditById('${String(product.id)}')">Editar</button>
         <button class="btn-secondary" type="button" onclick="deleteProduct('${String(product.id)}')">Eliminar</button>
       </div>
@@ -401,6 +422,8 @@ function swapCardImage(button, src) {
   const card = button.closest(".product-card");
   const main = card?.querySelector(".product-main-img");
   if (main) main.src = src;
+  card?.querySelectorAll(".thumb-btn").forEach((item) => item.classList.remove("is-active"));
+  button?.classList.add("is-active");
 }
 
 function renderPagination() {
@@ -618,21 +641,34 @@ function viewProduct(id) {
   const modal = document.getElementById("detail-modal");
   if (!product || !modal) return;
 
+  ACTIVE_DETAIL_ID = id;
   const images = parseImages(product.images);
-  const mainImage = images[0] || "https://via.placeholder.com/700x700?text=Sin+imagen";
+  const finalImages = images.length ? images : ["https://via.placeholder.com/700x700?text=Sin+imagen"];
+  const mainImage = finalImages[0];
   const thumbs = document.getElementById("detail-thumbs");
+  const priceLabel = `Lps. ${money.format(Number(product.price || 0))}`;
+  const stockLabel = Number(product.qty || 0);
 
   setText("detail-name", product.name || "Producto");
-  setText("detail-price", `Lps. ${money.format(Number(product.price || 0))}`);
+  setText("detail-price", priceLabel);
   setText("detail-category", product.category || "Sin categoría");
-  setText("detail-stock", `Stock: ${Number(product.qty || 0)}`);
+  setText("detail-stock", `Stock: ${stockLabel}`);
+  setText("detail-summary-price", priceLabel);
+  setText("detail-summary-stock", stockLabel);
+  setText("detail-summary-category", product.category || "Sin categoría");
+  setText("detail-image-counter", `1 / ${finalImages.length}`);
+  setText("detail-meta-note", `Código interno · ${String(product.id || "--")} · ${stockLabel > 0 ? "Listo para venta" : "Sin existencias"}`);
 
   const main = document.getElementById("detail-main-img");
-  if (main) main.src = mainImage;
+  if (main) {
+    main.src = mainImage;
+    main.dataset.index = "1";
+    main.dataset.total = String(finalImages.length);
+  }
 
   if (thumbs) {
-    thumbs.innerHTML = images.map((img) => `
-      <button type="button" class="detail-thumb" onclick="swapDetailImage('${escapeHtml(img)}')">
+    thumbs.innerHTML = finalImages.map((img, index) => `
+      <button type="button" class="detail-thumb ${index === 0 ? "is-active" : ""}" onclick="swapDetailImage('${escapeHtml(img)}', ${index + 1}, ${finalImages.length}, this)">
         <img src="${img}" alt="Miniatura del producto">
       </button>
     `).join("");
@@ -646,14 +682,80 @@ function viewProduct(id) {
   modal.style.display = "flex";
 }
 
-function swapDetailImage(src) {
+function swapDetailImage(src, index = 1, total = 1, button = null) {
   const main = document.getElementById("detail-main-img");
-  if (main) main.src = src;
+  if (main) {
+    main.src = src;
+    main.dataset.index = String(index);
+    main.dataset.total = String(total);
+  }
+  setText("detail-image-counter", `${index} / ${total}`);
+  document.querySelectorAll(".detail-thumb").forEach((item) => item.classList.remove("is-active"));
+  if (button) button.classList.add("is-active");
 }
 
 function closeDetailModal() {
   const modal = document.getElementById("detail-modal");
   if (modal) modal.style.display = "none";
+  ACTIVE_DETAIL_ID = null;
+}
+
+function updateSyncMeta() {
+  const syncTime = document.getElementById("sync-time-pill");
+  const syncStatus = document.getElementById("sync-status");
+  if (!LAST_SYNC_AT) return;
+  const label = LAST_SYNC_AT.toLocaleTimeString("es-HN", { hour: "2-digit", minute: "2-digit" });
+  if (syncTime) syncTime.textContent = `Actualizado ${label}`;
+  if (syncStatus) syncStatus.textContent = "Sincronizado";
+}
+
+function clearFilters() {
+  const defaults = {
+    "inv-search": "",
+    "inv-filter": "all",
+    "inv-stock-filter": "all",
+    "inv-min-price": "",
+    "inv-max-price": "",
+    "inv-sort": "featured",
+    "inv-items-per-page": "12"
+  };
+
+  Object.entries(defaults).forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+  });
+
+  const itemsPerPage = document.getElementById("inv-items-per-page");
+  ITEMS_PER_PAGE = parseInt(itemsPerPage?.value || "12", 10);
+  CURRENT_PAGE = 1;
+  applyFilters();
+}
+
+async function quickAdjustDetailStock(change) {
+  if (!ACTIVE_DETAIL_ID) return;
+  try {
+    showLoading(true, change > 0 ? "Sumando unidad..." : "Restando unidad...");
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "stock",
+        id: ACTIVE_DETAIL_ID,
+        change,
+        user: CURRENT_USER.alias
+      })
+    });
+    await loadProducts();
+    viewProduct(ACTIVE_DETAIL_ID);
+  } catch (error) {
+    console.error(error);
+    alert("No se pudo actualizar el stock.");
+  } finally {
+    showLoading(false);
+  }
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function scrollToSection(id) {

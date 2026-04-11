@@ -6,18 +6,23 @@
   <title>Tienda Gamer | Acceso</title>
   <meta name="description" content="Tienda Gamer: acceso admin premium optimizado para celular y GitHub Pages.">
   <meta name="theme-color" content="#0b0f16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="icon" type="image/png" href="icon-192.png">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-dark login-page">
+<body class="theme-dark login-page login-page-luxe">
   <main class="login-shell">
-    <section class="login-panel glass-panel login-panel-minimal">
-      <div class="brand-lockup brand-lockup-clean brand-lockup-minimal">
+    <section class="login-panel glass-panel login-panel-minimal login-panel-luxe">
+      <div class="login-glow"></div>
+      <div class="login-badge">Admin</div>
+      <div class="brand-lockup brand-lockup-clean brand-lockup-minimal brand-lockup-luxe">
         <div class="brand-copy">
+          <p class="eyebrow">Acceso privado</p>
           <h1>Tienda Gamer</h1>
-          <p class="support-copy">Acceso admin</p>
+          <p class="support-copy">Ingresa al panel de inventario con una estética más limpia, fina y tipo app premium.</p>
         </div>
       </div>
 
@@ -31,9 +36,9 @@
         <input id="inv-pass" type="password" autocomplete="current-password" placeholder="Ingresa tu contraseña">
       </div>
 
-      <button class="btn-primary" onclick="invLogin()">Entrar</button>
+      <button class="btn-primary" onclick="invLogin()">Entrar al admin</button>
 
-      <div class="login-footer-row login-footer-row-minimal">
+      <div class="login-footer-row login-footer-row-minimal login-footer-row-luxe">
         <button class="btn-ghost" type="button" id="theme-toggle" onclick="toggleTheme()">Tema claro</button>
       </div>
     </section>

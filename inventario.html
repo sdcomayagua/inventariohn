@@ -6,14 +6,16 @@
   <title>Tienda Gamer | Admin</title>
   <meta name="description" content="Tienda Gamer: panel admin premium con estética tipo app para celular.">
   <meta name="theme-color" content="#0b0f16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="icon" type="image/png" href="icon-192.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-dark app-page">
-  <div class="app-shell app-shell-admin">
-    <header class="app-header glass-panel app-store-topbar">
+  <div class="app-shell app-shell-admin app-shell-luxe">
+    <header class="app-header glass-panel app-store-topbar luxe-topbar">
       <div class="brand-row brand-row-admin">
         <div class="user-chip" id="inv-avatar">SD</div>
         <div>
@@ -27,12 +29,40 @@
       </div>
     </header>
 
-    <section class="admin-strip">
-      <span class="hero-pill" id="inv-role">Administrador</span>
-      <span class="mini-badge">Panel admin</span>
+    <section class="luxe-overview glass-panel">
+      <div class="luxe-overview-top">
+        <div>
+          <p class="eyebrow">Panel privado</p>
+          <h2 class="luxe-heading">Administrador</h2>
+        </div>
+        <div class="live-chip">
+          <span class="live-dot"></span>
+          <span id="sync-status">Sincronizado</span>
+        </div>
+      </div>
+
+      <div class="luxe-inline-pills">
+        <span class="hero-pill" id="inv-role">Administrador</span>
+        <span class="mini-badge" id="sync-time-pill">Actualizado ahora</span>
+      </div>
+
+      <div class="quick-insights">
+        <article class="quick-insight-card">
+          <span>Categorías</span>
+          <strong id="dash-category-count">0</strong>
+        </article>
+        <article class="quick-insight-card">
+          <span>Disponibles</span>
+          <strong id="dash-in-stock">0</strong>
+        </article>
+        <article class="quick-insight-card">
+          <span>Precio medio</span>
+          <strong id="dash-avg-price">Lps. 0.00</strong>
+        </article>
+      </div>
     </section>
 
-    <section class="stats-grid stats-grid-appstore">
+    <section class="stats-grid stats-grid-appstore stats-grid-luxe">
       <article class="stat-card glass-panel">
         <span>Total productos</span>
         <strong id="dash-total-products">0</strong>
@@ -42,8 +72,8 @@
         <strong id="dash-total-qty">0</strong>
       </article>
       <article class="stat-card glass-panel accent">
-        <span>Valor</span>
-        <strong id="dash-total-value">0.00</strong>
+        <span>Valor inventario</span>
+        <strong id="dash-total-value">Lps. 0.00</strong>
       </article>
       <article class="stat-card glass-panel warn">
         <span>Agotados</span>
@@ -52,17 +82,21 @@
     </section>
 
     <section class="toolbar-stack toolbar-stack-app" id="productos">
-      <div class="search-card glass-panel search-card-appstore">
-        <input id="inv-search" class="search-input" placeholder="Buscar producto o categoría">
+      <div class="search-card glass-panel search-card-appstore search-card-luxe">
+        <div class="search-shell">
+          <span class="search-icon">⌕</span>
+          <input id="inv-search" class="search-input" placeholder="Buscar por nombre o categoría">
+        </div>
       </div>
 
-      <div class="action-scroller action-scroller-appstore">
-        <button class="action-chip active" onclick="invOpenModal(false)">Agregar</button>
-        <button class="action-chip" onclick="loadProducts(true)">Actualizar</button>
-        <button class="action-chip" id="install-btn" style="display:none;" onclick="installApp()">Instalar</button>
+      <div class="action-scroller action-scroller-appstore action-scroller-luxe">
+        <button class="action-chip active" onclick="invOpenModal(false)">Nuevo producto</button>
+        <button class="action-chip" onclick="loadProducts(true)">Sincronizar</button>
+        <button class="action-chip" onclick="clearFilters()">Limpiar filtros</button>
+        <button class="action-chip" id="install-btn" style="display:none;" onclick="installApp()">Instalar app</button>
       </div>
 
-      <div class="filter-grid glass-panel filter-grid-appstore">
+      <div class="filter-grid glass-panel filter-grid-appstore filter-grid-luxe">
         <div class="field-group inline">
           <label for="inv-filter">Categoría</label>
           <select id="inv-filter">
@@ -113,24 +147,48 @@
     </section>
 
     <section class="catalog-section">
-      <div class="section-head section-head-clean">
-        <h3 class="section-title">Productos</h3>
+      <div class="section-head section-head-clean section-head-luxe">
+        <div>
+          <h3 class="section-title">Catálogo</h3>
+          <p class="section-caption">Solo administración móvil</p>
+        </div>
         <span class="results-count" id="results-count">0 resultados</span>
       </div>
-      <div class="products-list" id="inv-products"></div>
-      <div class="empty-state glass-panel" id="inv-empty" style="display:none;">
+
+      <div class="products-list products-list-luxe" id="inv-products"></div>
+
+      <div class="empty-state glass-panel empty-state-luxe" id="inv-empty" style="display:none;">
         <div class="empty-icon">◌</div>
         <h3>Sin productos</h3>
-        <p>Agrega un producto nuevo para comenzar.</p>
+        <p>Agrega un producto nuevo para empezar a administrar tu inventario.</p>
       </div>
-      <div class="pagination" id="inv-pagination"></div>
+
+      <div class="pagination pagination-luxe" id="inv-pagination"></div>
     </section>
 
-    <button class="fab-add" onclick="invOpenModal(false)" aria-label="Agregar producto">+</button>
+    <nav class="lux-dock glass-panel" aria-label="Acciones rápidas">
+      <button type="button" onclick="scrollToTop()">
+        <span>⌂</span>
+        <small>Inicio</small>
+      </button>
+      <button type="button" onclick="scrollToSection('productos')">
+        <span>▣</span>
+        <small>Catálogo</small>
+      </button>
+      <button type="button" class="dock-primary" onclick="invOpenModal(false)">
+        <span>＋</span>
+        <small>Nuevo</small>
+      </button>
+      <button type="button" onclick="loadProducts(true)">
+        <span>↻</span>
+        <small>Sync</small>
+      </button>
+    </nav>
   </div>
 
   <div class="modal" id="inv-modal">
-    <div class="modal-content modal-form">
+    <div class="modal-content modal-form modal-luxe">
+      <div class="sheet-handle"></div>
       <div class="modal-head">
         <div>
           <p class="eyebrow">Catálogo</p>
@@ -200,21 +258,25 @@
   </div>
 
   <div class="modal" id="detail-modal">
-    <div class="modal-content modal-viewer">
+    <div class="modal-content modal-viewer modal-luxe modal-detail-luxe">
+      <div class="sheet-handle"></div>
       <div class="modal-head">
         <div>
-          <p class="eyebrow">Detalle del producto</p>
+          <p class="eyebrow">Ficha premium</p>
           <h2 id="detail-name">Producto</h2>
         </div>
         <button class="icon-btn" onclick="closeDetailModal()" aria-label="Cerrar">✕</button>
       </div>
 
-      <div class="detail-gallery">
-        <img id="detail-main-img" class="detail-main-img" alt="Imagen principal del producto">
+      <div class="detail-gallery detail-gallery-luxe">
+        <div class="detail-hero">
+          <img id="detail-main-img" class="detail-main-img" alt="Imagen principal del producto">
+          <div class="detail-image-counter" id="detail-image-counter">1 / 1</div>
+        </div>
         <div class="detail-thumbs" id="detail-thumbs"></div>
       </div>
 
-      <div class="detail-meta">
+      <div class="detail-meta detail-meta-luxe">
         <div class="detail-price" id="detail-price">Lps. 0.00</div>
         <div class="detail-tags">
           <span class="tag" id="detail-category">Categoría</span>
@@ -222,9 +284,37 @@
         </div>
       </div>
 
-      <div class="detail-actions">
-        <button class="btn-primary" id="detail-edit-btn">Editar</button>
-        <button class="btn-secondary" id="detail-delete-btn">Eliminar</button>
+      <div class="detail-summary-grid">
+        <article class="detail-summary-card">
+          <span>Precio</span>
+          <strong id="detail-summary-price">Lps. 0.00</strong>
+        </article>
+        <article class="detail-summary-card">
+          <span>Unidades</span>
+          <strong id="detail-summary-stock">0</strong>
+        </article>
+        <article class="detail-summary-card">
+          <span>Categoría</span>
+          <strong id="detail-summary-category">General</strong>
+        </article>
+      </div>
+
+      <div class="detail-stock-toolbar glass-panel">
+        <div>
+          <p class="detail-toolbar-title">Ajuste rápido de stock</p>
+          <small>Actualiza desde esta misma ficha</small>
+        </div>
+        <div class="detail-stock-actions">
+          <button type="button" onclick="quickAdjustDetailStock(-1)">−</button>
+          <button type="button" onclick="quickAdjustDetailStock(1)">＋</button>
+        </div>
+      </div>
+
+      <div class="detail-meta-note" id="detail-meta-note">Código interno</div>
+
+      <div class="detail-actions detail-actions-luxe">
+        <button class="btn-primary" id="detail-edit-btn">Editar producto</button>
+        <button class="btn-secondary" id="detail-delete-btn">Eliminar producto</button>
       </div>
     </div>
   </div>

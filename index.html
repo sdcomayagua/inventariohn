@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>SD Comayagua | Inventario</title>
-  <meta name="description" content="Panel premium de inventario para SD Comayagua, optimizado para celular y GitHub Pages.">
-  <meta name="theme-color" content="#081120">
+  <title>Tienda Gamer | Acceso</title>
+  <meta name="description" content="Tienda Gamer: acceso admin premium optimizado para celular y GitHub Pages.">
+  <meta name="theme-color" content="#0b0f16">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="icon" type="image/png" href="icon-192.png">
@@ -13,20 +13,12 @@
 </head>
 <body class="theme-dark login-page">
   <main class="login-shell">
-    <section class="login-panel glass-panel">
-      <div class="brand-lockup">
-        <div class="brand-mark">SD</div>
-        <div>
-          <p class="eyebrow">Inventario privado</p>
-          <h1>SD Comayagua</h1>
-          <p class="support-copy">Diseño móvil premium tipo app, pensado para administrar stock con estilo profesional.</p>
+    <section class="login-panel glass-panel login-panel-minimal">
+      <div class="brand-lockup brand-lockup-clean brand-lockup-minimal">
+        <div class="brand-copy">
+          <h1>Tienda Gamer</h1>
+          <p class="support-copy">Acceso admin</p>
         </div>
-      </div>
-
-      <div class="login-badges">
-        <span class="mini-badge">Seguro</span>
-        <span class="mini-badge">GitHub Pages</span>
-        <span class="mini-badge">Optimizado para celular</span>
       </div>
 
       <div class="field-group">
@@ -39,11 +31,10 @@
         <input id="inv-pass" type="password" autocomplete="current-password" placeholder="Ingresa tu contraseña">
       </div>
 
-      <button class="btn-primary" onclick="invLogin()">Entrar al panel</button>
+      <button class="btn-primary" onclick="invLogin()">Entrar</button>
 
-      <div class="login-footer-row">
+      <div class="login-footer-row login-footer-row-minimal">
         <button class="btn-ghost" type="button" id="theme-toggle" onclick="toggleTheme()">Tema claro</button>
-        <p class="login-note">Acceso para administradores autorizados</p>
       </div>
     </section>
   </main>

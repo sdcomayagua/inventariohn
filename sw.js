@@ -1,4 +1,4 @@
-const CACHE_NAME = "sd-inventario-premium-v2";
+const CACHE_NAME = "tienda-gamer-premium-v4";
 const ASSETS = [
   "./",
   "index.html",

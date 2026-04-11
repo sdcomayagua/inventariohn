@@ -177,7 +177,7 @@ function setupHeader() {
   const role = document.getElementById("inv-role");
   const avatar = document.getElementById("inv-avatar");
 
-  if (welcome) welcome.textContent = `Hola, ${CURRENT_USER.alias}`;
+  if (welcome) welcome.textContent = `Sesión: ${CURRENT_USER.alias}`;
   if (role) role.textContent = CURRENT_USER.role;
   if (avatar) avatar.textContent = CURRENT_USER.initials;
 }

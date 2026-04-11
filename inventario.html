@@ -3,23 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>SD Comayagua | Panel de Inventario</title>
-  <meta name="description" content="Panel premium de inventario con diseño tipo app para SD Comayagua.">
-  <meta name="theme-color" content="#081120">
+  <title>Tienda Gamer | Admin</title>
+  <meta name="description" content="Tienda Gamer: panel admin premium con estética tipo app para celular.">
+  <meta name="theme-color" content="#0b0f16">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="icon" type="image/png" href="icon-192.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-dark app-page">
-  <div class="app-shell">
-    <header class="app-header glass-panel">
-      <div class="brand-row">
-        <div class="brand-mark small" id="inv-avatar">SD</div>
+  <div class="app-shell app-shell-admin">
+    <header class="app-header glass-panel app-store-topbar">
+      <div class="brand-row brand-row-admin">
+        <div class="user-chip" id="inv-avatar">SD</div>
         <div>
-          <p class="eyebrow">Panel de inventario</p>
-          <h1 class="app-title">SD Comayagua</h1>
-          <p class="app-subtitle" id="inv-welcome">Hola</p>
+          <h1 class="app-title">Tienda Gamer</h1>
+          <p class="app-subtitle" id="inv-welcome">Admin</p>
         </div>
       </div>
       <div class="header-tools">
@@ -28,19 +27,12 @@
       </div>
     </header>
 
-    <section class="hero-card glass-panel" id="inicio">
-      <div>
-        <p class="eyebrow">Resumen en tiempo real</p>
-        <h2>Controla tu inventario desde el celular</h2>
-        <p class="hero-copy">Un panel más limpio, más serio y más cómodo para revisar stock, buscar productos y abrir detalles como si fuera una app.</p>
-      </div>
-      <div class="hero-pills">
-        <span class="hero-pill" id="inv-role">Administrador</span>
-        <span class="hero-pill" id="hero-date">Hoy</span>
-      </div>
+    <section class="admin-strip">
+      <span class="hero-pill" id="inv-role">Administrador</span>
+      <span class="mini-badge">Panel admin</span>
     </section>
 
-    <section class="stats-grid">
+    <section class="stats-grid stats-grid-appstore">
       <article class="stat-card glass-panel">
         <span>Total productos</span>
         <strong id="dash-total-products">0</strong>
@@ -50,7 +42,7 @@
         <strong id="dash-total-qty">0</strong>
       </article>
       <article class="stat-card glass-panel accent">
-        <span>Valor estimado</span>
+        <span>Valor</span>
         <strong id="dash-total-value">0.00</strong>
       </article>
       <article class="stat-card glass-panel warn">
@@ -59,20 +51,18 @@
       </article>
     </section>
 
-    <section class="toolbar-stack" id="productos">
-      <div class="search-card glass-panel">
-        <label class="toolbar-label" for="inv-search">Buscar producto</label>
-        <input id="inv-search" class="search-input" placeholder="Nombre o categoría">
+    <section class="toolbar-stack toolbar-stack-app" id="productos">
+      <div class="search-card glass-panel search-card-appstore">
+        <input id="inv-search" class="search-input" placeholder="Buscar producto o categoría">
       </div>
 
-      <div class="action-scroller">
-        <button class="action-chip active" onclick="scrollToSection('productos')">Productos</button>
-        <button class="action-chip" onclick="invOpenModal(false)">Agregar</button>
-        <button class="action-chip" onclick="loadProducts(true)">Recargar</button>
-        <button class="action-chip" id="install-btn" style="display:none;" onclick="installApp()">Instalar app</button>
+      <div class="action-scroller action-scroller-appstore">
+        <button class="action-chip active" onclick="invOpenModal(false)">Agregar</button>
+        <button class="action-chip" onclick="loadProducts(true)">Actualizar</button>
+        <button class="action-chip" id="install-btn" style="display:none;" onclick="installApp()">Instalar</button>
       </div>
 
-      <div class="filter-grid glass-panel">
+      <div class="filter-grid glass-panel filter-grid-appstore">
         <div class="field-group inline">
           <label for="inv-filter">Categoría</label>
           <select id="inv-filter">
@@ -122,47 +112,28 @@
       </div>
     </section>
 
-    <section>
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Catálogo</p>
-          <h3 class="section-title">Productos</h3>
-        </div>
+    <section class="catalog-section">
+      <div class="section-head section-head-clean">
+        <h3 class="section-title">Productos</h3>
         <span class="results-count" id="results-count">0 resultados</span>
       </div>
       <div class="products-list" id="inv-products"></div>
       <div class="empty-state glass-panel" id="inv-empty" style="display:none;">
         <div class="empty-icon">◌</div>
-        <h3>No encontramos productos</h3>
-        <p>Prueba cambiando los filtros o agrega un producto nuevo.</p>
+        <h3>Sin productos</h3>
+        <p>Agrega un producto nuevo para comenzar.</p>
       </div>
       <div class="pagination" id="inv-pagination"></div>
     </section>
 
-    <section class="history-card glass-panel" id="historial">
-      <div class="section-head compact">
-        <div>
-          <p class="eyebrow">Actividad</p>
-          <h3 class="section-title">Historial reciente</h3>
-        </div>
-      </div>
-      <ul id="inv-history-list"></ul>
-    </section>
-
-    <button class="fab-add" onclick="invOpenModal(false)" aria-label="Agregar producto">＋</button>
-
-    <nav class="bottom-nav glass-panel" aria-label="Navegación principal">
-      <button onclick="scrollToSection('inicio')">Inicio</button>
-      <button onclick="scrollToSection('productos')">Productos</button>
-      <button onclick="scrollToSection('historial')">Historial</button>
-    </nav>
+    <button class="fab-add" onclick="invOpenModal(false)" aria-label="Agregar producto">+</button>
   </div>
 
   <div class="modal" id="inv-modal">
     <div class="modal-content modal-form">
       <div class="modal-head">
         <div>
-          <p class="eyebrow">Administrador</p>
+          <p class="eyebrow">Catálogo</p>
           <h2 id="inv-modal-title">Agregar producto</h2>
         </div>
         <button class="icon-btn" onclick="invCloseModal()" aria-label="Cerrar">✕</button>
@@ -232,7 +203,7 @@
     <div class="modal-content modal-viewer">
       <div class="modal-head">
         <div>
-          <p class="eyebrow">Vista del producto</p>
+          <p class="eyebrow">Detalle del producto</p>
           <h2 id="detail-name">Producto</h2>
         </div>
         <button class="icon-btn" onclick="closeDetailModal()" aria-label="Cerrar">✕</button>

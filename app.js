@@ -1,180 +1,106 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbyL-7yiraIZB0f0xqA5axDv-emMYCyNcT66mhOQ7sjxyDVeF2KWijPxm49VMhT3lxQ/exec";
-const STORAGE_KEYS = {
-  session: "invSession",
-  theme: "invTheme"
-};
 
 const USERS = {
   sdcomayagua: {
     password: "199311",
-    name: "SD Comayagua",
-    alias: "SDC",
+    name: "Gabriel",
+    alias: "SDC Admin",
     role: "Administrador principal",
-    avatar: "SD"
+    initials: "SD"
   },
   jarco: {
     password: "jarco",
     name: "JarCo",
     alias: "JarCo",
     role: "Administrador",
-    avatar: "JC"
+    initials: "JC"
   }
 };
+
+const money = new Intl.NumberFormat("es-HN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
 
 let PRODUCTS = [];
 let FILTERED = [];
 let CURRENT_PAGE = 1;
-let ITEMS_PER_PAGE = 8;
-let EDITING_ID = null;
+let ITEMS_PER_PAGE = 12;
 let CURRENT_USER = null;
-let TOAST_TIMER = null;
-
-function isInventoryPage() {
-  return window.location.pathname.includes("inventario.html");
-}
+let EDITING_ID = null;
+let INSTALL_PROMPT = null;
 
 function getSession() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.session) || "null");
+    return JSON.parse(localStorage.getItem("invSession") || "null");
   } catch {
     return null;
   }
 }
 
-function saveSession(session) {
-  localStorage.setItem(STORAGE_KEYS.session, JSON.stringify(session));
+function saveSession(username) {
+  const user = USERS[username];
+  localStorage.setItem("invSession", JSON.stringify({ username, ...user }));
 }
 
-function showToast(message, isError = false) {
-  const toast = document.getElementById("toast");
-  if (!toast) return;
-
-  toast.textContent = message;
-  toast.style.background = isError ? "rgba(127, 29, 29, 0.95)" : "rgba(15, 23, 42, 0.94)";
-  toast.classList.add("show");
-
-  if (TOAST_TIMER) clearTimeout(TOAST_TIMER);
-  TOAST_TIMER = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2400);
-}
-
-function formatCurrency(value) {
-  const amount = Number(value || 0);
-  return `L ${amount.toLocaleString("es-HN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function normalizeImages(rawImages) {
-  try {
-    const parsed = JSON.parse(rawImages || "[]");
-    return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
-  } catch {
-    return [];
-  }
+function clearSession() {
+  localStorage.removeItem("invSession");
 }
 
 function invLogin() {
-  const userInput = document.getElementById("login-user");
-  const passInput = document.getElementById("login-pass");
+  const userInput = document.getElementById("inv-user");
+  const passInput = document.getElementById("inv-pass");
   if (!userInput || !passInput) return;
 
   const username = userInput.value.trim().toLowerCase();
   const password = passInput.value.trim();
+  const record = USERS[username];
 
-  let session = null;
-
-  if (USERS[username] && USERS[username].password === password) {
-    const found = USERS[username];
-    session = {
-      username,
-      name: found.name,
-      alias: found.alias,
-      role: found.role,
-      avatar: found.avatar
-    };
-  }
-
-  if (!session) {
-    if (password === "199311") {
-      session = {
-        username: "sdcomayagua",
-        name: USERS.sdcomayagua.name,
-        alias: USERS.sdcomayagua.alias,
-        role: USERS.sdcomayagua.role,
-        avatar: USERS.sdcomayagua.avatar
-      };
-    } else if (password === "123456") {
-      session = {
-        username: "jarco",
-        name: USERS.jarco.name,
-        alias: USERS.jarco.alias,
-        role: USERS.jarco.role,
-        avatar: USERS.jarco.avatar
-      };
-    }
-  }
-
-  if (!session) {
-    showToast("Credenciales incorrectas.", true);
+  if (!record || record.password !== password) {
+    alert("Usuario o contraseña incorrectos.");
     return;
   }
 
-  saveSession(session);
-  showToast("Acceso concedido.");
+  saveSession(username);
   window.location.href = "inventario.html";
 }
 
 function invLogout() {
-  localStorage.removeItem(STORAGE_KEYS.session);
+  clearSession();
   window.location.href = "index.html";
 }
 
-function applySavedTheme() {
-  const saved = localStorage.getItem(STORAGE_KEYS.theme) || "dark";
-  document.body.classList.toggle("theme-light", saved === "light");
-  document.body.classList.toggle("theme-dark", saved !== "light");
-
-  const btn = document.getElementById("theme-toggle");
-  if (btn) {
-    btn.textContent = saved === "light" ? "Modo oscuro" : "Modo claro";
-  }
-}
-
 function toggleTheme() {
-  const isLight = document.body.classList.contains("theme-light");
-  const next = isLight ? "dark" : "light";
-  localStorage.setItem(STORAGE_KEYS.theme, next);
-  applySavedTheme();
+  const body = document.body;
+  const next = body.classList.contains("theme-dark") ? "light" : "dark";
+  body.classList.remove("theme-dark", "theme-light");
+  body.classList.add(`theme-${next}`);
+  localStorage.setItem("invTheme", next);
+  updateThemeControls();
 }
 
-function setupAuthPage() {
-  const session = getSession();
-  if (session && !isInventoryPage()) {
-    const userInput = document.getElementById("login-user");
-    if (userInput) userInput.value = session.username || "";
+function applySavedTheme() {
+  const saved = localStorage.getItem("invTheme") || "dark";
+  document.body.classList.remove("theme-dark", "theme-light");
+  document.body.classList.add(`theme-${saved}`);
+  updateThemeControls();
+}
+
+function updateThemeControls() {
+  const isDark = document.body.classList.contains("theme-dark");
+  const btn = document.getElementById("theme-toggle");
+  if (!btn) return;
+
+  if (window.location.pathname.includes("inventario.html")) {
+    btn.textContent = isDark ? "☀️" : "🌙";
+  } else {
+    btn.textContent = isDark ? "Tema claro" : "Tema oscuro";
   }
-
-  ["login-user", "login-pass"].forEach((id) => {
-    const input = document.getElementById(id);
-    if (!input) return;
-    input.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") invLogin();
-    });
-  });
 }
 
-function ensureSessionOnInventory() {
+function ensureAuthenticated() {
   const session = getSession();
-  if (!session) {
+  if (!session || !USERS[session.username]) {
     window.location.href = "index.html";
     return false;
   }
@@ -182,221 +108,288 @@ function ensureSessionOnInventory() {
   return true;
 }
 
-function setupHeader() {
-  if (!CURRENT_USER) return;
+function setupLoginPage() {
+  applySavedTheme();
+  registerCoreEvents();
+  const existing = getSession();
+  if (existing && USERS[existing.username]) {
+    window.location.href = "inventario.html";
+  }
 
-  const avatar = document.getElementById("inv-avatar");
+  const user = document.getElementById("inv-user");
+  const pass = document.getElementById("inv-pass");
+  [user, pass].forEach((el) => {
+    if (!el) return;
+    el.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") invLogin();
+    });
+  });
+}
+
+function setupAppPage() {
+  if (!ensureAuthenticated()) return;
+  applySavedTheme();
+  registerCoreEvents();
+  setupHeader();
+  bindFilters();
+  setHeroDate();
+  loadProducts();
+}
+
+function registerCoreEvents() {
+  registerServiceWorker();
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    INSTALL_PROMPT = event;
+    const btn = document.getElementById("install-btn");
+    if (btn) btn.style.display = "inline-flex";
+  });
+}
+
+async function installApp() {
+  if (!INSTALL_PROMPT) return;
+  INSTALL_PROMPT.prompt();
+  await INSTALL_PROMPT.userChoice;
+  INSTALL_PROMPT = null;
+  const btn = document.getElementById("install-btn");
+  if (btn) btn.style.display = "none";
+}
+
+function registerServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+}
+
+function setHeroDate() {
+  const el = document.getElementById("hero-date");
+  if (!el) return;
+  const now = new Date();
+  el.textContent = now.toLocaleDateString("es-HN", {
+    day: "2-digit",
+    month: "short"
+  });
+}
+
+function setupHeader() {
   const welcome = document.getElementById("inv-welcome");
   const role = document.getElementById("inv-role");
-  const heroStatus = document.getElementById("hero-status");
+  const avatar = document.getElementById("inv-avatar");
 
-  if (avatar) avatar.textContent = CURRENT_USER.avatar || "SD";
-  if (welcome) welcome.textContent = `${CURRENT_USER.name} · ${CURRENT_USER.alias}`;
+  if (welcome) welcome.textContent = `Hola, ${CURRENT_USER.alias}`;
   if (role) role.textContent = CURRENT_USER.role;
-  if (heroStatus) heroStatus.textContent = "Consulta stock, filtra categorías y actualiza productos de forma más rápida desde tu teléfono.";
+  if (avatar) avatar.textContent = CURRENT_USER.initials;
 }
 
-async function loadProducts() {
-  setLoadingState(true);
+function bindFilters() {
+  ["inv-filter", "inv-stock-filter", "inv-sort"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("change", applyFilters);
+  });
 
+  ["inv-min-price", "inv-max-price", "inv-search"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("input", applyFilters);
+  });
+
+  const itemsPerPage = document.getElementById("inv-items-per-page");
+  if (itemsPerPage) ITEMS_PER_PAGE = parseInt(itemsPerPage.value || "12", 10);
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function parseImages(raw) {
   try {
-    const response = await fetch(`${API_URL}?action=get`, { cache: "no-store" });
-    if (!response.ok) throw new Error("No se pudo consultar el inventario.");
+    const parsed = JSON.parse(raw || "[]");
+    return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+  } catch {
+    return [];
+  }
+}
 
-    const data = await response.json();
+function getProductById(id) {
+  return PRODUCTS.find((item) => String(item.id) === String(id));
+}
+
+function showLoading(show, label = "Cargando...") {
+  let overlay = document.getElementById("loading-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "loading-overlay";
+    overlay.className = "loading-overlay";
+    overlay.innerHTML = `
+      <div class="loading-box glass-panel">
+        <div class="spinner"></div>
+        <div id="loading-text">${escapeHtml(label)}</div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  }
+
+  const text = document.getElementById("loading-text");
+  if (text) text.textContent = label;
+  overlay.style.display = show ? "grid" : "none";
+}
+
+async function loadProducts(showRefreshFeedback = false) {
+  if (showRefreshFeedback) showLoading(true, "Actualizando inventario...");
+  try {
+    const res = await fetch(`${API_URL}?action=get`, { cache: "no-store" });
+    const data = await res.json();
     PRODUCTS = Array.isArray(data.products) ? data.products : [];
     FILTERED = [...PRODUCTS];
-
-    loadCategories();
-    applyFilters();
     updateDashboard();
-    renderHistory(Array.isArray(data.history) ? data.history : []);
+    loadCategories();
+    renderHistory(data.history || []);
+    applyFilters();
   } catch (error) {
     console.error(error);
-    PRODUCTS = [];
-    FILTERED = [];
-    renderProducts();
-    renderHistory([]);
-    updateDashboard();
-    showToast("No se pudieron cargar los productos.", true);
+    alert("No se pudieron cargar los productos.");
   } finally {
-    setLoadingState(false);
+    showLoading(false);
   }
 }
 
-function setLoadingState(isLoading) {
-  const heroStatus = document.getElementById("hero-status");
-  if (heroStatus && isLoading) {
-    heroStatus.textContent = "Cargando productos del inventario...";
-  } else if (heroStatus) {
-    heroStatus.textContent = `${PRODUCTS.length} productos sincronizados y listos para administrar.`;
-  }
+function updateDashboard() {
+  const totalProducts = PRODUCTS.length;
+  const totalQty = PRODUCTS.reduce((sum, product) => sum + Number(product.qty || 0), 0);
+  const totalValue = PRODUCTS.reduce((sum, product) => sum + (Number(product.qty || 0) * Number(product.price || 0)), 0);
+  const outCount = PRODUCTS.filter((product) => Number(product.qty || 0) <= 0).length;
+
+  setText("dash-total-products", totalProducts);
+  setText("dash-total-qty", totalQty);
+  setText("dash-total-value", `Lps. ${money.format(totalValue)}`);
+  setText("dash-out-count", outCount);
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
 }
 
 function loadCategories() {
   const select = document.getElementById("inv-filter");
   if (!select) return;
-
-  const currentValue = select.value || "all";
-  const categories = [...new Set(PRODUCTS.map((product) => (product.category || "").trim()).filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, "es"));
-
-  select.innerHTML = `<option value="all">Todas</option>`;
+  const categories = [...new Set(PRODUCTS.map((p) => String(p.category || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  const current = select.value || "all";
+  select.innerHTML = '<option value="all">Todas</option>';
   categories.forEach((category) => {
     const option = document.createElement("option");
     option.value = category;
     option.textContent = category;
     select.appendChild(option);
   });
-
-  if ([...select.options].some((option) => option.value === currentValue)) {
-    select.value = currentValue;
-  }
+  select.value = categories.includes(current) ? current : "all";
 }
 
 function applyFilters() {
   const category = document.getElementById("inv-filter")?.value || "all";
   const stock = document.getElementById("inv-stock-filter")?.value || "all";
-  const minPriceValue = document.getElementById("inv-min-price")?.value || "";
-  const maxPriceValue = document.getElementById("inv-max-price")?.value || "";
+  const minPrice = parseFloat(document.getElementById("inv-min-price")?.value || "");
+  const maxPrice = parseFloat(document.getElementById("inv-max-price")?.value || "");
   const search = (document.getElementById("inv-search")?.value || "").trim().toLowerCase();
-  const sort = document.getElementById("inv-sort")?.value || "name";
-
-  const minPrice = minPriceValue === "" ? null : Number(minPriceValue);
-  const maxPrice = maxPriceValue === "" ? null : Number(maxPriceValue);
+  const sort = document.getElementById("inv-sort")?.value || "featured";
 
   FILTERED = PRODUCTS.filter((product) => {
-    const name = String(product.name || "");
-    const categoryText = String(product.category || "");
-    const price = Number(product.price || 0);
+    const name = String(product.name || "").toLowerCase();
+    const productCategory = String(product.category || "");
+    const productPrice = Number(product.price || 0);
     const qty = Number(product.qty || 0);
-    const lookup = `${name} ${categoryText}`.toLowerCase();
 
-    if (category !== "all" && categoryText !== category) return false;
+    if (category !== "all" && productCategory !== category) return false;
     if (stock === "in" && qty <= 0) return false;
     if (stock === "out" && qty > 0) return false;
-    if (minPrice !== null && price < minPrice) return false;
-    if (maxPrice !== null && price > maxPrice) return false;
-    if (search && !lookup.includes(search)) return false;
+    if (!Number.isNaN(minPrice) && document.getElementById("inv-min-price")?.value !== "" && productPrice < minPrice) return false;
+    if (!Number.isNaN(maxPrice) && document.getElementById("inv-max-price")?.value !== "" && productPrice > maxPrice) return false;
+    if (search) {
+      const haystack = `${name} ${String(product.category || "").toLowerCase()}`;
+      if (!haystack.includes(search)) return false;
+    }
     return true;
   });
 
   FILTERED.sort((a, b) => {
-    if (sort === "price") return Number(a.price || 0) - Number(b.price || 0);
-    if (sort === "qty") return Number(a.qty || 0) - Number(b.qty || 0);
-    return String(a.name || "").localeCompare(String(b.name || ""), "es");
+    if (sort === "name") return String(a.name || "").localeCompare(String(b.name || ""));
+    if (sort === "priceAsc") return Number(a.price || 0) - Number(b.price || 0);
+    if (sort === "priceDesc") return Number(b.price || 0) - Number(a.price || 0);
+    if (sort === "qtyAsc") return Number(a.qty || 0) - Number(b.qty || 0);
+    if (sort === "qtyDesc") return Number(b.qty || 0) - Number(a.qty || 0);
+    return Number(b.qty || 0) - Number(a.qty || 0) || Number(a.price || 0) - Number(b.price || 0);
   });
 
   CURRENT_PAGE = 1;
   renderProducts();
-  updateResultsInfo();
-}
-
-function updateResultsInfo() {
-  const resultChip = document.getElementById("result-chip");
-  const resultsInfo = document.getElementById("results-info");
-
-  const total = FILTERED.length;
-  if (resultChip) resultChip.textContent = `${total} resultado${total === 1 ? "" : "s"}`;
-  if (resultsInfo) resultsInfo.textContent = `Mostrando ${total} producto${total === 1 ? "" : "s"}`;
-}
-
-function updateDashboard() {
-  const totalProducts = PRODUCTS.length;
-  const totalQty = PRODUCTS.reduce((acc, item) => acc + Number(item.qty || 0), 0);
-  const totalValue = PRODUCTS.reduce((acc, item) => acc + (Number(item.qty || 0) * Number(item.price || 0)), 0);
-  const outCount = PRODUCTS.filter((item) => Number(item.qty || 0) <= 0).length;
-
-  setText("dash-total-products", totalProducts.toLocaleString("es-HN"));
-  setText("dash-total-qty", totalQty.toLocaleString("es-HN"));
-  setText("dash-total-value", formatCurrency(totalValue));
-  setText("dash-out-count", outCount.toLocaleString("es-HN"));
-}
-
-function setText(id, value) {
-  const element = document.getElementById(id);
-  if (element) element.textContent = value;
 }
 
 function renderProducts() {
   const container = document.getElementById("inv-products");
-  const emptyState = document.getElementById("empty-state");
+  const empty = document.getElementById("inv-empty");
+  const results = document.getElementById("results-count");
   if (!container) return;
 
   container.innerHTML = "";
+  setText("results-count", `${FILTERED.length} resultado${FILTERED.length === 1 ? "" : "s"}`);
 
-  const totalPages = Math.max(1, Math.ceil(FILTERED.length / ITEMS_PER_PAGE));
-  if (CURRENT_PAGE > totalPages) CURRENT_PAGE = totalPages;
-
-  const start = (CURRENT_PAGE - 1) * ITEMS_PER_PAGE;
-  const pageItems = FILTERED.slice(start, start + ITEMS_PER_PAGE);
-
-  if (!pageItems.length) {
-    if (emptyState) emptyState.hidden = false;
+  if (FILTERED.length === 0) {
+    if (empty) empty.style.display = "block";
     renderPagination();
     return;
   }
 
-  if (emptyState) emptyState.hidden = true;
+  if (empty) empty.style.display = "none";
+
+  const start = (CURRENT_PAGE - 1) * ITEMS_PER_PAGE;
+  const pageItems = FILTERED.slice(start, start + ITEMS_PER_PAGE);
 
   pageItems.forEach((product) => {
-    const images = normalizeImages(product.images);
-    const mainImage = images[0] || "";
-    const quantity = Number(product.qty || 0);
-    const inStock = quantity > 0;
-
+    const images = parseImages(product.images);
+    const mainImage = images[0] || "https://via.placeholder.com/700x700?text=Sin+imagen";
     const card = document.createElement("article");
-    card.className = "product-card";
-
-    const safeName = escapeHtml(product.name || "Sin nombre");
-    const safeCategory = escapeHtml(product.category || "Sin categoría");
+    card.className = "product-card glass-panel";
 
     card.innerHTML = `
       <div class="product-media">
-        ${mainImage ? `<img src="${mainImage}" alt="${safeName}">` : `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800' viewBox='0 0 800 800'%3E%3Crect width='800' height='800' fill='%23111c33'/%3E%3Ctext x='50%25' y='50%25' fill='%2394a3b8' font-family='Arial' font-size='34' text-anchor='middle'%3ESin imagen%3C/text%3E%3C/svg%3E" alt="Sin imagen">`}
-        <button type="button" aria-label="Ver imagen"></button>
-        ${images.length > 1 ? `<span class="thumb-counter">${images.length} fotos</span>` : ""}
+        <span class="product-status ${Number(product.qty || 0) > 0 ? "in" : "out"}">${Number(product.qty || 0) > 0 ? "Disponible" : "Agotado"}</span>
+        <img class="product-main-img" src="${mainImage}" alt="${escapeHtml(product.name || "Producto")}">
       </div>
-
-      <div class="product-top">
-        <div>
-          <h4 class="product-title">${safeName}</h4>
+      ${images.length > 1 ? `
+        <div class="thumb-row">
+          ${images.map((img) => `
+            <button class="thumb-btn" type="button" onclick="swapCardImage(this, '${escapeHtml(img)}')">
+              <img src="${img}" alt="Miniatura">
+            </button>
+          `).join("")}
         </div>
-        <div class="product-price">${formatCurrency(product.price)}</div>
-      </div>
-
-      <div class="product-meta">
-        <span class="category-badge">${safeCategory}</span>
-        <span class="stock-badge ${inStock ? "in-stock" : "out-stock"}">${inStock ? `${quantity} en stock` : "Agotado"}</span>
-      </div>
-
-      <div class="product-divider"></div>
-
-      <div class="stock-control">
+      ` : ""}
+      <div class="product-head">
         <div>
-          <div class="eyebrow">Control de stock</div>
-          <div class="stock-stepper">
-            <button type="button" class="thumb-button decrease">−</button>
-            <span class="stock-value">${quantity}</span>
-            <button type="button" class="thumb-button increase">＋</button>
-          </div>
+          <h3 class="product-name">${escapeHtml(product.name || "Sin nombre")}</h3>
+          <div class="category-pill">${escapeHtml(product.category || "Sin categoría")}</div>
+        </div>
+        <p class="product-price">Lps. ${money.format(Number(product.price || 0))}</p>
+      </div>
+      <div class="price-stock-row">
+        <span class="stock-pill">Stock actual: ${Number(product.qty || 0)}</span>
+        <div class="stock-editor">
+          <button type="button" onclick="updateStock('${String(product.id)}', -1)">−</button>
+          <span class="stock-count">${Number(product.qty || 0)}</span>
+          <button type="button" onclick="updateStock('${String(product.id)}', 1)">＋</button>
         </div>
       </div>
-
-      <div class="product-actions">
-        <button class="btn btn-secondary edit-btn" type="button">Editar</button>
-        <button class="btn btn-secondary delete-btn" type="button">Eliminar</button>
+      <div class="card-actions">
+        <button class="btn-secondary" type="button" onclick="viewProduct('${String(product.id)}')">Ver</button>
+        <button class="btn-secondary" type="button" onclick="startEditById('${String(product.id)}')">Editar</button>
+        <button class="btn-secondary" type="button" onclick="deleteProduct('${String(product.id)}')">Eliminar</button>
       </div>
     `;
-
-    card.querySelector(".product-media button")?.addEventListener("click", () => {
-      if (mainImage) openImageViewer(mainImage);
-    });
-
-    card.querySelector(".decrease")?.addEventListener("click", () => updateStock(product.id, -1));
-    card.querySelector(".increase")?.addEventListener("click", () => updateStock(product.id, 1));
-    card.querySelector(".edit-btn")?.addEventListener("click", () => invOpenModal(true, product));
-    card.querySelector(".delete-btn")?.addEventListener("click", () => deleteProduct(product.id));
 
     container.appendChild(card);
   });
@@ -404,73 +397,212 @@ function renderProducts() {
   renderPagination();
 }
 
+function swapCardImage(button, src) {
+  const card = button.closest(".product-card");
+  const main = card?.querySelector(".product-main-img");
+  if (main) main.src = src;
+}
+
 function renderPagination() {
-  const pagination = document.getElementById("inv-pagination");
-  if (!pagination) return;
+  const container = document.getElementById("inv-pagination");
+  if (!container) return;
 
   const totalPages = Math.max(1, Math.ceil(FILTERED.length / ITEMS_PER_PAGE));
-  pagination.innerHTML = `
-    <span>Página ${CURRENT_PAGE} de ${totalPages}</span>
-    <div class="pager-buttons">
-      <button class="btn btn-secondary btn-sm" type="button" ${CURRENT_PAGE <= 1 ? "disabled" : ""}>Anterior</button>
-      <button class="btn btn-secondary btn-sm" type="button" ${CURRENT_PAGE >= totalPages ? "disabled" : ""}>Siguiente</button>
-    </div>
+  container.innerHTML = `
+    <button type="button" onclick="changePage(-1)">Anterior</button>
+    <span>${CURRENT_PAGE} / ${totalPages}</span>
+    <button type="button" onclick="changePage(1)">Siguiente</button>
   `;
-
-  const buttons = pagination.querySelectorAll("button");
-  buttons[0]?.addEventListener("click", () => changePage(-1));
-  buttons[1]?.addEventListener("click", () => changePage(1));
 }
 
 function changePage(direction) {
   const totalPages = Math.max(1, Math.ceil(FILTERED.length / ITEMS_PER_PAGE));
-  CURRENT_PAGE = Math.min(totalPages, Math.max(1, CURRENT_PAGE + direction));
+  CURRENT_PAGE += direction;
+  if (CURRENT_PAGE < 1) CURRENT_PAGE = 1;
+  if (CURRENT_PAGE > totalPages) CURRENT_PAGE = totalPages;
   renderProducts();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  scrollToSection("productos");
 }
 
 function invChangeItemsPerPage() {
-  const value = Number(document.getElementById("inv-items-per-page")?.value || 8);
+  const value = parseInt(document.getElementById("inv-items-per-page")?.value || "12", 10);
   ITEMS_PER_PAGE = value;
   CURRENT_PAGE = 1;
   renderProducts();
 }
 
-function clearFilters() {
-  const defaults = {
-    "inv-filter": "all",
-    "inv-stock-filter": "all",
-    "inv-min-price": "",
-    "inv-max-price": "",
-    "inv-search": "",
-    "inv-sort": "name"
-  };
-
-  Object.entries(defaults).forEach(([id, value]) => {
-    const element = document.getElementById(id);
-    if (element) element.value = value;
-  });
-
-  applyFilters();
+async function updateStock(id, change) {
+  try {
+    showLoading(true, "Actualizando stock...");
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "stock",
+        id,
+        change,
+        user: CURRENT_USER.alias
+      })
+    });
+    await loadProducts();
+  } catch (error) {
+    console.error(error);
+    alert("No se pudo actualizar el stock.");
+  } finally {
+    showLoading(false);
+  }
 }
 
-function toggleFiltersPanel() {
-  const panel = document.getElementById("filters-panel");
-  if (!panel) return;
-  panel.classList.toggle("is-collapsed");
+function invOpenModal(isEdit = false, product = null) {
+  const modal = document.getElementById("inv-modal");
+  const title = document.getElementById("inv-modal-title");
+  if (!modal || !title) return;
+
+  if (isEdit && product) {
+    EDITING_ID = product.id;
+    title.textContent = "Editar producto";
+    document.getElementById("inv-name").value = product.name || "";
+    document.getElementById("inv-price").value = product.price || "";
+    document.getElementById("inv-qty").value = product.qty || "";
+    document.getElementById("inv-category").value = product.category || "";
+  } else {
+    EDITING_ID = null;
+    title.textContent = "Agregar producto";
+    clearModalFields();
+  }
+
+  modal.style.display = "flex";
+}
+
+function invCloseModal() {
+  document.getElementById("inv-modal").style.display = "none";
+  clearModalFields();
+  EDITING_ID = null;
+}
+
+function clearModalFields() {
+  ["inv-name", "inv-price", "inv-qty", "inv-category"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+
+  for (let i = 1; i <= 5; i += 1) {
+    const input = document.getElementById(`inv-img${i}`);
+    const preview = document.getElementById(`prev${i}`);
+    if (input) input.value = "";
+    if (preview) {
+      preview.src = "";
+      preview.style.display = "none";
+    }
+  }
+}
+
+function startEditById(id) {
+  const product = getProductById(id);
+  if (!product) return;
+  closeDetailModal();
+  invOpenModal(true, product);
+}
+
+function invPreviewImage(input, previewId) {
+  const file = input.files?.[0];
+  const preview = document.getElementById(previewId);
+  if (!preview) return;
+  if (!file) {
+    preview.style.display = "none";
+    preview.src = "";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    preview.src = event.target?.result;
+    preview.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function invSaveProduct() {
+  const name = document.getElementById("inv-name")?.value.trim();
+  const price = parseFloat(document.getElementById("inv-price")?.value || "");
+  const qty = parseInt(document.getElementById("inv-qty")?.value || "", 10);
+  const category = document.getElementById("inv-category")?.value.trim();
+
+  if (!name || Number.isNaN(price) || Number.isNaN(qty) || !category) {
+    alert("Completa nombre, precio, cantidad y categoría.");
+    return;
+  }
+
+  const existingProduct = EDITING_ID ? getProductById(EDITING_ID) : null;
+  const existingImages = existingProduct ? parseImages(existingProduct.images) : [];
+  const newImages = [];
+
+  for (let i = 1; i <= 5; i += 1) {
+    const input = document.getElementById(`inv-img${i}`);
+    if (input?.files?.length) {
+      newImages.push(await fileToBase64(input.files[0]));
+    }
+  }
+
+  const payload = {
+    action: EDITING_ID ? "edit" : "add",
+    id: EDITING_ID,
+    name,
+    price,
+    qty,
+    category,
+    images: JSON.stringify(newImages.length ? newImages : existingImages),
+    user: CURRENT_USER.alias
+  };
+
+  try {
+    showLoading(true, EDITING_ID ? "Guardando cambios..." : "Agregando producto...");
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+    invCloseModal();
+    await loadProducts();
+  } catch (error) {
+    console.error(error);
+    alert("No se pudo guardar el producto.");
+  } finally {
+    showLoading(false);
+  }
+}
+
+async function deleteProduct(id) {
+  if (!confirm("¿Eliminar este producto?")) return;
+  try {
+    showLoading(true, "Eliminando producto...");
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "delete", id, user: CURRENT_USER.alias })
+    });
+    closeDetailModal();
+    await loadProducts();
+  } catch (error) {
+    console.error(error);
+    alert("No se pudo eliminar el producto.");
+  } finally {
+    showLoading(false);
+  }
 }
 
 function renderHistory(history) {
   const list = document.getElementById("inv-history-list");
   if (!list) return;
-
   list.innerHTML = "";
-  const items = history.slice(0, 20);
-
+  const items = Array.isArray(history) ? history.slice(0, 30) : [];
   if (!items.length) {
-    const li = document.createElement("li");
-    li.textContent = "Aún no hay movimientos recientes para mostrar.";
-    list.appendChild(li);
+    list.innerHTML = '<li>No hay movimientos recientes todavía.</li>';
     return;
   }
 
@@ -481,238 +613,62 @@ function renderHistory(history) {
   });
 }
 
-function invOpenModal(isEdit = false, product = null) {
+function viewProduct(id) {
+  const product = getProductById(id);
+  const modal = document.getElementById("detail-modal");
+  if (!product || !modal) return;
+
+  const images = parseImages(product.images);
+  const mainImage = images[0] || "https://via.placeholder.com/700x700?text=Sin+imagen";
+  const thumbs = document.getElementById("detail-thumbs");
+
+  setText("detail-name", product.name || "Producto");
+  setText("detail-price", `Lps. ${money.format(Number(product.price || 0))}`);
+  setText("detail-category", product.category || "Sin categoría");
+  setText("detail-stock", `Stock: ${Number(product.qty || 0)}`);
+
+  const main = document.getElementById("detail-main-img");
+  if (main) main.src = mainImage;
+
+  if (thumbs) {
+    thumbs.innerHTML = images.map((img) => `
+      <button type="button" class="detail-thumb" onclick="swapDetailImage('${escapeHtml(img)}')">
+        <img src="${img}" alt="Miniatura del producto">
+      </button>
+    `).join("");
+  }
+
+  const editBtn = document.getElementById("detail-edit-btn");
+  const deleteBtn = document.getElementById("detail-delete-btn");
+  if (editBtn) editBtn.onclick = () => startEditById(id);
+  if (deleteBtn) deleteBtn.onclick = () => deleteProduct(id);
+
+  modal.style.display = "flex";
+}
+
+function swapDetailImage(src) {
+  const main = document.getElementById("detail-main-img");
+  if (main) main.src = src;
+}
+
+function closeDetailModal() {
+  const modal = document.getElementById("detail-modal");
+  if (modal) modal.style.display = "none";
+}
+
+function scrollToSection(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+window.addEventListener("click", (event) => {
   const modal = document.getElementById("inv-modal");
-  const title = document.getElementById("inv-modal-title");
-  if (!modal || !title) return;
-
-  clearModalFields();
-
-  if (isEdit && product) {
-    EDITING_ID = product.id;
-    title.textContent = "Editar producto";
-    document.getElementById("inv-name").value = product.name || "";
-    document.getElementById("inv-price").value = product.price || "";
-    document.getElementById("inv-qty").value = product.qty || 0;
-    document.getElementById("inv-category").value = product.category || "";
-  } else {
-    EDITING_ID = null;
-    title.textContent = "Agregar producto";
-  }
-
-  modal.classList.add("is-open");
-  modal.setAttribute("aria-hidden", "false");
-}
-
-function invCloseModal() {
-  const modal = document.getElementById("inv-modal");
-  if (!modal) return;
-
-  modal.classList.remove("is-open");
-  modal.setAttribute("aria-hidden", "true");
-  clearModalFields();
-  EDITING_ID = null;
-}
-
-function clearModalFields() {
-  ["inv-name", "inv-price", "inv-qty", "inv-category"].forEach((id) => {
-    const input = document.getElementById(id);
-    if (input) input.value = "";
-  });
-
-  for (let index = 1; index <= 5; index += 1) {
-    const fileInput = document.getElementById(`inv-img${index}`);
-    const preview = document.getElementById(`prev${index}`);
-    if (fileInput) fileInput.value = "";
-    if (preview) {
-      preview.src = "";
-      preview.style.display = "none";
-    }
-  }
-}
-
-function invPreviewImage(input, previewId) {
-  const file = input.files?.[0];
-  const preview = document.getElementById(previewId);
-  if (!preview) return;
-
-  if (!file) {
-    preview.src = "";
-    preview.style.display = "none";
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    preview.src = event.target?.result || "";
-    preview.style.display = "block";
-  };
-  reader.readAsDataURL(file);
-}
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("No se pudo leer la imagen."));
-    reader.readAsDataURL(file);
-  });
-}
-
-async function invSaveProduct() {
-  const name = document.getElementById("inv-name")?.value.trim();
-  const category = document.getElementById("inv-category")?.value.trim();
-  const price = Number(document.getElementById("inv-price")?.value || 0);
-  const qty = Number(document.getElementById("inv-qty")?.value || 0);
-
-  if (!name || !category || Number.isNaN(price) || Number.isNaN(qty) || price < 0 || qty < 0) {
-    showToast("Completa nombre, categoría, precio y cantidad válidos.", true);
-    return;
-  }
-
-  try {
-    const images = [];
-    for (let index = 1; index <= 5; index += 1) {
-      const input = document.getElementById(`inv-img${index}`);
-      const file = input?.files?.[0];
-      if (file) {
-        const base64 = await fileToBase64(file);
-        images.push(base64);
-      }
-    }
-
-    await postData({
-      action: EDITING_ID ? "edit" : "add",
-      id: EDITING_ID,
-      name,
-      price,
-      qty,
-      category,
-      images: JSON.stringify(images),
-      user: CURRENT_USER?.alias || CURRENT_USER?.name || "ADMIN"
-    });
-
-    invCloseModal();
-    await loadProducts();
-    showToast(EDITING_ID ? "Producto actualizado." : "Producto guardado.");
-  } catch (error) {
-    console.error(error);
-    showToast("No se pudo guardar el producto.", true);
-  }
-}
-
-async function updateStock(id, change) {
-  try {
-    await postData({
-      action: "stock",
-      id,
-      change,
-      user: CURRENT_USER?.alias || CURRENT_USER?.name || "ADMIN"
-    });
-
-    await loadProducts();
-    showToast(change > 0 ? "Stock aumentado." : "Stock disminuido.");
-  } catch (error) {
-    console.error(error);
-    showToast("No se pudo actualizar el stock.", true);
-  }
-}
-
-async function deleteProduct(id) {
-  const confirmed = window.confirm("¿Deseas eliminar este producto?");
-  if (!confirmed) return;
-
-  try {
-    await postData({
-      action: "delete",
-      id,
-      user: CURRENT_USER?.alias || CURRENT_USER?.name || "ADMIN"
-    });
-
-    await loadProducts();
-    showToast("Producto eliminado.");
-  } catch (error) {
-    console.error(error);
-    showToast("No se pudo eliminar el producto.", true);
-  }
-}
-
-async function postData(payload) {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    throw new Error("La operación no pudo completarse.");
-  }
-
-  return response.text();
-}
-
-function openImageViewer(src) {
-  const viewer = document.getElementById("image-viewer");
-  const image = document.getElementById("image-viewer-main");
-  if (!viewer || !image) return;
-
-  image.src = src;
-  viewer.classList.add("is-open");
-  viewer.setAttribute("aria-hidden", "false");
-}
-
-function closeImageViewer() {
-  const viewer = document.getElementById("image-viewer");
-  const image = document.getElementById("image-viewer-main");
-  if (!viewer || !image) return;
-
-  viewer.classList.remove("is-open");
-  viewer.setAttribute("aria-hidden", "true");
-  image.src = "";
-}
-
-function bindInventoryEvents() {
-  ["inv-filter", "inv-stock-filter", "inv-sort"].forEach((id) => {
-    const element = document.getElementById(id);
-    if (element) element.addEventListener("change", applyFilters);
-  });
-
-  ["inv-min-price", "inv-max-price", "inv-search"].forEach((id) => {
-    const element = document.getElementById(id);
-    if (element) element.addEventListener("input", applyFilters);
-  });
-
-  document.getElementById("inv-items-per-page")?.addEventListener("change", invChangeItemsPerPage);
-
-  document.getElementById("inv-modal")?.addEventListener("click", (event) => {
-    if (event.target.id === "inv-modal") invCloseModal();
-  });
-
-  document.getElementById("image-viewer")?.addEventListener("click", (event) => {
-    if (event.target.id === "image-viewer") closeImageViewer();
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      invCloseModal();
-      closeImageViewer();
-    }
-  });
-}
-
-window.addEventListener("load", () => {
-  applySavedTheme();
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch((error) => console.error('SW error:', error));
-  }
-
-  if (isInventoryPage()) {
-    if (!ensureSessionOnInventory()) return;
-    setupHeader();
-    bindInventoryEvents();
-    ITEMS_PER_PAGE = Number(document.getElementById("inv-items-per-page")?.value || 8);
-    loadProducts();
-  } else {
-    setupAuthPage();
-  }
+  const detail = document.getElementById("detail-modal");
+  if (event.target === modal) invCloseModal();
+  if (event.target === detail) closeDetailModal();
 });
+
+if (window.location.pathname.includes("inventario.html")) {
+  window.addEventListener("load", setupAppPage);
+} else {
+  window.addEventListener("load", setupLoginPage);
+}

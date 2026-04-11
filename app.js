@@ -367,48 +367,31 @@ function renderProducts() {
     const images = parseImages(product.images);
     const mainImage = images[0] || getPlaceholderImage("Sin imagen");
     const qty = Number(product.qty || 0);
-    const price = Number(product.price || 0);
-    const imageCount = Math.max(images.length, 1);
-    const stockRatio = Math.min(100, Math.max(8, qty <= 0 ? 8 : Math.round((qty / Math.max(qty, 10)) * 100)));
     const safeId = String(product.id || "");
     const safeName = escapeHtml(product.name || "Sin nombre");
     const safeCategory = escapeHtml(product.category || "Sin categoría");
+    const statusLabel = qty > 0 ? "Disponible" : "Agotado";
 
     const card = document.createElement("article");
-    card.className = "product-card glass-panel product-card-luxe product-card-compact";
+    card.className = "product-card glass-panel product-card-luxe product-card-minimal";
 
     card.innerHTML = `
-      <button class="product-tile" type="button" onclick="viewProduct('${safeId}')" aria-label="Abrir ${safeName}">
-        <div class="product-media product-media-compact">
-          <span class="product-status ${qty > 0 ? "in" : "out"}">${qty > 0 ? "Disponible" : "Agotado"}</span>
-          <span class="product-image-count">${imageCount}</span>
+      <button class="product-tile product-tile-minimal" type="button" onclick="viewProduct('${safeId}')" aria-label="Abrir ${safeName}">
+        <div class="product-media product-media-minimal">
+          <span class="product-status ${qty > 0 ? "in" : "out"}">${statusLabel}</span>
           <img class="product-main-img" src="${mainImage}" alt="${safeName}">
         </div>
-        <div class="product-compact-copy">
-          <h3 class="product-name product-name-compact">${safeName}</h3>
-          <p class="category-pill">${safeCategory}</p>
-          <p class="product-price product-price-compact">Lps. ${money.format(price)}</p>
+
+        <div class="product-minimal-copy">
+          <h3 class="product-name product-name-minimal">${safeName}</h3>
+          <p class="product-meta-line">${qty > 0 ? `Stock: ${qty}` : "Sin existencias"}</p>
+          <p class="product-meta-sub">${safeCategory}</p>
         </div>
       </button>
 
-      <div class="product-card-meta compact">
-        <span class="stock-pill">Stock ${qty}</span>
-        <span class="mini-badge">ID ${escapeHtml(safeId).slice(-4) || '--'}</span>
-      </div>
-
-      <div class="product-stock-progress compact">
-        <span style="width:${stockRatio}%"></span>
-      </div>
-
-      <div class="stock-editor stock-editor-compact">
-        <button type="button" onclick="updateStock('${safeId}', -1)">−</button>
-        <span class="stock-count">${qty}</span>
-        <button type="button" onclick="updateStock('${safeId}', 1)">＋</button>
-      </div>
-
-      <div class="card-actions card-actions-luxe card-actions-compact">
-        <button class="btn-secondary" type="button" onclick="startEditById('${safeId}')">Editar</button>
-        <button class="btn-secondary" type="button" onclick="deleteProduct('${safeId}')">Eliminar</button>
+      <div class="product-admin-actions minimal">
+        <button class="icon-action-btn" type="button" onclick="startEditById('${safeId}')" aria-label="Editar producto">✎</button>
+        <button class="icon-action-btn danger" type="button" onclick="deleteProduct('${safeId}')" aria-label="Eliminar producto">🗑</button>
       </div>
     `;
 
@@ -580,7 +563,13 @@ function fileToBase64(file) {
   });
 }
 
-async function compressImageForUpload(file) {
+function estimateDataUrlBytes(dataUrl = "") {
+  const parts = String(dataUrl).split(",");
+  const payload = parts[1] || "";
+  return Math.ceil((payload.length * 3) / 4);
+}
+
+async function compressImageForUpload(file, options = {}) {
   if (!file?.type?.startsWith("image/")) {
     return fileToBase64(file);
   }
@@ -595,10 +584,14 @@ async function compressImageForUpload(file) {
     image.src = source;
   });
 
-  const maxSide = file.size > 3_000_000 ? 1280 : 1600;
-  const ratio = Math.min(1, maxSide / Math.max(image.width, image.height));
-  let width = Math.max(1, Math.round(image.width * ratio));
-  let height = Math.max(1, Math.round(image.height * ratio));
+  const targetBytes = options.targetBytes || 120_000;
+  const maxSideBySize = file.size > 10_000_000 ? 700 : file.size > 6_000_000 ? 820 : file.size > 3_000_000 ? 960 : 1100;
+
+  let width = image.width;
+  let height = image.height;
+  const firstRatio = Math.min(1, maxSideBySize / Math.max(width, height));
+  width = Math.max(1, Math.round(width * firstRatio));
+  height = Math.max(1, Math.round(height * firstRatio));
 
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d", { alpha: false });
@@ -607,20 +600,24 @@ async function compressImageForUpload(file) {
   const render = (quality) => {
     canvas.width = width;
     canvas.height = height;
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = "#111827";
     ctx.fillRect(0, 0, width, height);
     ctx.drawImage(image, 0, 0, width, height);
     return canvas.toDataURL("image/jpeg", quality);
   };
 
-  let output = render(0.82);
-  if (output.length > 1_500_000) {
-    output = render(0.72);
+  let output = render(0.72);
+  let qualitySteps = [0.62, 0.54, 0.46, 0.38];
+
+  for (const quality of qualitySteps) {
+    if (estimateDataUrlBytes(output) <= targetBytes) break;
+    output = render(quality);
   }
-  if (output.length > 1_500_000) {
-    width = Math.max(900, Math.round(width * 0.85));
-    height = Math.max(900, Math.round(height * 0.85));
-    output = render(0.68);
+
+  while (estimateDataUrlBytes(output) > targetBytes && Math.max(width, height) > 520) {
+    width = Math.max(420, Math.round(width * 0.86));
+    height = Math.max(420, Math.round(height * 0.86));
+    output = render(0.44);
   }
 
   return output;
@@ -674,7 +671,7 @@ async function invSaveProduct() {
     for (let i = 1; i <= 5; i += 1) {
       const input = document.getElementById(`inv-img${i}`);
       if (input?.files?.length) {
-        finalImages.push(await compressImageForUpload(input.files[0]));
+        finalImages.push(await compressImageForUpload(input.files[0], { targetBytes: 120_000 }));
       } else if (CURRENT_EDIT_IMAGES[i - 1]) {
         finalImages.push(CURRENT_EDIT_IMAGES[i - 1]);
       }
@@ -691,12 +688,16 @@ async function invSaveProduct() {
       user: CURRENT_USER.alias
     };
 
+    if (payload.images.length > 700_000) {
+      throw new Error("Las imágenes siguen siendo muy pesadas para el guardado actual.");
+    }
+
     await postToApi(payload);
     invCloseModal();
     await loadProducts();
   } catch (error) {
     console.error(error);
-    alert("No se pudo guardar el producto. Intenta con una foto más liviana o vuelve a probar.");
+    alert("No se pudo guardar el producto. Ahora la app reduce más las fotos, pero si la imagen viene muy pesada intenta con 1 o 2 fotos por producto o una foto menos grande.");
   } finally {
     if (saveBtn) {
       saveBtn.disabled = false;
@@ -754,12 +755,12 @@ function viewProduct(id) {
   setText("detail-name", product.name || "Producto");
   setText("detail-price", priceLabel);
   setText("detail-category", product.category || "Sin categoría");
-  setText("detail-stock", `Stock: ${stockLabel}`);
+  setText("detail-stock", stockLabel > 0 ? `Stock: ${stockLabel}` : "Agotado");
   setText("detail-summary-price", priceLabel);
-  setText("detail-summary-stock", stockLabel);
+  setText("detail-summary-stock", stockLabel > 0 ? stockLabel : "0");
   setText("detail-summary-category", product.category || "Sin categoría");
   setText("detail-image-counter", `1 / ${finalImages.length}`);
-  setText("detail-meta-note", `Código interno · ${String(product.id || "--")} · ${stockLabel > 0 ? "Listo para venta" : "Sin existencias"}`);
+  setText("detail-meta-note", `${stockLabel > 0 ? "Producto disponible" : "Producto agotado"} · Código ${String(product.id || "--")}`);
 
   const main = document.getElementById("detail-main-img");
   if (main) {

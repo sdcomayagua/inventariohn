@@ -2196,3 +2196,149 @@ body.theme-light .lux-dock {
     max-height: min(92vh, 900px);
   }
 }
+
+/* ===== 2026 mobile admin cleanup ===== */
+.products-list,
+.products-list-luxe {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.product-card-minimal {
+  padding: 10px;
+  border-radius: 24px;
+  width: 100%;
+}
+
+.product-tile-minimal {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  text-align: left;
+}
+
+.product-media-minimal {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.05);
+}
+
+.product-minimal-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.product-name-minimal {
+  font-size: 15px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.product-meta-line,
+.product-meta-sub {
+  margin: 0;
+}
+
+.product-meta-line {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.product-meta-sub {
+  font-size: 12px;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.product-admin-actions.minimal {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.icon-action-btn {
+  min-height: 40px;
+  border-radius: 14px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  font-size: 16px;
+}
+
+.icon-action-btn.danger {
+  color: #ffd7db;
+}
+
+.product-status {
+  left: 10px;
+  top: 10px;
+}
+
+.product-status.out {
+  background: rgba(255, 92, 92, 0.95);
+  color: #fff;
+}
+
+.modal-form {
+  padding-bottom: calc(120px + env(safe-area-inset-bottom));
+}
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.image-upload-box {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.image-slot {
+  min-height: 164px;
+}
+
+.upload-btn {
+  width: 100%;
+}
+
+@media (max-width: 380px) {
+  .app-shell,
+  .app-shell-admin,
+  .app-shell-luxe {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .products-list,
+  .products-list-luxe {
+    gap: 10px;
+  }
+
+  .product-card-minimal {
+    padding: 8px;
+  }
+
+  .product-name-minimal {
+    font-size: 14px;
+  }
+}

@@ -2,33 +2,72 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventario SD-Comayagua</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Panel móvil de inventario para SD Comayagua.">
+  <title>Inventario | SD Comayagua</title>
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-dark">
+<body class="theme-dark auth-page">
+  <main class="auth-shell">
+    <section class="auth-intro">
+      <div class="brand-pill glass-soft">
+        <span class="brand-pill-dot"></span>
+        <span>SD Comayagua</span>
+      </div>
 
-<div class="app-wrapper">
-  <div class="login-card glass">
-    <div class="login-logo">
-      <div class="logo-circle"></div>
-      <span>SD-Comayagua</span>
-    </div>
+      <h1>Inventario profesional para administrar desde el celular</h1>
+      <p>
+        Una experiencia más limpia, clara y rápida para revisar productos, stock, precios e historial
+        desde cualquier dispositivo.
+      </p>
 
-    <h1>Panel Gamer de Inventario</h1>
-    <p class="login-subtitle">Acceso solo para administradores autorizados.</p>
+      <div class="auth-feature-list">
+        <article class="feature-card glass-soft">
+          <strong>Diseño móvil</strong>
+          <span>Optimizado para uso táctil y lectura rápida.</span>
+        </article>
+        <article class="feature-card glass-soft">
+          <strong>Control visual</strong>
+          <span>Productos, filtros y métricas en una sola vista.</span>
+        </article>
+        <article class="feature-card glass-soft">
+          <strong>Acceso privado</strong>
+          <span>Ingreso exclusivo para administradores autorizados.</span>
+        </article>
+      </div>
+    </section>
 
-    <div class="field-group">
-      <label for="inv-user">PIN (6 dígitos)</label>
-      <input id="inv-user" type="password" maxlength="6" placeholder="Ingresa tu PIN">
-    </div>
+    <section class="auth-card glass-card">
+      <div class="auth-card-top">
+        <div class="auth-logo">SD</div>
+        <div>
+          <p class="eyebrow">Panel de acceso</p>
+          <h2>Iniciar sesión</h2>
+        </div>
+      </div>
 
-    <button class="btn-primary" onclick="invLogin()">Ingresar</button>
+      <div class="field-group">
+        <label for="login-user">Usuario</label>
+        <input id="login-user" type="text" placeholder="Ej: sdcomayagua">
+      </div>
 
-    <p class="login-hint">Gabriel y JarCo tienen acceso total.</p>
-  </div>
-</div>
+      <div class="field-group">
+        <label for="login-pass">Contraseña</label>
+        <input id="login-pass" type="password" placeholder="Ingresa tu contraseña">
+      </div>
 
-<script src="app.js"></script>
+      <button class="btn btn-primary btn-lg" onclick="invLogin()">Entrar al panel</button>
+
+      <p class="auth-note">
+        Acceso solo para cuentas autorizadas.
+      </p>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="app.js"></script>
 </body>
 </html>

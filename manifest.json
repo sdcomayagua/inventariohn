@@ -1,10 +1,10 @@
 {
-  "name": "Inventario SD-Comayagua",
-  "short_name": "Inventario SD",
-  "start_url": "inventario.html",
+  "name": "Inventario SD Comayagua",
+  "short_name": "SD Inventario",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#0b1020",
-  "theme_color": "#0b1020",
+  "background_color": "#08111f",
+  "theme_color": "#08111f",
   "icons": [
     {
       "src": "icon-192.png",

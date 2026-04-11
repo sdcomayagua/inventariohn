@@ -2,176 +2,239 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventario SD-Comayagua</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Panel profesional de inventario para SD Comayagua.">
+  <title>Panel de Inventario | SD Comayagua</title>
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-dark">
+<body class="theme-dark dashboard-page">
+  <div class="dashboard-shell">
+    <header class="top-header glass-card">
+      <div class="brand-block">
+        <div class="brand-avatar" id="inv-avatar">SD</div>
+        <div>
+          <p class="eyebrow">Inventario en línea</p>
+          <h1>SD Comayagua</h1>
+          <p class="header-subtitle" id="inv-welcome">Hola</p>
+        </div>
+      </div>
 
-<div class="app-wrapper">
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm" id="theme-toggle" onclick="toggleTheme()">Modo claro</button>
+        <button class="btn btn-secondary btn-sm" onclick="invLogout()">Salir</button>
+      </div>
+    </header>
 
-  <header class="main-header glass">
-    <div class="user-info">
-      <div class="avatar" id="inv-avatar">GH</div>
+    <section class="hero-panel glass-card">
       <div>
-        <p class="user-greeting" id="inv-welcome">Hola 👋</p>
-        <p class="user-role" id="inv-role">Administrador</p>
+        <p class="eyebrow">Control móvil</p>
+        <h2>Gestiona inventario con mejor lectura, mejor orden y mejor presencia visual</h2>
+        <p class="hero-copy" id="hero-status">Cargando productos...</p>
       </div>
-    </div>
+      <div class="hero-badges">
+        <span class="hero-badge" id="inv-role">Administrador</span>
+        <span class="hero-badge" id="result-chip">0 resultados</span>
+      </div>
+    </section>
 
-    <div class="header-actions">
-      <button class="btn-secondary small" onclick="toggleTheme()" id="theme-toggle">
-        Modo Día
-      </button>
-      <button class="btn-secondary small" onclick="invLogout()">Cerrar sesión</button>
-    </div>
-  </header>
+    <section class="stats-grid" aria-label="Resumen de inventario">
+      <article class="stat-card glass-card">
+        <span>Total productos</span>
+        <strong id="dash-total-products">0</strong>
+      </article>
+      <article class="stat-card glass-card">
+        <span>Unidades en stock</span>
+        <strong id="dash-total-qty">0</strong>
+      </article>
+      <article class="stat-card glass-card">
+        <span>Valor total</span>
+        <strong id="dash-total-value">L 0.00</strong>
+      </article>
+      <article class="stat-card glass-card">
+        <span>Agotados</span>
+        <strong id="dash-out-count">0</strong>
+      </article>
+    </section>
 
-  <div class="top-bar">
-    <div class="field-group inline">
-      <label for="inv-items-per-page">Por página</label>
-      <select id="inv-items-per-page" onchange="invChangeItemsPerPage()">
-        <option value="10">10 por página</option>
-        <option value="20">20 por página</option>
-        <option value="50">50 por página</option>
-      </select>
+    <section class="quick-actions glass-card">
+      <div class="search-wrap">
+        <label for="inv-search" class="visually-hidden">Buscar producto</label>
+        <input id="inv-search" type="search" placeholder="Buscar por nombre o categoría">
+      </div>
+      <div class="quick-actions-buttons">
+        <button class="btn btn-secondary btn-sm" id="filter-toggle" onclick="toggleFiltersPanel()">Filtros</button>
+        <button class="btn btn-primary btn-sm" onclick="invOpenModal(false)">Agregar</button>
+      </div>
+    </section>
+
+    <section class="filters-panel glass-card" id="filters-panel">
+      <div class="filters-grid">
+        <div class="field-group inline">
+          <label for="inv-filter">Categoría</label>
+          <select id="inv-filter">
+            <option value="all">Todas</option>
+          </select>
+        </div>
+
+        <div class="field-group inline">
+          <label for="inv-stock-filter">Stock</label>
+          <select id="inv-stock-filter">
+            <option value="all">Todo</option>
+            <option value="in">Con stock</option>
+            <option value="out">Agotados</option>
+          </select>
+        </div>
+
+        <div class="field-group inline">
+          <label for="inv-min-price">Precio mínimo</label>
+          <input id="inv-min-price" type="number" min="0" step="0.01" placeholder="0.00">
+        </div>
+
+        <div class="field-group inline">
+          <label for="inv-max-price">Precio máximo</label>
+          <input id="inv-max-price" type="number" min="0" step="0.01" placeholder="0.00">
+        </div>
+
+        <div class="field-group inline">
+          <label for="inv-sort">Ordenar por</label>
+          <select id="inv-sort">
+            <option value="name">Nombre</option>
+            <option value="price">Precio</option>
+            <option value="qty">Stock</option>
+          </select>
+        </div>
+
+        <div class="field-group inline">
+          <label for="inv-items-per-page">Mostrar</label>
+          <select id="inv-items-per-page" onchange="invChangeItemsPerPage()">
+            <option value="8">8 por página</option>
+            <option value="12">12 por página</option>
+            <option value="20">20 por página</option>
+            <option value="50">50 por página</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn btn-secondary btn-sm" onclick="clearFilters()">Limpiar filtros</button>
+      </div>
+    </section>
+
+    <section class="section-head">
+      <div>
+        <p class="eyebrow">Productos</p>
+        <h3>Listado general</h3>
+      </div>
+      <p class="section-meta" id="results-info">Mostrando 0 productos</p>
+    </section>
+
+    <section class="products-list" id="inv-products"></section>
+
+    <section class="empty-state glass-card" id="empty-state" hidden>
+      <h3>No hay productos para mostrar</h3>
+      <p>Prueba con otra búsqueda o limpia los filtros activos.</p>
+    </section>
+
+    <nav class="pagination glass-card" id="inv-pagination"></nav>
+
+    <section class="history-card glass-card">
+      <div class="section-head compact">
+        <div>
+          <p class="eyebrow">Actividad</p>
+          <h3>Historial reciente</h3>
+        </div>
+      </div>
+      <ul id="inv-history-list"></ul>
+    </section>
+
+    <button class="floating-add" onclick="invOpenModal(false)" aria-label="Agregar producto">＋</button>
+  </div>
+
+  <div class="modal" id="inv-modal" aria-hidden="true">
+    <div class="modal-content glass-card modal-large">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Formulario</p>
+          <h2 id="inv-modal-title">Agregar producto</h2>
+        </div>
+        <button class="icon-btn" onclick="invCloseModal()" aria-label="Cerrar">×</button>
+      </div>
+
+      <div class="field-group">
+        <label for="inv-name">Nombre del producto</label>
+        <input id="inv-name" placeholder="Ej: Audífonos gamer RGB">
+      </div>
+
+      <div class="form-grid">
+        <div class="field-group">
+          <label for="inv-price">Precio</label>
+          <input id="inv-price" type="number" min="0" step="0.01" placeholder="0.00">
+        </div>
+
+        <div class="field-group">
+          <label for="inv-qty">Cantidad</label>
+          <input id="inv-qty" type="number" min="0" step="1" placeholder="0">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="inv-category">Categoría</label>
+        <input id="inv-category" placeholder="Ej: Audífonos, Mouse, Teclado">
+      </div>
+
+      <div class="section-head compact">
+        <div>
+          <p class="eyebrow">Galería</p>
+          <h3>Imágenes del producto</h3>
+        </div>
+      </div>
+
+      <div class="image-upload-box">
+        <label class="image-slot">
+          <span class="img-label">Imagen 1</span>
+          <input id="inv-img1" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev1')">
+          <img id="prev1" class="img-preview" alt="Vista previa 1">
+        </label>
+        <label class="image-slot">
+          <span class="img-label">Imagen 2</span>
+          <input id="inv-img2" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev2')">
+          <img id="prev2" class="img-preview" alt="Vista previa 2">
+        </label>
+        <label class="image-slot">
+          <span class="img-label">Imagen 3</span>
+          <input id="inv-img3" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev3')">
+          <img id="prev3" class="img-preview" alt="Vista previa 3">
+        </label>
+        <label class="image-slot">
+          <span class="img-label">Imagen 4</span>
+          <input id="inv-img4" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev4')">
+          <img id="prev4" class="img-preview" alt="Vista previa 4">
+        </label>
+        <label class="image-slot">
+          <span class="img-label">Imagen 5</span>
+          <input id="inv-img5" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev5')">
+          <img id="prev5" class="img-preview" alt="Vista previa 5">
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-primary btn-lg" onclick="invSaveProduct()">Guardar producto</button>
+        <button class="btn btn-secondary btn-lg" onclick="invCloseModal()">Cancelar</button>
+      </div>
     </div>
   </div>
 
-  <div class="dashboard">
-    <div class="dash-card glass">
-      <p>Total productos</p>
-      <h2 id="dash-total-products">0</h2>
-    </div>
-    <div class="dash-card glass">
-      <p>Unidades en stock</p>
-      <h2 id="dash-total-qty">0</h2>
-    </div>
-    <div class="dash-card glass">
-      <p>Valor total (Lps.)</p>
-      <h2 id="dash-total-value">0.00</h2>
-    </div>
-    <div class="dash-card glass">
-      <p>Agotados</p>
-      <h2 id="dash-out-count">0</h2>
+  <div class="modal" id="image-viewer" aria-hidden="true">
+    <div class="image-viewer-shell">
+      <button class="icon-btn viewer-close" onclick="closeImageViewer()" aria-label="Cerrar imagen">×</button>
+      <img id="image-viewer-main" src="" alt="Vista ampliada del producto">
     </div>
   </div>
 
-  <div class="filters glass">
-    <div class="field-group inline">
-      <label>Categoría</label>
-      <select id="inv-filter">
-        <option value="all">Todas</option>
-      </select>
-    </div>
+  <div id="toast" class="toast" aria-live="polite"></div>
 
-    <div class="field-group inline">
-      <label>Stock</label>
-      <select id="inv-stock-filter">
-        <option value="all">Todo</option>
-        <option value="in">Con stock</option>
-        <option value="out">Agotados</option>
-      </select>
-    </div>
-
-    <div class="field-group inline">
-      <label>Precio mínimo</label>
-      <input id="inv-min-price" type="number" value="0">
-    </div>
-
-    <div class="field-group inline">
-      <label>Precio máximo</label>
-      <input id="inv-max-price" type="number" value="0">
-    </div>
-
-    <div class="field-group inline">
-      <label>Buscar</label>
-      <input id="inv-search" placeholder="Nombre o categoría">
-    </div>
-
-    <div class="field-group inline">
-      <label>Ordenar por</label>
-      <select id="inv-sort">
-        <option value="name">Nombre</option>
-        <option value="price">Precio</option>
-        <option value="qty">Stock</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="products-list" id="inv-products"></div>
-
-  <div class="pagination" id="inv-pagination"></div>
-
-  <div class="history-card glass">
-    <h3>Historial reciente</h3>
-    <ul id="inv-history-list"></ul>
-  </div>
-
-  <button class="btn-add" onclick="invOpenModal(false)">＋ Agregar producto</button>
-
-</div>
-
-<!-- MODAL -->
-<div class="modal" id="inv-modal">
-  <div class="modal-content">
-    <h2 id="inv-modal-title">Agregar producto</h2>
-
-    <div class="field-group">
-      <label>Nombre del producto</label>
-      <input id="inv-name" placeholder="Ej: Audífonos gamer RGB">
-    </div>
-
-    <div class="field-group">
-      <label>Precio</label>
-      <input id="inv-price" type="number" step="0.01" value="0.00">
-    </div>
-
-    <div class="field-group">
-      <label>Cantidad</label>
-      <input id="inv-qty" type="number" value="0">
-    </div>
-
-    <div class="field-group">
-      <label>Categoría</label>
-      <input id="inv-category" placeholder="Ej: Audífonos, Mouse, Teclado">
-    </div>
-
-    <p class="section-title">Imágenes del producto</p>
-
-    <div class="image-upload-box">
-      <div class="image-slot">
-        <span class="img-label">Imagen 1</span>
-        <input id="inv-img1" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev1')">
-        <img id="prev1" class="img-preview">
-      </div>
-      <div class="image-slot">
-        <span class="img-label">Imagen 2</span>
-        <input id="inv-img2" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev2')">
-        <img id="prev2" class="img-preview">
-      </div>
-      <div class="image-slot">
-        <span class="img-label">Imagen 3</span>
-        <input id="inv-img3" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev3')">
-        <img id="prev3" class="img-preview">
-      </div>
-      <div class="image-slot">
-        <span class="img-label">Imagen 4</span>
-        <input id="inv-img4" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev4')">
-        <img id="prev4" class="img-preview">
-      </div>
-      <div class="image-slot">
-        <span class="img-label">Imagen 5</span>
-        <input id="inv-img5" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev5')">
-        <img id="prev5" class="img-preview">
-      </div>
-    </div>
-
-    <button class="btn-primary" onclick="invSaveProduct()">Guardar</button>
-    <button class="btn-secondary" onclick="invCloseModal()">Cancelar</button>
-  </div>
-</div>
-
-<script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

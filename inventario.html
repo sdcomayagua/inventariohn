@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Tienda Gamer | Admin</title>
-  <meta name="description" content="Panel admin móvil estilo app para Tienda Gamer.">
+  <meta name="description" content="Panel admin móvil estilo app premium para Tienda Gamer.">
   <meta name="theme-color" content="#0b0f16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -30,72 +30,155 @@
     </header>
 
     <section class="top-quickbar" id="productos">
-      <div class="search-card glass-panel compact-search">
+      <div class="search-card glass-panel compact-search luxe-search-card">
         <div class="search-shell">
           <span class="search-icon">⌕</span>
-          <input id="inv-search" class="search-input" placeholder="Buscar artículos">
+          <input id="inv-search" class="search-input" placeholder="Buscar artículos o categoría">
+        </div>
+        <div class="quick-stats-row">
+          <button type="button" class="mini-stat-chip" onclick="toggleSummaryPanel()">
+            <strong id="quick-total-products">0</strong>
+            <small>productos</small>
+          </button>
+          <button type="button" class="mini-stat-chip" onclick="setQuickStockFilter('in')">
+            <strong id="quick-in-stock">0</strong>
+            <small>con stock</small>
+          </button>
+          <button type="button" class="mini-stat-chip danger" onclick="setQuickStockFilter('out')">
+            <strong id="quick-out-stock">0</strong>
+            <small>agotados</small>
+          </button>
         </div>
       </div>
 
-      <div class="action-scroller compact-actions">
-        <button class="action-chip active" onclick="invOpenModal(false)">Nuevo</button>
-        <button class="action-chip" onclick="toggleSummaryPanel()">Resumen</button>
-        <button class="action-chip" onclick="toggleFiltersPanel()">Filtros</button>
-        <button class="action-chip" onclick="loadProducts(true)">Sync</button>
-        <button class="action-chip" onclick="clearFilters()">Limpiar</button>
-        <button class="action-chip" id="install-btn" style="display:none;" onclick="installApp()">Instalar</button>
+      <div class="action-scroller compact-actions luxe-actions-grid">
+        <button class="action-chip active" onclick="invOpenModal(false)">＋ Nuevo</button>
+        <button class="action-chip" onclick="toggleFiltersPanel()">⎚ Filtros</button>
+        <button class="action-chip" onclick="toggleSummaryPanel()">◎ Resumen</button>
+        <button class="action-chip" onclick="loadProducts(true)">↻ Sync</button>
+        <button class="action-chip" onclick="clearFilters()">⌫ Limpiar</button>
+        <button class="action-chip" id="install-btn" style="display:none;" onclick="installApp()">⇣ Instalar</button>
+      </div>
+    </section>
+
+    <section class="catalog-section catalog-priority">
+      <div class="section-head enhanced-section-head">
+        <div>
+          <p class="section-kicker">Vista principal</p>
+          <h3 class="section-title">Catálogo</h3>
+          <p class="section-caption">Toca una tarjeta para abrir su ficha completa.</p>
+        </div>
+        <span class="results-count" id="results-count">0 resultados</span>
       </div>
 
-      <div class="compact-panels">
-        <section class="overview-card glass-panel compact-panel hidden" id="summary-panel">
-          <div class="overview-row compact-overview-row">
-            <div>
-              <p class="eyebrow">Panel privado</p>
-              <h2 class="overview-title">Administrador</h2>
-            </div>
-            <div class="sync-pill">
-              <span class="sync-dot"></span>
-              <span id="sync-status">Sincronizado</span>
-            </div>
-          </div>
-          <div class="overview-tags">
-            <span class="tag-pill" id="inv-role">Administrador</span>
-            <span class="tag-pill muted" id="sync-time-pill">Actualizado ahora</span>
-          </div>
+      <div class="products-list" id="inv-products"></div>
 
-          <section class="stats-grid compact-stats-grid">
-            <article class="stat-card glass-panel">
-              <span>Total productos</span>
-              <strong id="dash-total-products">0</strong>
-            </article>
-            <article class="stat-card glass-panel">
-              <span>Unidades</span>
-              <strong id="dash-total-qty">0</strong>
-            </article>
-            <article class="stat-card glass-panel">
-              <span>Disponibles</span>
-              <strong id="dash-in-stock">0</strong>
-            </article>
-            <article class="stat-card glass-panel">
-              <span>Agotados</span>
-              <strong id="dash-out-count">0</strong>
-            </article>
-            <article class="stat-card glass-panel">
-              <span>Categorías</span>
-              <strong id="dash-category-count">0</strong>
-            </article>
-            <article class="stat-card glass-panel">
-              <span>Precio medio</span>
-              <strong id="dash-avg-price">Lps. 0.00</strong>
-            </article>
-            <article class="stat-card glass-panel full-width">
-              <span>Valor inventario</span>
-              <strong id="dash-total-value">Lps. 0.00</strong>
-            </article>
-          </section>
+      <div class="empty-state glass-panel" id="inv-empty" style="display:none;">
+        <div class="empty-icon">◌</div>
+        <h3>Sin productos</h3>
+        <p>Agrega un producto nuevo para empezar a administrar tu inventario.</p>
+      </div>
+
+      <div class="pagination" id="inv-pagination"></div>
+    </section>
+
+    <section class="history-card glass-panel hidden" aria-hidden="true">
+      <ul id="inv-history-list"></ul>
+    </section>
+
+    <button type="button" class="floating-top-btn" id="floating-top-btn" onclick="scrollToTop()" aria-label="Subir arriba">↑</button>
+
+    <nav class="bottom-dock glass-panel" aria-label="Acciones rápidas">
+      <button type="button" onclick="toggleSummaryPanel()">
+        <span>◎</span>
+        <small>Resumen</small>
+      </button>
+      <button type="button" onclick="toggleFiltersPanel()">
+        <span>⎚</span>
+        <small>Filtros</small>
+      </button>
+      <button type="button" class="dock-primary" onclick="invOpenModal(false)">
+        <span>＋</span>
+        <small>Nuevo</small>
+      </button>
+      <button type="button" onclick="loadProducts(true)">
+        <span>↻</span>
+        <small>Sync</small>
+      </button>
+    </nav>
+  </div>
+
+  <div class="sheet-backdrop hidden" id="summary-panel" onclick="if(event.target === this) closeSheets()">
+    <section class="sheet-panel glass-panel">
+      <div class="sheet-grab"></div>
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">Panel privado</p>
+          <h2 class="overview-title">Resumen</h2>
+        </div>
+        <button class="icon-btn" type="button" onclick="closeSheets()" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="sheet-scroll">
+        <div class="overview-row compact-overview-row">
+          <div>
+            <p class="sheet-copy">Vista rápida del inventario y del estado actual.</p>
+          </div>
+          <div class="sync-pill">
+            <span class="sync-dot"></span>
+            <span id="sync-status">Sincronizado</span>
+          </div>
+        </div>
+        <div class="overview-tags">
+          <span class="tag-pill" id="inv-role">Administrador</span>
+          <span class="tag-pill muted" id="sync-time-pill">Actualizado ahora</span>
+        </div>
+
+        <section class="stats-grid compact-stats-grid">
+          <article class="stat-card glass-panel">
+            <span>Total productos</span>
+            <strong id="dash-total-products">0</strong>
+          </article>
+          <article class="stat-card glass-panel">
+            <span>Unidades</span>
+            <strong id="dash-total-qty">0</strong>
+          </article>
+          <article class="stat-card glass-panel">
+            <span>Disponibles</span>
+            <strong id="dash-in-stock">0</strong>
+          </article>
+          <article class="stat-card glass-panel">
+            <span>Agotados</span>
+            <strong id="dash-out-count">0</strong>
+          </article>
+          <article class="stat-card glass-panel">
+            <span>Categorías</span>
+            <strong id="dash-category-count">0</strong>
+          </article>
+          <article class="stat-card glass-panel">
+            <span>Precio medio</span>
+            <strong id="dash-avg-price">Lps. 0.00</strong>
+          </article>
+          <article class="stat-card glass-panel full-width">
+            <span>Valor inventario</span>
+            <strong id="dash-total-value">Lps. 0.00</strong>
+          </article>
         </section>
+      </div>
+    </section>
+  </div>
 
-        <section class="filter-grid glass-panel compact-panel hidden" id="filters-panel">
+  <div class="sheet-backdrop hidden" id="filters-panel" onclick="if(event.target === this) closeSheets()">
+    <section class="sheet-panel glass-panel">
+      <div class="sheet-grab"></div>
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">Vista rápida</p>
+          <h2 class="overview-title">Filtros</h2>
+        </div>
+        <button class="icon-btn" type="button" onclick="closeSheets()" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="sheet-scroll">
+        <section class="filter-grid sheet-filter-grid">
           <div class="field-group inline">
             <label for="inv-filter">Categoría</label>
             <select id="inv-filter">
@@ -143,51 +226,13 @@
             </select>
           </div>
         </section>
-      </div>
-    </section>
 
-    <section class="catalog-section catalog-priority">
-      <div class="section-head">
-        <div>
-          <h3 class="section-title">Catálogo</h3>
-          <p class="section-caption">Toca un artículo para ver su detalle completo.</p>
+        <div class="sheet-actions-row">
+          <button class="btn-primary" type="button" onclick="closeSheets()">Aplicar y volver</button>
+          <button class="btn-secondary" type="button" onclick="clearFilters(); closeSheets();">Limpiar filtros</button>
         </div>
-        <span class="results-count" id="results-count">0 resultados</span>
       </div>
-
-      <div class="products-list" id="inv-products"></div>
-
-      <div class="empty-state glass-panel" id="inv-empty" style="display:none;">
-        <div class="empty-icon">◌</div>
-        <h3>Sin productos</h3>
-        <p>Agrega un producto nuevo para empezar a administrar tu inventario.</p>
-      </div>
-
-      <div class="pagination" id="inv-pagination"></div>
     </section>
-
-    <section class="history-card glass-panel hidden" aria-hidden="true">
-      <ul id="inv-history-list"></ul>
-    </section>
-
-    <nav class="bottom-dock glass-panel" aria-label="Acciones rápidas">
-      <button type="button" onclick="scrollToTop()">
-        <span>⌂</span>
-        <small>Inicio</small>
-      </button>
-      <button type="button" onclick="scrollToSection('productos')">
-        <span>▣</span>
-        <small>Catálogo</small>
-      </button>
-      <button type="button" class="dock-primary" onclick="invOpenModal(false)">
-        <span>＋</span>
-        <small>Nuevo</small>
-      </button>
-      <button type="button" onclick="loadProducts(true)">
-        <span>↻</span>
-        <small>Sync</small>
-      </button>
-    </nav>
   </div>
 
   <div class="modal" id="inv-modal">

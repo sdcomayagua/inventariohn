@@ -182,6 +182,7 @@ function registerCoreEvents() {
     if (event.key === "Escape") {
       invCloseModal();
       closeDetailModal();
+      closeSheets();
     }
   });
 
@@ -327,6 +328,9 @@ function updateDashboard() {
   setText("dash-category-count", categoryCount);
   setText("dash-in-stock", inStock);
   setText("dash-avg-price", `Lps. ${money.format(avgPrice)}`);
+  setText("quick-total-products", totalProducts);
+  setText("quick-in-stock", inStock);
+  setText("quick-out-stock", outCount);
   updateSyncMeta();
 }
 
@@ -418,6 +422,8 @@ function renderProducts() {
     const inStock = qty > 0;
     const safeId = String(product.id || "");
     const safeName = escapeHtml(product.name || "Sin nombre");
+    const safeCategory = escapeHtml(product.category || "General");
+    const imageLabel = images.length ? `${images.length} foto${images.length === 1 ? "" : "s"}` : "Sin foto";
 
     const card = document.createElement("article");
     card.className = "product-card glass-panel";
@@ -426,15 +432,20 @@ function renderProducts() {
         <div class="product-media">
           <img class="product-main-img" src="${mainImage}" alt="${safeName}">
           <span class="product-status ${inStock ? "in" : "out"}">${inStock ? "Disponible" : "Agotado"}</span>
+          <span class="media-count">${imageLabel}</span>
         </div>
         <div class="product-copy">
+          <div class="product-meta-row">
+            <span class="meta-pill">${safeCategory}</span>
+            <span class="meta-pill soft">ID ${safeId || "--"}</span>
+          </div>
           <h3 class="product-name">${safeName}</h3>
           <p class="product-stock-line">${inStock ? `${qty} en stock` : "Sin existencias"}</p>
         </div>
       </button>
-      <div class="card-actions compact">
-        <button class="btn-secondary" type="button" onclick="startEditById('${safeId}')">Editar</button>
-        <button class="btn-secondary danger" type="button" onclick="deleteProduct('${safeId}')">Eliminar</button>
+      <div class="product-action-row">
+        <button class="mini-icon-btn" type="button" onclick="startEditById('${safeId}')"><span>✎</span><small>Editar</small></button>
+        <button class="mini-icon-btn danger" type="button" onclick="deleteProduct('${safeId}')"><span>🗑</span><small>Eliminar</small></button>
       </div>
     `;
     container.appendChild(card);
@@ -945,14 +956,31 @@ function scrollToSection(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function closeSheets() {
+  ["summary-panel", "filters-panel"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("hidden");
+  });
+  document.body.classList.remove("sheet-open");
+}
+
 function togglePanel(panelId) {
   const panels = ["summary-panel", "filters-panel"];
+  let opened = false;
+
   panels.forEach((id) => {
     const el = document.getElementById(id);
     if (!el) return;
-    if (id === panelId) el.classList.toggle("hidden");
-    else el.classList.add("hidden");
+    if (id === panelId) {
+      const willOpen = el.classList.contains("hidden");
+      el.classList.toggle("hidden", !willOpen);
+      opened = willOpen;
+    } else {
+      el.classList.add("hidden");
+    }
   });
+
+  document.body.classList.toggle("sheet-open", opened);
 }
 
 function toggleSummaryPanel() {
@@ -962,6 +990,15 @@ function toggleSummaryPanel() {
 function toggleFiltersPanel() {
   togglePanel("filters-panel");
 }
+
+function setQuickStockFilter(value) {
+  const filter = document.getElementById("inv-stock-filter");
+  if (!filter) return;
+  filter.value = value;
+  applyFilters();
+  scrollToSection("productos");
+}
+
 
 window.invOpenModal = invOpenModal;
 window.invCloseModal = invCloseModal;
@@ -984,6 +1021,8 @@ window.scrollToTop = scrollToTop;
 window.scrollToSection = scrollToSection;
 window.toggleSummaryPanel = toggleSummaryPanel;
 window.toggleFiltersPanel = toggleFiltersPanel;
+window.setQuickStockFilter = setQuickStockFilter;
+window.closeSheets = closeSheets;
 window.swapDetailImage = swapDetailImage;
 
 window.addEventListener("load", () => {

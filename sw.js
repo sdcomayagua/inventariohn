@@ -1,4 +1,4 @@
-const CACHE_NAME = "tienda-gamer-premium-v6";
+const CACHE_NAME = "tienda-gamer-premium-v7";
 const ASSETS = [
   "./",
   "index.html",

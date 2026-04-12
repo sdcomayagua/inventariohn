@@ -369,7 +369,6 @@ function renderProducts() {
     const qty = Number(product.qty || 0);
     const safeId = String(product.id || "");
     const safeName = escapeHtml(product.name || "Sin nombre");
-    const safeCategory = escapeHtml(product.category || "Sin categoría");
     const statusLabel = qty > 0 ? "Disponible" : "Agotado";
 
     const card = document.createElement("article");
@@ -382,10 +381,11 @@ function renderProducts() {
           <img class="product-main-img" src="${mainImage}" alt="${safeName}">
         </div>
 
-        <div class="product-minimal-copy">
+        <div class="product-minimal-copy compact">
           <h3 class="product-name product-name-minimal">${safeName}</h3>
-          <p class="product-meta-line">${qty > 0 ? `Stock: ${qty}` : "Sin existencias"}</p>
-          <p class="product-meta-sub">${safeCategory}</p>
+          <div class="product-bottom-row">
+            <p class="product-meta-line stock-pill">${qty > 0 ? `Stock ${qty}` : "Stock 0"}</p>
+          </div>
         </div>
       </button>
 
@@ -584,40 +584,45 @@ async function compressImageForUpload(file, options = {}) {
     image.src = source;
   });
 
-  const targetBytes = options.targetBytes || 120_000;
-  const maxSideBySize = file.size > 10_000_000 ? 700 : file.size > 6_000_000 ? 820 : file.size > 3_000_000 ? 960 : 1100;
+  const targetBytes = options.targetBytes || 12_000;
+  let maxSide = options.maxSide || 480;
+  if (file.size > 8_000_000) maxSide = 360;
+  else if (file.size > 4_000_000) maxSide = 420;
 
   let width = image.width;
   let height = image.height;
-  const firstRatio = Math.min(1, maxSideBySize / Math.max(width, height));
-  width = Math.max(1, Math.round(width * firstRatio));
-  height = Math.max(1, Math.round(height * firstRatio));
+  const ratio = Math.min(1, maxSide / Math.max(width, height));
+  width = Math.max(1, Math.round(width * ratio));
+  height = Math.max(1, Math.round(height * ratio));
 
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d", { alpha: false });
   if (!ctx) return source;
 
-  const render = (quality) => {
+  const render = (mime, quality) => {
     canvas.width = width;
     canvas.height = height;
     ctx.fillStyle = "#111827";
     ctx.fillRect(0, 0, width, height);
     ctx.drawImage(image, 0, 0, width, height);
-    return canvas.toDataURL("image/jpeg", quality);
+    return canvas.toDataURL(mime, quality);
   };
 
-  let output = render(0.72);
-  let qualitySteps = [0.62, 0.54, 0.46, 0.38];
-
-  for (const quality of qualitySteps) {
-    if (estimateDataUrlBytes(output) <= targetBytes) break;
-    output = render(quality);
+  let output = render("image/webp", 0.5);
+  if (!output.startsWith("data:image/webp")) {
+    output = render("image/jpeg", 0.5);
   }
 
-  while (estimateDataUrlBytes(output) > targetBytes && Math.max(width, height) > 520) {
-    width = Math.max(420, Math.round(width * 0.86));
-    height = Math.max(420, Math.round(height * 0.86));
-    output = render(0.44);
+  const attempts = [0.42, 0.34, 0.26, 0.2];
+  for (const q of attempts) {
+    if (estimateDataUrlBytes(output) <= targetBytes) break;
+    output = output.startsWith("data:image/webp") ? render("image/webp", q) : render("image/jpeg", q);
+  }
+
+  while (estimateDataUrlBytes(output) > targetBytes && Math.max(width, height) > 220) {
+    width = Math.max(220, Math.round(width * 0.82));
+    height = Math.max(220, Math.round(height * 0.82));
+    output = output.startsWith("data:image/webp") ? render("image/webp", 0.22) : render("image/jpeg", 0.22);
   }
 
   return output;
@@ -647,6 +652,41 @@ async function postToApi(payload) {
   }
 }
 
+
+function getImagesPayloadLength(images = []) {
+  return JSON.stringify(images).length;
+}
+
+async function shrinkImagesToSafePayload(images = []) {
+  const safeImages = [...images];
+  let payloadLength = getImagesPayloadLength(safeImages);
+  if (payloadLength <= 45_000) return safeImages;
+
+  for (let i = 0; i < safeImages.length; i += 1) {
+    if (!String(safeImages[i]).startsWith("data:image/")) continue;
+    const file = dataUrlToFile(safeImages[i], `image-${i + 1}.jpg`);
+    safeImages[i] = await compressImageForUpload(file, { targetBytes: 8_000, maxSide: 320 });
+    payloadLength = getImagesPayloadLength(safeImages);
+    if (payloadLength <= 45_000) return safeImages;
+  }
+
+  while (getImagesPayloadLength(safeImages) > 45_000 && safeImages.length > 1) {
+    safeImages.pop();
+  }
+
+  return safeImages;
+}
+
+function dataUrlToFile(dataUrl, filename) {
+  const [meta, payload] = String(dataUrl).split(",");
+  const mime = /data:(.*?);base64/.exec(meta)?.[1] || "image/jpeg";
+  const binary = atob(payload || "");
+  const len = binary.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i += 1) bytes[i] = binary.charCodeAt(i);
+  return new File([bytes], filename, { type: mime });
+}
+
 async function invSaveProduct() {
   const saveBtn = document.getElementById("save-product-btn");
   const name = document.getElementById("inv-name")?.value.trim();
@@ -671,11 +711,13 @@ async function invSaveProduct() {
     for (let i = 1; i <= 5; i += 1) {
       const input = document.getElementById(`inv-img${i}`);
       if (input?.files?.length) {
-        finalImages.push(await compressImageForUpload(input.files[0], { targetBytes: 120_000 }));
+        finalImages.push(await compressImageForUpload(input.files[0], { targetBytes: 12_000, maxSide: 480 }));
       } else if (CURRENT_EDIT_IMAGES[i - 1]) {
         finalImages.push(CURRENT_EDIT_IMAGES[i - 1]);
       }
     }
+
+    const safeImages = await shrinkImagesToSafePayload(finalImages);
 
     const payload = {
       action: EDITING_ID ? "edit" : "add",
@@ -684,11 +726,11 @@ async function invSaveProduct() {
       price,
       qty,
       category,
-      images: JSON.stringify(finalImages),
+      images: JSON.stringify(safeImages),
       user: CURRENT_USER.alias
     };
 
-    if (payload.images.length > 700_000) {
+    if (payload.images.length > 45_000) {
       throw new Error("Las imágenes siguen siendo muy pesadas para el guardado actual.");
     }
 
@@ -697,7 +739,7 @@ async function invSaveProduct() {
     await loadProducts();
   } catch (error) {
     console.error(error);
-    alert("No se pudo guardar el producto. Ahora la app reduce más las fotos, pero si la imagen viene muy pesada intenta con 1 o 2 fotos por producto o una foto menos grande.");
+    alert("No se pudo guardar el producto. Ya reduje las fotos mucho más, pero tu almacenamiento actual todavía rechazó el guardado.");
   } finally {
     if (saveBtn) {
       saveBtn.disabled = false;

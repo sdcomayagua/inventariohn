@@ -1,4 +1,4 @@
-const CACHE_NAME = "tienda-gamer-premium-v7";
+const CACHE_NAME = "tienda-gamer-admin-v8";
 const ASSETS = [
   "./",
   "index.html",
@@ -32,7 +32,7 @@ self.addEventListener("fetch", (event) => {
       fetch(request)
         .then((response) => {
           const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put("index.html", copy));
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           return response;
         })
         .catch(() => caches.match(request).then((cached) => cached || caches.match("index.html")))

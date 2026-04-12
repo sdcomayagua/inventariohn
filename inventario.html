@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Tienda Gamer | Admin</title>
-  <meta name="description" content="Tienda Gamer: panel admin premium con estética tipo app para celular.">
+  <meta name="description" content="Panel admin móvil estilo app para Tienda Gamer.">
   <meta name="theme-color" content="#0b0f16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,13 +14,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-dark app-page">
-  <div class="app-shell app-shell-admin app-shell-luxe">
-    <header class="app-header glass-panel app-store-topbar luxe-topbar">
-      <div class="brand-row brand-row-admin">
+  <div class="app-shell">
+    <header class="app-header glass-panel">
+      <div class="brand-row">
         <div class="user-chip" id="inv-avatar">SD</div>
         <div>
           <h1 class="app-title">Tienda Gamer</h1>
-          <p class="app-subtitle" id="inv-welcome">Admin</p>
+          <p class="app-subtitle" id="inv-welcome">Sesión</p>
         </div>
       </div>
       <div class="header-tools">
@@ -29,144 +29,148 @@
       </div>
     </header>
 
-    <section class="luxe-overview glass-panel">
-      <div class="luxe-overview-top">
-        <div>
-          <p class="eyebrow">Panel privado</p>
-          <h2 class="luxe-heading">Administrador</h2>
-        </div>
-        <div class="live-chip">
-          <span class="live-dot"></span>
-          <span id="sync-status">Sincronizado</span>
-        </div>
-      </div>
-
-      <div class="luxe-inline-pills">
-        <span class="hero-pill" id="inv-role">Administrador</span>
-        <span class="mini-badge" id="sync-time-pill">Actualizado ahora</span>
-      </div>
-
-      <div class="quick-insights">
-        <article class="quick-insight-card">
-          <span>Categorías</span>
-          <strong id="dash-category-count">0</strong>
-        </article>
-        <article class="quick-insight-card">
-          <span>Disponibles</span>
-          <strong id="dash-in-stock">0</strong>
-        </article>
-        <article class="quick-insight-card">
-          <span>Precio medio</span>
-          <strong id="dash-avg-price">Lps. 0.00</strong>
-        </article>
-      </div>
-    </section>
-
-    <section class="stats-grid stats-grid-appstore stats-grid-luxe">
-      <article class="stat-card glass-panel">
-        <span>Total productos</span>
-        <strong id="dash-total-products">0</strong>
-      </article>
-      <article class="stat-card glass-panel">
-        <span>Unidades</span>
-        <strong id="dash-total-qty">0</strong>
-      </article>
-      <article class="stat-card glass-panel accent">
-        <span>Valor inventario</span>
-        <strong id="dash-total-value">Lps. 0.00</strong>
-      </article>
-      <article class="stat-card glass-panel warn">
-        <span>Agotados</span>
-        <strong id="dash-out-count">0</strong>
-      </article>
-    </section>
-
-    <section class="toolbar-stack toolbar-stack-app" id="productos">
-      <div class="search-card glass-panel search-card-appstore search-card-luxe">
+    <section class="top-quickbar" id="productos">
+      <div class="search-card glass-panel compact-search">
         <div class="search-shell">
           <span class="search-icon">⌕</span>
-          <input id="inv-search" class="search-input" placeholder="Buscar por nombre o categoría">
+          <input id="inv-search" class="search-input" placeholder="Buscar artículos">
         </div>
       </div>
 
-      <div class="action-scroller action-scroller-appstore action-scroller-luxe">
-        <button class="action-chip active" onclick="invOpenModal(false)">Nuevo producto</button>
-        <button class="action-chip" onclick="loadProducts(true)">Sincronizar</button>
-        <button class="action-chip" onclick="clearFilters()">Limpiar filtros</button>
-        <button class="action-chip" id="install-btn" style="display:none;" onclick="installApp()">Instalar app</button>
+      <div class="action-scroller compact-actions">
+        <button class="action-chip active" onclick="invOpenModal(false)">Nuevo</button>
+        <button class="action-chip" onclick="toggleSummaryPanel()">Resumen</button>
+        <button class="action-chip" onclick="toggleFiltersPanel()">Filtros</button>
+        <button class="action-chip" onclick="loadProducts(true)">Sync</button>
+        <button class="action-chip" onclick="clearFilters()">Limpiar</button>
+        <button class="action-chip" id="install-btn" style="display:none;" onclick="installApp()">Instalar</button>
       </div>
 
-      <div class="filter-grid glass-panel filter-grid-appstore filter-grid-luxe">
-        <div class="field-group inline">
-          <label for="inv-filter">Categoría</label>
-          <select id="inv-filter">
-            <option value="all">Todas</option>
-          </select>
-        </div>
+      <div class="compact-panels">
+        <section class="overview-card glass-panel compact-panel hidden" id="summary-panel">
+          <div class="overview-row compact-overview-row">
+            <div>
+              <p class="eyebrow">Panel privado</p>
+              <h2 class="overview-title">Administrador</h2>
+            </div>
+            <div class="sync-pill">
+              <span class="sync-dot"></span>
+              <span id="sync-status">Sincronizado</span>
+            </div>
+          </div>
+          <div class="overview-tags">
+            <span class="tag-pill" id="inv-role">Administrador</span>
+            <span class="tag-pill muted" id="sync-time-pill">Actualizado ahora</span>
+          </div>
 
-        <div class="field-group inline">
-          <label for="inv-stock-filter">Stock</label>
-          <select id="inv-stock-filter">
-            <option value="all">Todo</option>
-            <option value="in">Con stock</option>
-            <option value="out">Agotados</option>
-          </select>
-        </div>
+          <section class="stats-grid compact-stats-grid">
+            <article class="stat-card glass-panel">
+              <span>Total productos</span>
+              <strong id="dash-total-products">0</strong>
+            </article>
+            <article class="stat-card glass-panel">
+              <span>Unidades</span>
+              <strong id="dash-total-qty">0</strong>
+            </article>
+            <article class="stat-card glass-panel">
+              <span>Disponibles</span>
+              <strong id="dash-in-stock">0</strong>
+            </article>
+            <article class="stat-card glass-panel">
+              <span>Agotados</span>
+              <strong id="dash-out-count">0</strong>
+            </article>
+            <article class="stat-card glass-panel">
+              <span>Categorías</span>
+              <strong id="dash-category-count">0</strong>
+            </article>
+            <article class="stat-card glass-panel">
+              <span>Precio medio</span>
+              <strong id="dash-avg-price">Lps. 0.00</strong>
+            </article>
+            <article class="stat-card glass-panel full-width">
+              <span>Valor inventario</span>
+              <strong id="dash-total-value">Lps. 0.00</strong>
+            </article>
+          </section>
+        </section>
 
-        <div class="field-group inline two-col">
-          <label for="inv-min-price">Precio mínimo</label>
-          <input id="inv-min-price" type="number" min="0" step="0.01" placeholder="0">
-        </div>
+        <section class="filter-grid glass-panel compact-panel hidden" id="filters-panel">
+          <div class="field-group inline">
+            <label for="inv-filter">Categoría</label>
+            <select id="inv-filter">
+              <option value="all">Todas</option>
+            </select>
+          </div>
 
-        <div class="field-group inline two-col">
-          <label for="inv-max-price">Precio máximo</label>
-          <input id="inv-max-price" type="number" min="0" step="0.01" placeholder="0">
-        </div>
+          <div class="field-group inline">
+            <label for="inv-stock-filter">Stock</label>
+            <select id="inv-stock-filter">
+              <option value="all">Todo</option>
+              <option value="in">Con stock</option>
+              <option value="out">Agotados</option>
+            </select>
+          </div>
 
-        <div class="field-group inline two-col">
-          <label for="inv-sort">Ordenar por</label>
-          <select id="inv-sort">
-            <option value="featured">Destacados</option>
-            <option value="name">Nombre A-Z</option>
-            <option value="priceAsc">Precio menor</option>
-            <option value="priceDesc">Precio mayor</option>
-            <option value="qtyDesc">Más stock</option>
-            <option value="qtyAsc">Menos stock</option>
-          </select>
-        </div>
+          <div class="field-group inline">
+            <label for="inv-min-price">Precio mínimo</label>
+            <input id="inv-min-price" type="number" min="0" step="0.01" placeholder="0">
+          </div>
 
-        <div class="field-group inline two-col">
-          <label for="inv-items-per-page">Por página</label>
-          <select id="inv-items-per-page" onchange="invChangeItemsPerPage()">
-            <option value="8">8</option>
-            <option value="12" selected>12</option>
-            <option value="24">24</option>
-          </select>
-        </div>
+          <div class="field-group inline">
+            <label for="inv-max-price">Precio máximo</label>
+            <input id="inv-max-price" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+
+          <div class="field-group inline">
+            <label for="inv-sort">Ordenar por</label>
+            <select id="inv-sort">
+              <option value="featured">Nombre A-Z</option>
+              <option value="name">Nombre A-Z</option>
+              <option value="priceAsc">Precio menor</option>
+              <option value="priceDesc">Precio mayor</option>
+              <option value="qtyDesc">Más stock</option>
+              <option value="qtyAsc">Menos stock</option>
+            </select>
+          </div>
+
+          <div class="field-group inline">
+            <label for="inv-items-per-page">Por página</label>
+            <select id="inv-items-per-page">
+              <option value="8">8</option>
+              <option value="12" selected>12</option>
+              <option value="24">24</option>
+            </select>
+          </div>
+        </section>
       </div>
     </section>
 
-    <section class="catalog-section">
-      <div class="section-head section-head-clean section-head-luxe">
+    <section class="catalog-section catalog-priority">
+      <div class="section-head">
         <div>
           <h3 class="section-title">Catálogo</h3>
-          <p class="section-caption">Solo administración móvil</p>
+          <p class="section-caption">Toca un artículo para ver su detalle completo.</p>
         </div>
         <span class="results-count" id="results-count">0 resultados</span>
       </div>
 
-      <div class="products-list products-list-luxe" id="inv-products"></div>
+      <div class="products-list" id="inv-products"></div>
 
-      <div class="empty-state glass-panel empty-state-luxe" id="inv-empty" style="display:none;">
+      <div class="empty-state glass-panel" id="inv-empty" style="display:none;">
         <div class="empty-icon">◌</div>
         <h3>Sin productos</h3>
         <p>Agrega un producto nuevo para empezar a administrar tu inventario.</p>
       </div>
 
-      <div class="pagination pagination-luxe" id="inv-pagination"></div>
+      <div class="pagination" id="inv-pagination"></div>
     </section>
 
-    <nav class="lux-dock glass-panel" aria-label="Acciones rápidas">
+    <section class="history-card glass-panel hidden" aria-hidden="true">
+      <ul id="inv-history-list"></ul>
+    </section>
+
+    <nav class="bottom-dock glass-panel" aria-label="Acciones rápidas">
       <button type="button" onclick="scrollToTop()">
         <span>⌂</span>
         <small>Inicio</small>
@@ -187,9 +191,8 @@
   </div>
 
   <div class="modal" id="inv-modal">
-    <div class="modal-content modal-form modal-luxe">
-      <div class="sheet-handle"></div>
-      <div class="modal-head">
+    <div class="modal-content modal-form glass-panel">
+      <div class="modal-head sticky-head">
         <div>
           <p class="eyebrow">Catálogo</p>
           <h2 id="inv-modal-title">Agregar producto</h2>
@@ -197,70 +200,73 @@
         <button class="icon-btn" onclick="invCloseModal()" aria-label="Cerrar">✕</button>
       </div>
 
-      <div class="field-group">
-        <label for="inv-name">Nombre del producto</label>
-        <input id="inv-name" placeholder="Ej: Audífonos Bluetooth">
-      </div>
-
-      <div class="form-grid">
-        <div class="field-group inline">
-          <label for="inv-price">Precio</label>
-          <input id="inv-price" type="number" step="0.01" min="0" placeholder="0.00">
+      <div class="modal-scroll-body">
+        <div class="field-group">
+          <label for="inv-name">Nombre del producto</label>
+          <input id="inv-name" placeholder="Ej: Audífonos Bluetooth">
         </div>
 
-        <div class="field-group inline">
-          <label for="inv-qty">Cantidad</label>
-          <input id="inv-qty" type="number" min="0" placeholder="0">
+        <div class="form-grid">
+          <div class="field-group inline">
+            <label for="inv-price">Precio</label>
+            <input id="inv-price" type="number" step="0.01" min="0" placeholder="0.00">
+          </div>
+
+          <div class="field-group inline">
+            <label for="inv-qty">Cantidad</label>
+            <input id="inv-qty" type="number" min="0" placeholder="0">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="inv-category">Categoría</label>
+          <input id="inv-category" placeholder="Ej: Audífonos, Mouse, Teclado">
+        </div>
+
+        <div class="field-group">
+          <label>Imágenes del producto</label>
+          <p class="field-help" id="image-helper-text">Puedes subir hasta 5 fotos. La app las reduce automáticamente antes de guardar.</p>
+          <div class="image-upload-box">
+            <label class="image-slot" id="slot1">
+              <span class="img-label">Imagen 1</span>
+              <span class="upload-btn">Seleccionar foto</span>
+              <span class="img-hint" id="hint1">Sin archivo</span>
+              <input id="inv-img1" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev1')">
+              <img id="prev1" class="img-preview" alt="Preview 1">
+            </label>
+            <label class="image-slot" id="slot2">
+              <span class="img-label">Imagen 2</span>
+              <span class="upload-btn">Seleccionar foto</span>
+              <span class="img-hint" id="hint2">Sin archivo</span>
+              <input id="inv-img2" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev2')">
+              <img id="prev2" class="img-preview" alt="Preview 2">
+            </label>
+            <label class="image-slot" id="slot3">
+              <span class="img-label">Imagen 3</span>
+              <span class="upload-btn">Seleccionar foto</span>
+              <span class="img-hint" id="hint3">Sin archivo</span>
+              <input id="inv-img3" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev3')">
+              <img id="prev3" class="img-preview" alt="Preview 3">
+            </label>
+            <label class="image-slot" id="slot4">
+              <span class="img-label">Imagen 4</span>
+              <span class="upload-btn">Seleccionar foto</span>
+              <span class="img-hint" id="hint4">Sin archivo</span>
+              <input id="inv-img4" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev4')">
+              <img id="prev4" class="img-preview" alt="Preview 4">
+            </label>
+            <label class="image-slot" id="slot5">
+              <span class="img-label">Imagen 5</span>
+              <span class="upload-btn">Seleccionar foto</span>
+              <span class="img-hint" id="hint5">Sin archivo</span>
+              <input id="inv-img5" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev5')">
+              <img id="prev5" class="img-preview" alt="Preview 5">
+            </label>
+          </div>
         </div>
       </div>
 
-      <div class="field-group">
-        <label for="inv-category">Categoría</label>
-        <input id="inv-category" placeholder="Ej: Audífonos, Mouse, Teclado">
-      </div>
-
-      <div class="field-group">
-        <label>Imágenes del producto</label>
-        <div class="image-upload-box">
-          <label class="image-slot" id="slot1">
-            <span class="img-label">Imagen 1</span>
-            <span class="upload-btn">Seleccionar foto</span>
-            <span class="img-hint" id="hint1">Sin archivo</span>
-            <input id="inv-img1" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev1')">
-            <img id="prev1" class="img-preview" alt="Preview 1">
-          </label>
-          <label class="image-slot" id="slot2">
-            <span class="img-label">Imagen 2</span>
-            <span class="upload-btn">Seleccionar foto</span>
-            <span class="img-hint" id="hint2">Sin archivo</span>
-            <input id="inv-img2" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev2')">
-            <img id="prev2" class="img-preview" alt="Preview 2">
-          </label>
-          <label class="image-slot" id="slot3">
-            <span class="img-label">Imagen 3</span>
-            <span class="upload-btn">Seleccionar foto</span>
-            <span class="img-hint" id="hint3">Sin archivo</span>
-            <input id="inv-img3" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev3')">
-            <img id="prev3" class="img-preview" alt="Preview 3">
-          </label>
-          <label class="image-slot" id="slot4">
-            <span class="img-label">Imagen 4</span>
-            <span class="upload-btn">Seleccionar foto</span>
-            <span class="img-hint" id="hint4">Sin archivo</span>
-            <input id="inv-img4" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev4')">
-            <img id="prev4" class="img-preview" alt="Preview 4">
-          </label>
-          <label class="image-slot" id="slot5">
-            <span class="img-label">Imagen 5</span>
-            <span class="upload-btn">Seleccionar foto</span>
-            <span class="img-hint" id="hint5">Sin archivo</span>
-            <input id="inv-img5" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev5')">
-            <img id="prev5" class="img-preview" alt="Preview 5">
-          </label>
-        </div>
-      </div>
-
-      <div class="modal-actions">
+      <div class="modal-actions sticky-actions">
         <button class="btn-primary" id="save-product-btn" onclick="invSaveProduct()">Guardar producto</button>
         <button class="btn-secondary" onclick="invCloseModal()">Cancelar</button>
       </div>
@@ -268,17 +274,16 @@
   </div>
 
   <div class="modal" id="detail-modal">
-    <div class="modal-content modal-viewer modal-luxe modal-detail-luxe">
-      <div class="sheet-handle"></div>
-      <div class="modal-head">
+    <div class="modal-content modal-viewer glass-panel">
+      <div class="modal-head sticky-head">
         <div>
-          <p class="eyebrow">Ficha premium</p>
+          <p class="eyebrow">Producto</p>
           <h2 id="detail-name">Producto</h2>
         </div>
         <button class="icon-btn" onclick="closeDetailModal()" aria-label="Cerrar">✕</button>
       </div>
 
-      <div class="detail-gallery detail-gallery-luxe">
+      <div class="detail-gallery">
         <div class="detail-hero">
           <img id="detail-main-img" class="detail-main-img" alt="Imagen principal del producto">
           <div class="detail-image-counter" id="detail-image-counter">1 / 1</div>
@@ -286,24 +291,24 @@
         <div class="detail-thumbs" id="detail-thumbs"></div>
       </div>
 
-      <div class="detail-meta detail-meta-luxe">
+      <div class="detail-meta">
         <div class="detail-price" id="detail-price">Lps. 0.00</div>
         <div class="detail-tags">
-          <span class="tag" id="detail-category">Categoría</span>
-          <span class="tag" id="detail-stock">Stock</span>
+          <span class="tag-pill" id="detail-category">Categoría</span>
+          <span class="tag-pill" id="detail-stock">Stock</span>
         </div>
       </div>
 
       <div class="detail-summary-grid">
-        <article class="detail-summary-card">
+        <article class="detail-summary-card glass-panel">
           <span>Precio</span>
           <strong id="detail-summary-price">Lps. 0.00</strong>
         </article>
-        <article class="detail-summary-card">
+        <article class="detail-summary-card glass-panel">
           <span>Unidades</span>
           <strong id="detail-summary-stock">0</strong>
         </article>
-        <article class="detail-summary-card">
+        <article class="detail-summary-card glass-panel">
           <span>Categoría</span>
           <strong id="detail-summary-category">General</strong>
         </article>
@@ -312,7 +317,7 @@
       <div class="detail-stock-toolbar glass-panel">
         <div>
           <p class="detail-toolbar-title">Ajuste rápido de stock</p>
-          <small>Actualiza desde esta misma ficha</small>
+          <small>Sube o baja existencias desde esta ficha</small>
         </div>
         <div class="detail-stock-actions">
           <button type="button" onclick="quickAdjustDetailStock(-1)">−</button>
@@ -322,7 +327,7 @@
 
       <div class="detail-meta-note" id="detail-meta-note">Código interno</div>
 
-      <div class="detail-actions detail-actions-luxe">
+      <div class="detail-actions">
         <button class="btn-primary" id="detail-edit-btn">Editar producto</button>
         <button class="btn-secondary" id="detail-delete-btn">Eliminar producto</button>
       </div>

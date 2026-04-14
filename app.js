@@ -4,6 +4,8 @@ const STORAGE_KEYS = {
   theme: "invTheme"
 };
 
+const LOW_STOCK_LIMIT = 3;
+
 const USERS = {
   sdcomayagua: {
     password: "199311",
@@ -229,6 +231,8 @@ function setupAppPage() {
   registerCoreEvents();
   setupHeader();
   bindInventoryEvents();
+  bindUploadDropZones();
+  bindKeyboardShortcuts();
   ITEMS_PER_PAGE = parseInt(document.getElementById("inv-items-per-page")?.value || "12", 10);
   loadProducts();
 }
@@ -282,6 +286,128 @@ function updateSyncMeta() {
   setText("sync-status", "Sincronizado");
   setText("sync-time-pill", `Actualizado ${label}`);
 }
+function bindKeyboardShortcuts() {
+  document.addEventListener("keydown", (event) => {
+    if (!isInventoryPage()) return;
+    if (event.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+      event.preventDefault();
+      document.getElementById("inv-search")?.focus();
+    }
+    if (event.key.toLowerCase() === "n" && !event.ctrlKey && !event.metaKey && document.activeElement?.tagName !== "INPUT") {
+      invOpenModal(false);
+    }
+  });
+}
+
+function bindUploadDropZones() {
+  for (let i = 1; i <= IMAGE_RULES.maxImages; i += 1) {
+    const slot = document.getElementById(`slot${i}`);
+    const input = document.getElementById(`inv-img${i}`);
+    if (!slot || !input) continue;
+
+    ["dragenter", "dragover"].forEach((name) => {
+      slot.addEventListener(name, (event) => {
+        event.preventDefault();
+        slot.classList.add("drag-over");
+      });
+    });
+
+    ["dragleave", "dragend", "drop"].forEach((name) => {
+      slot.addEventListener(name, () => slot.classList.remove("drag-over"));
+    });
+
+    slot.addEventListener("drop", (event) => {
+      event.preventDefault();
+      const file = event.dataTransfer?.files?.[0];
+      if (!file || !file.type.startsWith("image/")) return;
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      invPreviewImage(input, `prev${i}`);
+    });
+  }
+}
+
+function renderCategoryChips() {
+  const wrap = document.getElementById("quick-categories");
+  const select = document.getElementById("inv-filter");
+  if (!wrap || !select) return;
+
+  const categories = [...new Set(PRODUCTS.map((item) => String(item.category || "").trim()).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "es"))
+    .slice(0, 10);
+
+  const current = select.value || "all";
+  const chips = [`<button type="button" class="category-chip ${current === "all" ? "active" : ""}" onclick="setCategoryFilter('all')">Todas</button>`]
+    .concat(categories.map((category) => `<button type="button" class="category-chip ${current === category ? "active" : ""}" onclick="setCategoryFilter('${escapeHtml(category)}')">${escapeHtml(category)}</button>`));
+
+  wrap.innerHTML = chips.join("");
+}
+
+function setCategoryFilter(value) {
+  const select = document.getElementById("inv-filter");
+  if (!select) return;
+  select.value = value;
+  applyFilters();
+}
+
+function triggerImportBackup() {
+  document.getElementById("inventory-import-input")?.click();
+}
+
+function exportInventoryBackup() {
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    products: PRODUCTS
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+  a.href = url;
+  a.download = `inventario-backup-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function importInventoryBackup(input) {
+  const file = input?.files?.[0];
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    const items = Array.isArray(data.products) ? data.products : [];
+    if (!items.length) throw new Error("Archivo sin productos.");
+
+    if (!confirm(`Se importarán ${items.length} productos uno por uno al inventario actual.`)) {
+      input.value = "";
+      return;
+    }
+
+    showLoading(true, "Importando respaldo...");
+    for (const item of items) {
+      await postToApi({
+        action: "add",
+        name: item.name || "Producto",
+        price: Number(item.price || 0),
+        qty: Number(item.qty || 0),
+        category: item.category || "General",
+        images: typeof item.images === "string" ? item.images : JSON.stringify(item.images || []),
+        user: CURRENT_USER.alias
+      });
+    }
+    await loadProducts();
+    alert("Respaldo importado correctamente.");
+  } catch (error) {
+    console.error(error);
+    alert("No se pudo importar el respaldo.");
+  } finally {
+    input.value = "";
+    showLoading(false);
+  }
+}
+
 
 async function loadProducts(showRefreshFeedback = false) {
   if (showRefreshFeedback) showLoading(true, "Actualizando inventario...");
@@ -318,6 +444,10 @@ function updateDashboard() {
   const totalValue = PRODUCTS.reduce((sum, item) => sum + (Number(item.qty || 0) * Number(item.price || 0)), 0);
   const outCount = PRODUCTS.filter((item) => Number(item.qty || 0) <= 0).length;
   const inStock = PRODUCTS.filter((item) => Number(item.qty || 0) > 0).length;
+  const lowStock = PRODUCTS.filter((item) => {
+    const qty = Number(item.qty || 0);
+    return qty > 0 && qty <= LOW_STOCK_LIMIT;
+  }).length;
   const categoryCount = new Set(PRODUCTS.map((item) => String(item.category || "").trim()).filter(Boolean)).size;
   const avgPrice = totalProducts ? PRODUCTS.reduce((sum, item) => sum + Number(item.price || 0), 0) / totalProducts : 0;
 
@@ -325,12 +455,17 @@ function updateDashboard() {
   setText("dash-total-qty", totalQty);
   setText("dash-total-value", `Lps. ${money.format(totalValue)}`);
   setText("dash-out-count", outCount);
+  setText("dash-low-stock", lowStock);
   setText("dash-category-count", categoryCount);
   setText("dash-in-stock", inStock);
   setText("dash-avg-price", `Lps. ${money.format(avgPrice)}`);
   setText("quick-total-products", totalProducts);
   setText("quick-in-stock", inStock);
   setText("quick-out-stock", outCount);
+  setText("sidebar-total-products", totalProducts);
+  setText("sidebar-in-stock", inStock);
+  setText("sidebar-low-stock", lowStock);
+  setText("sidebar-sync-note", LAST_SYNC_AT ? `Última sincronización ${LAST_SYNC_AT.toLocaleTimeString("es-HN", { hour: "2-digit", minute: "2-digit" })}` : "Listo para gestionar");
   updateSyncMeta();
 }
 
@@ -351,6 +486,7 @@ function loadCategories() {
   });
 
   select.value = categories.includes(current) ? current : "all";
+  renderCategoryChips();
 }
 
 function applyFilters() {
@@ -373,6 +509,7 @@ function applyFilters() {
 
     if (category !== "all" && productCategory !== category) return false;
     if (stock === "in" && qty <= 0) return false;
+    if (stock === "low" && !(qty > 0 && qty <= LOW_STOCK_LIMIT)) return false;
     if (stock === "out" && qty > 0) return false;
     if (minPrice !== null && price < minPrice) return false;
     if (maxPrice !== null && price > maxPrice) return false;
@@ -420,6 +557,7 @@ function renderProducts() {
     const mainImage = images[0] || getPlaceholderImage("Sin imagen");
     const qty = Number(product.qty || 0);
     const inStock = qty > 0;
+    const lowStock = qty > 0 && qty <= LOW_STOCK_LIMIT;
     const safeId = String(product.id || "");
     const safeName = escapeHtml(product.name || "Sin nombre");
     const safeCategory = escapeHtml(product.category || "General");
@@ -433,6 +571,7 @@ function renderProducts() {
           <img class="product-main-img" src="${mainImage}" alt="${safeName}">
           <span class="product-status ${inStock ? "in" : "out"}">${inStock ? "Disponible" : "Agotado"}</span>
           <span class="media-count">${imageLabel}</span>
+          ${lowStock ? '<span class="low-stock-badge">Bajo stock</span>' : ""}
         </div>
         <div class="product-copy">
           <div class="product-meta-row">
@@ -441,10 +580,16 @@ function renderProducts() {
           </div>
           <h3 class="product-name">${safeName}</h3>
           <p class="product-stock-line">${inStock ? `${qty} en stock` : "Sin existencias"}</p>
+          <div class="product-price-row">
+            <strong class="product-price">Lps. ${money.format(Number(product.price || 0))}</strong>
+            <span class="product-mini-note">${images.length ? "Con galería" : "Sin galería"}</span>
+          </div>
         </div>
       </button>
       <div class="product-action-row">
+        <button class="mini-icon-btn" type="button" onclick="updateStock('${safeId}', -1)"><span>−</span><small>Stock</small></button>
         <button class="mini-icon-btn" type="button" onclick="startEditById('${safeId}')"><span>✎</span><small>Editar</small></button>
+        <button class="mini-icon-btn" type="button" onclick="updateStock('${safeId}', 1)"><span>＋</span><small>Stock</small></button>
         <button class="mini-icon-btn danger" type="button" onclick="deleteProduct('${safeId}')"><span>🗑</span><small>Eliminar</small></button>
       </div>
     `;
@@ -498,6 +643,7 @@ function clearFilters() {
   ITEMS_PER_PAGE = 12;
   CURRENT_PAGE = 1;
   applyFilters();
+  renderCategoryChips();
 }
 
 function renderHistory(history) {
@@ -830,8 +976,8 @@ async function invSaveProduct() {
 
     if (helper) {
       helper.textContent = normalizedImages.length
-        ? `Fotos optimizadas para guardado móvil. (${normalizedImages.length} imagen${normalizedImages.length === 1 ? "" : "es"})`
-        : "Puedes subir hasta 5 fotos. La app las reduce automáticamente antes de guardar.";
+        ? `Fotos optimizadas para guardado móvil. (${normalizedImages.length} imagen${normalizedImages.length === 1 ? "" : "es"}). La primera queda como portada.`
+        : "Puedes subir hasta 5 fotos. La primera será la portada y la app las reduce automáticamente antes de guardar.";
     }
 
     invCloseModal();
@@ -1022,8 +1168,12 @@ window.scrollToSection = scrollToSection;
 window.toggleSummaryPanel = toggleSummaryPanel;
 window.toggleFiltersPanel = toggleFiltersPanel;
 window.setQuickStockFilter = setQuickStockFilter;
+window.setCategoryFilter = setCategoryFilter;
 window.closeSheets = closeSheets;
 window.swapDetailImage = swapDetailImage;
+window.exportInventoryBackup = exportInventoryBackup;
+window.triggerImportBackup = triggerImportBackup;
+window.importInventoryBackup = importInventoryBackup;
 
 window.addEventListener("load", () => {
   if (isInventoryPage()) setupAppPage();

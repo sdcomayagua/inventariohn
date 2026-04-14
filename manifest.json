@@ -1,6 +1,6 @@
 {
-  "name": "Tienda Gamer",
-  "short_name": "Tienda Gamer",
+  "name": "Inventario",
+  "short_name": "Inventario",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0b0f16",

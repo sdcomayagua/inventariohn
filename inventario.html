@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Tienda Gamer | Admin</title>
-  <meta name="description" content="Panel admin móvil estilo app premium para Tienda Gamer.">
+  <title>Inventario | Admin</title>
+  <meta name="description" content="Panel admin premium para inventario adaptable a PC y móvil.">
   <meta name="theme-color" content="#0b0f16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,12 +14,48 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-dark app-page">
-  <div class="app-shell">
+  <div class="app-shell ultra-shell">
+    <aside class="desktop-sidebar glass-panel">
+      <div class="sidebar-top">
+        <p class="eyebrow">Panel premium</p>
+        <h2 class="sidebar-title">Inventario</h2>
+        <p class="sidebar-copy">Administración limpia, adaptable y pensada para móvil y PC.</p>
+      </div>
+
+      <div class="sidebar-block">
+        <button class="sidebar-nav active" type="button" onclick="scrollToSection('productos')">Catálogo</button>
+        <button class="sidebar-nav" type="button" onclick="toggleSummaryPanel()">Resumen</button>
+        <button class="sidebar-nav" type="button" onclick="toggleFiltersPanel()">Filtros</button>
+        <button class="sidebar-nav" type="button" onclick="invOpenModal(false)">Nuevo producto</button>
+      </div>
+
+      <div class="sidebar-mini-stats">
+        <article class="sidebar-stat">
+          <span>Productos</span>
+          <strong id="sidebar-total-products">0</strong>
+        </article>
+        <article class="sidebar-stat">
+          <span>Con stock</span>
+          <strong id="sidebar-in-stock">0</strong>
+        </article>
+        <article class="sidebar-stat">
+          <span>Bajo stock</span>
+          <strong id="sidebar-low-stock">0</strong>
+        </article>
+      </div>
+
+      <div class="sidebar-footer-note">
+        <span class="sync-dot"></span>
+        <small id="sidebar-sync-note">Listo para gestionar</small>
+      </div>
+    </aside>
+
+    <div class="main-content">
     <header class="app-header glass-panel">
       <div class="brand-row">
         <div class="user-chip" id="inv-avatar">SD</div>
         <div>
-          <h1 class="app-title">Tienda Gamer</h1>
+          <h1 class="app-title">Inventario</h1>
           <p class="app-subtitle" id="inv-welcome">Sesión</p>
         </div>
       </div>
@@ -28,6 +64,18 @@
         <button class="icon-btn" onclick="invLogout()" aria-label="Cerrar sesión">⎋</button>
       </div>
     </header>
+
+    <section class="hero-banner glass-panel">
+      <div>
+        <p class="eyebrow">Control inteligente</p>
+        <h2 class="hero-title">Gestiona tu inventario con una vista más seria y profesional</h2>
+        <p class="hero-copy">Ahora la experiencia prioriza productos, carga de imágenes, filtros rápidos y una visualización más cómoda en escritorio y móvil.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-primary hero-btn" type="button" onclick="invOpenModal(false)">Agregar producto</button>
+        <button class="btn-secondary hero-btn" type="button" onclick="loadProducts(true)">Actualizar</button>
+      </div>
+    </section>
 
     <section class="top-quickbar" id="productos">
       <div class="search-card glass-panel compact-search luxe-search-card">
@@ -57,7 +105,10 @@
         <button class="action-chip" onclick="toggleSummaryPanel()">◎ Resumen</button>
         <button class="action-chip" onclick="loadProducts(true)">↻ Sync</button>
         <button class="action-chip" onclick="clearFilters()">⌫ Limpiar</button>
+        <button class="action-chip" onclick="exportInventoryBackup()">⤓ Backup</button>
+        <button class="action-chip" onclick="triggerImportBackup()">⤒ Importar</button>
         <button class="action-chip" id="install-btn" style="display:none;" onclick="installApp()">⇣ Instalar</button>
+        <input id="inventory-import-input" type="file" accept="application/json" hidden onchange="importInventoryBackup(this)">
       </div>
     </section>
 
@@ -71,12 +122,14 @@
         <span class="results-count" id="results-count">0 resultados</span>
       </div>
 
+      <div class="quick-categories" id="quick-categories"></div>
+
       <div class="products-list" id="inv-products"></div>
 
       <div class="empty-state glass-panel" id="inv-empty" style="display:none;">
         <div class="empty-icon">◌</div>
         <h3>Sin productos</h3>
-        <p>Agrega un producto nuevo para empezar a administrar tu inventario.</p>
+        <p>Agrega un producto nuevo o ajusta filtros para comenzar a administrar tu inventario con una vista más clara.</p>
       </div>
 
       <div class="pagination" id="inv-pagination"></div>
@@ -107,6 +160,7 @@
       </button>
     </nav>
   </div>
+    </div>
 
   <div class="sheet-backdrop hidden" id="summary-panel" onclick="if(event.target === this) closeSheets()">
     <section class="sheet-panel glass-panel">
@@ -151,6 +205,10 @@
             <strong id="dash-out-count">0</strong>
           </article>
           <article class="stat-card glass-panel">
+            <span>Bajo stock</span>
+            <strong id="dash-low-stock">0</strong>
+          </article>
+          <article class="stat-card glass-panel">
             <span>Categorías</span>
             <strong id="dash-category-count">0</strong>
           </article>
@@ -189,8 +247,9 @@
           <div class="field-group inline">
             <label for="inv-stock-filter">Stock</label>
             <select id="inv-stock-filter">
-              <option value="all">Todo</option>
+              <option value="all">Todos</option>
               <option value="in">Con stock</option>
+              <option value="low">Bajo stock</option>
               <option value="out">Agotados</option>
             </select>
           </div>
@@ -270,8 +329,13 @@
 
         <div class="field-group">
           <label>Imágenes del producto</label>
-          <p class="field-help" id="image-helper-text">Puedes subir hasta 5 fotos. La app las reduce automáticamente antes de guardar.</p>
-          <div class="image-upload-box">
+          <p class="field-help" id="image-helper-text">Puedes subir hasta 5 fotos. La primera será la portada. También puedes arrastrarlas y soltarlas directamente.</p>
+          <div class="upload-tip-bar">
+            <span>Portada automática</span>
+            <span>Compresión móvil</span>
+            <span>Drag &amp; drop</span>
+          </div>
+          <div class="image-upload-box pro-upload-box">
             <label class="image-slot" id="slot1">
               <span class="img-label">Imagen 1</span>
               <span class="upload-btn">Seleccionar foto</span>

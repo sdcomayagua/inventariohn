@@ -19,7 +19,7 @@
       <div class="sidebar-top">
         <p class="eyebrow">Panel premium</p>
         <h2 class="sidebar-title">Inventario</h2>
-        <p class="sidebar-copy">Control profesional con ventas, ganancias, historial, comprobantes y modo app real.</p>
+        
       </div>
 
       <div class="sidebar-block">
@@ -73,9 +73,8 @@
 
       <section class="hero-banner glass-panel">
         <div>
-          <p class="eyebrow">Control inteligente</p>
-          <h2 class="hero-title">Ahora también controlas ventas, ganancias, comprobantes y movimientos</h2>
-          <p class="hero-copy">La app quedó más robusta para PC y móvil, con imágenes por producto, caja rápida, historial local profesional, instalación PWA real y tema automático según tu sistema.</p>
+          <p class="eyebrow">Panel</p>
+          <h2 class="hero-title">Opciones rápidas</h2>
         </div>
         <div class="hero-actions hero-actions-3">
           <button class="btn-primary hero-btn" type="button" onclick="invOpenModal(false)">Agregar producto</button>
@@ -124,7 +123,7 @@
           <div>
             <p class="section-kicker">Catálogo</p>
             <h3 class="section-title">Tus artículos</h3>
-            <p class="section-caption">Toca una tarjeta para abrir la ficha, vender, editar o ajustar existencias.</p>
+            
           </div>
           <span class="results-count" id="results-count">0 resultados</span>
         </div>
@@ -135,7 +134,7 @@
         <div class="empty-state glass-panel" id="inv-empty" style="display:none;">
           <div class="empty-icon">◌</div>
           <h3>Sin productos</h3>
-          <p>Agrega un producto nuevo o ajusta filtros para comenzar a administrar tu inventario de forma profesional.</p>
+          
         </div>
 
         <div class="pagination" id="inv-pagination"></div>
@@ -146,8 +145,7 @@
           <div class="section-head enhanced-section-head section-tight-head">
             <div>
               <p class="section-kicker">Ventas</p>
-              <h3 class="section-title">Control de ventas y ganancias</h3>
-              <p class="section-caption">Calcula total vendido y ganancia usando el costo de cada producto.</p>
+              <h3 class="section-title">Ventas y ganancias</h3>
             </div>
             <button class="btn-secondary section-inline-btn" type="button" onclick="openSaleModal()">Nueva venta</button>
           </div>
@@ -178,8 +176,7 @@
           <div class="section-head enhanced-section-head section-tight-head">
             <div>
               <p class="section-kicker">Movimientos</p>
-              <h3 class="section-title">Historial del inventario</h3>
-              <p class="section-caption">Entradas, salidas, ventas, ediciones y actividad de stock.</p>
+              <h3 class="section-title">Movimientos</h3>
             </div>
             <span class="results-count" id="movement-count-label">0 movimientos</span>
           </div>
@@ -192,8 +189,7 @@
         <div class="section-head enhanced-section-head section-tight-head">
           <div>
             <p class="section-kicker">Comprobantes</p>
-            <h3 class="section-title">Comprobantes generados</h3>
-            <p class="section-caption">Cada venta puede abrirse o imprimirse como comprobante limpio sin logos.</p>
+            <h3 class="section-title">Comprobantes</h3>
           </div>
         </div>
 
@@ -204,8 +200,7 @@
         <div class="section-head enhanced-section-head section-tight-head">
           <div>
             <p class="section-kicker">Actividad</p>
-            <h3 class="section-title">Actividad sincronizada</h3>
-            <p class="section-caption">Registro recibido desde tu fuente remota.</p>
+            <h3 class="section-title">Actividad</h3>
           </div>
         </div>
         <ul id="inv-history-list"></ul>
@@ -218,17 +213,13 @@
           <span>▣</span>
           <small>Catálogo</small>
         </button>
-        <button type="button" onclick="scrollToSection('ventas')">
-          <span>💳</span>
-          <small>Ventas</small>
+        <button type="button" onclick="openSaleModal()">
+          <span>🧾</span>
+          <small>Venta</small>
         </button>
         <button type="button" class="dock-primary" onclick="invOpenModal(false)">
           <span>＋</span>
           <small>Nuevo</small>
-        </button>
-        <button type="button" onclick="openSaleModal()">
-          <span>🧾</span>
-          <small>Venta</small>
         </button>
         <button type="button" onclick="loadProducts(true)">
           <span>↻</span>
@@ -251,7 +242,7 @@
       <div class="sheet-scroll">
         <div class="overview-row compact-overview-row">
           <div>
-            <p class="sheet-copy">Vista rápida del inventario, ventas, ganancias y sincronización.</p>
+            
           </div>
           <div class="sync-pill">
             <span class="sync-dot"></span>
@@ -543,6 +534,29 @@
       <div class="modal-actions sticky-actions">
         <button class="btn-primary" id="complete-sale-btn" onclick="completeSale()">Guardar venta y generar comprobante</button>
         <button class="btn-secondary" onclick="closeSaleModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal" id="receipt-modal">
+    <div class="modal-content modal-viewer glass-panel receipt-modal-content">
+      <div class="modal-head sticky-head">
+        <div>
+          <p class="eyebrow">Comprobante</p>
+          <h2 id="receipt-modal-title">Vista previa</h2>
+        </div>
+        <button class="icon-btn" onclick="closeReceiptModal()" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="receipt-frame-wrap">
+        <iframe id="receipt-frame" title="Comprobante"></iframe>
+      </div>
+
+      <div class="modal-actions sticky-actions receipt-actions">
+        <button class="btn-primary" type="button" onclick="printCurrentReceipt()">Imprimir</button>
+        <button class="btn-secondary" type="button" onclick="openCurrentReceiptInTab()">Abrir en pestaña</button>
+        <button class="btn-secondary" type="button" onclick="closeReceiptModal()">Cerrar</button>
       </div>
     </div>
   </div>

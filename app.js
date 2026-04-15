@@ -50,6 +50,7 @@ let CURRENT_EDIT_IMAGES = [];
 let ACTIVE_DETAIL_ID = null;
 let LAST_SYNC_AT = null;
 let INSTALL_PROMPT = null;
+let ACTIVE_RECEIPT_ID = null;
 let PENDING_PRODUCT_META = null;
 let SALE_CART = [];
 let SYSTEM_THEME_MEDIA = null;
@@ -323,6 +324,7 @@ function registerCoreEvents() {
     if (event.key === "Escape") {
       invCloseModal();
       closeDetailModal();
+      closeReceiptModal();
       closeSheets();
       closeSaleModal();
     }
@@ -1508,8 +1510,8 @@ async function completeSale() {
 
     closeSaleModal();
     await loadProducts();
-    openReceiptWindow(receiptId, false);
-    showToast("Venta registrada y comprobante generado.");
+    openReceiptModal(receiptId, false);
+    showToast("Venta registrada.");
   } catch (error) {
     console.error(error);
     alert(error.message || "No se pudo completar la venta.");
@@ -1592,23 +1594,85 @@ function buildReceiptHtml(receipt) {
   </html>`;
 }
 
-function openReceiptWindow(receiptId, autoPrint = false) {
+function openReceiptModal(receiptId, autoPrint = false) {
   const receipt = findReceipt(receiptId);
   if (!receipt) {
     alert("No se encontró el comprobante.");
     return;
   }
-  const win = window.open("", "_blank", "noopener,noreferrer,width=980,height=760");
-  if (!win) {
-    alert("Tu navegador bloqueó la ventana del comprobante.");
+  ACTIVE_RECEIPT_ID = receiptId;
+  const modal = document.getElementById("receipt-modal");
+  const frame = document.getElementById("receipt-frame");
+  const title = document.getElementById("receipt-modal-title");
+  if (!modal || !frame) return;
+  if (title) title.textContent = `Comprobante #${receipt.number}`;
+  frame.srcdoc = buildReceiptHtml(receipt);
+  modal.style.display = "flex";
+  if (autoPrint) {
+    frame.onload = () => {
+      setTimeout(() => {
+        try {
+          frame.contentWindow?.focus();
+          frame.contentWindow?.print();
+        } catch {}
+      }, 180);
+      frame.onload = null;
+    };
+  }
+}
+
+function closeReceiptModal() {
+  const modal = document.getElementById("receipt-modal");
+  const frame = document.getElementById("receipt-frame");
+  if (modal) modal.style.display = "none";
+  if (frame) frame.srcdoc = "";
+}
+
+function openReceiptWindow(receiptId, autoPrint = false) {
+  openReceiptModal(receiptId, autoPrint);
+}
+
+function openReceiptInTab(receiptId, autoPrint = false) {
+  const receipt = findReceipt(receiptId);
+  if (!receipt) {
+    alert("No se encontró el comprobante.");
     return;
   }
-  win.document.open();
-  win.document.write(buildReceiptHtml(receipt));
-  win.document.close();
-  if (autoPrint) {
-    win.focus();
-    setTimeout(() => win.print(), 300);
+  const html = buildReceiptHtml(receipt);
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, "_blank");
+  if (!win) {
+    openReceiptModal(receiptId, autoPrint);
+    showToast("Se abrió el comprobante dentro de la app.");
+    return;
+  }
+  win.onload = () => {
+    if (autoPrint) {
+      setTimeout(() => {
+        try {
+          win.focus();
+          win.print();
+        } catch {}
+      }, 250);
+    }
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  };
+}
+
+function openCurrentReceiptInTab() {
+  if (!ACTIVE_RECEIPT_ID) return;
+  openReceiptInTab(ACTIVE_RECEIPT_ID, false);
+}
+
+function printCurrentReceipt() {
+  const frame = document.getElementById("receipt-frame");
+  if (!frame) return;
+  try {
+    frame.contentWindow?.focus();
+    frame.contentWindow?.print();
+  } catch {
+    if (ACTIVE_RECEIPT_ID) openReceiptInTab(ACTIVE_RECEIPT_ID, true);
   }
 }
 
@@ -1692,5 +1756,10 @@ window.removeSaleLine = removeSaleLine;
 window.updateSaleSummary = updateSaleSummary;
 window.completeSale = completeSale;
 window.openReceiptWindow = openReceiptWindow;
+window.openReceiptModal = openReceiptModal;
+window.closeReceiptModal = closeReceiptModal;
+window.openReceiptInTab = openReceiptInTab;
+window.openCurrentReceiptInTab = openCurrentReceiptInTab;
+window.printCurrentReceipt = printCurrentReceipt;
 window.invSaveProduct = invSaveProduct;
 window.invChangeItemsPerPage = invChangeItemsPerPage;

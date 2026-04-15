@@ -2002,3 +2002,154 @@ body.theme-light {
     width: calc(100% - 24px);
   }
 }
+
+
+/* Fixes UX móvil y comprobantes */
+.hero-copy,
+.sidebar-copy,
+.section-caption:empty,
+.sheet-copy:empty {
+  display: none !important;
+}
+
+.hero-banner {
+  align-items: center;
+}
+
+.hero-banner .hero-title {
+  margin-bottom: 0;
+}
+
+.ops-card .section-head > div,
+.catalog-section .section-head > div,
+.history-card .section-head > div {
+  display: grid;
+  gap: 2px;
+}
+
+.receipt-modal-content {
+  width: min(100%, 980px);
+  max-height: calc(100vh - 20px);
+}
+
+.receipt-frame-wrap {
+  padding: 0 16px 8px;
+}
+
+#receipt-frame {
+  width: 100%;
+  min-height: 70vh;
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  background: #fff;
+}
+
+.receipt-actions {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 899px) {
+  .desktop-sidebar { display: none !important; }
+  .hero-banner {
+    padding: 16px;
+    gap: 14px;
+  }
+  .hero-actions.hero-actions-3 {
+    grid-template-columns: 1fr;
+  }
+  .hero-banner .hero-title {
+    font-size: clamp(1.35rem, 6vw, 1.8rem);
+  }
+  .bottom-dock {
+    grid-template-columns: repeat(4, 1fr);
+    width: min(calc(100% - 18px), 520px);
+    padding: 8px;
+    gap: 6px;
+    border-radius: 22px;
+  }
+  .bottom-dock button {
+    min-height: 52px;
+    padding: 4px 2px;
+    border-radius: 16px;
+  }
+  .bottom-dock button small {
+    font-size: .72rem;
+    line-height: 1;
+  }
+  .floating-top-btn {
+    bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 520px) {
+  .app-shell.ultra-shell {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
+  }
+  .app-header {
+    padding: 10px 12px;
+    border-radius: 24px;
+  }
+  .brand-row {
+    gap: 10px;
+    min-width: 0;
+  }
+  .app-title {
+    font-size: 1.1rem;
+  }
+  .app-subtitle {
+    font-size: .8rem;
+    line-height: 1.15;
+  }
+  .header-tools-wide {
+    gap: 8px;
+  }
+  .network-pill {
+    font-size: .84rem;
+    padding: 0 8px;
+    min-height: 36px;
+  }
+  .icon-btn {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+  }
+  .quick-stats-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .section-kicker {
+    margin-bottom: 2px;
+  }
+  .section-title {
+    font-size: 1.15rem;
+    line-height: 1.1;
+  }
+  .sales-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .receipt-actions {
+    grid-template-columns: 1fr;
+  }
+  #receipt-frame {
+    min-height: 62vh;
+  }
+}
+
+@media (max-width: 420px) {
+  .app-header {
+    gap: 8px;
+  }
+  .user-chip {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    font-size: 1.1rem;
+  }
+  .network-pill {
+    display: none;
+  }
+  .bottom-dock button span {
+    font-size: .95rem;
+  }
+}

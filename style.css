@@ -3005,3 +3005,234 @@ body.theme-light .sale-shipping-box {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* v8 mobile polish */
+@media (max-width: 640px) {
+  .app-shell {
+    padding-inline: 10px;
+    gap: 12px;
+  }
+
+  .app-header {
+    padding: 12px;
+    border-radius: 22px;
+    gap: 10px;
+  }
+
+  .brand-badge {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+  }
+
+  .brand-copy h1,
+  .brand-copy .hero-title {
+    font-size: 1.1rem;
+    line-height: 1.12;
+  }
+
+  .brand-copy p,
+  .brand-copy small,
+  .app-header .muted {
+    font-size: .82rem;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .header-actions .icon-btn,
+  .header-actions .pill-btn,
+  .app-header .icon-btn,
+  .app-header .pill-btn {
+    min-width: 42px;
+    min-height: 42px;
+    padding: 0 10px;
+    border-radius: 14px;
+  }
+
+  .section-head {
+    gap: 10px;
+  }
+
+  .section-head .section-title {
+    font-size: 1.15rem;
+    line-height: 1.1;
+  }
+
+  .search-panel,
+  .ops-card,
+  .history-card,
+  .summary-card,
+  .glass-panel {
+    border-radius: 22px;
+  }
+
+  .quick-actions-grid,
+  .action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .quick-actions-grid > *,
+  .action-grid > * {
+    min-height: 44px;
+  }
+
+  .stats-strip,
+  .stats-grid,
+  .sales-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .sales-summary-grid-modal {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .sales-summary-grid-modal .sales-stat:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .product-meta-row {
+    flex-wrap: wrap;
+  }
+
+  .product-name {
+    font-size: .98rem;
+  }
+
+  .product-stock-line {
+    font-size: .88rem;
+  }
+
+  .product-price {
+    font-size: 1.05rem;
+  }
+
+  .product-mini-note {
+    font-size: .72rem;
+  }
+
+  .product-action-row.product-action-row-v5 .mini-icon-btn {
+    min-height: 40px;
+  }
+
+  .dock-nav,
+  .bottom-nav,
+  .mobile-nav {
+    padding: 8px;
+    gap: 6px;
+    border-radius: 20px;
+  }
+
+  .dock-nav .nav-btn,
+  .bottom-nav .nav-btn,
+  .mobile-nav .nav-btn {
+    min-height: 48px;
+    border-radius: 14px;
+    font-size: .78rem;
+  }
+
+  .modal-content {
+    width: calc(100% - 12px);
+    max-height: calc(100vh - 12px);
+    border-radius: 24px;
+  }
+
+  .modal-head {
+    padding: 14px 14px 10px;
+  }
+
+  .modal-head h2 {
+    font-size: 1.1rem;
+  }
+
+  .modal-scroll-body {
+    padding: 4px 12px 14px;
+  }
+
+  .form-grid,
+  .form-grid-2,
+  .form-grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  .sale-builder-box,
+  .sale-shipping-box {
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .shipping-option-card {
+    min-height: 50px;
+    padding: 11px 12px;
+    border-radius: 14px;
+  }
+
+  .sale-cart-list .list-card {
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .list-card-actions {
+    gap: 8px;
+  }
+
+  .sticky-actions,
+  .modal-actions.sticky-actions {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 10px 12px 12px;
+  }
+
+  .sticky-actions > button,
+  .modal-actions.sticky-actions > button {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .receipt-actions {
+    grid-template-columns: 1fr;
+  }
+
+  #receipt-frame {
+    min-height: 62vh;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .products-list {
+    gap: 10px;
+  }
+
+  .product-card {
+    padding: 9px;
+  }
+
+  .product-name {
+    font-size: .93rem;
+  }
+
+  .product-stock-line,
+  .product-mini-note {
+    font-size: .76rem;
+  }
+
+  .product-price {
+    font-size: 1rem;
+  }
+
+  .meta-pill {
+    font-size: 10px;
+    padding-inline: 8px;
+  }
+
+  .modal-content {
+    width: calc(100% - 8px);
+    border-radius: 22px;
+  }
+}

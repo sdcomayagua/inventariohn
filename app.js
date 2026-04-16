@@ -1767,7 +1767,7 @@ function buildReceiptHtml(receipt) {
         <div>
           <span class="pill">Comprobante</span>
           <h1 style="margin-top:12px">Inventario</h1>
-          <p class="muted">Comprobante limpio y profesional</p>
+          <p class="muted">Comprobante oficial de venta</p>
         </div>
         <div style="text-align:right">
           <h2>#${receipt.number}</h2>

@@ -11,6 +11,51 @@ const STORAGE_KEYS = {
 
 const LOW_STOCK_LIMIT = 3;
 
+const NATIONAL_SHIPPING_OPTIONS = [
+  { id: "envio-normal", label: "Envío Normal", price: 110 },
+  { id: "pagar-recibir", label: "Pagar al Recibir", price: 160 }
+];
+
+const COMAYAGUA_SHIPPING_OPTIONS = [
+  { id: "piedras-bonitas", label: "Colonia Piedras Bonitas", price: 0 },
+  { id: "barrio-santa-lucia", label: "Barrio Santa Lucía", price: 10 },
+  { id: "barrio-san-blas", label: "Barrio San Blas", price: 20 },
+  { id: "barrio-centro", label: "Barrio Centro", price: 30 },
+  { id: "barrio-arriba", label: "Barrio Arriba", price: 30 },
+  { id: "barrio-abajo", label: "Barrio Abajo", price: 30 },
+  { id: "barrio-cabanas", label: "Barrio Cabañas", price: 30 },
+  { id: "barrio-san-francisco", label: "Barrio San Francisco", price: 30 },
+  { id: "barrio-torondon", label: "Barrio Torondón", price: 30 },
+  { id: "colonia-21-abril", label: "Colonia 21 de Abril", price: 35 },
+  { id: "centro-comayagua", label: "Centro de Comayagua", price: 35 },
+  { id: "barrio-san-sebastian", label: "Barrio San Sebastián", price: 35 },
+  { id: "barrio-san-gebastian", label: "Barrio San Gebastián", price: 35 },
+  { id: "barrio-la-merced", label: "Barrio La Merced", price: 40 },
+  { id: "barrio-la-independencia", label: "Barrio La Independencia", price: 40 },
+  { id: "barrio-el-calvario", label: "Barrio El Calvario", price: 40 },
+  { id: "colonia-las-colinas", label: "Colonia Las Colinas", price: 40 },
+  { id: "colonia-escoto", label: "Colonia Escoto", price: 40 },
+  { id: "colonia-san-pablo", label: "Colonia San Pablo", price: 40 },
+  { id: "colonia-10-mayo", label: "Colonia 10 de Mayo", price: 40 },
+  { id: "colonia-boquin", label: "Colonia Boquín", price: 40 },
+  { id: "colonia-nueva-comayagua", label: "Colonia Nueva Comayagua", price: 40 },
+  { id: "colonia-el-prado", label: "Colonia El Prado", price: 40 },
+  { id: "colonia-lazos-amistad", label: "Colonia Lazos de Amistad", price: 40 },
+  { id: "colonia-rodolfo-alfaro", label: "Colonia Rodolfo Alfaro", price: 40 },
+  { id: "colonia-los-lirios", label: "Colonia Los Lirios", price: 40 },
+  { id: "colonia-sitramedis", label: "Colonia Sitramedis", price: 45 },
+  { id: "colonia-lincoln", label: "Colonia Lincoln", price: 45 },
+  { id: "colonia-madreselva", label: "Colonia Madreselva", price: 45 },
+  { id: "residencial-el-recreo", label: "Residencial El Recreo", price: 45 },
+  { id: "residencial-valladolid", label: "Residencial Valladolid", price: 45 },
+  { id: "residencial-la-zarcita", label: "Residencial La Zarcita", price: 45 },
+  { id: "palmira", label: "Palmira", price: 50 },
+  { id: "cabanas", label: "Cabañas", price: 50 },
+  { id: "terminal-buses", label: "Terminal de Buses", price: 50 },
+  { id: "estacion-policia", label: "Estación de Policía", price: 50 },
+  { id: "universidad-curc", label: "Universidad de Comayagua CURC", price: 50 }
+];
+
 const USERS = {
   sdcomayagua: {
     password: "199311",
@@ -428,6 +473,9 @@ function bindInventoryEvents() {
 
 function bindSalesEvents() {
   document.getElementById("sale-product-select")?.addEventListener("change", syncSaleFormFromSelectedProduct);
+  document.getElementById("sale-shipping-enabled")?.addEventListener("change", toggleShippingFields);
+  document.getElementById("sale-shipping-zone")?.addEventListener("change", populateShippingOptionSelect);
+  document.getElementById("sale-shipping-option")?.addEventListener("change", updateSaleSummary);
 }
 
 function showLoading(show, label = "Cargando...") {
@@ -1359,6 +1407,54 @@ async function quickAdjustDetailStock(change) {
   await updateStock(ACTIVE_DETAIL_ID, change, "Ajuste desde ficha");
 }
 
+function getShippingCatalog(zone) {
+  return zone === "COMAYAGUA" ? COMAYAGUA_SHIPPING_OPTIONS : NATIONAL_SHIPPING_OPTIONS;
+}
+
+function populateShippingOptionSelect() {
+  const zoneSelect = document.getElementById("sale-shipping-zone");
+  const optionSelect = document.getElementById("sale-shipping-option");
+  const preview = document.getElementById("sale-shipping-preview");
+  if (!zoneSelect || !optionSelect) return;
+  const zone = zoneSelect.value === "COMAYAGUA" ? "COMAYAGUA" : "NACIONAL";
+  const items = getShippingCatalog(zone);
+  optionSelect.innerHTML = items.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)} · ${formatMoney(item.price)}</option>`).join("");
+  const first = items[0];
+  if (preview) {
+    preview.textContent = first ? `${zone === "COMAYAGUA" ? "Comayagua" : "Nacional"}: ${first.label} · ${formatMoney(first.price)}` : "";
+  }
+  updateSaleSummary();
+}
+
+function getSelectedShipping() {
+  const enabled = document.getElementById("sale-shipping-enabled")?.checked;
+  if (!enabled) return null;
+  const zone = document.getElementById("sale-shipping-zone")?.value === "COMAYAGUA" ? "COMAYAGUA" : "NACIONAL";
+  const optionId = document.getElementById("sale-shipping-option")?.value || "";
+  const item = getShippingCatalog(zone).find((entry) => entry.id === optionId) || null;
+  if (!item) return null;
+  return {
+    id: `shipping-${zone.toLowerCase()}-${item.id}`,
+    type: "shipping",
+    zone,
+    name: zone === "COMAYAGUA" ? `Envío Comayagua · ${item.label}` : `Envío Nacional · ${item.label}`,
+    sku: zone === "COMAYAGUA" ? "ENV-COM" : "ENV-NAC",
+    qty: 1,
+    price: Number(item.price || 0),
+    cost: 0,
+    total: Number(item.price || 0),
+    profit: Number(item.price || 0)
+  };
+}
+
+function toggleShippingFields() {
+  const enabled = document.getElementById("sale-shipping-enabled")?.checked;
+  const fields = document.getElementById("sale-shipping-fields");
+  if (fields) fields.hidden = !enabled;
+  if (enabled) populateShippingOptionSelect();
+  updateSaleSummary();
+}
+
 function resetSaleModal() {
   SALE_CART = [];
   document.getElementById("sale-customer").value = "";
@@ -1367,6 +1463,10 @@ function resetSaleModal() {
   document.getElementById("sale-price").value = "0";
   document.getElementById("sale-discount").value = "0";
   document.getElementById("sale-note").value = "";
+  document.getElementById("sale-shipping-enabled").checked = false;
+  document.getElementById("sale-shipping-zone").value = "NACIONAL";
+  populateShippingOptionSelect();
+  toggleShippingFields();
   renderSaleCart();
   updateSaleSummary();
 }
@@ -1393,11 +1493,12 @@ function closeSaleModal() {
 function renderSaleCart() {
   const wrap = document.getElementById("sale-cart-list");
   if (!wrap) return;
-  if (!SALE_CART.length) {
+  const shipping = getSelectedShipping();
+  if (!SALE_CART.length && !shipping) {
     wrap.innerHTML = '<div class="list-empty">Aún no has agregado productos a esta venta.</div>';
     return;
   }
-  wrap.innerHTML = SALE_CART.map((line, index) => `
+  const productCards = SALE_CART.map((line, index) => `
     <article class="list-card glass-panel">
       <div class="list-card-head">
         <div>
@@ -1414,6 +1515,21 @@ function renderSaleCart() {
         <button class="mini-icon-btn danger" type="button" onclick="removeSaleLine(${index})"><span>✕</span><small>Quitar</small></button>
       </div>
     </article>`).join("");
+  const shippingCard = shipping ? `
+    <article class="list-card glass-panel shipping-line-card">
+      <div class="list-card-head">
+        <div>
+          <strong>${escapeHtml(shipping.name)}</strong>
+          <p>${shipping.zone === "COMAYAGUA" ? "Tarifa por colonia" : "Tarifa nacional"}</p>
+        </div>
+        <span class="list-amount">${formatMoney(shipping.total)}</span>
+      </div>
+      <div class="list-card-meta">
+        <span>Opcional activado</span>
+        <span>${escapeHtml(shipping.sku)}</span>
+      </div>
+    </article>` : "";
+  wrap.innerHTML = productCards + shippingCard;
 }
 
 function addSaleLine() {
@@ -1452,8 +1568,11 @@ function removeSaleLine(index) {
 }
 
 function updateSaleSummary() {
-  const subtotal = SALE_CART.reduce((sum, line) => sum + Number(line.total || 0), 0);
-  const baseProfit = SALE_CART.reduce((sum, line) => sum + Number(line.profit || 0), 0);
+  const shipping = getSelectedShipping();
+  const productsSubtotal = SALE_CART.reduce((sum, line) => sum + Number(line.total || 0), 0);
+  const shippingTotal = Number(shipping?.total || 0);
+  const subtotal = productsSubtotal + shippingTotal;
+  const baseProfit = SALE_CART.reduce((sum, line) => sum + Number(line.profit || 0), 0) + Number(shipping?.profit || 0);
   const discount = Number(document.getElementById("sale-discount")?.value || 0);
   const total = Math.max(0, subtotal - discount);
   const profit = Math.max(0, baseProfit - discount);
@@ -1461,7 +1580,11 @@ function updateSaleSummary() {
   setText("sale-discount-total", formatMoney(discount));
   setText("sale-total", formatMoney(total));
   setText("sale-profit", formatMoney(profit));
-  return { subtotal, discount, total, profit };
+  setText("sale-shipping-total", formatMoney(shippingTotal));
+  const shippingLabel = document.getElementById("sale-shipping-preview");
+  if (shippingLabel) shippingLabel.textContent = shipping ? `${shipping.name} · ${formatMoney(shipping.total)}` : "Sin envío agregado";
+  renderSaleCart();
+  return { subtotal, discount, total, profit, shippingTotal };
 }
 
 function buildReceiptNumber() {
@@ -1481,6 +1604,15 @@ async function deleteSale(saleId) {
   try {
     showLoading(true, "Eliminando venta y restaurando stock...");
     for (const line of sale.items || []) {
+      if (line.type === "shipping") {
+        pushMovement({
+          type: "delete",
+          title: `Envío eliminado: ${line.name}`,
+          detail: `Se retiró el cargo opcional del comprobante`,
+          amount: formatMoney(line.total || 0)
+        });
+        continue;
+      }
       await postToApi({ action: "stock", id: line.id, change: Math.abs(Number(line.qty || 0)), user: CURRENT_USER.alias });
       pushMovement({
         type: "delete",
@@ -1502,8 +1634,9 @@ async function deleteSale(saleId) {
 }
 
 async function completeSale() {
-  if (!SALE_CART.length) {
-    alert("Agrega al menos un producto a la venta.");
+  const shipping = getSelectedShipping();
+  if (!SALE_CART.length && !shipping) {
+    alert("Agrega al menos un producto o un envío a la venta.");
     return;
   }
   const summary = updateSaleSummary();
@@ -1541,7 +1674,8 @@ async function completeSale() {
       discount: summary.discount,
       total: summary.total,
       profit: summary.profit,
-      items: SALE_CART.map((line) => ({ ...line })),
+      shipping: shipping ? { ...shipping } : null,
+      items: [...SALE_CART.map((line) => ({ ...line })), ...(shipping ? [{ ...shipping }] : [])],
       user: CURRENT_USER.alias
     };
     const receipt = { ...sale, id: receiptId };
@@ -1556,6 +1690,15 @@ async function completeSale() {
         amount: formatMoney(line.total)
       });
     });
+
+    if (shipping) {
+      pushMovement({
+        type: "sale",
+        title: `Envío agregado: ${shipping.zone === "COMAYAGUA" ? "Comayagua" : "Nacional"}`,
+        detail: `${shipping.name} · ${customer}`,
+        amount: formatMoney(shipping.total)
+      });
+    }
 
     closeSaleModal();
     await loadProducts();

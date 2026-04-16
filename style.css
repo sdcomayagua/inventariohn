@@ -2908,3 +2908,56 @@ body.theme-light .product-action-row.product-action-row-v5 .sell-btn {
     max-height: 48vh;
   }
 }
+
+
+/* v6 optional shipping in sale modal */
+.form-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sale-shipping-box {
+  padding: 14px;
+  border-radius: 22px;
+  margin: 14px 0;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+}
+
+.shipping-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.shipping-toggle input {
+  width: 18px;
+  height: 18px;
+}
+
+.sale-shipping-preview {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: .95rem;
+}
+
+.shipping-line-card {
+  border-style: dashed;
+}
+
+.sales-summary-grid-modal {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+body.theme-light .sale-shipping-box {
+  background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,255,255,0.66));
+}
+
+@media (max-width: 760px) {
+  .form-grid-2,
+  .sales-summary-grid-modal {
+    grid-template-columns: 1fr;
+  }
+}

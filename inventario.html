@@ -524,8 +524,32 @@
           </div>
         </div>
 
+        <div class="glass-panel sale-shipping-box">
+          <label class="shipping-toggle">
+            <input id="sale-shipping-enabled" type="checkbox">
+            <span>Agregar envío opcional</span>
+          </label>
+          <div id="sale-shipping-fields" hidden>
+            <div class="form-grid form-grid-2">
+              <div class="field-group inline">
+                <label for="sale-shipping-zone">Envíos</label>
+                <select id="sale-shipping-zone">
+                  <option value="NACIONAL">NACIONAL</option>
+                  <option value="COMAYAGUA">COMAYAGUA</option>
+                </select>
+              </div>
+              <div class="field-group inline">
+                <label for="sale-shipping-option">Tarifa</label>
+                <select id="sale-shipping-option"></select>
+              </div>
+            </div>
+          </div>
+          <p class="sale-shipping-preview" id="sale-shipping-preview">Sin envío agregado</p>
+        </div>
+
         <div class="sales-summary-grid sales-summary-grid-modal">
           <article class="sales-stat glass-panel"><span>Subtotal</span><strong id="sale-subtotal">Lps. 0.00</strong></article>
+          <article class="sales-stat glass-panel"><span>Envío</span><strong id="sale-shipping-total">Lps. 0.00</strong></article>
           <article class="sales-stat glass-panel"><span>Descuento</span><strong id="sale-discount-total">Lps. 0.00</strong></article>
           <article class="sales-stat glass-panel"><span>Total</span><strong id="sale-total">Lps. 0.00</strong></article>
           <article class="sales-stat glass-panel"><span>Ganancia</span><strong id="sale-profit">Lps. 0.00</strong></article>

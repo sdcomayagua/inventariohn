@@ -769,13 +769,14 @@ function renderProducts() {
     const safeName = escapeHtml(product.name || "Sin nombre");
     const safeCategory = escapeHtml(product.category || "General");
     const imageLabel = images.length ? `${images.length} foto${images.length === 1 ? "" : "s"}` : "Sin foto";
+    const mediaClass = images.length ? "product-media" : "product-media is-placeholder";
 
     const card = document.createElement("article");
     card.className = "product-card glass-panel";
     card.innerHTML = `
       <button class="product-tile" type="button" onclick="viewProduct('${safeId}')" aria-label="Abrir ${safeName}">
-        <div class="product-media">
-          <img class="product-main-img" src="${mainImage}" alt="${safeName}">
+        <div class="${mediaClass}">
+          <img class="product-main-img" src="${mainImage}" alt="${safeName}" loading="lazy" decoding="async">
           <span class="product-status ${inStock ? "in" : "out"}">${inStock ? "Disponible" : "Agotado"}</span>
           <span class="media-count">${imageLabel}</span>
           ${lowStock ? '<span class="low-stock-badge">Bajo stock</span>' : ""}

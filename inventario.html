@@ -196,14 +196,15 @@
         <div class="panel-list" id="receipts-list"></div>
       </section>
 
-      <section class="history-card glass-panel" aria-hidden="false">
+      <section class="history-card glass-panel collapsed" id="activity-card" aria-hidden="false">
         <div class="section-head enhanced-section-head section-tight-head">
           <div>
             <p class="section-kicker">Actividad</p>
             <h3 class="section-title">Actividad</h3>
           </div>
+          <button class="btn-secondary section-inline-btn section-inline-btn-sm" type="button" id="activity-toggle-btn" onclick="toggleActivityPanel()">Ver actividad</button>
         </div>
-        <ul id="inv-history-list"></ul>
+        <ul id="inv-history-list" hidden></ul>
       </section>
 
       <button type="button" class="floating-top-btn" id="floating-top-btn" onclick="scrollToTop()" aria-label="Subir arriba">↑</button>
@@ -507,7 +508,7 @@
               <input id="sale-price" type="number" min="0" step="0.01" value="0">
             </div>
           </div>
-          <button class="btn-secondary sale-add-btn" type="button" onclick="addSaleLine()">Agregar al comprobante</button>
+          <button class="btn-secondary sale-add-btn" type="button" onclick="addSaleLine()">Agregar producto a la venta</button>
         </div>
 
         <div class="panel-list sale-cart-list" id="sale-cart-list"></div>
@@ -532,7 +533,7 @@
       </div>
 
       <div class="modal-actions sticky-actions">
-        <button class="btn-primary" id="complete-sale-btn" onclick="completeSale()">Guardar venta y generar comprobante</button>
+        <button class="btn-primary" id="complete-sale-btn" onclick="completeSale()">Confirmar venta y generar comprobante</button>
         <button class="btn-secondary" onclick="closeSaleModal()">Cancelar</button>
       </div>
     </div>

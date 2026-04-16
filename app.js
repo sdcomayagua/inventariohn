@@ -31,12 +31,12 @@ const USERS = {
 const money = new Intl.NumberFormat("es-HN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const IMAGE_RULES = {
   maxImages: 5,
-  totalChars: 140000,
-  hardTotalChars: 160000,
-  singleImageMaxChars: 36000,
-  minImageChars: 7000,
-  maxSideSingle: 1120,
-  maxSideMulti: 880,
+  totalChars: 180000,
+  hardTotalChars: 210000,
+  singleImageMaxChars: 48000,
+  minImageChars: 9000,
+  maxSideSingle: 1400,
+  maxSideMulti: 1120,
   minSide: 320
 };
 
@@ -864,6 +864,23 @@ function renderServerHistory(history) {
   });
 }
 
+function toggleActivityPanel(force) {
+  const card = document.getElementById("activity-card");
+  const list = document.getElementById("inv-history-list");
+  const btn = document.getElementById("activity-toggle-btn");
+  if (!card || !list || !btn) return;
+  const shouldOpen = typeof force === "boolean" ? force : list.hasAttribute("hidden");
+  if (shouldOpen) {
+    list.removeAttribute("hidden");
+    card.classList.remove("collapsed");
+    btn.textContent = "Ocultar actividad";
+  } else {
+    list.setAttribute("hidden", "hidden");
+    card.classList.add("collapsed");
+    btn.textContent = "Ver actividad";
+  }
+}
+
 function renderSalesList() {
   const wrap = document.getElementById("sales-list");
   if (!wrap) return;
@@ -888,6 +905,7 @@ function renderSalesList() {
       <div class="list-card-actions">
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(sale.receiptId)}', false)"><span>👁</span><small>Ver</small></button>
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(sale.receiptId)}', true)"><span>🖨</span><small>Imprimir</small></button>
+        <button class="mini-icon-btn danger" type="button" onclick="deleteSale('${escapeHtml(sale.id)}')"><span>🗑</span><small>Eliminar</small></button>
       </div>
     </article>`).join("");
 }
@@ -1081,7 +1099,7 @@ async function compressImageSource(source, options = {}) {
   const targetChars = options.targetChars || IMAGE_RULES.singleImageMaxChars;
   const maxSide = options.maxSide || IMAGE_RULES.maxSideSingle;
   const minSide = options.minSide || IMAGE_RULES.minSide;
-  let quality = options.initialQuality || 0.64;
+  let quality = options.initialQuality || 0.78;
   const image = await loadImageFromDataUrl(dataUrl);
   const ratio = Math.min(1, maxSide / Math.max(image.width, image.height));
   let width = Math.max(minSide, Math.round(image.width * ratio));
@@ -1116,7 +1134,7 @@ async function normalizeImagesForSave(images) {
   finalImages = await Promise.all(finalImages.map((img) => compressImageSource(img, {
     targetChars,
     maxSide: count > 1 ? IMAGE_RULES.maxSideMulti : IMAGE_RULES.maxSideSingle,
-    initialQuality: 0.52
+    initialQuality: 0.72
   })));
   total = JSON.stringify(finalImages).length;
   let safety = 0;
@@ -1125,7 +1143,7 @@ async function normalizeImagesForSave(images) {
     finalImages = await Promise.all(finalImages.map((img) => compressImageSource(img, {
       targetChars,
       maxSide: Math.max(IMAGE_RULES.minSide, IMAGE_RULES.maxSideMulti - safety * 20),
-      initialQuality: 0.4
+      initialQuality: 0.62
     })));
     total = JSON.stringify(finalImages).length;
     safety += 1;
@@ -1194,7 +1212,7 @@ async function invSaveProduct() {
         finalImages.push(await compressImageSource(file, {
           targetChars,
           maxSide: selectedCount > 1 ? IMAGE_RULES.maxSideMulti : IMAGE_RULES.maxSideSingle,
-          initialQuality: 0.56
+          initialQuality: 0.76
         }));
       } else if (CURRENT_EDIT_IMAGES[i - 1]) {
         finalImages.push(CURRENT_EDIT_IMAGES[i - 1]);
@@ -1452,6 +1470,38 @@ function buildReceiptNumber() {
   return String(receipts.length + 1).padStart(4, "0");
 }
 
+async function deleteSale(saleId) {
+  const sales = getSales();
+  const sale = sales.find((item) => String(item.id) === String(saleId));
+  if (!sale) {
+    alert("No se encontró esa venta.");
+    return;
+  }
+  if (!window.confirm(`¿Eliminar la venta #${sale.number}? Esto regresará el stock de los productos.`)) return;
+
+  try {
+    showLoading(true, "Eliminando venta y restaurando stock...");
+    for (const line of sale.items || []) {
+      await postToApi({ action: "stock", id: line.id, change: Math.abs(Number(line.qty || 0)), user: CURRENT_USER.alias });
+      pushMovement({
+        type: "delete",
+        title: `Venta eliminada: ${line.name}`,
+        detail: `Se devolvió ${line.qty} unidad(es) al stock`,
+        amount: formatMoney(line.total || 0)
+      });
+    }
+    setSales(sales.filter((item) => String(item.id) !== String(saleId)));
+    setReceipts(getReceipts().filter((item) => String(item.id) !== String(sale.receiptId)));
+    await loadProducts();
+    showToast("Venta eliminada y stock restaurado.");
+  } catch (error) {
+    console.error(error);
+    alert(error.message || "No se pudo eliminar la venta.");
+  } finally {
+    showLoading(false);
+  }
+}
+
 async function completeSale() {
   if (!SALE_CART.length) {
     alert("Agrega al menos un producto a la venta.");
@@ -1517,7 +1567,7 @@ async function completeSale() {
     alert(error.message || "No se pudo completar la venta.");
   } finally {
     btn.disabled = false;
-    btn.textContent = "Guardar venta y generar comprobante";
+    btn.textContent = "Confirmar venta y generar comprobante";
     showLoading(false);
   }
 }
@@ -1751,6 +1801,8 @@ window.scrollToSection = scrollToSection;
 window.closeSheets = closeSheets;
 window.openSaleModal = openSaleModal;
 window.closeSaleModal = closeSaleModal;
+window.deleteSale = deleteSale;
+window.toggleActivityPanel = toggleActivityPanel;
 window.addSaleLine = addSaleLine;
 window.removeSaleLine = removeSaleLine;
 window.updateSaleSummary = updateSaleSummary;

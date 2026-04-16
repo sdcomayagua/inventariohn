@@ -483,6 +483,7 @@ function bindSalesEvents() {
   document.getElementById("sale-payment")?.addEventListener("change", updateSaleReview);
   document.getElementById("sale-note")?.addEventListener("input", updateSaleReview);
   document.getElementById("sale-discount")?.addEventListener("input", updateSaleReview);
+  document.getElementById("sale-shipping-address")?.addEventListener("input", updateSaleSummary);
 }
 
 function showLoading(show, label = "Cargando...") {
@@ -959,6 +960,7 @@ function renderSalesList() {
       <div class="list-card-actions">
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(sale.receiptId)}', false)"><span>👁</span><small>Ver</small></button>
         <button class="mini-icon-btn" type="button" onclick="openSaleEditModal('${escapeHtml(sale.id)}')"><span>✎</span><small>Editar</small></button>
+        <button class="mini-icon-btn" type="button" onclick="duplicateSale('${escapeHtml(sale.id)}')"><span>⧉</span><small>Duplicar</small></button>
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(sale.receiptId)}', true)"><span>🖨</span><small>Imprimir</small></button>
         <button class="mini-icon-btn danger" type="button" onclick="deleteSale('${escapeHtml(sale.id)}')"><span>🗑</span><small>Eliminar</small></button>
       </div>
@@ -1014,6 +1016,7 @@ function renderReceiptsList() {
       <div class="list-card-actions">
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(receipt.id)}', false)"><span>👁</span><small>Abrir</small></button>
         <button class="mini-icon-btn" type="button" onclick="openSaleEditModal(getSaleIdByReceiptId('${escapeHtml(receipt.id)}'))"><span>✎</span><small>Editar</small></button>
+        <button class="mini-icon-btn" type="button" onclick="duplicateSale(getSaleIdByReceiptId('${escapeHtml(receipt.id)}'))"><span>⧉</span><small>Duplicar</small></button>
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(receipt.id)}', true)"><span>🖨</span><small>Imprimir</small></button>
       </div>
     </article>`).join("");
@@ -1567,6 +1570,9 @@ function populateSaleModalFromSale(sale) {
   document.getElementById("sale-payment").value = sale.payment || "Efectivo";
   document.getElementById("sale-discount").value = String(Number(sale.discount || 0).toFixed(2));
   document.getElementById("sale-note").value = sale.note || "";
+  document.getElementById("sale-shipping-address").value = sale.shipping?.address || "";
+  const title = document.getElementById("sale-modal-title");
+  if (title) title.textContent = sale.id ? "Editar venta" : "Duplicar venta";
   const shippingEnabled = Boolean(sale.shipping);
   document.getElementById("sale-shipping-enabled").checked = shippingEnabled;
   document.getElementById("sale-shipping-zone").value = sale.shipping?.zone === "COMAYAGUA" ? "COMAYAGUA" : "NACIONAL";
@@ -1597,6 +1603,23 @@ function openSaleEditModal(saleId) {
   modal.style.display = "flex";
 }
 
+function duplicateSale(saleId) {
+  const sale = getSaleById(saleId);
+  if (!sale) {
+    alert("No se encontró esa venta.");
+    return;
+  }
+  const modal = document.getElementById("sale-modal");
+  if (!modal) return;
+  resetSaleModal();
+  populateSaleProductSelect();
+  populateSaleModalFromSale({ ...sale, id: "", receiptId: "", number: "" });
+  SALE_EDITING_ID = null;
+  const title = document.getElementById("sale-modal-title");
+  if (title) title.textContent = "Duplicar venta";
+  modal.style.display = "flex";
+}
+
 function editCurrentReceiptSale() {
   if (!ACTIVE_RECEIPT_ID) return;
   const sale = getSales().find((item) => String(item.receiptId) === String(ACTIVE_RECEIPT_ID));
@@ -1618,6 +1641,9 @@ function resetSaleModal() {
   document.getElementById("sale-price").value = "0";
   document.getElementById("sale-discount").value = "0";
   document.getElementById("sale-note").value = "";
+  document.getElementById("sale-shipping-address").value = "";
+  const title = document.getElementById("sale-modal-title");
+  if (title) title.textContent = "Nueva venta";
   document.getElementById("sale-shipping-enabled").checked = false;
   document.getElementById("sale-shipping-zone").value = "NACIONAL";
   populateShippingOptionSelect();
@@ -1648,6 +1674,26 @@ function closeSaleModal() {
   SALE_MODAL_STEP = 1;
 }
 
+function updateSaleLine(index, patch = {}) {
+  const line = SALE_CART[index];
+  if (!line) return;
+  const product = getProductById(line.id);
+  const nextQty = Math.max(1, Number(patch.qty ?? line.qty || 1));
+  const nextPrice = Math.max(0, Number(patch.price ?? line.price || 0));
+  const otherQty = SALE_CART.reduce((sum, item, i) => i === index ? sum : (String(item.id) === String(line.id) ? sum + Number(item.qty || 0) : sum), 0);
+  const available = Number(product?.qty || 0);
+  if (product && nextQty + otherQty > available) {
+    showToast(`Stock máximo disponible: ${available - otherQty}`);
+    return;
+  }
+  line.qty = nextQty;
+  line.price = nextPrice;
+  line.total = nextQty * nextPrice;
+  line.profit = nextQty * (nextPrice - Number(line.cost || 0));
+  SALE_CART[index] = line;
+  updateSaleSummary();
+}
+
 function renderSaleCart() {
   const wrap = document.getElementById("sale-cart-list");
   if (!wrap) return;
@@ -1657,19 +1703,33 @@ function renderSaleCart() {
     return;
   }
   const productCards = SALE_CART.map((line, index) => `
-    <article class="list-card glass-panel">
+    <article class="list-card glass-panel sale-line-card">
       <div class="list-card-head">
         <div>
           <strong>${escapeHtml(line.name)}</strong>
-          <p>${line.qty} x ${formatMoney(line.price)}</p>
+          <p>${escapeHtml(line.sku || `ID ${line.id}`)}</p>
         </div>
         <span class="list-amount">${formatMoney(line.total)}</span>
       </div>
+      <div class="sale-line-editor">
+        <label>
+          <span>Cantidad</span>
+          <div class="sale-stepper">
+            <button type="button" class="mini-step-btn" onclick="updateSaleLine(${index}, { qty: ${Number(line.qty || 1) - 1} })">−</button>
+            <input type="number" min="1" value="${Number(line.qty || 1)}" onchange="updateSaleLine(${index}, { qty: this.value })">
+            <button type="button" class="mini-step-btn" onclick="updateSaleLine(${index}, { qty: ${Number(line.qty || 1) + 1} })">＋</button>
+          </div>
+        </label>
+        <label>
+          <span>Precio</span>
+          <input type="number" min="0" step="0.01" value="${Number(line.price || 0).toFixed(2)}" onchange="updateSaleLine(${index}, { price: this.value })">
+        </label>
+      </div>
       <div class="list-card-meta">
         <span>Ganancia ${formatMoney(line.profit)}</span>
-        <span>${escapeHtml(line.sku || `ID ${line.id}`)}</span>
+        <span>${Number(line.qty || 0)} x ${formatMoney(line.price)}</span>
       </div>
-      <div class="list-card-actions">
+      <div class="list-card-actions sale-line-actions">
         <button class="mini-icon-btn danger" type="button" onclick="removeSaleLine(${index})"><span>✕</span><small>Quitar</small></button>
       </div>
     </article>`).join("");
@@ -1740,7 +1800,8 @@ function updateSaleSummary() {
   setText("sale-profit", formatMoney(profit));
   setText("sale-shipping-total", formatMoney(shippingTotal));
   const shippingLabel = document.getElementById("sale-shipping-preview");
-  if (shippingLabel) shippingLabel.textContent = shipping ? `${shipping.name} · ${formatMoney(shipping.total)}` : "Sin envío agregado";
+  const shippingAddress = document.getElementById("sale-shipping-address")?.value.trim() || "";
+  if (shippingLabel) shippingLabel.textContent = shipping ? `${shipping.name} · ${formatMoney(shipping.total)}${shippingAddress ? ` · ${shippingAddress}` : ""}` : "Sin envío agregado";
   renderSaleCart();
   updateSaleReview();
   return { subtotal, discount, total, profit, shippingTotal };
@@ -1861,7 +1922,7 @@ async function completeSale() {
       discount: summary.discount,
       total: summary.total,
       profit: summary.profit,
-      shipping: shipping ? { ...shipping } : null,
+      shipping: shipping ? { ...shipping, address: document.getElementById("sale-shipping-address")?.value.trim() || "" } : null,
       items: [...SALE_CART.map((line) => ({ ...line })), ...(shipping ? [{ ...shipping }] : [])],
       user: CURRENT_USER.alias
     };
@@ -1969,6 +2030,7 @@ function buildReceiptHtml(receipt) {
         <p><strong>Cliente:</strong> ${escapeHtml(receipt.customer || "Cliente general")}</p>
         <p><strong>Pago:</strong> ${escapeHtml(receipt.payment || "Efectivo")}</p>
         ${receipt.note ? `<p><strong>Nota:</strong> ${escapeHtml(receipt.note)}</p>` : ""}
+        ${receipt.shipping?.address ? `<p><strong>Entrega:</strong> ${escapeHtml(receipt.shipping.address)}</p>` : ""}
       </div>
 
       <table>
@@ -1985,7 +2047,7 @@ function buildReceiptHtml(receipt) {
               </div>
 
       <div class="footer muted">
-        <p>Documento generado desde la app Inventario.</p>
+        <p>Gracias por su compra.</p>
       </div>
     </div>
   </body>
@@ -2148,6 +2210,8 @@ window.scrollToTop = scrollToTop;
 window.scrollToSection = scrollToSection;
 window.closeSheets = closeSheets;
 window.openSaleModal = openSaleModal;
+window.duplicateSale = duplicateSale;
+window.updateSaleLine = updateSaleLine;
 window.closeSaleModal = closeSaleModal;
 window.deleteSale = deleteSale;
 window.toggleActivityPanel = toggleActivityPanel;

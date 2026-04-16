@@ -794,11 +794,9 @@ function renderProducts() {
           </div>
         </div>
       </button>
-      <div class="product-action-row product-action-row-5">
-        <button class="mini-icon-btn" type="button" onclick="updateStock('${safeId}', -1)"><span>−</span><small>Stock</small></button>
+      <div class="product-action-row product-action-row-v5">
+        <button class="mini-icon-btn sell-btn" type="button" onclick="openSaleModal('${safeId}')"><span>💳</span><small>Vender</small></button>
         <button class="mini-icon-btn" type="button" onclick="startEditById('${safeId}')"><span>✎</span><small>Editar</small></button>
-        <button class="mini-icon-btn" type="button" onclick="updateStock('${safeId}', 1)"><span>＋</span><small>Stock</small></button>
-        <button class="mini-icon-btn" type="button" onclick="openSaleModal('${safeId}')"><span>💳</span><small>Vender</small></button>
         <button class="mini-icon-btn danger" type="button" onclick="deleteProduct('${safeId}')"><span>🗑</span><small>Eliminar</small></button>
       </div>`;
     container.appendChild(card);

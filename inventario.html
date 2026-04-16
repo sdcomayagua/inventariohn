@@ -17,13 +17,13 @@
   <div class="app-shell ultra-shell">
     <aside class="desktop-sidebar glass-panel">
       <div class="sidebar-top">
-        <p class="eyebrow">Panel premium</p>
+        <p class="eyebrow">Panel de control</p>
         <h2 class="sidebar-title">Inventario</h2>
         
       </div>
 
       <div class="sidebar-block">
-        <button class="sidebar-nav active" type="button" onclick="scrollToSection('productos')">Catálogo</button>
+        <button class="sidebar-nav active" type="button" onclick="scrollToSection('productos')">Productos</button>
         <button class="sidebar-nav" type="button" onclick="scrollToSection('ventas')">Ventas</button>
         <button class="sidebar-nav" type="button" onclick="scrollToSection('movimientos')">Movimientos</button>
         <button class="sidebar-nav" type="button" onclick="scrollToSection('comprobantes')">Comprobantes</button>
@@ -74,7 +74,7 @@
       <section class="hero-banner glass-panel">
         <div>
           <p class="eyebrow">Panel</p>
-          <h2 class="hero-title">Opciones rápidas</h2>
+          <h2 class="hero-title">Acciones principales</h2>
         </div>
         <div class="hero-actions hero-actions-3">
           <button class="btn-primary hero-btn" type="button" onclick="invOpenModal(false)">Agregar producto</button>
@@ -106,14 +106,14 @@
         </div>
 
         <div class="action-scroller compact-actions luxe-actions-grid">
-          <button class="action-chip active" onclick="invOpenModal(false)">＋ Nuevo</button>
-          <button class="action-chip" onclick="openSaleModal()">💳 Venta</button>
-          <button class="action-chip" onclick="toggleFiltersPanel()">⎚ Filtros</button>
-          <button class="action-chip" onclick="toggleSummaryPanel()">◎ Resumen</button>
-          <button class="action-chip" onclick="loadProducts(true)">↻ Sync</button>
-          <button class="action-chip" onclick="clearFilters()">⌫ Limpiar</button>
-          <button class="action-chip" onclick="exportInventoryBackup()">⤓ Backup</button>
-          <button class="action-chip" onclick="triggerImportBackup()">⤒ Importar</button>
+          <button class="action-chip active" onclick="invOpenModal(false)">＋ Producto</button>
+          <button class="action-chip" onclick="openSaleModal()">🧾 Venta</button>
+          <button class="action-chip" onclick="toggleFiltersPanel()">Filtros</button>
+          <button class="action-chip" onclick="toggleSummaryPanel()">Resumen</button>
+          <button class="action-chip" onclick="loadProducts(true)">Actualizar</button>
+          <button class="action-chip" onclick="clearFilters()">Limpiar</button>
+          <button class="action-chip" onclick="exportInventoryBackup()">Respaldo</button>
+          <button class="action-chip" onclick="triggerImportBackup()">Importar</button>
           <input id="inventory-import-input" type="file" accept="application/json" hidden onchange="importInventoryBackup(this)">
         </div>
       </section>
@@ -121,8 +121,8 @@
       <section class="catalog-section catalog-priority">
         <div class="section-head enhanced-section-head">
           <div>
-            <p class="section-kicker">Catálogo</p>
-            <h3 class="section-title">Tus artículos</h3>
+            <p class="section-kicker">Productos</p>
+            <h3 class="section-title">Productos</h3>
             
           </div>
           <span class="results-count" id="results-count">0 resultados</span>
@@ -211,7 +211,7 @@
       <nav class="bottom-dock glass-panel" aria-label="Acciones rápidas">
         <button type="button" onclick="scrollToSection('productos')">
           <span>▣</span>
-          <small>Catálogo</small>
+          <small>Productos</small>
         </button>
         <button type="button" onclick="openSaleModal()">
           <span>🧾</span>
@@ -223,7 +223,7 @@
         </button>
         <button type="button" onclick="loadProducts(true)">
           <span>↻</span>
-          <small>Sync</small>
+          <small>Actualizar</small>
         </button>
       </nav>
     </div>
@@ -234,7 +234,7 @@
       <div class="sheet-grab"></div>
       <div class="sheet-header">
         <div>
-          <p class="eyebrow">Panel privado</p>
+          <p class="eyebrow">Resumen general</p>
           <h2 class="overview-title">Resumen</h2>
         </div>
         <button class="icon-btn" type="button" onclick="closeSheets()" aria-label="Cerrar">✕</button>
@@ -277,7 +277,7 @@
       <div class="sheet-grab"></div>
       <div class="sheet-header">
         <div>
-          <p class="eyebrow">Vista rápida</p>
+          <p class="eyebrow">Ajustes de vista</p>
           <h2 class="overview-title">Filtros</h2>
         </div>
         <button class="icon-btn" type="button" onclick="closeSheets()" aria-label="Cerrar">✕</button>
@@ -337,7 +337,7 @@
     <div class="modal-content modal-form glass-panel">
       <div class="modal-head sticky-head">
         <div>
-          <p class="eyebrow">Catálogo</p>
+          <p class="eyebrow">Productos</p>
           <h2 id="inv-modal-title">Agregar producto</h2>
         </div>
         <button class="icon-btn" onclick="invCloseModal()" aria-label="Cerrar">✕</button>
@@ -469,7 +469,7 @@
     <div class="modal-content modal-form glass-panel">
       <div class="modal-head sticky-head">
         <div>
-          <p class="eyebrow">Caja rápida</p>
+          <p class="eyebrow">Registro de venta</p>
           <h2>Nueva venta</h2>
         </div>
         <button class="icon-btn" onclick="closeSaleModal()" aria-label="Cerrar">✕</button>

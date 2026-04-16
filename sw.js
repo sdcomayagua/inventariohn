@@ -1,5 +1,5 @@
-const STATIC_CACHE = "inventario-static-v20";
-const API_CACHE = "inventario-api-v20";
+const STATIC_CACHE = "inventario-static-v21";
+const API_CACHE = "inventario-api-v21";
 const ASSETS = [
   "./",
   "index.html",

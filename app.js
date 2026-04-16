@@ -476,6 +476,7 @@ function bindSalesEvents() {
   document.getElementById("sale-shipping-enabled")?.addEventListener("change", toggleShippingFields);
   document.getElementById("sale-shipping-zone")?.addEventListener("change", populateShippingOptionSelect);
   document.getElementById("sale-shipping-option")?.addEventListener("change", updateSaleSummary);
+  document.getElementById("sale-shipping-list")?.addEventListener("click", onShippingListClick);
 }
 
 function showLoading(show, label = "Cargando...") {
@@ -1415,15 +1416,32 @@ function populateShippingOptionSelect() {
   const zoneSelect = document.getElementById("sale-shipping-zone");
   const optionSelect = document.getElementById("sale-shipping-option");
   const preview = document.getElementById("sale-shipping-preview");
-  if (!zoneSelect || !optionSelect) return;
+  const list = document.getElementById("sale-shipping-list");
+  if (!zoneSelect || !optionSelect || !list) return;
   const zone = zoneSelect.value === "COMAYAGUA" ? "COMAYAGUA" : "NACIONAL";
   const items = getShippingCatalog(zone);
+  const previousValue = optionSelect.value;
   optionSelect.innerHTML = items.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)} · ${formatMoney(item.price)}</option>`).join("");
-  const first = items[0];
+  const selectedValue = items.some((item) => item.id === previousValue) ? previousValue : (items[0]?.id || "");
+  optionSelect.value = selectedValue;
+  list.innerHTML = items.map((item) => {
+    const active = item.id === selectedValue;
+    return `<button type="button" class="shipping-option-card${active ? ' is-active' : ''}" data-shipping-id="${escapeHtml(item.id)}" role="option" aria-selected="${active ? 'true' : 'false'}"><span>${escapeHtml(item.label)}</span><strong>${formatMoney(item.price)}</strong></button>`;
+  }).join("");
+  const selected = items.find((item) => item.id === selectedValue) || items[0];
   if (preview) {
-    preview.textContent = first ? `${zone === "COMAYAGUA" ? "Comayagua" : "Nacional"}: ${first.label} · ${formatMoney(first.price)}` : "";
+    preview.textContent = selected ? `${zone === "COMAYAGUA" ? "Comayagua" : "Nacional"}: ${selected.label} · ${formatMoney(selected.price)}` : "";
   }
   updateSaleSummary();
+}
+
+function onShippingListClick(event) {
+  const button = event.target.closest('[data-shipping-id]');
+  if (!button) return;
+  const optionSelect = document.getElementById("sale-shipping-option");
+  if (!optionSelect) return;
+  optionSelect.value = button.dataset.shippingId || "";
+  populateShippingOptionSelect();
 }
 
 function getSelectedShipping() {
@@ -1775,8 +1793,7 @@ function buildReceiptHtml(receipt) {
         <p>Subtotal: <strong>${formatMoney(receipt.subtotal)}</strong></p>
         <p>Descuento: <strong>${formatMoney(receipt.discount)}</strong></p>
         <p>Total: <strong>${formatMoney(receipt.total)}</strong></p>
-        <p>Ganancia estimada: <strong>${formatMoney(receipt.profit)}</strong></p>
-      </div>
+              </div>
 
       <div class="footer muted">
         <p>Documento generado desde la app Inventario.</p>

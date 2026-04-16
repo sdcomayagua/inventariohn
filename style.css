@@ -2943,6 +2943,50 @@ body.theme-light .product-action-row.product-action-row-v5 .sell-btn {
   font-size: .95rem;
 }
 
+.sale-shipping-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.shipping-option-card {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255,255,255,.045);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  text-align: left;
+}
+
+.shipping-option-card span {
+  display: block;
+  font-weight: 600;
+}
+
+.shipping-option-card strong {
+  white-space: nowrap;
+}
+
+.shipping-option-card.is-active {
+  border-color: rgba(143, 179, 255, .75);
+  background: rgba(143, 179, 255, .14);
+  box-shadow: inset 0 0 0 1px rgba(143, 179, 255, .22);
+}
+
+body.theme-light .shipping-option-card {
+  background: rgba(22,34,53,.035);
+}
+
+body.theme-light .shipping-option-card.is-active {
+  background: rgba(143,179,255,.18);
+}
+
 .shipping-line-card {
   border-style: dashed;
 }

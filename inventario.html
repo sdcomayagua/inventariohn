@@ -466,104 +466,126 @@
     </div>
   </div>
 
+  
   <div class="modal" id="sale-modal">
     <div class="modal-content modal-form glass-panel">
       <div class="modal-head sticky-head">
         <div>
           <p class="eyebrow">Registro de venta</p>
-          <h2>Nueva venta</h2>
+          <h2 id="sale-modal-title">Nueva venta</h2>
+          <small class="sale-step-indicator" id="sale-step-indicator">Paso 1 de 2 · Datos de venta</small>
         </div>
         <button class="icon-btn" onclick="closeSaleModal()" aria-label="Cerrar">✕</button>
       </div>
 
-      <div class="modal-scroll-body">
-        <div class="form-grid">
-          <div class="field-group inline">
-            <label for="sale-customer">Cliente</label>
-            <input id="sale-customer" placeholder="Nombre del cliente (opcional)">
-          </div>
-          <div class="field-group inline">
-            <label for="sale-payment">Pago</label>
-            <select id="sale-payment">
-              <option value="Efectivo">Efectivo</option>
-              <option value="Transferencia">Transferencia</option>
-              <option value="Tarjeta">Tarjeta</option>
-              <option value="Mixto">Mixto</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="glass-panel sale-builder-box">
-          <div class="form-grid form-grid-3">
+      <div class="modal-scroll-body sale-modal-body">
+        <section class="sale-step-panel" data-sale-step="1">
+          <div class="form-grid">
             <div class="field-group inline">
-              <label for="sale-product-select">Producto</label>
-              <select id="sale-product-select"></select>
+              <label for="sale-customer">Nombre</label>
+              <input id="sale-customer" placeholder="Nombre del cliente (opcional)">
             </div>
             <div class="field-group inline">
-              <label for="sale-qty">Cantidad</label>
-              <input id="sale-qty" type="number" min="1" value="1">
+              <label for="sale-payment">Pago</label>
+              <select id="sale-payment">
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="Tarjeta">Tarjeta</option>
+                <option value="Mixto">Mixto</option>
+              </select>
             </div>
-            <div class="field-group inline">
-              <label for="sale-price">Precio de venta</label>
-              <input id="sale-price" type="number" min="0" step="0.01" value="0">
-            </div>
           </div>
-          <button class="btn-secondary sale-add-btn" type="button" onclick="addSaleLine()">Agregar producto a la venta</button>
-        </div>
 
-        <div class="panel-list sale-cart-list" id="sale-cart-list"></div>
-
-        <div class="form-grid">
-          <div class="field-group inline">
-            <label for="sale-discount">Descuento</label>
-            <input id="sale-discount" type="number" min="0" step="0.01" value="0" oninput="updateSaleSummary()">
-          </div>
-          <div class="field-group inline">
-            <label for="sale-note">Nota de venta</label>
-            <input id="sale-note" placeholder="Ej: entrega inmediata, garantía, observación">
-          </div>
-        </div>
-
-        <div class="glass-panel sale-shipping-box">
-          <label class="shipping-toggle">
-            <input id="sale-shipping-enabled" type="checkbox">
-            <span>Agregar envío opcional</span>
-          </label>
-          <div id="sale-shipping-fields" hidden>
-            <div class="form-grid form-grid-2">
+          <div class="glass-panel sale-builder-box">
+            <div class="form-grid form-grid-3">
               <div class="field-group inline">
-                <label for="sale-shipping-zone">Envíos</label>
-                <select id="sale-shipping-zone">
-                  <option value="NACIONAL">NACIONAL</option>
-                  <option value="COMAYAGUA">COMAYAGUA</option>
-                </select>
+                <label for="sale-product-select">Producto</label>
+                <select id="sale-product-select"></select>
               </div>
               <div class="field-group inline">
-                <label for="sale-shipping-option">Tarifa</label>
-                <select id="sale-shipping-option" hidden></select>
-                <div id="sale-shipping-list" class="sale-shipping-list" role="listbox" aria-label="Tarifas de envío"></div>
+                <label for="sale-qty">Cantidad</label>
+                <input id="sale-qty" type="number" min="1" value="1">
+              </div>
+              <div class="field-group inline">
+                <label for="sale-price">Precio</label>
+                <input id="sale-price" type="number" min="0" step="0.01" value="0">
               </div>
             </div>
+            <button class="btn-secondary sale-add-btn" type="button" onclick="addSaleLine()">Agregar producto a la venta</button>
           </div>
-          <p class="sale-shipping-preview" id="sale-shipping-preview">Sin envío agregado</p>
-        </div>
 
-        <div class="sales-summary-grid sales-summary-grid-modal">
-          <article class="sales-stat glass-panel"><span>Subtotal</span><strong id="sale-subtotal">Lps. 0.00</strong></article>
-          <article class="sales-stat glass-panel"><span>Envío</span><strong id="sale-shipping-total">Lps. 0.00</strong></article>
-          <article class="sales-stat glass-panel"><span>Descuento</span><strong id="sale-discount-total">Lps. 0.00</strong></article>
-          <article class="sales-stat glass-panel"><span>Total</span><strong id="sale-total">Lps. 0.00</strong></article>
-          <article class="sales-stat glass-panel"><span>Ganancia</span><strong id="sale-profit">Lps. 0.00</strong></article>
-        </div>
+          <div class="panel-list sale-cart-list" id="sale-cart-list"></div>
+
+          <div class="form-grid">
+            <div class="field-group inline">
+              <label for="sale-discount">Descuento</label>
+              <input id="sale-discount" type="number" min="0" step="0.01" value="0" oninput="updateSaleSummary()">
+            </div>
+            <div class="field-group inline">
+              <label for="sale-note">Nota de venta</label>
+              <input id="sale-note" placeholder="Ej: entrega inmediata, garantía, observación">
+            </div>
+          </div>
+        </section>
+
+        <section class="sale-step-panel" data-sale-step="2" hidden>
+          <div class="sale-review-box glass-panel">
+            <div class="sale-review-head">
+              <div>
+                <p class="eyebrow">Resumen rápido</p>
+                <strong id="sale-review-customer">Cliente general</strong>
+              </div>
+              <span class="meta-pill" id="sale-review-payment">Efectivo</span>
+            </div>
+            <div class="sale-review-grid">
+              <article><span>Artículos</span><strong id="sale-review-items">0 artículo(s)</strong></article>
+              <article><span>Descuento</span><strong id="sale-review-discount">Lps. 0.00</strong></article>
+              <article class="sale-review-note-card"><span>Nota</span><strong id="sale-review-note">Sin nota</strong></article>
+            </div>
+          </div>
+
+          <div class="glass-panel sale-shipping-box">
+            <label class="shipping-toggle">
+              <input id="sale-shipping-enabled" type="checkbox">
+              <span>Agregar envío opcional</span>
+            </label>
+            <div id="sale-shipping-fields" hidden>
+              <div class="form-grid form-grid-2">
+                <div class="field-group inline">
+                  <label for="sale-shipping-zone">Envíos</label>
+                  <select id="sale-shipping-zone">
+                    <option value="NACIONAL">NACIONAL</option>
+                    <option value="COMAYAGUA">COMAYAGUA</option>
+                  </select>
+                </div>
+                <div class="field-group inline">
+                  <label for="sale-shipping-option">Tarifa</label>
+                  <select id="sale-shipping-option" hidden></select>
+                  <div id="sale-shipping-list" class="sale-shipping-list" role="listbox" aria-label="Tarifas de envío"></div>
+                </div>
+              </div>
+            </div>
+            <p class="sale-shipping-preview" id="sale-shipping-preview">Sin envío agregado</p>
+          </div>
+
+          <div class="sales-summary-grid sales-summary-grid-modal">
+            <article class="sales-stat glass-panel"><span>Subtotal</span><strong id="sale-subtotal">Lps. 0.00</strong></article>
+            <article class="sales-stat glass-panel"><span>Envío</span><strong id="sale-shipping-total">Lps. 0.00</strong></article>
+            <article class="sales-stat glass-panel"><span>Descuento</span><strong id="sale-discount-total">Lps. 0.00</strong></article>
+            <article class="sales-stat glass-panel"><span>Total</span><strong id="sale-total">Lps. 0.00</strong></article>
+            <article class="sales-stat glass-panel"><span>Ganancia</span><strong id="sale-profit">Lps. 0.00</strong></article>
+          </div>
+        </section>
       </div>
 
-      <div class="modal-actions sticky-actions">
-        <button class="btn-primary" id="complete-sale-btn" onclick="completeSale()">Confirmar venta y generar comprobante</button>
-        <button class="btn-secondary" onclick="closeSaleModal()">Cancelar</button>
+      <div class="modal-actions sticky-actions sale-wizard-actions">
+        <button class="btn-secondary sale-back-btn" id="sale-back-btn" type="button" onclick="prevSaleStep()" hidden>Atrás</button>
+        <button class="btn-secondary sale-next-btn" id="sale-next-btn" type="button" onclick="nextSaleStep()">Siguiente</button>
+        <button class="btn-primary" id="complete-sale-btn" type="button" onclick="completeSale()" hidden>Confirmar venta y generar comprobante</button>
+        <button class="btn-ghost sale-cancel-btn" type="button" onclick="closeSaleModal()">Cancelar</button>
       </div>
     </div>
   </div>
-
 
   <div class="modal" id="receipt-modal">
     <div class="modal-content modal-viewer glass-panel receipt-modal-content">
@@ -581,6 +603,7 @@
 
       <div class="modal-actions sticky-actions receipt-actions">
         <button class="btn-primary" type="button" onclick="printCurrentReceipt()">Imprimir</button>
+        <button class="btn-secondary" type="button" onclick="editCurrentReceiptSale()">Editar venta</button>
         <button class="btn-secondary" type="button" onclick="openCurrentReceiptInTab()">Abrir en pestaña</button>
         <button class="btn-secondary" type="button" onclick="closeReceiptModal()">Cerrar</button>
       </div>

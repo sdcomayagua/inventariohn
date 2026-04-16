@@ -98,6 +98,8 @@ let INSTALL_PROMPT = null;
 let ACTIVE_RECEIPT_ID = null;
 let PENDING_PRODUCT_META = null;
 let SALE_CART = [];
+let SALE_EDITING_ID = null;
+let SALE_MODAL_STEP = 1;
 let SYSTEM_THEME_MEDIA = null;
 
 function isInventoryPage() {
@@ -477,6 +479,10 @@ function bindSalesEvents() {
   document.getElementById("sale-shipping-zone")?.addEventListener("change", populateShippingOptionSelect);
   document.getElementById("sale-shipping-option")?.addEventListener("change", updateSaleSummary);
   document.getElementById("sale-shipping-list")?.addEventListener("click", onShippingListClick);
+  document.getElementById("sale-customer")?.addEventListener("input", updateSaleReview);
+  document.getElementById("sale-payment")?.addEventListener("change", updateSaleReview);
+  document.getElementById("sale-note")?.addEventListener("input", updateSaleReview);
+  document.getElementById("sale-discount")?.addEventListener("input", updateSaleReview);
 }
 
 function showLoading(show, label = "Cargando...") {
@@ -952,6 +958,7 @@ function renderSalesList() {
       </div>
       <div class="list-card-actions">
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(sale.receiptId)}', false)"><span>👁</span><small>Ver</small></button>
+        <button class="mini-icon-btn" type="button" onclick="openSaleEditModal('${escapeHtml(sale.id)}')"><span>✎</span><small>Editar</small></button>
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(sale.receiptId)}', true)"><span>🖨</span><small>Imprimir</small></button>
         <button class="mini-icon-btn danger" type="button" onclick="deleteSale('${escapeHtml(sale.id)}')"><span>🗑</span><small>Eliminar</small></button>
       </div>
@@ -1006,6 +1013,7 @@ function renderReceiptsList() {
       </div>
       <div class="list-card-actions">
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(receipt.id)}', false)"><span>👁</span><small>Abrir</small></button>
+        <button class="mini-icon-btn" type="button" onclick="openSaleEditModal(getSaleIdByReceiptId('${escapeHtml(receipt.id)}'))"><span>✎</span><small>Editar</small></button>
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(receipt.id)}', true)"><span>🖨</span><small>Imprimir</small></button>
       </div>
     </article>`).join("");
@@ -1473,8 +1481,137 @@ function toggleShippingFields() {
   updateSaleSummary();
 }
 
+function updateSaleReview() {
+  const customer = document.getElementById("sale-customer")?.value.trim() || "Cliente general";
+  const payment = document.getElementById("sale-payment")?.value || "Efectivo";
+  const note = document.getElementById("sale-note")?.value.trim() || "Sin nota";
+  const discount = Number(document.getElementById("sale-discount")?.value || 0);
+  const itemsCount = SALE_CART.reduce((sum, line) => sum + Number(line.qty || 0), 0);
+  setText("sale-review-customer", customer);
+  setText("sale-review-payment", payment);
+  setText("sale-review-items", `${itemsCount} artículo(s)`);
+  setText("sale-review-discount", formatMoney(discount));
+  setText("sale-review-note", note);
+}
+
+function setSaleModalStep(step = 1) {
+  SALE_MODAL_STEP = step === 2 ? 2 : 1;
+  document.querySelectorAll("[data-sale-step]").forEach((panel) => {
+    panel.hidden = Number(panel.dataset.saleStep) !== SALE_MODAL_STEP;
+  });
+  const title = document.getElementById("sale-modal-title");
+  const indicator = document.getElementById("sale-step-indicator");
+  const nextBtn = document.getElementById("sale-next-btn");
+  const backBtn = document.getElementById("sale-back-btn");
+  const completeBtn = document.getElementById("complete-sale-btn");
+  const editingSale = SALE_EDITING_ID ? getSales().find((item) => String(item.id) === String(SALE_EDITING_ID)) : null;
+  if (title) {
+    title.textContent = editingSale
+      ? `Editar venta #${editingSale.number}`
+      : "Nueva venta";
+  }
+  if (indicator) {
+    indicator.textContent = SALE_MODAL_STEP === 1
+      ? "Paso 1 de 2 · Datos de venta"
+      : "Paso 2 de 2 · Envíos y resumen";
+  }
+  if (backBtn) backBtn.hidden = SALE_MODAL_STEP === 1;
+  if (nextBtn) nextBtn.hidden = SALE_MODAL_STEP === 2;
+  if (completeBtn) {
+    completeBtn.hidden = SALE_MODAL_STEP !== 2;
+    completeBtn.textContent = editingSale
+      ? "Guardar cambios y actualizar comprobante"
+      : "Confirmar venta y generar comprobante";
+  }
+  updateSaleReview();
+}
+
+function nextSaleStep() {
+  setSaleModalStep(2);
+}
+
+function prevSaleStep() {
+  setSaleModalStep(1);
+}
+
+function getSaleById(saleId) {
+  return getSales().find((item) => String(item.id) === String(saleId));
+}
+
+function getReceiptById(receiptId) {
+  return getReceipts().find((item) => String(item.id) === String(receiptId));
+}
+
+function getSaleIdByReceiptId(receiptId) {
+  return getSales().find((item) => String(item.receiptId) === String(receiptId))?.id || "";
+}
+
+function findShippingOptionId(shipping) {
+  if (!shipping) return "";
+  const items = getShippingCatalog(shipping.zone || "NACIONAL");
+  const exactFromId = String(shipping.id || "").split("-").slice(2).join("-");
+  return (items.find((item) => item.id === exactFromId)
+    || items.find((item) => String(shipping.name || "").includes(item.label))
+    || items.find((item) => Number(item.price || 0) === Number(shipping.price || 0))
+    || items[0]
+  )?.id || "";
+}
+
+function populateSaleModalFromSale(sale) {
+  if (!sale) return;
+  SALE_EDITING_ID = sale.id;
+  SALE_CART = (sale.items || [])
+    .filter((item) => item.type !== "shipping")
+    .map((item) => ({ ...item }));
+  document.getElementById("sale-customer").value = sale.customer || "";
+  document.getElementById("sale-payment").value = sale.payment || "Efectivo";
+  document.getElementById("sale-discount").value = String(Number(sale.discount || 0).toFixed(2));
+  document.getElementById("sale-note").value = sale.note || "";
+  const shippingEnabled = Boolean(sale.shipping);
+  document.getElementById("sale-shipping-enabled").checked = shippingEnabled;
+  document.getElementById("sale-shipping-zone").value = sale.shipping?.zone === "COMAYAGUA" ? "COMAYAGUA" : "NACIONAL";
+  populateShippingOptionSelect();
+  if (shippingEnabled) {
+    const optionSelect = document.getElementById("sale-shipping-option");
+    if (optionSelect) {
+      optionSelect.value = findShippingOptionId(sale.shipping);
+      populateShippingOptionSelect();
+    }
+  }
+  renderSaleCart();
+  updateSaleSummary();
+  setSaleModalStep(1);
+}
+
+function openSaleEditModal(saleId) {
+  const sale = getSaleById(saleId);
+  if (!sale) {
+    alert("No se encontró esa venta.");
+    return;
+  }
+  const modal = document.getElementById("sale-modal");
+  if (!modal) return;
+  resetSaleModal();
+  populateSaleProductSelect();
+  populateSaleModalFromSale(sale);
+  modal.style.display = "flex";
+}
+
+function editCurrentReceiptSale() {
+  if (!ACTIVE_RECEIPT_ID) return;
+  const sale = getSales().find((item) => String(item.receiptId) === String(ACTIVE_RECEIPT_ID));
+  if (!sale) {
+    alert("No se encontró la venta vinculada a este comprobante.");
+    return;
+  }
+  closeReceiptModal();
+  openSaleEditModal(sale.id);
+}
+
 function resetSaleModal() {
   SALE_CART = [];
+  SALE_EDITING_ID = null;
+  SALE_MODAL_STEP = 1;
   document.getElementById("sale-customer").value = "";
   document.getElementById("sale-payment").value = "Efectivo";
   document.getElementById("sale-qty").value = "1";
@@ -1487,6 +1624,7 @@ function resetSaleModal() {
   toggleShippingFields();
   renderSaleCart();
   updateSaleSummary();
+  setSaleModalStep(1);
 }
 
 function openSaleModal(preselectedId = "") {
@@ -1506,6 +1644,8 @@ function closeSaleModal() {
   const modal = document.getElementById("sale-modal");
   if (modal) modal.style.display = "none";
   SALE_CART = [];
+  SALE_EDITING_ID = null;
+  SALE_MODAL_STEP = 1;
 }
 
 function renderSaleCart() {
@@ -1602,6 +1742,7 @@ function updateSaleSummary() {
   const shippingLabel = document.getElementById("sale-shipping-preview");
   if (shippingLabel) shippingLabel.textContent = shipping ? `${shipping.name} · ${formatMoney(shipping.total)}` : "Sin envío agregado";
   renderSaleCart();
+  updateSaleReview();
   return { subtotal, discount, total, profit, shippingTotal };
 }
 
@@ -1662,29 +1803,57 @@ async function completeSale() {
   const payment = document.getElementById("sale-payment")?.value || "Efectivo";
   const note = document.getElementById("sale-note")?.value.trim() || "";
   const btn = document.getElementById("complete-sale-btn");
+  const editingSaleId = SALE_EDITING_ID;
   try {
     btn.disabled = true;
-    btn.textContent = "Procesando venta...";
-    showLoading(true, "Guardando venta y actualizando stock...");
+    btn.textContent = editingSaleId ? "Guardando cambios..." : "Procesando venta...";
+    showLoading(true, editingSaleId ? "Actualizando venta y comprobante..." : "Guardando venta y actualizando stock...");
 
-    for (const line of SALE_CART) {
-      const product = getProductById(line.id);
-      if (!product || Number(product.qty || 0) < Number(line.qty || 0)) {
-        throw new Error(`Stock insuficiente para ${line.name}.`);
+    const originalSale = editingSaleId ? getSaleById(editingSaleId) : null;
+    if (editingSaleId && !originalSale) {
+      throw new Error("No se encontró la venta que quieres editar.");
+    }
+
+    const oldQtyMap = new Map();
+    (originalSale?.items || []).forEach((item) => {
+      if (item.type === "shipping") return;
+      oldQtyMap.set(String(item.id), (oldQtyMap.get(String(item.id)) || 0) + Number(item.qty || 0));
+    });
+    const newQtyMap = new Map();
+    SALE_CART.forEach((item) => {
+      newQtyMap.set(String(item.id), (newQtyMap.get(String(item.id)) || 0) + Number(item.qty || 0));
+    });
+
+    for (const [productId, newQty] of newQtyMap.entries()) {
+      const product = getProductById(productId);
+      const oldQty = oldQtyMap.get(productId) || 0;
+      const available = Number(product?.qty || 0) + oldQty;
+      if (!product || newQty > available) {
+        throw new Error(`Stock insuficiente para ${product?.name || "el producto seleccionado"}.`);
       }
     }
 
-    for (const line of SALE_CART) {
-      await postToApi({ action: "stock", id: line.id, change: -Math.abs(line.qty), user: CURRENT_USER.alias });
+    const unionIds = new Set([...oldQtyMap.keys(), ...newQtyMap.keys()]);
+    for (const productId of unionIds) {
+      const oldQty = oldQtyMap.get(productId) || 0;
+      const newQty = newQtyMap.get(productId) || 0;
+      const delta = oldQty - newQty;
+      if (delta !== 0) {
+        await postToApi({ action: "stock", id: productId, change: delta, user: CURRENT_USER.alias });
+      }
     }
 
-    const number = buildReceiptNumber();
-    const receiptId = `R-${Date.now()}`;
+    const number = originalSale?.number || buildReceiptNumber();
+    const receiptId = originalSale?.receiptId || `R-${Date.now()}`;
+    const saleId = originalSale?.id || `S-${Date.now()}`;
+    const createdAt = originalSale?.createdAt || new Date().toISOString();
+    const updatedAt = new Date().toISOString();
     const sale = {
-      id: `S-${Date.now()}`,
+      id: saleId,
       receiptId,
       number,
-      createdAt: new Date().toISOString(),
+      createdAt,
+      updatedAt,
       customer,
       payment,
       note,
@@ -1697,37 +1866,57 @@ async function completeSale() {
       user: CURRENT_USER.alias
     };
     const receipt = { ...sale, id: receiptId };
-    pushSale(sale);
-    pushReceipt(receipt);
 
-    SALE_CART.forEach((line) => {
+    if (originalSale) {
+      setSales(getSales().map((item) => String(item.id) === String(saleId) ? sale : item));
+      setReceipts(getReceipts().map((item) => String(item.id) === String(receiptId) ? receipt : item));
       pushMovement({
-        type: "sale",
-        title: `Venta: ${line.name}`,
-        detail: `${line.qty} unidad(es) · ${customer} · ${payment}`,
-        amount: formatMoney(line.total)
+        type: "edit",
+        title: `Venta editada #${number}`,
+        detail: `${customer} · ${payment} · ${SALE_CART.length} artículo(s)`,
+        amount: formatMoney(sale.total)
       });
-    });
+      if (shipping) {
+        pushMovement({
+          type: "edit",
+          title: `Envío actualizado: ${shipping.zone === "COMAYAGUA" ? "Comayagua" : "Nacional"}`,
+          detail: `${shipping.name} · ${customer}`,
+          amount: formatMoney(shipping.total)
+        });
+      }
+    } else {
+      pushSale(sale);
+      pushReceipt(receipt);
 
-    if (shipping) {
-      pushMovement({
-        type: "sale",
-        title: `Envío agregado: ${shipping.zone === "COMAYAGUA" ? "Comayagua" : "Nacional"}`,
-        detail: `${shipping.name} · ${customer}`,
-        amount: formatMoney(shipping.total)
+      SALE_CART.forEach((line) => {
+        pushMovement({
+          type: "sale",
+          title: `Venta: ${line.name}`,
+          detail: `${line.qty} unidad(es) · ${customer} · ${payment}`,
+          amount: formatMoney(line.total)
+        });
       });
+
+      if (shipping) {
+        pushMovement({
+          type: "sale",
+          title: `Envío agregado: ${shipping.zone === "COMAYAGUA" ? "Comayagua" : "Nacional"}`,
+          detail: `${shipping.name} · ${customer}`,
+          amount: formatMoney(shipping.total)
+        });
+      }
     }
 
     closeSaleModal();
     await loadProducts();
     openReceiptModal(receiptId, false);
-    showToast("Venta registrada.");
+    showToast(originalSale ? "Venta actualizada." : "Venta registrada.");
   } catch (error) {
     console.error(error);
     alert(error.message || "No se pudo completar la venta.");
   } finally {
     btn.disabled = false;
-    btn.textContent = "Confirmar venta y generar comprobante";
+    btn.textContent = editingSaleId ? "Guardar cambios y actualizar comprobante" : "Confirmar venta y generar comprobante";
     showLoading(false);
   }
 }
@@ -1767,7 +1956,7 @@ function buildReceiptHtml(receipt) {
         <div>
           <span class="pill">Comprobante</span>
           <h1 style="margin-top:12px">Inventario</h1>
-          <p class="muted">Comprobante oficial de venta</p>
+          <p class="muted">Detalle de venta</p>
         </div>
         <div style="text-align:right">
           <h2>#${receipt.number}</h2>

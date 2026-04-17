@@ -1938,7 +1938,7 @@ function buildReceiptHtml(receipt) {
   <html lang="es">
   <head>
     <meta charset="UTF-8">
-    <title>Comprobante ${receipt.number}</title>
+    <title>SDCOMAYAGUA | Comprobante ${receipt.number}</title>
     <style>
       body{font-family:Inter,Arial,sans-serif;background:#f5f7fb;color:#0f172a;padding:32px}
       .paper{max-width:820px;margin:0 auto;background:#fff;border-radius:24px;padding:32px;box-shadow:0 20px 44px rgba(15,23,42,.08)}
@@ -1955,8 +1955,8 @@ function buildReceiptHtml(receipt) {
       <div class="top">
         <div>
           <span class="pill">Comprobante</span>
-          <h1 style="margin-top:12px">Inventario</h1>
-          <p class="muted">Detalle de venta</p>
+          <h1 style="margin-top:12px">SDCOMAYAGUA</h1>
+          <p class="muted">Comprobante de venta</p>
         </div>
         <div style="text-align:right">
           <h2>#${receipt.number}</h2>
@@ -1985,7 +1985,7 @@ function buildReceiptHtml(receipt) {
               </div>
 
       <div class="footer muted">
-        <p>Documento generado desde la app Inventario.</p>
+        <p>Gracias por su compra.</p>
       </div>
     </div>
   </body>

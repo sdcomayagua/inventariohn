@@ -1,8 +1,8 @@
 {
   "id": "/inventario-app",
-  "name": "Inventario",
-  "short_name": "Inventario",
-  "description": "Inventario profesional con ventas, ganancias, comprobantes e historial.",
+  "name": "SDCOMAYAGUA",
+  "short_name": "SDCOMAYAGUA",
+  "description": "Panel administrativo de SDCOMAYAGUA.",
   "start_url": "index.html",
   "scope": ".",
   "display": "standalone",
@@ -25,8 +25,8 @@
   ],
   "shortcuts": [
     {
-      "name": "Inventario",
-      "short_name": "Inventario",
+      "name": "SDCOMAYAGUA",
+      "short_name": "SDCOMAYAGUA",
       "url": "inventario.html"
     },
     {

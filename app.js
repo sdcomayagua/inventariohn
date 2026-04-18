@@ -1926,35 +1926,39 @@ function findReceipt(receiptId) {
 }
 
 function buildReceiptHtml(receipt) {
-  const itemsRows = receipt.items.map((item) => `
+  const shippingAmount = Number(receipt.shipping?.total || 0);
+  const productSubtotal = Math.max(0, Number(receipt.subtotal || 0) - shippingAmount);
+  const itemsRows = receipt.items.map((item) => {
+    const isShipping = item.type === "shipping";
+    return `
     <tr>
       <td>${escapeHtml(item.name)}</td>
-      <td>${escapeHtml(item.sku || "--")}</td>
+      <td>${isShipping ? "Servicio" : escapeHtml(item.sku || "--")}</td>
       <td>${item.qty}</td>
       <td>${formatMoney(item.price)}</td>
       <td>${formatMoney(item.total)}</td>
-    </tr>`).join("");
+    </tr>`;
+  }).join("");
   return `<!DOCTYPE html>
   <html lang="es">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SDCOMAYAGUA | Comprobante ${receipt.number}</title>
     <style>
-      body{font-family:Inter,Arial,sans-serif;background:#f5f7fb;color:#0f172a;padding:32px}
-      .paper{max-width:820px;margin:0 auto;background:#fff;border-radius:24px;padding:32px;box-shadow:0 20px 44px rgba(15,23,42,.08)}
-      h1,h2,p{margin:0} .top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:24px}
-      .muted{color:#64748b}.block{margin-bottom:18px}.pill{display:inline-block;padding:6px 12px;border-radius:999px;background:#edf2ff;color:#1e3a8a;font-size:12px;font-weight:700}
-      table{width:100%;border-collapse:collapse;margin-top:16px} th,td{padding:12px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:14px}
-      .totals{margin-top:24px;display:grid;gap:10px;justify-items:end}.totals strong{font-size:18px}
-      .footer{margin-top:26px;padding-top:16px;border-top:1px solid #e2e8f0}
-      @media print {body{background:#fff;padding:0}.paper{box-shadow:none;border-radius:0;max-width:none;padding:20px}}
+      :root{color-scheme:light}
+      body{font-family:Inter,Arial,sans-serif;background:#eef2f7;color:#0f172a;padding:22px;margin:0}
+      .paper{max-width:860px;margin:0 auto;background:#fff;border:1px solid #dbe4f0;border-radius:24px;padding:28px;box-shadow:0 24px 50px rgba(15,23,42,.08)}
+      h1,h2,h3,p{margin:0}.top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:24px}
+      .brand-kicker{display:inline-flex;padding:7px 12px;border-radius:999px;background:#e8efff;color:#1d4ed8;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+      .muted{color:#64748b}.block{margin-bottom:16px}.meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0 12px}.meta-card,.total-card{border:1px solid #e2e8f0;border-radius:18px;padding:14px 16px;background:#fbfdff}.meta-card span,.total-card span{display:block;color:#64748b;font-size:12px;margin-bottom:6px}.meta-card strong,.total-card strong{font-size:16px}table{width:100%;border-collapse:collapse;margin-top:14px} th,td{padding:12px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:14px;vertical-align:top} th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#64748b}.totals{margin-top:20px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.total-card.total-strong{background:#0f172a;color:#fff;border-color:#0f172a}.total-card.total-strong span{color:#cbd5e1}.footer{margin-top:24px;padding-top:16px;border-top:1px dashed #cbd5e1;font-size:13px}.signature{margin-top:18px;display:flex;justify-content:space-between;gap:12px}.signature-line{padding-top:16px;border-top:1px solid #cbd5e1;min-width:220px}.thanks{font-weight:700;color:#0f172a}@media (max-width:640px){body{padding:10px}.paper{padding:18px;border-radius:18px}.top,.signature{display:block}.top>div:last-child{margin-top:14px}.meta-grid,.totals{grid-template-columns:1fr}th:nth-child(2),td:nth-child(2){display:none}}@media print {body{background:#fff;padding:0}.paper{box-shadow:none;border:none;border-radius:0;max-width:none;padding:16px}}
     </style>
   </head>
   <body>
     <div class="paper">
       <div class="top">
         <div>
-          <span class="pill">Comprobante</span>
+          <span class="brand-kicker">Documento comercial</span>
           <h1 style="margin-top:12px">SDCOMAYAGUA</h1>
           <p class="muted">Comprobante de venta</p>
         </div>
@@ -1965,27 +1969,36 @@ function buildReceiptHtml(receipt) {
         </div>
       </div>
 
-      <div class="block">
-        <p><strong>Cliente:</strong> ${escapeHtml(receipt.customer || "Cliente general")}</p>
-        <p><strong>Pago:</strong> ${escapeHtml(receipt.payment || "Efectivo")}</p>
-        ${receipt.note ? `<p><strong>Nota:</strong> ${escapeHtml(receipt.note)}</p>` : ""}
+      <div class="meta-grid">
+        <div class="meta-card"><span>Cliente</span><strong>${escapeHtml(receipt.customer || "Cliente general")}</strong></div>
+        <div class="meta-card"><span>Pago</span><strong>${escapeHtml(receipt.payment || "Efectivo")}</strong></div>
+        <div class="meta-card"><span>Estado</span><strong>Venta registrada</strong></div>
+        <div class="meta-card"><span>Operador</span><strong>${escapeHtml(receipt.user || "Admin")}</strong></div>
       </div>
+
+      ${receipt.note ? `<div class="block"><p><strong>Nota de venta:</strong> ${escapeHtml(receipt.note)}</p></div>` : ""}
 
       <table>
         <thead>
-          <tr><th>Producto</th><th>SKU</th><th>Cant.</th><th>Precio</th><th>Total</th></tr>
+          <tr><th>Concepto</th><th>SKU</th><th>Cant.</th><th>Precio</th><th>Total</th></tr>
         </thead>
         <tbody>${itemsRows}</tbody>
       </table>
 
       <div class="totals">
-        <p>Subtotal: <strong>${formatMoney(receipt.subtotal)}</strong></p>
-        <p>Descuento: <strong>${formatMoney(receipt.discount)}</strong></p>
-        <p>Total: <strong>${formatMoney(receipt.total)}</strong></p>
-              </div>
+        <div class="total-card"><span>Productos</span><strong>${formatMoney(productSubtotal)}</strong></div>
+        <div class="total-card"><span>Envío</span><strong>${formatMoney(shippingAmount)}</strong></div>
+        <div class="total-card"><span>Descuento</span><strong>${formatMoney(receipt.discount)}</strong></div>
+        <div class="total-card total-strong"><span>Total pagado</span><strong>${formatMoney(receipt.total)}</strong></div>
+      </div>
 
       <div class="footer muted">
-        <p>Gracias por su compra.</p>
+        <p class="thanks">Gracias por comprar en SDCOMAYAGUA.</p>
+        <p>Documento generado desde el panel interno de ventas.</p>
+        <div class="signature">
+          <div class="signature-line">Entrega / recibido</div>
+          <div class="signature-line">Autorizado por tienda</div>
+        </div>
       </div>
     </div>
   </body>

@@ -17,7 +17,7 @@
   <div class="app-shell ultra-shell">
     <aside class="desktop-sidebar glass-panel">
       <div class="sidebar-top">
-        <p class="eyebrow">Administración</p>
+        <p class="eyebrow">Operación diaria</p>
         <h2 class="sidebar-title">SDCOMAYAGUA</h2>
         
       </div>
@@ -73,9 +73,9 @@
 
       <section class="hero-banner glass-panel">
         <div>
-          <p class="eyebrow">Centro de control</p>
-          <h2 class="hero-title">Gestión comercial</h2>
-          <p class="hero-copy">Productos, ventas, movimientos y comprobantes en una sola vista.</p>
+          <p class="eyebrow">Panel administrativo</p>
+          <h2 class="hero-title">SDCOMAYAGUA</h2>
+          <p class="hero-copy">Ventas, stock y comprobantes en una vista clara para trabajo diario.</p>
         </div>
         <div class="hero-actions hero-actions-3">
           <button class="btn-primary hero-btn" type="button" onclick="invOpenModal(false)">Agregar producto</button>
@@ -124,7 +124,7 @@
           <div>
             <p class="section-kicker">Productos</p>
             <h3 class="section-title">Catálogo activo</h3>
-            <p class="section-caption">Control rápido de stock, edición y vista del producto.</p>          </div>
+            <p class="section-caption">Venta, edición y stock.</p>          </div>
           <span class="results-count" id="results-count">0 resultados</span>
         </div>
 
@@ -146,7 +146,7 @@
             <div>
               <p class="section-kicker">Ventas</p>
               <h3 class="section-title">Ventas</h3>
-              <p class="section-caption">Registro diario, edición de venta y cierre visual más claro.</p>
+              <p class="section-caption">Ventas y comprobantes.</p>
             </div>
             <button class="btn-secondary section-inline-btn" type="button" onclick="openSaleModal()">Nueva venta</button>
           </div>
@@ -178,7 +178,7 @@
             <div>
               <p class="section-kicker">Movimientos</p>
               <h3 class="section-title">Movimientos</h3>
-              <p class="section-caption">Historial reciente de entradas, salidas y ajustes.</p>
+              <p class="section-caption">Historial reciente.</p>
             </div>
             <span class="results-count" id="movement-count-label">0 movimientos</span>
           </div>
@@ -192,7 +192,7 @@
           <div>
             <p class="section-kicker">Comprobantes</p>
             <h3 class="section-title">Comprobantes</h3>
-            <p class="section-caption">Ventas emitidas listas para revisar o imprimir.</p>
+            <p class="section-caption">Revisar e imprimir.</p>
           </div>
         </div>
 
@@ -204,7 +204,7 @@
           <div>
             <p class="section-kicker">Actividad</p>
             <h3 class="section-title">Actividad</h3>
-            <p class="section-caption">Registro general del panel en tiempo real.</p>
+            <p class="section-caption">Actividad reciente.</p>
           </div>
           <button class="btn-secondary section-inline-btn section-inline-btn-sm" type="button" id="activity-toggle-btn" onclick="toggleActivityPanel()">Ver actividad</button>
         </div>
@@ -613,6 +613,13 @@
       </div>
     </div>
   </div>
+
+  <nav class="mobile-company-dock" aria-label="Acciones rápidas">
+    <button type="button" onclick="scrollToSection('productos')"><span>⌂</span><small>Catálogo</small></button>
+    <button type="button" class="accent" onclick="openSaleModal()"><span>🧾</span><small>Venta</small></button>
+    <button type="button" onclick="invOpenModal(false)"><span>＋</span><small>Producto</small></button>
+    <button type="button" onclick="toggleSummaryPanel()"><span>◫</span><small>Resumen</small></button>
+  </nav>
 
   <div id="toast" class="toast hidden"></div>
 

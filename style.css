@@ -5508,14 +5508,18 @@ body:not(.theme-light) .sale-shipping-list .shipping-option, .sale-shipping-list
 /* === v17 ultra ui pro sale modal desktop polish === */
 @media (min-width: 980px) {
   .modal-content.modal-form {
-    width: min(1080px, calc(100% - 48px));
-    max-height: calc(100vh - 28px);
+    width: min(1140px, calc(100% - 40px));
+    max-height: calc(100vh - 24px);
+  }
+
+  .sale-modal-body {
+    padding-right: 4px;
   }
 
   .sale-step-panel[data-sale-step="1"] {
     display: grid;
-    grid-template-columns: minmax(0, 1.18fr) minmax(320px, .82fr);
-    gap: 16px;
+    grid-template-columns: minmax(0, 1.25fr) minmax(340px, .75fr);
+    gap: 18px;
     align-items: start;
   }
 
@@ -5527,38 +5531,56 @@ body:not(.theme-light) .sale-shipping-list .shipping-option, .sale-shipping-list
   .sale-builder-box-pro,
   .sale-shipping-box,
   .sale-review-box {
-    padding: 18px;
-    border-radius: 22px;
+    padding: 20px;
+    border-radius: 24px;
   }
 
   .sale-builder-grid-pro {
     display: grid;
-    grid-template-columns: minmax(320px, 1.65fr) 180px 190px;
-    gap: 14px;
+    grid-template-columns: minmax(360px, 1.7fr) minmax(180px, .9fr) minmax(200px, 1fr);
+    gap: 16px;
     align-items: end;
   }
 
+  .sale-builder-grid-pro .field-group.inline {
+    min-width: 0;
+  }
+
+  .sale-builder-grid-pro .field-group.inline label {
+    font-weight: 700;
+    letter-spacing: .01em;
+    margin-bottom: 8px;
+  }
+
+  .sale-builder-grid-pro select,
+  .sale-builder-grid-pro input {
+    height: 54px;
+    border-radius: 16px;
+  }
+
   .qty-stepper {
-    grid-template-columns: 48px minmax(74px, 1fr) 48px;
+    grid-template-columns: 52px minmax(76px, 1fr) 52px;
     gap: 0;
-    height: 52px;
+    height: 54px;
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid rgba(15,23,42,.10);
-    background: rgba(255,255,255,.86);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+    background: rgba(255,255,255,.94);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 8px 24px rgba(15,23,42,.05);
   }
 
   body:not(.theme-light) .qty-stepper {
-    background: rgba(255,255,255,.04);
-    border-color: rgba(255,255,255,.1);
+    background: rgba(255,255,255,.05);
+    border-color: rgba(255,255,255,.10);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
   }
 
   .qty-btn {
-    height: 52px;
+    height: 54px;
     border: none;
     border-radius: 0;
-    background: rgba(15,23,42,.05);
+    background: rgba(15,23,42,.04);
+    font-size: 1.4rem;
   }
 
   body:not(.theme-light) .qty-btn {
@@ -5566,13 +5588,16 @@ body:not(.theme-light) .sale-shipping-list .shipping-option, .sale-shipping-list
   }
 
   .qty-stepper input {
-    height: 52px;
+    height: 54px;
     border: none;
     border-left: 1px solid rgba(15,23,42,.08);
     border-right: 1px solid rgba(15,23,42,.08);
-    font-size: 1.05rem;
+    font-size: 1.08rem;
     font-weight: 800;
     background: transparent;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
   }
 
   body:not(.theme-light) .qty-stepper input {
@@ -5581,10 +5606,11 @@ body:not(.theme-light) .sale-shipping-list .shipping-option, .sale-shipping-list
   }
 
   .sale-add-btn-pro {
-    min-height: 54px;
-    margin-top: 14px;
-    border-radius: 16px;
-    box-shadow: 0 14px 26px rgba(59,130,246,.18);
+    min-height: 56px;
+    margin-top: 16px;
+    border-radius: 18px;
+    box-shadow: 0 14px 28px rgba(59,130,246,.18);
+    font-size: 1rem;
   }
 
   .sale-cart-list-pro {
@@ -5592,18 +5618,19 @@ body:not(.theme-light) .sale-shipping-list .shipping-option, .sale-shipping-list
     align-self: start;
     position: sticky;
     top: 0;
+    max-height: 100%;
   }
 
   .sale-list-empty {
-    min-height: 120px;
+    min-height: 132px;
     display: grid;
     place-items: center;
   }
 
   .sale-step-panel[data-sale-step="2"] {
     display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr);
-    gap: 16px;
+    grid-template-columns: minmax(0, 1.05fr) minmax(380px, .95fr);
+    gap: 18px;
     align-items: start;
   }
 
@@ -5622,7 +5649,7 @@ body:not(.theme-light) .sale-shipping-list .shipping-option, .sale-shipping-list
   }
 
   .sale-wizard-actions {
-    grid-template-columns: 180px 1fr 180px;
+    grid-template-columns: 190px 1fr 190px;
   }
 }
 
@@ -5645,4 +5672,87 @@ body:not(.theme-light) .sale-shipping-list .shipping-option, .sale-shipping-list
   transform: translateY(-1px);
   box-shadow: 0 16px 34px rgba(15,23,42,.08);
   border-color: rgba(59,130,246,.16);
+}
+
+
+/* === v18 modal venta software pago polish === */
+.sale-builder-box-pro {
+  position: relative;
+}
+
+.sale-builder-box-pro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+}
+
+.sale-builder-box-pro .meta-pill {
+  font-weight: 700;
+}
+
+.sale-cart-list-pro {
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(15,23,42,.06);
+  border-radius: 22px;
+  padding: 12px;
+}
+
+body:not(.theme-light) .sale-cart-list-pro {
+  border-color: rgba(255,255,255,.06);
+}
+
+.sale-list-empty {
+  background: transparent;
+  border: 1px dashed rgba(15,23,42,.12);
+}
+
+body:not(.theme-light) .sale-list-empty {
+  border-color: rgba(255,255,255,.08);
+}
+
+.sale-step-indicator {
+  font-weight: 600;
+}
+
+#complete-sale-btn {
+  box-shadow: 0 14px 28px rgba(59,130,246,.20);
+}
+
+@media (min-width: 980px) {
+  .sale-box-head {
+    margin-bottom: 16px;
+  }
+
+  .sale-box-head strong {
+    font-size: 1.15rem;
+  }
+
+  .sale-builder-box-pro {
+    background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(248,250,252,.88));
+  }
+
+  body:not(.theme-light) .sale-builder-box-pro {
+    background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+  }
+
+  .sale-builder-grid-pro .field-group.inline label {
+    font-size: .9rem;
+  }
+
+  .sale-builder-grid-pro select,
+  .sale-builder-grid-pro input,
+  .qty-stepper {
+    box-sizing: border-box;
+  }
+
+  .sale-cart-list-pro {
+    padding: 14px;
+  }
+
+  .sale-line-card {
+    padding: 16px 18px;
+  }
 }

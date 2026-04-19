@@ -845,7 +845,7 @@ function renderProducts() {
           <p class="product-stock-line">${inStock ? `${qty} en stock` : "Sin existencias"}</p>
           <div class="product-price-row">
             <strong class="product-price">${formatMoney(product.price)}</strong>
-            <span class="product-mini-note">Ganancia: ${formatMoney(product.margin)}</span>
+            <span class="product-mini-note">${inStock ? "Listo para venta" : "Requiere reposición"}</span>
           </div>
         </div>
       </button>
@@ -954,7 +954,7 @@ function renderSalesList() {
       </div>
       <div class="list-card-meta">
         <span>${formatDateTime(sale.createdAt)}</span>
-        <span>Ganancia ${formatMoney(sale.profit)}</span>
+        <span>${(sale.items || []).reduce((acc, item) => acc + Number(item.qty || 0), 0)} artículo${(sale.items || []).reduce((acc, item) => acc + Number(item.qty || 0), 0) === 1 ? "" : "s"}</span>
       </div>
       <div class="list-card-actions">
         <button class="mini-icon-btn" type="button" onclick="openReceiptWindow('${escapeHtml(sale.receiptId)}', false)"><span>👁</span><small>Ver</small></button>

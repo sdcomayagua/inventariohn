@@ -17,7 +17,7 @@
   <div class="app-shell ultra-shell">
     <aside class="desktop-sidebar glass-panel">
       <div class="sidebar-top">
-        <p class="eyebrow">Operación diaria</p>
+        <p class="eyebrow">Centro de control</p>
         <h2 class="sidebar-title">SDCOMAYAGUA</h2>
         
       </div>
@@ -73,14 +73,15 @@
 
       <section class="hero-banner glass-panel">
         <div>
-          <p class="eyebrow">Panel administrativo</p>
-          <h2 class="hero-title">SDCOMAYAGUA</h2>
-          <p class="hero-copy">Centro de control comercial para operación diaria.</p>
+          <p class="eyebrow">Resumen ejecutivo</p>
+          <h2 class="hero-title">Operación comercial</h2>
+          <p class="hero-copy">Administra catálogo, ventas, comprobantes y movimientos desde un panel más sólido y rápido.</p>
+          <div class="hero-meta-strip"><span>Stock al día</span><span>Ventas rápidas</span><span>Comprobantes listos</span></div>
         </div>
         <div class="hero-actions hero-actions-3">
-          <button class="btn-primary hero-btn" type="button" onclick="invOpenModal(false)">Agregar producto</button>
-          <button class="btn-secondary hero-btn" type="button" onclick="openSaleModal()">Registrar venta</button>
-          <button class="btn-secondary hero-btn" type="button" onclick="loadProducts(true)">Actualizar</button>
+          <button class="btn-primary hero-btn" type="button" onclick="invOpenModal(false)">Nuevo producto</button>
+          <button class="btn-secondary hero-btn" type="button" onclick="openSaleModal()">Nueva venta</button>
+          <button class="btn-secondary hero-btn" type="button" onclick="loadProducts(true)">Sincronizar</button>
         </div>
       </section>
 
@@ -88,7 +89,7 @@
         <div class="search-card glass-panel compact-search luxe-search-card">
           <div class="search-shell">
             <span class="search-icon">⌕</span>
-            <input id="inv-search" class="search-input" placeholder="Buscar producto, categoría, SKU o código">
+            <input id="inv-search" class="search-input" placeholder="Buscar producto, SKU o código">
           </div>
           <div class="quick-stats-row">
             <button type="button" class="mini-stat-chip" onclick="toggleSummaryPanel()">
@@ -107,13 +108,13 @@
         </div>
 
         <div class="action-scroller compact-actions luxe-actions-grid">
-          <button class="action-chip active" onclick="invOpenModal(false)">＋ Producto</button>
-          <button class="action-chip" onclick="openSaleModal()">🧾 Venta</button>
+          <button class="action-chip active" onclick="invOpenModal(false)">＋ Nuevo</button>
+          <button class="action-chip" onclick="openSaleModal()">🧾 Cobrar</button>
           <button class="action-chip" onclick="toggleFiltersPanel()">Filtros</button>
           <button class="action-chip" onclick="toggleSummaryPanel()">Resumen</button>
-          <button class="action-chip" onclick="loadProducts(true)">Actualizar</button>
+          <button class="action-chip" onclick="loadProducts(true)">Sincronizar</button>
           <button class="action-chip" onclick="clearFilters()">Limpiar</button>
-          <button class="action-chip" onclick="exportInventoryBackup()">Respaldo</button>
+          <button class="action-chip" onclick="exportInventoryBackup()">Exportar</button>
           <button class="action-chip" onclick="triggerImportBackup()">Importar</button>
           <input id="inventory-import-input" type="file" accept="application/json" hidden onchange="importInventoryBackup(this)">
         </div>
@@ -124,7 +125,7 @@
           <div>
             <p class="section-kicker">Productos</p>
             <h3 class="section-title">Catálogo activo</h3>
-            <p class="section-caption">Gestión de productos.</p>          </div>
+            <p class="section-caption">Inventario, edición y venta rápida.</p>          </div>
           <span class="results-count" id="results-count">0 resultados</span>
         </div>
 
@@ -146,7 +147,7 @@
             <div>
               <p class="section-kicker">Ventas</p>
               <h3 class="section-title">Ventas</h3>
-              <p class="section-caption">Control comercial.</p>
+              <p class="section-caption">Cierre diario y seguimiento de ventas.</p>
             </div>
             <button class="btn-secondary section-inline-btn" type="button" onclick="openSaleModal()">Nueva venta</button>
           </div>
@@ -178,7 +179,7 @@
             <div>
               <p class="section-kicker">Movimientos</p>
               <h3 class="section-title">Movimientos</h3>
-              <p class="section-caption">Últimos movimientos.</p>
+              <p class="section-caption">Entradas, ventas y ajustes recientes.</p>
             </div>
             <span class="results-count" id="movement-count-label">0 movimientos</span>
           </div>
@@ -192,7 +193,7 @@
           <div>
             <p class="section-kicker">Comprobantes</p>
             <h3 class="section-title">Comprobantes</h3>
-            <p class="section-caption">Documentos emitidos.</p>
+            <p class="section-caption">Historial de comprobantes emitidos.</p>
           </div>
         </div>
 
@@ -204,7 +205,7 @@
           <div>
             <p class="section-kicker">Actividad</p>
             <h3 class="section-title">Actividad</h3>
-            <p class="section-caption">Actividad reciente.</p>
+            <p class="section-caption">Registro expandible para revisión rápida.</p>
           </div>
           <button class="btn-secondary section-inline-btn section-inline-btn-sm" type="button" id="activity-toggle-btn" onclick="toggleActivityPanel()">Ver actividad</button>
         </div>
@@ -228,7 +229,7 @@
         </button>
         <button type="button" onclick="loadProducts(true)">
           <span>↻</span>
-          <small>Actualizar</small>
+          <small>Sincronizar</small>
         </button>
       </nav>
     </div>
@@ -343,7 +344,7 @@
       <div class="modal-head sticky-head">
         <div>
           <p class="eyebrow">Productos</p>
-          <h2 id="inv-modal-title">Agregar producto</h2>
+          <h2 id="inv-modal-title">Nuevo producto</h2>
         </div>
         <button class="icon-btn" onclick="invCloseModal()" aria-label="Cerrar">✕</button>
       </div>

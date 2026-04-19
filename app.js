@@ -1503,7 +1503,7 @@ function adjustSaleQty(delta = 1) {
 
 function updateSaleCartBadge() {
   const itemsCount = SALE_CART.reduce((sum, line) => sum + Number(line.qty || 0), 0);
-  setText("sale-cart-pill", `${itemsCount} artículo(s)`);
+  setText("sale-cart-pill", itemsCount ? `${itemsCount} artículo(s)` : "Carrito vacío");
 }
 
 function changeSaleLineQty(index, delta) {
@@ -1777,6 +1777,7 @@ function addSaleLine() {
   updateSaleSummary();
   document.getElementById("sale-qty").value = "1";
   syncSaleFormFromSelectedProduct();
+  showToast(existing ? "Cantidad actualizada en la venta." : "Artículo agregado a la venta.");
 }
 
 function removeSaleLine(index) {

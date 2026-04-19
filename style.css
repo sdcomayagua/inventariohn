@@ -5503,3 +5503,146 @@ body:not(.theme-light) .sale-shipping-list .shipping-option, .sale-shipping-list
   .sale-wizard-actions { grid-template-columns: 1fr; }
   #complete-sale-btn, .sale-next-btn, .sale-back-btn, .sale-cancel-btn { width:100%; }
 }
+
+
+/* === v17 ultra ui pro sale modal desktop polish === */
+@media (min-width: 980px) {
+  .modal-content.modal-form {
+    width: min(1080px, calc(100% - 48px));
+    max-height: calc(100vh - 28px);
+  }
+
+  .sale-step-panel[data-sale-step="1"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(320px, .82fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .sale-step-panel[data-sale-step="1"] > .form-grid:first-child,
+  .sale-step-panel[data-sale-step="1"] > .form-grid:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .sale-builder-box-pro,
+  .sale-shipping-box,
+  .sale-review-box {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .sale-builder-grid-pro {
+    display: grid;
+    grid-template-columns: minmax(320px, 1.65fr) 180px 190px;
+    gap: 14px;
+    align-items: end;
+  }
+
+  .qty-stepper {
+    grid-template-columns: 48px minmax(74px, 1fr) 48px;
+    gap: 0;
+    height: 52px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(15,23,42,.10);
+    background: rgba(255,255,255,.86);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+  }
+
+  body:not(.theme-light) .qty-stepper {
+    background: rgba(255,255,255,.04);
+    border-color: rgba(255,255,255,.1);
+  }
+
+  .qty-btn {
+    height: 52px;
+    border: none;
+    border-radius: 0;
+    background: rgba(15,23,42,.05);
+  }
+
+  body:not(.theme-light) .qty-btn {
+    background: rgba(255,255,255,.06);
+  }
+
+  .qty-stepper input {
+    height: 52px;
+    border: none;
+    border-left: 1px solid rgba(15,23,42,.08);
+    border-right: 1px solid rgba(15,23,42,.08);
+    font-size: 1.05rem;
+    font-weight: 800;
+    background: transparent;
+  }
+
+  body:not(.theme-light) .qty-stepper input {
+    border-left-color: rgba(255,255,255,.08);
+    border-right-color: rgba(255,255,255,.08);
+  }
+
+  .sale-add-btn-pro {
+    min-height: 54px;
+    margin-top: 14px;
+    border-radius: 16px;
+    box-shadow: 0 14px 26px rgba(59,130,246,.18);
+  }
+
+  .sale-cart-list-pro {
+    margin-top: 0;
+    align-self: start;
+    position: sticky;
+    top: 0;
+  }
+
+  .sale-list-empty {
+    min-height: 120px;
+    display: grid;
+    place-items: center;
+  }
+
+  .sale-step-panel[data-sale-step="2"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .sale-step-panel[data-sale-step="2"] > .sale-review-box {
+    grid-column: 1 / -1;
+  }
+
+  .sales-summary-grid-modal {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 0;
+  }
+
+  .sales-summary-grid-modal .sales-stat:nth-child(4),
+  .sales-summary-grid-modal .sales-stat:nth-child(5) {
+    grid-column: 1 / -1;
+  }
+
+  .sale-wizard-actions {
+    grid-template-columns: 180px 1fr 180px;
+  }
+}
+
+.sale-box-head strong {
+  font-size: 1.08rem;
+  letter-spacing: -.02em;
+}
+
+.sale-add-btn-pro:active,
+.qty-btn:active,
+.sale-line-stepper .qty-btn:active {
+  transform: scale(.97);
+}
+
+.sale-line-card {
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.sale-line-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(15,23,42,.08);
+  border-color: rgba(59,130,246,.16);
+}

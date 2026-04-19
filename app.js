@@ -1494,6 +1494,52 @@ function updateSaleReview() {
   setText("sale-review-note", note);
 }
 
+function adjustSaleQty(delta = 1) {
+  const input = document.getElementById("sale-qty");
+  if (!input) return;
+  const current = Math.max(1, Number(input.value || 1));
+  input.value = String(Math.max(1, current + Number(delta || 0)));
+}
+
+function updateSaleCartBadge() {
+  const itemsCount = SALE_CART.reduce((sum, line) => sum + Number(line.qty || 0), 0);
+  setText("sale-cart-pill", `${itemsCount} artículo(s)`);
+}
+
+function changeSaleLineQty(index, delta) {
+  const line = SALE_CART[index];
+  if (!line) return;
+  const product = getProductById(line.id);
+  const maxQty = Number(product?.qty || line.qty || 1) + Number(line.qty || 0);
+  const nextQty = Math.max(1, Number(line.qty || 1) + Number(delta || 0));
+  if (nextQty > maxQty) {
+    showToast("No hay más stock disponible para ese artículo.");
+    return;
+  }
+  line.qty = nextQty;
+  line.total = nextQty * Number(line.price || 0);
+  line.profit = nextQty * (Number(line.price || 0) - Number(line.cost || 0));
+  renderSaleCart();
+  updateSaleSummary();
+}
+
+function promptEditSaleLinePrice(index) {
+  const line = SALE_CART[index];
+  if (!line) return;
+  const next = window.prompt(`Nuevo precio para ${line.name}`, String(Number(line.price || 0).toFixed(2)));
+  if (next === null) return;
+  const value = Number(next);
+  if (Number.isNaN(value) || value < 0) {
+    alert("Escribe un precio válido.");
+    return;
+  }
+  line.price = value;
+  line.total = Number(line.qty || 0) * value;
+  line.profit = Number(line.qty || 0) * (value - Number(line.cost || 0));
+  renderSaleCart();
+  updateSaleSummary();
+}
+
 function setSaleModalStep(step = 1) {
   SALE_MODAL_STEP = step === 2 ? 2 : 1;
   document.querySelectorAll("[data-sale-step]").forEach((panel) => {
@@ -1512,21 +1558,29 @@ function setSaleModalStep(step = 1) {
   }
   if (indicator) {
     indicator.textContent = SALE_MODAL_STEP === 1
-      ? "Paso 1 de 2 · Datos de venta"
-      : "Paso 2 de 2 · Envíos y resumen";
+      ? "Paso 1 de 2 · Caja rápida"
+      : "Paso 2 de 2 · Envío y cobro";
   }
   if (backBtn) backBtn.hidden = SALE_MODAL_STEP === 1;
-  if (nextBtn) nextBtn.hidden = SALE_MODAL_STEP === 2;
+  if (nextBtn) {
+    nextBtn.hidden = SALE_MODAL_STEP === 2;
+    nextBtn.textContent = "Continuar a envío";
+    nextBtn.disabled = SALE_CART.length === 0;
+  }
   if (completeBtn) {
     completeBtn.hidden = SALE_MODAL_STEP !== 2;
     completeBtn.textContent = editingSale
       ? "Guardar cambios y actualizar comprobante"
-      : "Confirmar venta y generar comprobante";
+      : "Cobrar y generar comprobante";
   }
   updateSaleReview();
 }
 
 function nextSaleStep() {
+  if (!SALE_CART.length) {
+    alert("Agrega al menos un producto antes de continuar.");
+    return;
+  }
   setSaleModalStep(2);
 }
 
@@ -1652,39 +1706,38 @@ function renderSaleCart() {
   const wrap = document.getElementById("sale-cart-list");
   if (!wrap) return;
   const shipping = getSelectedShipping();
+  updateSaleCartBadge();
   if (!SALE_CART.length && !shipping) {
-    wrap.innerHTML = '<div class="list-empty">Aún no has agregado productos a esta venta.</div>';
+    wrap.innerHTML = '<div class="list-empty sale-list-empty">Aún no has agregado productos a esta venta.</div>';
     return;
   }
   const productCards = SALE_CART.map((line, index) => `
-    <article class="list-card glass-panel">
-      <div class="list-card-head">
+    <article class="list-card glass-panel sale-line-card">
+      <div class="sale-line-main">
         <div>
           <strong>${escapeHtml(line.name)}</strong>
-          <p>${line.qty} x ${formatMoney(line.price)}</p>
+          <p>${escapeHtml(line.sku || `ID ${line.id}`)}</p>
         </div>
         <span class="list-amount">${formatMoney(line.total)}</span>
       </div>
-      <div class="list-card-meta">
-        <span>Ganancia ${formatMoney(line.profit)}</span>
-        <span>${escapeHtml(line.sku || `ID ${line.id}`)}</span>
-      </div>
-      <div class="list-card-actions">
+      <div class="sale-line-tools">
+        <div class="sale-line-stepper">
+          <button type="button" class="qty-btn" onclick="changeSaleLineQty(${index}, -1)" aria-label="Restar cantidad">−</button>
+          <span>${line.qty}</span>
+          <button type="button" class="qty-btn" onclick="changeSaleLineQty(${index}, 1)" aria-label="Sumar cantidad">+</button>
+        </div>
+        <button class="mini-icon-btn" type="button" onclick="promptEditSaleLinePrice(${index})"><span>✎</span><small>${formatMoney(line.price)}</small></button>
         <button class="mini-icon-btn danger" type="button" onclick="removeSaleLine(${index})"><span>✕</span><small>Quitar</small></button>
       </div>
     </article>`).join("");
   const shippingCard = shipping ? `
-    <article class="list-card glass-panel shipping-line-card">
-      <div class="list-card-head">
+    <article class="list-card glass-panel shipping-line-card sale-line-card shipping-line-card-pro">
+      <div class="sale-line-main">
         <div>
           <strong>${escapeHtml(shipping.name)}</strong>
           <p>${shipping.zone === "COMAYAGUA" ? "Tarifa por colonia" : "Tarifa nacional"}</p>
         </div>
         <span class="list-amount">${formatMoney(shipping.total)}</span>
-      </div>
-      <div class="list-card-meta">
-        <span>Opcional activado</span>
-        <span>${escapeHtml(shipping.sku)}</span>
       </div>
     </article>` : "";
   wrap.innerHTML = productCards + shippingCard;
@@ -1703,16 +1756,23 @@ function addSaleLine() {
     alert("No hay suficiente stock para esa cantidad.");
     return;
   }
-  SALE_CART.push({
-    id: product.id,
-    name: product.name,
-    sku: product.sku,
-    qty,
-    price,
-    cost: Number(product.cost || 0),
-    total: qty * price,
-    profit: qty * (price - Number(product.cost || 0))
-  });
+  const existing = SALE_CART.find((item) => String(item.id) === String(product.id) && Number(item.price || 0) === price);
+  if (existing) {
+    existing.qty += qty;
+    existing.total = existing.qty * Number(existing.price || 0);
+    existing.profit = existing.qty * (Number(existing.price || 0) - Number(existing.cost || 0));
+  } else {
+    SALE_CART.push({
+      id: product.id,
+      name: product.name,
+      sku: product.sku,
+      qty,
+      price,
+      cost: Number(product.cost || 0),
+      total: qty * price,
+      profit: qty * (price - Number(product.cost || 0))
+    });
+  }
   renderSaleCart();
   updateSaleSummary();
   document.getElementById("sale-qty").value = "1";
@@ -1743,6 +1803,9 @@ function updateSaleSummary() {
   if (shippingLabel) shippingLabel.textContent = shipping ? `${shipping.name} · ${formatMoney(shipping.total)}` : "Sin envío agregado";
   renderSaleCart();
   updateSaleReview();
+  updateSaleCartBadge();
+  const nextBtn = document.getElementById("sale-next-btn");
+  if (nextBtn) nextBtn.disabled = SALE_CART.length === 0;
   return { subtotal, discount, total, profit, shippingTotal };
 }
 

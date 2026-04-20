@@ -858,10 +858,8 @@ function renderProducts() {
           </div>
         </div>
       </button>
-      <div class="product-action-row product-action-row-v5">
-        <button class="mini-icon-btn sell-btn" type="button" onclick="openSaleModal('${safeId}')"><span>💳</span><small>Vender</small></button>
-        <button class="mini-icon-btn" type="button" onclick="startEditById('${safeId}')"><span>✎</span><small>Editar</small></button>
-        <button class="mini-icon-btn danger" type="button" onclick="deleteProduct('${safeId}')"><span>🗑</span><small>Eliminar</small></button>
+      <div class="product-action-row product-action-row-v5 single-cta">
+        <button class="mini-icon-btn sell-btn single-cta-btn" type="button" onclick="event.stopPropagation(); ${p.stock > 0 ? `openSaleModal('${safeId}')` : `viewProduct('${safeId}')`}"><span>${p.stock > 0 ? '💳' : '👁'}</span><small>${p.stock > 0 ? 'Vender' : 'Ver ficha'}</small></button>
       </div>`;
     container.appendChild(card);
   });
@@ -1127,6 +1125,7 @@ function invOpenModal(isEdit = false, product = null) {
     title.textContent = "Agregar producto";
   }
   modal.style.display = "flex";
+  modal.classList.add("show");
   document.body.classList.add("sale-modal-open");
 }
 
@@ -1436,7 +1435,10 @@ function swapDetailImage(src, index, total, button) {
 
 function closeDetailModal() {
   const modal = document.getElementById("detail-modal");
-  if (modal) modal.style.display = "none";
+  if (modal) {
+    modal.classList.remove("show");
+    modal.style.display = "none";
+  }
   ACTIVE_DETAIL_ID = null;
 }
 
@@ -1727,7 +1729,10 @@ function openSaleModal(preselectedId = "") {
 
 function closeSaleModal() {
   const modal = document.getElementById("sale-modal");
-  if (modal) modal.style.display = "none";
+  if (modal) {
+    modal.classList.remove("show");
+    modal.style.display = "none";
+  }
   document.body.classList.remove("sale-modal-open");
   SALE_CART = [];
   SALE_EDITING_ID = null;

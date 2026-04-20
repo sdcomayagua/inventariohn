@@ -935,6 +935,24 @@ function toggleActivityPanel(force) {
   }
 }
 
+
+function toggleMovementPanel(force) {
+  const card = document.getElementById("movimientos");
+  const list = document.getElementById("movement-list");
+  const btn = document.getElementById("movement-toggle-btn");
+  if (!card || !list || !btn) return;
+  const shouldOpen = typeof force === "boolean" ? force : list.hasAttribute("hidden");
+  if (shouldOpen) {
+    list.removeAttribute("hidden");
+    card.classList.remove("collapsed");
+    btn.textContent = "Ocultar movimientos";
+  } else {
+    list.setAttribute("hidden", "hidden");
+    card.classList.add("collapsed");
+    btn.textContent = "Ver movimientos";
+  }
+}
+
 function renderSalesList() {
   const wrap = document.getElementById("sales-list");
   if (!wrap) return;
@@ -1100,6 +1118,7 @@ function invOpenModal(isEdit = false, product = null) {
     title.textContent = "Agregar producto";
   }
   modal.style.display = "flex";
+  document.body.classList.add("sale-modal-open");
 }
 
 function invCloseModal() {
@@ -1395,6 +1414,7 @@ function viewProduct(id) {
   document.getElementById("detail-delete-btn").onclick = () => deleteProduct(id);
   document.getElementById("detail-sale-btn").onclick = () => openSaleModal(id);
   modal.style.display = "flex";
+  document.body.classList.add("sale-modal-open");
 }
 
 function swapDetailImage(src, index, total, button) {
@@ -1503,7 +1523,7 @@ function adjustSaleQty(delta = 1) {
 
 function updateSaleCartBadge() {
   const itemsCount = SALE_CART.reduce((sum, line) => sum + Number(line.qty || 0), 0);
-  setText("sale-cart-pill", itemsCount ? `${itemsCount} artículo(s)` : "Carrito vacío");
+  setText("sale-cart-pill", `${itemsCount} artículo(s)`);
 }
 
 function changeSaleLineQty(index, delta) {
@@ -1649,6 +1669,7 @@ function openSaleEditModal(saleId) {
   populateSaleProductSelect();
   populateSaleModalFromSale(sale);
   modal.style.display = "flex";
+  document.body.classList.add("sale-modal-open");
 }
 
 function editCurrentReceiptSale() {
@@ -1692,11 +1713,13 @@ function openSaleModal(preselectedId = "") {
   }
   syncSaleFormFromSelectedProduct();
   modal.style.display = "flex";
+  document.body.classList.add("sale-modal-open");
 }
 
 function closeSaleModal() {
   const modal = document.getElementById("sale-modal");
   if (modal) modal.style.display = "none";
+  document.body.classList.remove("sale-modal-open");
   SALE_CART = [];
   SALE_EDITING_ID = null;
   SALE_MODAL_STEP = 1;
@@ -1777,7 +1800,6 @@ function addSaleLine() {
   updateSaleSummary();
   document.getElementById("sale-qty").value = "1";
   syncSaleFormFromSelectedProduct();
-  showToast(existing ? "Cantidad actualizada en la venta." : "Artículo agregado a la venta.");
 }
 
 function removeSaleLine(index) {
@@ -2228,6 +2250,7 @@ window.openSaleModal = openSaleModal;
 window.closeSaleModal = closeSaleModal;
 window.deleteSale = deleteSale;
 window.toggleActivityPanel = toggleActivityPanel;
+window.toggleMovementPanel = toggleMovementPanel;
 window.addSaleLine = addSaleLine;
 window.removeSaleLine = removeSaleLine;
 window.updateSaleSummary = updateSaleSummary;

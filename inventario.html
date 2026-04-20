@@ -174,17 +174,20 @@
           <div class="panel-list" id="sales-list"></div>
         </section>
 
-        <section class="glass-panel ops-card" id="movimientos">
+        <section class="glass-panel ops-card collapsible-card collapsed" id="movimientos" aria-hidden="false">
           <div class="section-head enhanced-section-head section-tight-head">
             <div>
               <p class="section-kicker">Movimientos</p>
               <h3 class="section-title">Movimientos</h3>
               <p class="section-caption">Trazabilidad reciente del panel.</p>
             </div>
-            <span class="results-count" id="movement-count-label">0 movimientos</span>
+            <div class="section-head-actions">
+              <span class="results-count" id="movement-count-label">0 movimientos</span>
+              <button class="btn-secondary section-inline-btn section-inline-btn-sm" type="button" id="movement-toggle-btn" onclick="toggleMovementPanel()">Ver movimientos</button>
+            </div>
           </div>
 
-          <div class="panel-list" id="movement-list"></div>
+          <div class="panel-list" id="movement-list" hidden></div>
         </section>
       </section>
 
@@ -205,7 +208,7 @@
           <div>
             <p class="section-kicker">Actividad</p>
             <h3 class="section-title">Actividad</h3>
-            <p class="section-caption">Eventos recientes del sistema.</p>
+            <p class="section-caption">Eventos recientes del sistema y sincronización.</p>
           </div>
           <button class="btn-secondary section-inline-btn section-inline-btn-sm" type="button" id="activity-toggle-btn" onclick="toggleActivityPanel()">Ver actividad</button>
         </div>

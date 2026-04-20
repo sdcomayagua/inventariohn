@@ -839,13 +839,13 @@ function renderProducts() {
         <div class="product-copy">
           <div class="product-meta-row">
             <span class="meta-pill">${safeCategory}</span>
-            <span class="meta-pill soft">${escapeHtml(product.sku || `ID ${safeId || '--'}`)}</span>
+            <span class="meta-pill soft product-code-pill">${escapeHtml(product.sku || `ID ${safeId || '--'}`)}</span>
           </div>
           <h3 class="product-name">${safeName}</h3>
-          <p class="product-stock-line">${inStock ? `${qty} en stock` : "Sin existencias"}</p>
+          <p class="product-stock-line">${inStock ? `${qty} disponibles` : "Sin existencias"}</p>
           <div class="product-price-row">
             <strong class="product-price">${formatMoney(product.price)}</strong>
-            <span class="product-mini-note">${inStock ? "Listo para venta" : "Requiere reposición"}</span>
+            <span class="product-mini-note">${inStock ? "Listo para vender" : "Reponer"}</span>
           </div>
         </div>
       </button>

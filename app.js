@@ -2272,3 +2272,55 @@ window.openCurrentReceiptInTab = openCurrentReceiptInTab;
 window.printCurrentReceipt = printCurrentReceipt;
 window.invSaveProduct = invSaveProduct;
 window.invChangeItemsPerPage = invChangeItemsPerPage;
+
+
+// === v21 :: dock active states + advanced scroll spy ===
+(function () {
+  const ORIGINAL_SETUP_APP_PAGE = setupAppPage;
+  const ORIGINAL_SCROLL_TO_SECTION = scrollToSection;
+  let sectionSpyObserver = null;
+  const PRO_SECTION_IDS = ["productos", "ventas", "movimientos", "comprobantes"];
+
+  function setActiveDockSection(sectionId) {
+    const buttons = document.querySelectorAll(".sidebar-nav, .mobile-company-dock button");
+    buttons.forEach((btn) => {
+      const action = btn.getAttribute("onclick") || "";
+      const matchSingle = action.includes(`scrollToSection('${sectionId}')`) || action.includes(`scrollToSection(\"${sectionId}\")`);
+      btn.classList.toggle("active", matchSingle);
+    });
+  }
+
+  function setupSectionSpy() {
+    const sections = PRO_SECTION_IDS.map((id) => document.getElementById(id)).filter(Boolean);
+    if (!sections.length) return;
+    if (sectionSpyObserver) sectionSpyObserver.disconnect();
+
+    setActiveDockSection("productos");
+    sectionSpyObserver = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => (b.intersectionRatio - a.intersectionRatio) || (a.boundingClientRect.top - b.boundingClientRect.top));
+      if (!visible.length) return;
+      const nextId = visible[0].target.id;
+      setActiveDockSection(nextId);
+    }, {
+      root: null,
+      rootMargin: "-22% 0px -48% 0px",
+      threshold: [0.12, 0.25, 0.45, 0.65]
+    });
+
+    sections.forEach((section) => sectionSpyObserver.observe(section));
+  }
+
+  setupAppPage = function patchedSetupAppPage() {
+    ORIGINAL_SETUP_APP_PAGE();
+    requestAnimationFrame(() => setupSectionSpy());
+  };
+
+  scrollToSection = function patchedScrollToSection(id) {
+    setActiveDockSection(id);
+    return ORIGINAL_SCROLL_TO_SECTION(id);
+  };
+
+  window.scrollToSection = scrollToSection;
+})();

@@ -8085,3 +8085,85 @@ body.theme-dark .mobile-company-dock button {
     box-shadow: 0 12px 28px rgba(15,23,42,.16) !important;
   }
 }
+
+
+.sale-box-head {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.sale-shipping-grid-pro {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sale-line-card-pro {
+  display: grid;
+  gap: 12px;
+}
+
+.sale-line-main-pro {
+  align-items: flex-start;
+}
+
+.sale-line-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sale-line-field {
+  display: grid;
+  gap: 8px;
+}
+
+.sale-line-field > span {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.sale-line-field input {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(255,255,255,0.12);
+  color: inherit;
+  padding: 12px 14px;
+  font-weight: 700;
+}
+
+.sale-line-stepper-pro {
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+}
+
+.sale-line-stepper-pro input {
+  text-align: center;
+}
+
+.sale-line-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.sale-line-meta-row small {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.12);
+  color: inherit;
+  font-weight: 700;
+}
+
+.sale-line-tools-pro {
+  justify-content: flex-end;
+}
+
+@media (max-width: 780px) {
+  .sale-shipping-grid-pro,
+  .sale-line-editor-grid {
+    grid-template-columns: 1fr;
+  }
+}

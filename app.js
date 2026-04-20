@@ -53,7 +53,15 @@ const COMAYAGUA_SHIPPING_OPTIONS = [
   { id: "cabanas", label: "Cabañas", price: 50 },
   { id: "terminal-buses", label: "Terminal de Buses", price: 50 },
   { id: "estacion-policia", label: "Estación de Policía", price: 50 },
-  { id: "universidad-curc", label: "Universidad de Comayagua CURC", price: 50 }
+  { id: "universidad-curc", label: "Universidad de Comayagua CURC", price: 50 },
+  { id: "lomas-del-rio", label: "Lomas del Río", price: 60 },
+  { id: "brisas-del-humuya", label: "Brisas del Humuya", price: 60 },
+  { id: "villas-del-sol", label: "Villas del Sol", price: 60 },
+  { id: "san-miguel", label: "San Miguel", price: 65 },
+  { id: "san-carlos", label: "San Carlos", price: 65 },
+  { id: "los-pinos", label: "Los Pinos", price: 65 },
+  { id: "buenos-aires", label: "Buenos Aires", price: 70 },
+  { id: "colonia-3-mayo", label: "Colonia 3 de Mayo", price: 70 }
 ];
 
 const USERS = {
@@ -505,7 +513,15 @@ function bindSalesEvents() {
   document.getElementById("sale-shipping-enabled")?.addEventListener("change", toggleShippingFields);
   document.getElementById("sale-shipping-zone")?.addEventListener("change", populateShippingOptionSelect);
   document.getElementById("sale-shipping-option")?.addEventListener("change", updateSaleSummary);
+  document.getElementById("sale-shipping-price")?.addEventListener("input", updateSaleSummary);
   document.getElementById("sale-shipping-list")?.addEventListener("click", onShippingListClick);
+  document.getElementById("sale-cart-list")?.addEventListener("change", (event) => {
+    const input = event.target;
+    const index = Number(input?.dataset?.saleIndex);
+    if (!Number.isFinite(index)) return;
+    if (input.matches('[data-sale-qty-input]')) setSaleLineQuantityValue(index, input.value);
+    if (input.matches('[data-sale-price-input]')) setSaleLinePriceValue(index, input.value);
+  });
   document.getElementById("sale-customer")?.addEventListener("input", updateSaleReview);
   document.getElementById("sale-payment")?.addEventListener("change", updateSaleReview);
   document.getElementById("sale-note")?.addEventListener("input", updateSaleReview);
@@ -728,45 +744,47 @@ function getPeriodMetrics() {
 }
 
 function updateDashboard() {
-  const totalProducts = PRODUCTS.length;
-  const totalQty = PRODUCTS.reduce((sum, item) => sum + Number(item.qty || 0), 0);
-  const totalValue = PRODUCTS.reduce((sum, item) => sum + (Number(item.qty || 0) * Number(item.price || 0)), 0);
-  const outCount = PRODUCTS.filter((item) => Number(item.qty || 0) <= 0).length;
-  const inStock = PRODUCTS.filter((item) => Number(item.qty || 0) > 0).length;
-  const lowStock = PRODUCTS.filter((item) => Number(item.qty || 0) > 0 && Number(item.qty || 0) <= LOW_STOCK_LIMIT).length;
-  const categoryCount = new Set(PRODUCTS.map((item) => String(item.category || "").trim()).filter(Boolean)).size;
-  const avgPrice = totalProducts ? PRODUCTS.reduce((sum, item) => sum + Number(item.price || 0), 0) / totalProducts : 0;
-  const movements = getMovements();
-  const metrics = getPeriodMetrics();
+  const products = getProducts();
+  const totalProducts = products.length;
+  const inStock = products.filter((product) => Number(product.stock || 0) > 0).length;
+  const soldOut = products.filter((product) => Number(product.stock || 0) <= 0).length;
+  const inventoryValue = products.reduce((sum, product) => sum + Number(product.price || 0) * Number(product.stock || 0), 0);
+  const totalQty = products.reduce((sum, product) => sum + Number(product.stock || 0), 0);
+  const lowStock = products.filter((product) => Number(product.stock || 0) > 0 && Number(product.stock || 0) <= 3).length;
+  const categoryCount = new Set(products.map((product) => product.category).filter(Boolean)).size;
+  const avgPrice = totalProducts ? inventoryValue / Math.max(totalQty, 1) : 0;
+  const sales = getSales();
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const monthKey = todayKey.slice(0, 7);
+  const salesToday = sales.filter((sale) => String(sale.createdAt || '').startsWith(todayKey));
+  const salesMonth = sales.filter((sale) => String(sale.createdAt || '').startsWith(monthKey));
+  const todayTotal = salesToday.reduce((sum, sale) => sum + Number(sale.summary?.total || 0), 0);
+  const todayProfit = salesToday.reduce((sum, sale) => sum + Number(sale.summary?.profit || 0), 0);
+  const monthTotal = salesMonth.reduce((sum, sale) => sum + Number(sale.summary?.total || 0), 0);
+  const monthProfit = salesMonth.reduce((sum, sale) => sum + Number(sale.summary?.profit || 0), 0);
+  const soldUnits = sales.reduce((sum, sale) => sum + (sale.lines || []).reduce((inner, line) => inner + (line.type === "product" ? Number(line.qty || 0) : 0), 0), 0);
+  const totalSales = sales.reduce((sum, sale) => sum + Number(sale.summary?.total || 0), 0);
+  const remainingValue = products.reduce((sum, product) => sum + Number(product.stock || 0) * Number(product.price || 0), 0);
+  const pendingProfit = products.reduce((sum, product) => sum + Number(product.stock || 0) * (Number(product.price || 0) - Number(product.cost || 0)), 0);
+  const movements = getMovements().length;
 
   setText("dash-total-products", totalProducts);
   setText("dash-total-qty", totalQty);
-  setText("dash-total-value", formatMoney(totalValue));
-  setText("dash-out-count", outCount);
+  setText("dash-total-value", formatMoney(inventoryValue));
+  setText("dash-out-count", soldOut);
   setText("dash-low-stock", lowStock);
   setText("dash-category-count", categoryCount);
   setText("dash-in-stock", inStock);
   setText("dash-avg-price", formatMoney(avgPrice));
-  setText("dash-sales-today", formatMoney(metrics.totalToday));
-  setText("dash-sales-profit", formatMoney(metrics.profitToday));
-  setText("dash-sales-month", formatMoney(metrics.totalMonth));
-  setText("dash-movements", movements.length);
-  setText("quick-total-products", totalProducts);
-  setText("quick-in-stock", inStock);
-  setText("quick-out-stock", outCount);
-  setText("sidebar-total-products", totalProducts);
-  setText("sidebar-sales-today", formatMoney(metrics.totalToday));
-  setText("sidebar-profit-today", formatMoney(metrics.profitToday));
-  setText("sidebar-sync-note", LAST_SYNC_AT ? `Última sincronización ${LAST_SYNC_AT.toLocaleTimeString("es-HN", { hour: "2-digit", minute: "2-digit" })}` : "Listo para gestionar");
-  setText("sales-today-count", metrics.todaySales.length);
-  setText("sales-today-total", formatMoney(metrics.totalToday));
-  setText("sales-today-profit", formatMoney(metrics.profitToday));
-  setText("sales-month-total", formatMoney(metrics.totalMonth));
-  updateSyncMeta();
-  renderSalesList();
-  renderMovementList();
-  renderReceiptsList();
-  populateSaleProductSelect();
+  setText("dash-sales-today", formatMoney(todayTotal));
+  setText("dash-sales-profit", formatMoney(todayProfit));
+  setText("dash-sales-month", formatMoney(monthTotal));
+  setText("dash-movements", movements);
+  setText("dash-sold-units", soldUnits);
+  setText("dash-total-sales-all", formatMoney(totalSales));
+  setText("dash-pending-value", formatMoney(remainingValue));
+  setText("dash-pending-profit", formatMoney(pendingProfit));
+  setText("dash-month-profit", formatMoney(monthProfit));
 }
 
 function loadCategories() {
@@ -1472,22 +1490,23 @@ function getShippingCatalog(zone) {
 function populateShippingOptionSelect() {
   const zoneSelect = document.getElementById("sale-shipping-zone");
   const optionSelect = document.getElementById("sale-shipping-option");
-  const preview = document.getElementById("sale-shipping-preview");
+  const priceInput = document.getElementById("sale-shipping-price");
   const list = document.getElementById("sale-shipping-list");
   if (!zoneSelect || !optionSelect || !list) return;
   const zone = zoneSelect.value === "COMAYAGUA" ? "COMAYAGUA" : "NACIONAL";
   const items = getShippingCatalog(zone);
   const previousValue = optionSelect.value;
-  optionSelect.innerHTML = items.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)} · ${formatMoney(item.price)}</option>`).join("");
-  const selectedValue = items.some((item) => item.id === previousValue) ? previousValue : (items[0]?.id || "");
+  optionSelect.innerHTML = [`<option value="">Sin envío</option>`, ...items.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)} · ${formatMoney(item.price)}</option>`)].join("");
+  const selectedValue = items.some((item) => item.id === previousValue) ? previousValue : "";
   optionSelect.value = selectedValue;
   list.innerHTML = items.map((item) => {
     const active = item.id === selectedValue;
     return `<button type="button" class="shipping-option-card${active ? ' is-active' : ''}" data-shipping-id="${escapeHtml(item.id)}" role="option" aria-selected="${active ? 'true' : 'false'}"><span>${escapeHtml(item.label)}</span><strong>${formatMoney(item.price)}</strong></button>`;
   }).join("");
-  const selected = items.find((item) => item.id === selectedValue) || items[0];
-  if (preview) {
-    preview.textContent = selected ? `${zone === "COMAYAGUA" ? "Comayagua" : "Nacional"}: ${selected.label} · ${formatMoney(selected.price)}` : "";
+  const selected = items.find((item) => item.id === selectedValue) || null;
+  if (priceInput) {
+    if (selected) priceInput.value = String(Number(selected.price || 0));
+    else if (!priceInput.value) priceInput.value = "0";
   }
   updateSaleSummary();
 }
@@ -1496,18 +1515,20 @@ function onShippingListClick(event) {
   const button = event.target.closest('[data-shipping-id]');
   if (!button) return;
   const optionSelect = document.getElementById("sale-shipping-option");
+  const enabled = document.getElementById("sale-shipping-enabled");
   if (!optionSelect) return;
   optionSelect.value = button.dataset.shippingId || "";
+  if (enabled) enabled.checked = Boolean(optionSelect.value);
   populateShippingOptionSelect();
 }
 
 function getSelectedShipping() {
-  const enabled = document.getElementById("sale-shipping-enabled")?.checked;
-  if (!enabled) return null;
-  const zone = document.getElementById("sale-shipping-zone")?.value === "COMAYAGUA" ? "COMAYAGUA" : "NACIONAL";
   const optionId = document.getElementById("sale-shipping-option")?.value || "";
+  const zone = document.getElementById("sale-shipping-zone")?.value === "COMAYAGUA" ? "COMAYAGUA" : "NACIONAL";
   const item = getShippingCatalog(zone).find((entry) => entry.id === optionId) || null;
   if (!item) return null;
+  const customPrice = Number(document.getElementById("sale-shipping-price")?.value || item.price || 0);
+  const price = Number.isFinite(customPrice) ? Math.max(0, customPrice) : Number(item.price || 0);
   return {
     id: `shipping-${zone.toLowerCase()}-${item.id}`,
     type: "shipping",
@@ -1515,19 +1536,17 @@ function getSelectedShipping() {
     name: zone === "COMAYAGUA" ? `Envío Comayagua · ${item.label}` : `Envío Nacional · ${item.label}`,
     sku: zone === "COMAYAGUA" ? "ENV-COM" : "ENV-NAC",
     qty: 1,
-    price: Number(item.price || 0),
+    price,
     cost: 0,
-    total: Number(item.price || 0),
-    profit: Number(item.price || 0)
+    total: price,
+    profit: price
   };
 }
 
 function toggleShippingFields() {
-  const enabled = document.getElementById("sale-shipping-enabled")?.checked;
   const fields = document.getElementById("sale-shipping-fields");
-  if (fields) fields.hidden = !enabled;
-  if (enabled) populateShippingOptionSelect();
-  updateSaleSummary();
+  if (fields) fields.hidden = false;
+  populateShippingOptionSelect();
 }
 
 function updateSaleReview() {
@@ -1535,11 +1554,16 @@ function updateSaleReview() {
   const payment = document.getElementById("sale-payment")?.value || "Efectivo";
   const note = document.getElementById("sale-note")?.value.trim() || "Sin nota";
   const discount = Number(document.getElementById("sale-discount")?.value || 0);
+  const shipping = getSelectedShipping();
   const itemsCount = SALE_CART.reduce((sum, line) => sum + Number(line.qty || 0), 0);
+  const subtotal = SALE_CART.reduce((sum, line) => sum + Number(line.total || 0), 0);
+  const saleTotal = Math.max(0, subtotal + Number(shipping?.total || 0) - discount);
   setText("sale-review-customer", customer);
   setText("sale-review-payment", payment);
   setText("sale-review-items", `${itemsCount} artículo(s)`);
   setText("sale-review-discount", formatMoney(discount));
+  setText("sale-review-profit", formatMoney(getSaleProfit(shipping, discount)));
+  setText("sale-review-total", formatMoney(saleTotal));
   setText("sale-review-note", note);
 }
 
@@ -1766,28 +1790,45 @@ function renderSaleCart() {
     wrap.innerHTML = '<div class="list-empty sale-list-empty">Aún no has agregado productos a esta venta.</div>';
     return;
   }
-  const productCards = SALE_CART.map((line, index) => `
-    <article class="list-card glass-panel sale-line-card">
-      <div class="sale-line-main">
+  const productCards = SALE_CART.map((line, index) => {
+    const unitProfit = Number(line.price || 0) - Number(line.cost || 0);
+    return `
+    <article class="list-card glass-panel sale-line-card sale-line-card-pro">
+      <div class="sale-line-main sale-line-main-pro">
         <div>
           <strong>${escapeHtml(line.name)}</strong>
           <p>${escapeHtml(line.sku || `ID ${line.id}`)}</p>
         </div>
         <span class="list-amount">${formatMoney(line.total)}</span>
       </div>
-      <div class="sale-line-tools">
-        <div class="sale-line-stepper">
-          <button type="button" class="qty-btn" onclick="changeSaleLineQty(${index}, -1)" aria-label="Restar cantidad">−</button>
-          <span>${line.qty}</span>
-          <button type="button" class="qty-btn" onclick="changeSaleLineQty(${index}, 1)" aria-label="Sumar cantidad">+</button>
-        </div>
-        <button class="mini-icon-btn" type="button" onclick="promptEditSaleLinePrice(${index})"><span>✎</span><small>${formatMoney(line.price)}</small></button>
+      <div class="sale-line-editor-grid">
+        <label class="sale-line-field">
+          <span>Cantidad</span>
+          <div class="sale-line-stepper sale-line-stepper-pro">
+            <button type="button" class="qty-btn" onclick="changeSaleLineQty(${index}, -1)" aria-label="Restar cantidad">−</button>
+            <input type="number" min="1" step="1" value="${Number(line.qty || 1)}" data-sale-qty-input data-sale-index="${index}" />
+            <button type="button" class="qty-btn" onclick="changeSaleLineQty(${index}, 1)" aria-label="Sumar cantidad">+</button>
+          </div>
+        </label>
+        <label class="sale-line-field">
+          <span>Precio unitario</span>
+          <input type="number" min="0" step="0.01" value="${Number(line.price || 0).toFixed(2)}" data-sale-price-input data-sale-index="${index}" />
+        </label>
+      </div>
+      <div class="sale-line-meta-row">
+        <small>Costo ${formatMoney(Number(line.cost || 0))} c/u</small>
+        <small>Ganas ${formatMoney(unitProfit)} c/u</small>
+        <small>Ganancia total ${formatMoney(Number(line.profit || 0))}</small>
+      </div>
+      <div class="sale-line-tools sale-line-tools-pro">
+        <button class="mini-icon-btn" type="button" onclick="promptEditSaleLinePrice(${index})"><span>✎</span><small>Editar</small></button>
         <button class="mini-icon-btn danger" type="button" onclick="removeSaleLine(${index})"><span>✕</span><small>Quitar</small></button>
       </div>
-    </article>`).join("");
+    </article>`;
+  }).join("");
   const shippingCard = shipping ? `
     <article class="list-card glass-panel shipping-line-card sale-line-card shipping-line-card-pro">
-      <div class="sale-line-main">
+      <div class="sale-line-main sale-line-main-pro">
         <div>
           <strong>${escapeHtml(shipping.name)}</strong>
           <p>${shipping.zone === "COMAYAGUA" ? "Tarifa por colonia" : "Tarifa nacional"}</p>

@@ -7991,3 +7991,97 @@ body.theme-dark .mobile-company-dock button {
     z-index:2500 !important;
   }
 }
+
+/* v25 mobile compact + modal unlock polish */
+@media (max-width: 640px){
+  .hero-banner,
+  .action-scroller{
+    display:none !important;
+  }
+
+  .app-shell,
+  .dashboard-shell,
+  .main-content{
+    gap:12px !important;
+  }
+
+  .top-quickbar,
+  .search-panel,
+  .catalog-section,
+  .ops-card,
+  .history-card,
+  .sales-card,
+  .resume-card{
+    margin-top:0 !important;
+    padding:16px !important;
+    border-radius:26px !important;
+  }
+
+  .search-panel{
+    padding-top:14px !important;
+  }
+
+  .search-panel + .catalog-section,
+  .catalog-section + .ops-card,
+  .catalog-section + .sales-card{
+    margin-top:12px !important;
+  }
+
+  .section-caption,
+  .section-subcopy,
+  .helper-copy{
+    display:none !important;
+  }
+
+  .stats-strip,
+  .stats-grid,
+  .mini-stats{
+    gap:10px !important;
+  }
+
+  .product-list,
+  .products-list,
+  .inventory-grid,
+  .product-grid{
+    gap:12px !important;
+  }
+
+  .product-card-v5,
+  .product-card{
+    padding:14px !important;
+    gap:10px !important;
+  }
+
+  .product-action-row,
+  .product-action-row-v5{
+    display:none !important;
+  }
+
+  .product-main-img{
+    aspect-ratio: 1 / 1 !important;
+    object-fit: contain !important;
+    background:#ffffff !important;
+    padding:10px !important;
+  }
+
+  .product-title{
+    margin-top:2px !important;
+    font-size:1.02rem !important;
+    line-height:1.2 !important;
+  }
+
+  .product-price,
+  .product-price-strong{
+    margin-top:6px !important;
+  }
+
+  #detail-close{
+    position: sticky !important;
+    top: 10px !important;
+    z-index: 30 !important;
+    width: 46px !important;
+    height: 46px !important;
+    border-radius: 14px !important;
+    box-shadow: 0 12px 28px rgba(15,23,42,.16) !important;
+  }
+}

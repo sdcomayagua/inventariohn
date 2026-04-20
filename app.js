@@ -92,6 +92,7 @@ let ITEMS_PER_PAGE = 12;
 let CURRENT_USER = null;
 let EDITING_ID = null;
 let CURRENT_EDIT_IMAGES = [];
+let PREVIEW_OBJECT_URLS = [];
 let ACTIVE_DETAIL_ID = null;
 let LAST_SYNC_AT = null;
 let INSTALL_PROMPT = null;
@@ -145,6 +146,21 @@ function escapeHtml(value) {
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
+}
+
+function lockUiScroll() {
+  document.body.classList.add("sale-modal-open");
+}
+
+function unlockUiScroll() {
+  document.body.classList.remove("sale-modal-open");
+}
+
+function clearPreviewObjectUrls() {
+  PREVIEW_OBJECT_URLS.forEach((url) => {
+    try { URL.revokeObjectURL(url); } catch {}
+  });
+  PREVIEW_OBJECT_URLS = [];
 }
 
 function formatMoney(value) {
@@ -857,10 +873,7 @@ function renderProducts() {
             <span class="product-mini-note">${inStock ? "Listo para vender" : "Reponer"}</span>
           </div>
         </div>
-      </button>
-      <div class="product-action-row product-action-row-v5 single-cta">
-        <button class="mini-icon-btn sell-btn single-cta-btn" type="button" onclick="event.stopPropagation(); ${p.stock > 0 ? `openSaleModal('${safeId}')` : `viewProduct('${safeId}')`}"><span>${p.stock > 0 ? '💳' : '👁'}</span><small>${p.stock > 0 ? 'Vender' : 'Ver ficha'}</small></button>
-      </div>`;
+      </button>`;
     container.appendChild(card);
   });
   renderPagination();
@@ -1084,6 +1097,7 @@ function setImageSlotState(index, { src = "", label = "Sin archivo", filled = fa
 }
 
 function clearModalFields() {
+  clearPreviewObjectUrls();
   ["inv-name", "inv-price", "inv-cost", "inv-qty", "inv-category", "inv-sku", "inv-notes"].forEach((id) => {
     const input = document.getElementById(id);
     if (input) input.value = "";
@@ -1126,13 +1140,15 @@ function invOpenModal(isEdit = false, product = null) {
   }
   modal.style.display = "flex";
   modal.classList.add("show");
-  document.body.classList.add("sale-modal-open");
+  lockUiScroll();
 }
 
 function invCloseModal() {
   document.getElementById("inv-modal").style.display = "none";
   EDITING_ID = null;
   CURRENT_EDIT_IMAGES = [];
+  clearPreviewObjectUrls();
+  unlockUiScroll();
 }
 
 function startEditById(id) {
@@ -1148,15 +1164,13 @@ function invPreviewImage(input, previewId) {
     setImageSlotState(index, existing ? { src: existing, label: "Imagen actual", filled: true } : { src: "", label: "Sin archivo", filled: false });
     return;
   }
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    setImageSlotState(index, {
-      src: String(event.target?.result || ""),
-      label: file.name,
-      filled: true
-    });
-  };
-  reader.readAsDataURL(file);
+  const objectUrl = URL.createObjectURL(file);
+  PREVIEW_OBJECT_URLS.push(objectUrl);
+  setImageSlotState(index, {
+    src: objectUrl,
+    label: file.name,
+    filled: true
+  });
 }
 
 function fileToBase64(file) {
@@ -1181,18 +1195,19 @@ async function compressImageSource(source, options = {}) {
   const dataUrl = typeof source === "string" ? source : await fileToBase64(source);
   const targetChars = options.targetChars || IMAGE_RULES.singleImageMaxChars;
   const maxSide = options.maxSide || IMAGE_RULES.maxSideSingle;
-  const minSide = options.minSide || IMAGE_RULES.minSide;
-  let quality = options.initialQuality || 0.78;
+  let quality = options.initialQuality || 0.82;
   const image = await loadImageFromDataUrl(dataUrl);
   const ratio = Math.min(1, maxSide / Math.max(image.width, image.height));
-  let width = Math.max(minSide, Math.round(image.width * ratio));
-  let height = Math.max(minSide, Math.round(image.height * ratio));
+  let width = Math.max(1, Math.round(image.width * ratio));
+  let height = Math.max(1, Math.round(image.height * ratio));
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d", { alpha: false });
   const render = (w, h, q) => {
     canvas.width = w;
     canvas.height = h;
-    ctx.fillStyle = "#111827";
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, w, h);
     ctx.drawImage(image, 0, 0, w, h);
     return canvas.toDataURL("image/jpeg", q);
@@ -1422,7 +1437,7 @@ function viewProduct(id) {
   document.getElementById("detail-delete-btn").onclick = () => deleteProduct(id);
   document.getElementById("detail-sale-btn").onclick = () => openSaleModal(id);
   modal.style.display = "flex";
-  document.body.classList.add("sale-modal-open");
+  lockUiScroll();
 }
 
 function swapDetailImage(src, index, total, button) {
@@ -1440,6 +1455,7 @@ function closeDetailModal() {
     modal.style.display = "none";
   }
   ACTIVE_DETAIL_ID = null;
+  unlockUiScroll();
 }
 
 async function quickAdjustDetailStock(change) {
@@ -1680,7 +1696,7 @@ function openSaleEditModal(saleId) {
   populateSaleProductSelect();
   populateSaleModalFromSale(sale);
   modal.style.display = "flex";
-  document.body.classList.add("sale-modal-open");
+  lockUiScroll();
 }
 
 function editCurrentReceiptSale() {
@@ -1724,7 +1740,7 @@ function openSaleModal(preselectedId = "") {
   }
   syncSaleFormFromSelectedProduct();
   modal.style.display = "flex";
-  document.body.classList.add("sale-modal-open");
+  lockUiScroll();
 }
 
 function closeSaleModal() {
@@ -1733,7 +1749,7 @@ function closeSaleModal() {
     modal.classList.remove("show");
     modal.style.display = "none";
   }
-  document.body.classList.remove("sale-modal-open");
+  unlockUiScroll();
   SALE_CART = [];
   SALE_EDITING_ID = null;
   SALE_MODAL_STEP = 1;

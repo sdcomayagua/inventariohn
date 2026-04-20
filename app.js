@@ -175,6 +175,13 @@ function getThemeMode() {
   return localStorage.getItem(STORAGE_KEYS.themeMode) || "auto";
 }
 
+function syncThemeChrome(dark) {
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.setAttribute("content", dark ? "#08111f" : "#f4f8ff");
+  document.documentElement.style.colorScheme = dark ? "dark" : "light";
+  document.body.dataset.themeResolved = dark ? "dark" : "light";
+}
+
 function applySavedTheme() {
   SYSTEM_THEME_MEDIA = SYSTEM_THEME_MEDIA || window.matchMedia("(prefers-color-scheme: dark)");
   const mode = getThemeMode();
@@ -182,6 +189,7 @@ function applySavedTheme() {
   document.body.classList.toggle("theme-dark", dark);
   document.body.classList.toggle("theme-light", !dark);
   document.body.dataset.themeMode = mode;
+  syncThemeChrome(dark);
   updateThemeControls();
 }
 
@@ -196,6 +204,7 @@ function updateThemeControls() {
   document.querySelectorAll("#theme-toggle").forEach((btn) => {
     btn.textContent = label;
     btn.title = `${title}. Toca para cambiar.`;
+    btn.setAttribute("aria-label", `${title}. Toca para cambiar.`);
   });
 }
 

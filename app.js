@@ -2409,20 +2409,194 @@ function buildReceiptHtml(receipt) {
         }
       }
       @media print{
-        @page{size:A4;margin:12mm}
-        body{background:#fff}
+        @page{size:A4 portrait;margin:10mm}
+        html,body{
+          width:auto !important;
+          height:auto !important;
+          margin:0 !important;
+          padding:0 !important;
+        }
+        body{
+          background:#fff !important;
+          font-size:11px;
+          line-height:1.35;
+          -webkit-print-color-adjust:exact;
+          print-color-adjust:exact;
+        }
         .screen-toolbar{display:none !important}
-        .page-wrap{padding:0}
+        .page-wrap{padding:0 !important}
         .paper{
           max-width:none;
-          border:none;
-          border-radius:0;
-          box-shadow:none;
-        }
-        .paper-inner{padding:0}
-        .hero,.meta-card,.table-card,.totals-card,.note-card{
-          break-inside:avoid;
+          width:100% !important;
+          border:none !important;
+          border-radius:0 !important;
           box-shadow:none !important;
+          overflow:visible !important;
+        }
+        .paper-inner{
+          padding:0 !important;
+        }
+        .hero{
+          display:flex !important;
+          flex-direction:row !important;
+          justify-content:space-between !important;
+          align-items:flex-start !important;
+          gap:10px !important;
+          padding:12px !important;
+          border-radius:16px !important;
+          break-inside:avoid;
+          page-break-inside:avoid;
+        }
+        .brand{
+          display:flex !important;
+          flex-direction:row !important;
+          align-items:center !important;
+          gap:12px !important;
+        }
+        .brand-logo{
+          width:92px !important;
+          max-width:none !important;
+          filter:none !important;
+        }
+        .brand-copy small{
+          margin-bottom:4px !important;
+          font-size:9px !important;
+          letter-spacing:.18em !important;
+        }
+        .brand-copy h1{
+          font-size:18px !important;
+          line-height:1.05 !important;
+        }
+        .brand-copy p{
+          margin-top:4px !important;
+          font-size:10px !important;
+        }
+        .receipt-meta{
+          min-width:185px !important;
+          padding:12px 14px !important;
+          border-radius:16px !important;
+          text-align:right !important;
+          box-shadow:none !important;
+        }
+        .receipt-meta span{
+          font-size:9px !important;
+        }
+        .receipt-meta strong{
+          margin-top:4px !important;
+          font-size:18px !important;
+        }
+        .receipt-meta p{
+          margin-top:4px !important;
+          font-size:10px !important;
+          line-height:1.35 !important;
+        }
+        .meta-grid{
+          display:grid !important;
+          grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+          gap:8px !important;
+          margin:10px 0 !important;
+        }
+        .meta-card{
+          padding:10px 12px !important;
+          border-radius:14px !important;
+          break-inside:avoid;
+          page-break-inside:avoid;
+        }
+        .meta-card span{
+          margin-bottom:5px !important;
+          font-size:9px !important;
+        }
+        .meta-card strong{
+          font-size:12px !important;
+          line-height:1.25 !important;
+        }
+        .content-grid{
+          display:grid !important;
+          grid-template-columns:minmax(0,1fr) 220px !important;
+          gap:10px !important;
+          align-items:start !important;
+        }
+        .table-card,.totals-card,.note-card{
+          border-radius:16px !important;
+          box-shadow:none !important;
+          break-inside:avoid;
+          page-break-inside:avoid;
+        }
+        .card-head{
+          padding:10px 12px !important;
+        }
+        .card-head h2{
+          font-size:13px !important;
+        }
+        .pill{
+          padding:5px 9px !important;
+          font-size:9px !important;
+        }
+        th,td{
+          padding:7px 10px !important;
+        }
+        th{
+          font-size:8px !important;
+          letter-spacing:.12em !important;
+        }
+        td{
+          font-size:10px !important;
+        }
+        .product-cell{
+          gap:2px !important;
+        }
+        .product-cell strong{
+          font-size:10px !important;
+          line-height:1.25 !important;
+        }
+        .product-cell small{
+          font-size:8.5px !important;
+          line-height:1.25 !important;
+        }
+        .totals-card{
+          padding:12px !important;
+        }
+        .totals-card .mini{
+          font-size:8px !important;
+        }
+        .totals-card h3{
+          margin:4px 0 10px !important;
+          font-size:12px !important;
+        }
+        .totals-list{
+          gap:6px !important;
+        }
+        .totals-row{
+          font-size:10px !important;
+          gap:8px !important;
+        }
+        .totals-row strong{
+          font-size:10px !important;
+        }
+        .grand-total{
+          padding:9px 10px !important;
+          border-radius:12px !important;
+        }
+        .grand-total strong{
+          font-size:16px !important;
+        }
+        .note-card{
+          margin-top:10px !important;
+          padding:10px 12px !important;
+        }
+        .note-card strong{
+          margin-bottom:4px !important;
+          font-size:9px !important;
+        }
+        .note-card p{
+          font-size:9px !important;
+          line-height:1.4 !important;
+        }
+        .footer{
+          margin-top:10px !important;
+          padding-top:8px !important;
+          font-size:9px !important;
+          gap:8px !important;
         }
       }
     </style>

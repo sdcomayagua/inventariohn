@@ -2324,3 +2324,66 @@ window.invChangeItemsPerPage = invChangeItemsPerPage;
 
   window.scrollToSection = scrollToSection;
 })();
+
+/* ===== Patch v23 mobile refinement ===== */
+(function(){
+  function resetDetailModalUI(){
+    const modal = document.getElementById('detail-modal');
+    if(!modal) return;
+    const content = modal.querySelector('.modal-content');
+    if(content){
+      content.scrollTop = 0;
+    }
+    const notes = document.getElementById('detail-notes');
+    const noteBox = notes ? notes.closest('.detail-note-box') : null;
+    if(noteBox && notes){
+      const text = (notes.textContent || '').trim().toLowerCase();
+      noteBox.style.display = (!text || text === 'sin notas internas.') ? 'none' : '';
+    }
+  }
+
+  function ensureFloatingClose(){
+    const modal = document.getElementById('detail-modal');
+    if(!modal || modal.querySelector('.detail-floating-close')) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'detail-floating-close';
+    btn.setAttribute('aria-label', 'Cerrar detalle');
+    btn.innerHTML = '&times;';
+    btn.addEventListener('click', () => {
+      if(typeof closeDetailModal === 'function'){
+        closeDetailModal();
+      }else{
+        modal.classList.remove('show');
+      }
+    });
+    modal.appendChild(btn);
+  }
+
+  function watchDetailModal(){
+    const modal = document.getElementById('detail-modal');
+    if(!modal) return;
+    ensureFloatingClose();
+    const content = modal.querySelector('.modal-content');
+    const observer = new MutationObserver(() => {
+      if(modal.classList.contains('show')){
+        requestAnimationFrame(resetDetailModalUI);
+      }
+    });
+    observer.observe(modal, { attributes:true, attributeFilter:['class'] });
+    content?.addEventListener('scroll', () => {
+      const floating = modal.querySelector('.detail-floating-close');
+      if(floating){
+        floating.style.boxShadow = content.scrollTop > 10
+          ? '0 14px 32px rgba(15,23,42,.18)'
+          : '0 12px 28px rgba(15,23,42,.16)';
+      }
+    }, { passive:true });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', watchDetailModal, { once:true });
+  }else{
+    watchDetailModal();
+  }
+})();

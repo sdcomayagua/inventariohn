@@ -444,11 +444,23 @@
         </div>
       </div>
 
-      <div class="detail-summary-grid detail-summary-grid-4">
-        <article class="detail-summary-card glass-panel"><span>Precio</span><strong id="detail-summary-price">Lps. 0.00</strong></article>
-        <article class="detail-summary-card glass-panel"><span>Costo</span><strong id="detail-summary-cost">Lps. 0.00</strong></article>
-        <article class="detail-summary-card glass-panel"><span>Ganancia unitaria</span><strong id="detail-summary-margin">Lps. 0.00</strong></article>
-        <article class="detail-summary-card glass-panel"><span>Unidades</span><strong id="detail-summary-stock">0</strong></article>
+      <div class="detail-summary-grid detail-summary-grid-4 detail-summary-grid--compact">
+        <article class="detail-summary-card">
+          <span class="detail-summary-label">Precio</span>
+          <strong class="detail-summary-value" id="detail-summary-price">Lps. 0.00</strong>
+        </article>
+        <article class="detail-summary-card">
+          <span class="detail-summary-label">Costo</span>
+          <strong class="detail-summary-value" id="detail-summary-cost">Lps. 0.00</strong>
+        </article>
+        <article class="detail-summary-card detail-summary-card--accent">
+          <span class="detail-summary-label">Ganancia unitaria</span>
+          <strong class="detail-summary-value" id="detail-summary-margin">Lps. 0.00</strong>
+        </article>
+        <article class="detail-summary-card">
+          <span class="detail-summary-label">Stock disponible</span>
+          <strong class="detail-summary-value" id="detail-summary-stock">0</strong>
+        </article>
       </div>
 
       <div class="detail-stock-toolbar glass-panel">
@@ -462,7 +474,7 @@
         </div>
       </div>
 
-      <div class="detail-note-box glass-panel">
+      <div class="detail-note-box glass-panel" id="detail-notes-box">
         <p class="detail-toolbar-title">Notas internas</p>
         <small id="detail-notes">Sin notas internas.</small>
       </div>

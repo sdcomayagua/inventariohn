@@ -1444,6 +1444,8 @@ function viewProduct(id) {
   setText("detail-image-counter", `1 / ${gallery.length}`);
   setText("detail-meta-note", qty > 0 ? `${qty} unidades disponibles · Código ${product.id || "--"}` : `Producto agotado · Código ${product.id || "--"}`);
   setText("detail-notes", product.notes || "Sin notas internas.");
+  const detailNotesBox = document.getElementById("detail-notes-box");
+  if (detailNotesBox) detailNotesBox.hidden = !product.notes;
   const main = document.getElementById("detail-main-img");
   if (main) main.src = gallery[0];
   const thumbs = document.getElementById("detail-thumbs");

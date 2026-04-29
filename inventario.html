@@ -16,6 +16,7 @@
   <link rel="icon" type="image/png" href="icon-192.png">
   <link rel="stylesheet" href="style.css?v=31-pro-mobile">
   <link rel="stylesheet" href="style-pro-v31.css?v=31-pro-mobile">
+  <link rel="stylesheet" href="style-v33-maravilla.css?v=33-maravilla">
 </head>
 <body class="theme-light app-page">
   <div class="app-shell ultra-shell">
@@ -83,8 +84,8 @@
           <div class="hero-meta-strip"><span>Stock activo</span><span>Venta directa</span><span>Control diario</span></div>
         </div>
         <div class="hero-actions hero-actions-3">
-          <button class="btn-primary hero-btn" type="button" onclick="invOpenModal(false)">Nuevo producto</button>
-          <button class="btn-secondary hero-btn" type="button" onclick="openSaleModal()">Nueva venta</button>
+          <button class="btn-primary hero-btn" id="btn-hero-product" type="button">Nuevo producto</button>
+          <button class="btn-secondary hero-btn" id="btn-hero-sale" type="button">Nueva venta</button>
           <button class="btn-secondary hero-btn" type="button" onclick="loadProducts(true)">Actualizar</button>
         </div>
       </section>
@@ -112,8 +113,8 @@
         </div>
 
         <div class="action-scroller compact-actions luxe-actions-grid">
-          <button class="action-chip active" type="button" onclick="invOpenModal(false)">＋ Producto</button>
-          <button class="action-chip" type="button" onclick="openSaleModal()">🧾 Vender</button>
+          <button class="action-chip active" id="btn-quick-product" type="button">＋ Producto</button>
+          <button class="action-chip" id="btn-quick-sale" type="button">🧾 Vender</button>
           <button class="action-chip" type="button" onclick="toggleFiltersPanel()">Filtros</button>
           <button class="action-chip" type="button" onclick="toggleSummaryPanel()">Resumen</button>
           <button class="action-chip" type="button" onclick="loadProducts(true)">Actualizar</button>
@@ -650,8 +651,8 @@
 
   <nav class="mobile-company-dock" aria-label="Acciones rápidas">
     <button type="button" onclick="scrollToSection('productos')"><span>⌂</span><small>Catálogo</small></button>
-    <button type="button" class="accent" onclick="openSaleModal()"><span>🧾</span><small>Vender</small></button>
-    <button type="button" onclick="invOpenModal(false)"><span>＋</span><small>Producto</small></button>
+    <button type="button" class="accent" id="btn-dock-sale"><span>🧾</span><small>Vender</small></button>
+    <button type="button" id="btn-dock-product"><span>＋</span><small>Producto</small></button>
     <button type="button" onclick="toggleSummaryPanel()"><span>◫</span><small>Resumen</small></button>
   </nav>
 
@@ -659,5 +660,6 @@
 
   <script src="app.js?v=31-pro-mobile"></script>
   <script src="fix-v31.js?v=31-pro-mobile"></script>
+  <script src="fix-v33-maravilla.js?v=33-maravilla"></script>
 </body>
 </html>

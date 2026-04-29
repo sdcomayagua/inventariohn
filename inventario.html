@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>SDCOMAYAGUA | Admin</title>
-  <meta name="description" content="Panel administrativo de SDCOMAYAGUA.">
-  <meta name="theme-color" content="#0b0f16">
+  <title>SDCOMAYAGUA | Inventario</title>
+  <meta name="description" content="Panel móvil de inventario, ventas y comprobantes de SDCOMAYAGUA.">
+  <meta name="theme-color" content="#f5f7fb">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="icon" type="image/png" href="icon-192.png">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=30-pro-mobile">
 </head>
-<body class="theme-dark app-page">
+<body class="theme-light app-page">
   <div class="app-shell ultra-shell">
     <aside class="desktop-sidebar glass-panel">
       <div class="sidebar-top">
-        <p class="eyebrow">Operación diaria</p>
+        <p class="eyebrow">Panel profesional</p>
         <h2 class="sidebar-title">SDCOMAYAGUA</h2>
         
       </div>
@@ -32,8 +32,8 @@
         <button class="sidebar-nav" type="button" onclick="scrollToSection('comprobantes')">Comprobantes</button>
         <button class="sidebar-nav" type="button" onclick="toggleSummaryPanel()">Resumen</button>
         <button class="sidebar-nav" type="button" onclick="toggleFiltersPanel()">Filtros</button>
-        <button class="sidebar-nav" type="button" onclick="invOpenModal(false)">Nuevo producto</button>
-        <button class="sidebar-nav accent" type="button" onclick="openSaleModal()">Nueva venta</button>
+        <button class="sidebar-nav" type="button" onclick="invOpenModal(false)">Agregar producto</button>
+        <button class="sidebar-nav accent" type="button" onclick="openSaleModal()">Registrar venta</button>
       </div>
 
       <div class="sidebar-mini-stats">
@@ -76,9 +76,9 @@
 
       <section class="hero-banner glass-panel">
         <div>
-          <p class="eyebrow">Centro de operaciones</p>
-          <h2 class="hero-title">Inventario y ventas</h2>
-          <p class="hero-copy">Controla productos, ventas y comprobantes con una vista más limpia, rápida y profesional.</p>
+          <p class="eyebrow">Control móvil</p>
+          <h2 class="hero-title">Inventario, ventas y comprobantes</h2>
+          <p class="hero-copy">Vista renovada para trabajar rápido desde el celular, con tarjetas limpias, filtros ágiles y acciones directas.</p>
           <div class="hero-meta-strip"><span>Stock activo</span><span>Venta directa</span><span>Control diario</span></div>
         </div>
         <div class="hero-actions hero-actions-3">
@@ -92,7 +92,7 @@
         <div class="search-card glass-panel compact-search luxe-search-card">
           <div class="search-shell">
             <span class="search-icon">⌕</span>
-            <input id="inv-search" class="search-input" placeholder="Buscar producto, SKU o código">
+            <input id="inv-search" class="search-input" placeholder="Buscar producto, categoría o código">
           </div>
           <div class="quick-stats-row">
             <button type="button" class="mini-stat-chip" onclick="toggleSummaryPanel()">
@@ -112,7 +112,7 @@
 
         <div class="action-scroller compact-actions luxe-actions-grid">
           <button class="action-chip active" onclick="invOpenModal(false)">＋ Producto</button>
-          <button class="action-chip" onclick="openSaleModal()">🧾 Venta</button>
+          <button class="action-chip" onclick="openSaleModal()">🧾 Vender</button>
           <button class="action-chip" onclick="toggleFiltersPanel()">Filtros</button>
           <button class="action-chip" onclick="toggleSummaryPanel()">Resumen</button>
           <button class="action-chip" onclick="loadProducts(true)">Actualizar</button>
@@ -128,7 +128,8 @@
           <div>
             <p class="section-kicker">Productos</p>
             <h3 class="section-title">Catálogo activo</h3>
-            <p class="section-caption">Gestión de productos</p>          </div>
+            <p class="section-caption">Productos listos para buscar, editar y vender.</p>
+          </div>
           <span class="results-count" id="results-count">0 resultados</span>
         </div>
 
@@ -150,7 +151,7 @@
             <div>
               <p class="section-kicker">Ventas</p>
               <h3 class="section-title">Ventas</h3>
-              <p class="section-caption">Resumen comercial del día.</p>
+              <p class="section-caption">Resumen comercial rápido.</p>
             </div>
             <button class="btn-secondary section-inline-btn" type="button" onclick="openSaleModal()">Nueva venta</button>
           </div>
@@ -227,11 +228,11 @@
         </button>
         <button type="button" onclick="openSaleModal()">
           <span>🧾</span>
-          <small>Venta</small>
+          <small>Vender</small>
         </button>
         <button type="button" class="dock-primary" onclick="invOpenModal(false)">
           <span>＋</span>
-          <small>Nuevo</small>
+          <small>Agregar</small>
         </button>
         <button type="button" onclick="loadProducts(true)">
           <span>↻</span>
@@ -331,8 +332,8 @@
           <div class="field-group inline">
             <label for="inv-items-per-page">Por página</label>
             <select id="inv-items-per-page">
-              <option value="8">8</option>
-              <option value="12" selected>12</option>
+              <option value="8" selected>8</option>
+              <option value="12">12</option>
               <option value="24">24</option>
             </select>
           </div>
@@ -646,7 +647,7 @@
 
   <nav class="mobile-company-dock" aria-label="Acciones rápidas">
     <button type="button" onclick="scrollToSection('productos')"><span>⌂</span><small>Catálogo</small></button>
-    <button type="button" class="accent" onclick="openSaleModal()"><span>🧾</span><small>Venta</small></button>
+    <button type="button" class="accent" onclick="openSaleModal()"><span>🧾</span><small>Vender</small></button>
     <button type="button" onclick="invOpenModal(false)"><span>＋</span><small>Producto</small></button>
     <button type="button" onclick="toggleSummaryPanel()"><span>◫</span><small>Resumen</small></button>
   </nav>

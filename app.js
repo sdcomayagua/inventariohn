@@ -198,7 +198,7 @@ function formatDateOnly(dateLike) {
 }
 
 function getThemeMode() {
-  return localStorage.getItem(STORAGE_KEYS.themeMode) || "auto";
+  return localStorage.getItem(STORAGE_KEYS.themeMode) || "light";
 }
 
 function syncThemeChrome(dark) {
@@ -236,7 +236,7 @@ function updateThemeControls() {
 
 function toggleTheme() {
   const current = getThemeMode();
-  const next = current === "auto" ? "dark" : current === "dark" ? "light" : "auto";
+  const next = current === "light" ? "dark" : current === "dark" ? "auto" : "light";
   localStorage.setItem(STORAGE_KEYS.themeMode, next);
   applySavedTheme();
   showToast(next === "auto" ? "Tema automático activado." : `Tema ${next === "dark" ? "oscuro" : "claro"} activado.`);
@@ -893,7 +893,11 @@ function renderProducts() {
             <span class="product-mini-note">${inStock ? "Listo para vender" : "Reponer"}</span>
           </div>
         </div>
-      </button>`;
+      </button>
+      <div class="product-card-actions" aria-label="Acciones rápidas del producto">
+        <button type="button" class="product-action-btn primary" onclick="openSaleModal('${safeId}')">Vender</button>
+        <button type="button" class="product-action-btn" onclick="startEditById('${safeId}')">Editar</button>
+      </div>`;
     container.appendChild(card);
   });
   renderPagination();

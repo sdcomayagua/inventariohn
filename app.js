@@ -1168,7 +1168,11 @@ function invOpenModal(isEdit = false, product = null) {
 }
 
 function invCloseModal() {
-  document.getElementById("inv-modal").style.display = "none";
+  const modal = document.getElementById("inv-modal");
+  if (modal) {
+    modal.classList.remove("show");
+    modal.style.display = "none";
+  }
   EDITING_ID = null;
   CURRENT_EDIT_IMAGES = [];
   clearPreviewObjectUrls();
@@ -1463,6 +1467,7 @@ function viewProduct(id) {
   document.getElementById("detail-delete-btn").onclick = () => deleteProduct(id);
   document.getElementById("detail-sale-btn").onclick = () => openSaleModal(id);
   modal.style.display = "flex";
+  modal.classList.add("show");
   lockUiScroll();
 }
 
@@ -1728,6 +1733,7 @@ function openSaleEditModal(saleId) {
   populateSaleProductSelect();
   populateSaleModalFromSale(sale);
   modal.style.display = "flex";
+  modal.classList.add("show");
   lockUiScroll();
 }
 
@@ -1772,6 +1778,7 @@ function openSaleModal(preselectedId = "") {
   }
   syncSaleFormFromSelectedProduct();
   modal.style.display = "flex";
+  modal.classList.add("show");
   lockUiScroll();
 }
 

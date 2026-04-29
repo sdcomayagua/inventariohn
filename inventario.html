@@ -14,7 +14,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="icon" type="image/png" href="icon-192.png">
-  <link rel="stylesheet" href="style.css?v=30-pro-mobile">
+  <link rel="stylesheet" href="style.css?v=31-pro-mobile">
+  <link rel="stylesheet" href="style-pro-v31.css?v=31-pro-mobile">
 </head>
 <body class="theme-light app-page">
   <div class="app-shell ultra-shell">
@@ -111,14 +112,14 @@
         </div>
 
         <div class="action-scroller compact-actions luxe-actions-grid">
-          <button class="action-chip active" onclick="invOpenModal(false)">＋ Producto</button>
-          <button class="action-chip" onclick="openSaleModal()">🧾 Vender</button>
-          <button class="action-chip" onclick="toggleFiltersPanel()">Filtros</button>
-          <button class="action-chip" onclick="toggleSummaryPanel()">Resumen</button>
-          <button class="action-chip" onclick="loadProducts(true)">Actualizar</button>
-          <button class="action-chip" onclick="clearFilters()">Limpiar</button>
-          <button class="action-chip" onclick="exportInventoryBackup()">Respaldo</button>
-          <button class="action-chip" onclick="triggerImportBackup()">Importar</button>
+          <button class="action-chip active" type="button" onclick="invOpenModal(false)">＋ Producto</button>
+          <button class="action-chip" type="button" onclick="openSaleModal()">🧾 Vender</button>
+          <button class="action-chip" type="button" onclick="toggleFiltersPanel()">Filtros</button>
+          <button class="action-chip" type="button" onclick="toggleSummaryPanel()">Resumen</button>
+          <button class="action-chip" type="button" onclick="loadProducts(true)">Actualizar</button>
+          <button class="action-chip" type="button" onclick="clearFilters()">Limpiar</button>
+          <button class="action-chip" type="button" onclick="exportInventoryBackup()">Respaldo</button>
+          <button class="action-chip" type="button" onclick="triggerImportBackup()">Importar</button>
           <input id="inventory-import-input" type="file" accept="application/json" hidden onchange="importInventoryBackup(this)">
         </div>
       </section>
@@ -140,7 +141,9 @@
           <div class="empty-icon">◌</div>
           <h3>Sin productos</h3>
           
-        </div>
+        <p>Agrega tu primer producto o importa un respaldo para iniciar.</p>
+          <button class="btn-primary" type="button" onclick="invOpenModal(false)">Agregar producto</button>
+          </div>
 
         <div class="pagination" id="inv-pagination"></div>
       </section>
@@ -654,6 +657,7 @@
 
   <div id="toast" class="toast hidden"></div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=31-pro-mobile"></script>
+  <script src="fix-v31.js?v=31-pro-mobile"></script>
 </body>
 </html>

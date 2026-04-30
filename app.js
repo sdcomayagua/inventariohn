@@ -1772,11 +1772,21 @@ function openSaleModal(preselectedId = "") {
   if (!modal) return;
   resetSaleModal();
   populateSaleProductSelect(preselectedId);
-  if (preselectedId) {
-    const select = document.getElementById("sale-product-select");
-    if (select) select.value = preselectedId;
+  const select = document.getElementById("sale-product-select");
+  if (preselectedId && select) {
+    select.value = preselectedId;
   }
   syncSaleFormFromSelectedProduct();
+  if (preselectedId && select && getProductById(preselectedId) && SALE_CART.length === 0) {
+    const qtyInput = document.getElementById("sale-qty");
+    if (qtyInput) qtyInput.value = "1";
+    addSaleLine();
+    const customerInput = document.getElementById("sale-customer");
+    if (customerInput) {
+      window.requestAnimationFrame(() => customerInput.focus());
+    }
+    showToast("Producto agregado automáticamente. Puedes sumar otros artículos a la venta.");
+  }
   modal.style.display = "flex";
   modal.classList.add("show");
   lockUiScroll();

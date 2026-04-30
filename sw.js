@@ -1,5 +1,5 @@
-const STATIC_CACHE = "inventario-static-v33-maravilla";
-const API_CACHE = "inventario-api-v33-maravilla";
+const STATIC_CACHE = "inventario-static-v36-clean-mobile";
+const API_CACHE = "inventario-api-v36-clean-mobile";
 const ASSETS = [
   "./",
   "index.html",
@@ -7,9 +7,13 @@ const ASSETS = [
   "style.css",
   "style-pro-v31.css",
   "style-v33-maravilla.css",
+  "style-v35-premium-compacto.css",
+  "style-v36-clean-mobile.css",
   "app.js",
   "fix-v31.js",
   "fix-v33-maravilla.js",
+  "fix-v35-premium-compacto.js",
+  "fix-v36-clean-mobile.js",
   "manifest.json",
   "icon-192.png",
   "icon-512.png"

@@ -1,5 +1,5 @@
-const STATIC_CACHE = "inventario-static-v37-tienda-grid";
-const API_CACHE = "inventario-api-v37-tienda-grid";
+const STATIC_CACHE = "inventario-static-v40-caja-movil";
+const API_CACHE = "inventario-api-v40-caja-movil";
 const ASSETS = [
   "./",
   "index.html",
@@ -9,11 +9,17 @@ const ASSETS = [
   "style-v33-maravilla.css",
   "style-v35-premium-compacto.css",
   "style-v37-tienda-grid.css",
+  "style-v38-mobile-pro.css",
+  "style-v39-mobile-ultra.css",
+  "style-v40-caja-movil.css",
   "app.js",
   "fix-v31.js",
   "fix-v33-maravilla.js",
   "fix-v35-premium-compacto.js",
   "fix-v37-tienda-grid.js",
+  "fix-v38-mobile-pro.js",
+  "fix-v39-mobile-ultra.js",
+  "fix-v40-caja-movil.js",
   "manifest.json",
   "icon-192.png",
   "icon-512.png"

@@ -1,0 +1,496 @@
+
+/* V37 TIENDA GRID - estilo catálogo como referencia */
+:root{
+  --shop-bg:#f7f7fb;
+  --shop-card:#ffffff;
+  --shop-text:#0a1020;
+  --shop-muted:#5d687a;
+  --shop-line:#edf0f6;
+  --shop-blue:#087fd3;
+  --shop-blue-2:#0572c0;
+  --shop-orange:#ff5a00;
+  --shop-red:#ff2020;
+  --shop-shadow:0 3px 10px rgba(15,23,42,.08);
+}
+
+html,body{
+  background:var(--shop-bg)!important;
+  color:var(--shop-text)!important;
+  color-scheme:light!important;
+}
+body.theme-dark, body.theme-dark.app-page,
+body.theme-light, body.theme-light.app-page{
+  background:var(--shop-bg)!important;
+  color:var(--shop-text)!important;
+}
+
+/* Modo tienda: quitar estructura pesada del panel */
+body.v37-shop .desktop-sidebar,
+body.v37-shop .hero-banner,
+body.v37-shop .top-quickbar,
+body.v37-shop #ventas,
+body.v37-shop #movimientos,
+body.v37-shop #comprobantes,
+body.v37-shop #activity-card{
+  display:none!important;
+}
+
+body.v37-shop .app-shell,
+body.v37-shop .app-shell.ultra-shell{
+  max-width:1400px!important;
+  padding:14px 22px 90px!important;
+}
+
+body.v37-shop .main-content{
+  gap:12px!important;
+}
+
+/* Header claro y compacto */
+body.v37-shop .app-header{
+  position:sticky!important;
+  top:8px!important;
+  z-index:50!important;
+  background:#fff!important;
+  border:1px solid var(--shop-line)!important;
+  box-shadow:0 3px 12px rgba(15,23,42,.06)!important;
+  border-radius:18px!important;
+  padding:10px 14px!important;
+  min-height:64px!important;
+  color:var(--shop-text)!important;
+}
+body.v37-shop .app-header::before{display:none!important;}
+body.v37-shop .app-title{font-size:1.35rem!important;color:var(--shop-text)!important;letter-spacing:-.04em!important;}
+body.v37-shop .app-subtitle{font-size:.84rem!important;color:var(--shop-muted)!important;}
+body.v37-shop #inv-avatar,
+body.v37-shop .user-chip{
+  width:44px!important;height:44px!important;min-width:44px!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#58a6ff,#1677e8)!important;
+}
+body.v37-shop .icon-btn,
+body.v37-shop .network-pill{
+  background:#fff!important;
+  border:1px solid var(--shop-line)!important;
+  color:var(--shop-text)!important;
+  box-shadow:0 2px 6px rgba(15,23,42,.05)!important;
+  border-radius:14px!important;
+}
+body.v37-shop .network-pill{color:#12863d!important;background:#f1fff6!important;border-color:#d6f2df!important;}
+
+/* Contenedor de catálogo sin panel pesado */
+body.v37-shop .catalog-section{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:8px 0 0!important;
+  border-radius:0!important;
+}
+body.v37-shop .catalog-head,
+body.v37-shop .enhanced-section-head{
+  margin-bottom:14px!important;
+  padding:0 4px!important;
+}
+body.v37-shop .section-kicker{display:none!important;}
+body.v37-shop .section-title{
+  font-size:1.35rem!important;
+  color:var(--shop-text)!important;
+  letter-spacing:-.04em!important;
+}
+body.v37-shop .section-caption{display:none!important;}
+body.v37-shop .results-count{
+  background:#fff!important;
+  border:1px solid var(--shop-line)!important;
+  color:var(--shop-text)!important;
+  box-shadow:none!important;
+  border-radius:999px!important;
+  min-height:36px!important;
+  padding:0 14px!important;
+}
+body.v37-shop .quick-categories{
+  display:flex!important;
+  gap:10px!important;
+  padding:0 4px 16px!important;
+}
+body.v37-shop .category-chip{
+  background:#fff!important;
+  border:1px solid var(--shop-line)!important;
+  color:#172033!important;
+  border-radius:999px!important;
+  height:38px!important;
+  padding:0 14px!important;
+  box-shadow:0 2px 6px rgba(15,23,42,.04)!important;
+}
+body.v37-shop .category-chip.active{
+  background:#277df3!important;
+  color:#fff!important;
+  border-color:#277df3!important;
+  box-shadow:0 6px 12px rgba(39,125,243,.18)!important;
+}
+
+/* Grid tipo tienda */
+body.v37-shop .products-list,
+body.v37-shop #inv-products{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:20px!important;
+  align-items:stretch!important;
+}
+
+body.v37-shop .product-card{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:340px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:space-between!important;
+  background:#fff!important;
+  border:1px solid #f0f2f7!important;
+  border-radius:16px!important;
+  box-shadow:var(--shop-shadow)!important;
+  padding:0!important;
+  color:var(--shop-text)!important;
+  transition:transform .18s ease, box-shadow .18s ease!important;
+}
+body.v37-shop .product-card:hover{
+  transform:translateY(-2px)!important;
+  box-shadow:0 10px 24px rgba(15,23,42,.10)!important;
+}
+
+body.v37-shop .product-tile{
+  display:block!important;
+  width:100%!important;
+  border:0!important;
+  background:transparent!important;
+  padding:0!important;
+  text-align:left!important;
+  color:inherit!important;
+  cursor:pointer!important;
+}
+
+body.v37-shop .product-media{
+  position:relative!important;
+  width:100%!important;
+  height:185px!important;
+  min-height:185px!important;
+  aspect-ratio:auto!important;
+  background:#fff!important;
+  border:0!important;
+  border-radius:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:14px 12px 6px!important;
+  overflow:hidden!important;
+}
+body.v37-shop .product-main-img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  display:block!important;
+}
+body.v37-shop .product-status{
+  position:absolute!important;
+  top:10px!important;
+  left:10px!important;
+  z-index:3!important;
+  background:#e9fff3!important;
+  color:#118450!important;
+  border:1px solid #c8f2dd!important;
+  border-radius:999px!important;
+  padding:5px 9px!important;
+  font-size:.72rem!important;
+  font-weight:900!important;
+}
+body.v37-shop .media-count{
+  position:absolute!important;
+  right:10px!important;
+  top:10px!important;
+  background:#eef6ff!important;
+  color:#0074c9!important;
+  border:1px solid #d8ecff!important;
+  border-radius:999px!important;
+  padding:5px 8px!important;
+  font-size:.72rem!important;
+  font-weight:900!important;
+}
+body.v37-shop .low-stock-badge{display:none!important;}
+
+body.v37-shop .product-copy{
+  padding:0 14px 10px!important;
+}
+body.v37-shop .product-meta-row{
+  display:block!important;
+  margin:0 0 3px!important;
+}
+body.v37-shop .meta-pill{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+  color:#39455a!important;
+  font-size:.72rem!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
+}
+body.v37-shop .product-code-pill{
+  display:none!important;
+}
+body.v37-shop .product-name{
+  color:#040815!important;
+  font-size:.92rem!important;
+  line-height:1.15!important;
+  letter-spacing:-.02em!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+  margin:0 0 10px!important;
+  min-height:2.3em!important;
+}
+body.v37-shop .product-stock-line{
+  display:none!important;
+}
+body.v37-shop .product-price-row{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  border:0!important;
+  padding:0!important;
+}
+body.v37-shop .product-price{
+  color:var(--shop-orange)!important;
+  font-size:1.02rem!important;
+  font-weight:950!important;
+  letter-spacing:.01em!important;
+}
+body.v37-shop .product-mini-note{
+  display:none!important;
+}
+
+/* Botón azul tipo Agregar al carrito */
+body.v37-shop .product-card-actions{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:0!important;
+  padding:0 14px 14px!important;
+  margin-top:auto!important;
+}
+body.v37-shop .product-action-btn{
+  display:none!important;
+}
+body.v37-shop .product-action-btn.primary{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  min-height:40px!important;
+  width:100%!important;
+  border:0!important;
+  border-radius:999px!important;
+  background:#087fd3!important;
+  color:#fff!important;
+  box-shadow:0 3px 6px rgba(8,127,211,.26)!important;
+  font-size:.82rem!important;
+  font-weight:900!important;
+}
+body.v37-shop .product-action-btn.primary::before{
+  content:"🛒";
+  font-size:.95rem;
+  line-height:1;
+}
+
+/* iconos decorativos como referencia */
+body.v37-shop .store-floating-icons{
+  position:absolute!important;
+  right:12px!important;
+  top:112px!important;
+  z-index:4!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  pointer-events:none!important;
+}
+body.v37-shop .store-floating-icons span{
+  width:36px!important;
+  height:36px!important;
+  border-radius:999px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#eef7ff!important;
+  border:1px solid #d9efff!important;
+  color:#0074c9!important;
+  font-size:1rem!important;
+  box-shadow:0 2px 6px rgba(15,23,42,.06)!important;
+}
+body.v37-shop .store-floating-icons span:last-child{
+  background:#fff!important;
+  border-color:#ffdada!important;
+  color:var(--shop-red)!important;
+}
+
+/* Paginación estilo tienda */
+body.v37-shop .pagination{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  margin-top:18px!important;
+}
+body.v37-shop .pagination .btn-secondary,
+body.v37-shop .pagination button{
+  min-width:48px!important;
+  height:48px!important;
+  border-radius:12px!important;
+  border:0!important;
+  background:#fff!important;
+  color:#0f172a!important;
+  box-shadow:none!important;
+  font-weight:900!important;
+}
+body.v37-shop .page-indicator{
+  min-height:48px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 18px!important;
+  background:#277df3!important;
+  color:#fff!important;
+  border-radius:12px!important;
+  font-weight:900!important;
+}
+
+/* Modales día limpio */
+body.v37-shop .modal{
+  background:rgba(15,23,42,.45)!important;
+  backdrop-filter:blur(8px)!important;
+}
+body.v37-shop .modal-content,
+body.v37-shop .receipt-modal-content{
+  background:#fff!important;
+  color:var(--shop-text)!important;
+  border:1px solid var(--shop-line)!important;
+  box-shadow:0 24px 60px rgba(15,23,42,.24)!important;
+}
+body.v37-shop .modal-head,
+body.v37-shop .sticky-head,
+body.v37-shop .sticky-actions{
+  background:#fff!important;
+  color:var(--shop-text)!important;
+  border-color:var(--shop-line)!important;
+}
+body.v37-shop input,
+body.v37-shop select,
+body.v37-shop textarea,
+body.v37-shop .sale-select,
+body.v37-shop .sale-input,
+body.v37-shop .form-control{
+  background:#fff!important;
+  color:var(--shop-text)!important;
+  border:1px solid #dfe5ef!important;
+}
+body.v37-shop .sale-builder-box,
+body.v37-shop .sale-review-box,
+body.v37-shop .sale-shipping-box,
+body.v37-shop .sale-line-card{
+  background:#f8fbff!important;
+  border:1px solid var(--shop-line)!important;
+  color:var(--shop-text)!important;
+}
+
+/* Dock claro */
+body.v37-shop .mobile-company-dock,
+body.v37-shop .bottom-dock{
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid var(--shop-line)!important;
+  box-shadow:0 14px 30px rgba(15,23,42,.14)!important;
+  backdrop-filter:blur(16px)!important;
+}
+body.v37-shop .mobile-company-dock button,
+body.v37-shop .bottom-dock button{
+  background:#fff!important;
+  color:#142034!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+body.v37-shop .mobile-company-dock button.accent,
+body.v37-shop .bottom-dock .dock-primary{
+  background:#087fd3!important;
+  color:#fff!important;
+}
+
+/* Responsive */
+@media(max-width:1200px){
+  body.v37-shop .products-list,
+  body.v37-shop #inv-products{grid-template-columns:repeat(4,minmax(0,1fr))!important;}
+}
+@media(max-width:900px){
+  body.v37-shop .products-list,
+  body.v37-shop #inv-products{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+}
+@media(max-width:640px){
+  body.v37-shop .app-shell,
+  body.v37-shop .app-shell.ultra-shell{padding:8px 10px 88px!important;}
+  body.v37-shop .app-header{
+    min-height:58px!important;
+    padding:8px 10px!important;
+    border-radius:16px!important;
+  }
+  body.v37-shop .app-title{font-size:1.05rem!important;}
+  body.v37-shop .app-subtitle{font-size:.72rem!important;}
+  body.v37-shop #inv-avatar,
+  body.v37-shop .user-chip{width:40px!important;height:40px!important;min-width:40px!important;}
+  body.v37-shop .icon-btn{width:38px!important;height:38px!important;border-radius:12px!important;}
+  body.v37-shop .catalog-head,
+  body.v37-shop .enhanced-section-head{margin-bottom:10px!important;}
+  body.v37-shop .section-title{font-size:1.25rem!important;}
+  body.v37-shop .quick-categories{padding-bottom:12px!important;overflow-x:auto!important;}
+  body.v37-shop .products-list,
+  body.v37-shop #inv-products{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+  body.v37-shop .product-card{
+    min-height:280px!important;
+    border-radius:14px!important;
+  }
+  body.v37-shop .product-media{
+    height:145px!important;
+    min-height:145px!important;
+    padding:10px 8px 4px!important;
+  }
+  body.v37-shop .product-copy{padding:0 9px 8px!important;}
+  body.v37-shop .product-name{
+    font-size:.76rem!important;
+    min-height:2.3em!important;
+    margin-bottom:8px!important;
+  }
+  body.v37-shop .product-price{font-size:.92rem!important;}
+  body.v37-shop .product-card-actions{padding:0 9px 10px!important;}
+  body.v37-shop .product-action-btn.primary{
+    min-height:38px!important;
+    font-size:.72rem!important;
+  }
+  body.v37-shop .store-floating-icons{
+    right:8px!important;
+    top:82px!important;
+    gap:6px!important;
+  }
+  body.v37-shop .store-floating-icons span{
+    width:30px!important;
+    height:30px!important;
+    font-size:.85rem!important;
+  }
+  body.v37-shop .product-status,
+  body.v37-shop .media-count{
+    font-size:.62rem!important;
+    padding:4px 7px!important;
+  }
+  body.v37-shop .pagination{
+    justify-content:center!important;
+    gap:6px!important;
+  }
+}
+@media(max-width:380px){
+  body.v37-shop .products-list,
+  body.v37-shop #inv-products{grid-template-columns:1fr!important;}
+  body.v37-shop .product-card{min-height:300px!important;}
+}

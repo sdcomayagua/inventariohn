@@ -1777,6 +1777,9 @@ function openSaleModal(preselectedId = "") {
     select.value = preselectedId;
   }
   syncSaleFormFromSelectedProduct();
+
+  // Si se toca "Agregar al carrito" desde una tarjeta del catálogo,
+  // ese producto entra directo a la venta. Luego se pueden agregar más.
   if (preselectedId && select && getProductById(preselectedId) && SALE_CART.length === 0) {
     const qtyInput = document.getElementById("sale-qty");
     if (qtyInput) qtyInput.value = "1";
@@ -1785,8 +1788,9 @@ function openSaleModal(preselectedId = "") {
     if (customerInput) {
       window.requestAnimationFrame(() => customerInput.focus());
     }
-    showToast("Producto agregado automáticamente. Puedes sumar otros artículos a la venta.");
+    showToast("Producto agregado a la venta. Puedes sumar más artículos antes de cobrar.");
   }
+
   modal.style.display = "flex";
   modal.classList.add("show");
   lockUiScroll();

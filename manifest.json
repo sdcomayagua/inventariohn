@@ -2,7 +2,7 @@
   "id": "/inventario-app",
   "name": "SDCOMAYAGUA",
   "short_name": "SDCOMAYAGUA",
-  "description": "V40 Caja Móvil: panel privado de productos, ventas y facturas de SDCOMAYAGUA.",
+  "description": "V41 Estable: panel privado de productos, ventas y facturas de SDCOMAYAGUA.",
   "start_url": "index.html",
   "scope": ".",
   "display": "standalone",

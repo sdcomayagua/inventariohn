@@ -1,4 +1,4 @@
-const CACHE_NAME = "sdcomayagua-inventario-v42-mobile-app";
+const CACHE_NAME = "sdcomayagua-inventario-v43-no-freeze";
 const ASSETS = [
   "./",
   "index.html",
@@ -13,17 +13,13 @@ const ASSETS = [
   "style-v39-mobile-ultra.css",
   "style-v40-caja-movil.css",
   "style-v41-estable.css",
-  "style-v42-mobile-app.css",
+  "style-v43-no-freeze.css",
   "app.js",
   "fix-v31.js",
   "fix-v33-maravilla.js",
   "fix-v35-premium-compacto.js",
-  "fix-v37-tienda-grid.js",
-  "fix-v38-mobile-pro.js",
-  "fix-v39-mobile-ultra.js",
-  "fix-v40-caja-movil.js",
   "fix-v41-estable.js",
-  "fix-v42-mobile-app.js",
+  "fix-v43-no-freeze.js",
   "manifest.json",
   "icon-192.png",
   "icon-512.png"
@@ -45,6 +41,16 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+function networkFirst(request) {
+  return fetch(request).then((response) => {
+    if (response && response.status === 200) {
+      const copy = response.clone();
+      caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+    }
+    return response;
+  }).catch(() => caches.match(request));
+}
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return;
@@ -58,29 +64,18 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-          return response;
-        })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match("index.html")))
-    );
+  if (request.mode === "navigate" || url.pathname.endsWith(".js") || url.pathname.endsWith(".css") || url.pathname.endsWith(".html")) {
+    event.respondWith(networkFirst(request).then((response) => response || caches.match("index.html")));
     return;
   }
 
   event.respondWith(
-    caches.match(request).then((cached) => {
-      const network = fetch(request).then((response) => {
-        if (response && response.status === 200) {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-        }
-        return response;
-      }).catch(() => cached);
-      return cached || network;
-    })
+    caches.match(request).then((cached) => cached || fetch(request).then((response) => {
+      if (response && response.status === 200) {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+      }
+      return response;
+    }).catch(() => cached))
   );
 });

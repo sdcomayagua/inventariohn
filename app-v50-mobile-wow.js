@@ -4822,3 +4822,152 @@ window.getSaleProfit = getSaleProfit;
   ready(function(){ boot(); setTimeout(boot,300); setTimeout(boot,1000); });
   window.addEventListener('storage', updateQuickReceiptCard);
 })();
+
+/* =========================================================
+   SDCOMAYAGUA · V50 MOBILE WOW
+   Reestructura visual: encabezado limpio, comando principal,
+   dock fijo corregido y acceso visible a facturas editables.
+   ========================================================= */
+(function(){
+  'use strict';
+  function ready(fn){
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn, {once:true});
+    else fn();
+  }
+  function $(s,r){ return (r||document).querySelector(s); }
+  function $all(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
+  function safe(fn,fallback){ try{return fn();}catch(e){return fallback;} }
+  function money(v){ return safe(function(){ return formatMoney(Number(v||0)); }, 'Lps. ' + Number(v||0).toFixed(2)); }
+  function qtyOf(p){ return Number((p && (p.qty ?? p.stock)) || 0); }
+
+  function setHeader(){
+    var header = $('.app-header');
+    if(!header) return;
+    header.classList.add('v50-header');
+    header.innerHTML = ''+
+      '<div class="brand-row">'+
+        '<div class="v50-logo">SD</div>'+
+        '<div><h1 class="v50-title">Caja SDC</h1><p class="v50-subtitle" id="v50-sync-label">Panel móvil privado</p></div>'+
+      '</div>'+
+      '<div class="header-tools"><button class="v50-top-sale" type="button" onclick="openSaleModal()">Vender</button></div>';
+  }
+
+  function setHero(){
+    var hero = $('.hero-banner');
+    if(!hero) return;
+    hero.classList.add('v50-hero');
+    hero.innerHTML = ''+
+      '<div class="v50-hero-layout">'+
+        '<p class="eyebrow">CAJA PRIVADA</p>'+
+        '<h2 class="hero-title">Panel de ventas</h2>'+
+        '<div class="v50-action-grid">'+
+          '<button class="v50-action-main" type="button" onclick="openSaleModal()">Nueva venta</button>'+
+          '<button type="button" onclick="invOpenModal(false)">+ Agregar producto</button>'+
+        '</div>'+
+        '<div class="v50-kpis">'+
+          '<div class="v50-kpi"><strong id="v50-total-products">0</strong><span>productos</span></div>'+
+          '<div class="v50-kpi"><strong id="v50-sales-today">0</strong><span>ventas hoy</span></div>'+
+          '<div class="v50-kpi"><strong id="v50-total-today">Lps. 0.00</strong><span>total hoy</span></div>'+
+        '</div>'+
+      '</div>';
+  }
+
+  function setDock(){
+    var dock = $('.bottom-dock') || $('.mobile-company-dock');
+    if(!dock) return;
+    dock.className = 'bottom-dock glass-panel v50-dock';
+    dock.setAttribute('aria-label','Acciones principales');
+    dock.innerHTML = ''+
+      '<button type="button" onclick="scrollToSection(\'productos\')"><span>⌕</span><small>Catálogo</small></button>'+
+      '<button type="button" class="dock-primary" onclick="openSaleModal()"><span>🧾</span><small>Vender</small></button>'+
+      '<button type="button" onclick="scrollToSection(\'comprobantes\')"><span>▣</span><small>Facturas</small></button>'+
+      '<button type="button" onclick="invOpenModal(false)"><span>＋</span><small>Producto</small></button>';
+    $all('.mobile-company-dock').forEach(function(el){ if(el !== dock) el.remove(); });
+  }
+
+  function cleanSections(){
+    document.body.classList.add('v50-mobile-wow');
+    var mov = $('#movimientos'); if(mov) mov.style.display = 'none';
+    var act = $('#activity-card'); if(act) act.style.display = 'none';
+    var comp = $('#comprobantes'); if(comp) comp.style.display = 'block';
+    var ph = $('#inv-search'); if(ph) ph.placeholder = 'Buscar producto o código';
+    var catTitle = $('.catalog-section .section-title'); if(catTitle) catTitle.textContent = 'Productos';
+    var catKick = $('.catalog-section .section-kicker'); if(catKick) catKick.textContent = 'Catálogo';
+    var recTitle = $('#comprobantes .section-title'); if(recTitle) recTitle.textContent = 'Facturas';
+    var recKick = $('#comprobantes .section-kicker'); if(recKick) recKick.textContent = 'Comprobantes';
+    var salesTitle = $('#ventas .section-title'); if(salesTitle) salesTitle.textContent = 'Ventas';
+  }
+
+  function updateV50Kpis(){
+    var products = safe(function(){ return getProducts(); }, []);
+    var sales = safe(function(){ return getSales(); }, []);
+    var today = new Date().toISOString().slice(0,10);
+    var todaySales = sales.filter(function(s){ return String(s.createdAt||'').slice(0,10) === today; });
+    var todayTotal = todaySales.reduce(function(sum,s){ return sum + Number(s.total || (s.summary && s.summary.total) || 0); },0);
+    var totalEl = $('#v50-total-products'); if(totalEl) totalEl.textContent = products.length;
+    var salesEl = $('#v50-sales-today'); if(salesEl) salesEl.textContent = todaySales.length;
+    var totalTodayEl = $('#v50-total-today'); if(totalTodayEl) totalTodayEl.textContent = money(todayTotal);
+    var sync = $('#v50-sync-label'); if(sync) sync.textContent = products.length ? 'Inventario listo' : 'Panel móvil privado';
+  }
+
+  function keepReceiptsVisible(){
+    var comp = $('#comprobantes');
+    if(comp) comp.style.display = 'block';
+    safe(function(){ if(typeof updateQuickReceiptCard === 'function') updateQuickReceiptCard(); });
+  }
+
+  function installObservers(){
+    ['sales-list','receipts-list','inv-products'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el || el.dataset.v50Obs) return;
+      el.dataset.v50Obs = '1';
+      safe(function(){ new MutationObserver(function(){ updateV50Kpis(); keepReceiptsVisible(); }).observe(el,{childList:true,subtree:true}); });
+    });
+  }
+
+  function patchCompleteSale(){
+    if(window.__v50CompleteSalePatched || typeof completeSale !== 'function') return;
+    window.__v50CompleteSalePatched = true;
+    var old = completeSale;
+    completeSale = async function(){
+      var result = await old.apply(this, arguments);
+      setTimeout(function(){
+        safe(function(){ renderSalesList(); });
+        safe(function(){ renderReceiptsList(); });
+        updateV50Kpis();
+        keepReceiptsVisible();
+      }, 350);
+      return result;
+    };
+    window.completeSale = completeSale;
+  }
+
+  function clearOldCaches(){
+    safe(function(){
+      if('caches' in window){
+        caches.keys().then(function(keys){
+          keys.forEach(function(k){ if(k !== 'sdcomayagua-inventario-v50-mobile-wow') caches.delete(k); });
+        });
+      }
+    });
+  }
+
+  function boot(){
+    setHeader();
+    setHero();
+    setDock();
+    cleanSections();
+    updateV50Kpis();
+    installObservers();
+    patchCompleteSale();
+    keepReceiptsVisible();
+    clearOldCaches();
+  }
+
+  ready(function(){
+    boot();
+    [120, 450, 900, 1500, 2600, 4200].forEach(function(ms){ setTimeout(boot, ms); });
+  });
+  window.addEventListener('resize', function(){ setDock(); }, {passive:true});
+  window.addEventListener('storage', function(){ updateV50Kpis(); keepReceiptsVisible(); });
+})();

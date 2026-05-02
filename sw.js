@@ -1,11 +1,11 @@
-const CACHE_NAME = "sdcomayagua-inventario-v49-wow";
+const CACHE_NAME = "sdcomayagua-inventario-v50-mobile-wow";
 const ASSETS = [
   "./",
   "index.html",
   "inventario.html",
   "404.html",
-  "style-v48-wow.css?v=49-wow",
-  "app-v48-wow.js?v=49-wow",
+  "style-v50-mobile-wow.css?v=50-mobile-wow",
+  "app-v50-mobile-wow.js?v=50-mobile-wow",
   "manifest.json",
   "icon-192.png",
   "icon-512.png"

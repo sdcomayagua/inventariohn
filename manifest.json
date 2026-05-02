@@ -2,14 +2,21 @@
   "id": "/inventario-app",
   "name": "SDCOMAYAGUA",
   "short_name": "SDCOMAYAGUA",
-  "description": "V41 Estable: panel privado de productos, ventas y facturas de SDCOMAYAGUA.",
+  "description": "V42 Mobile App Seguro: panel privado de productos, ventas y facturas de SDCOMAYAGUA, optimizado para celular y tablet.",
   "start_url": "index.html",
   "scope": ".",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
-  "background_color": "#f5f7fb",
-  "theme_color": "#f5f7fb",
-  "categories": ["business", "productivity", "shopping"],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#f8fbff",
+  "theme_color": "#185adb",
+  "categories": [
+    "business",
+    "productivity",
+    "shopping"
+  ],
   "orientation": "portrait-primary",
   "icons": [
     {

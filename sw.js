@@ -1,4 +1,4 @@
-const CACHE_NAME = "sdcomayagua-inventario-v41-estable";
+const CACHE_NAME = "sdcomayagua-inventario-v42-mobile-app";
 const ASSETS = [
   "./",
   "index.html",
@@ -13,6 +13,7 @@ const ASSETS = [
   "style-v39-mobile-ultra.css",
   "style-v40-caja-movil.css",
   "style-v41-estable.css",
+  "style-v42-mobile-app.css",
   "app.js",
   "fix-v31.js",
   "fix-v33-maravilla.js",
@@ -22,6 +23,7 @@ const ASSETS = [
   "fix-v39-mobile-ultra.js",
   "fix-v40-caja-movil.js",
   "fix-v41-estable.js",
+  "fix-v42-mobile-app.js",
   "manifest.json",
   "icon-192.png",
   "icon-512.png"
@@ -49,8 +51,9 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
 
   if (url.hostname.includes("script.google.com")) {
-    event.respondWith(fetch(request).catch(() => new Response(JSON.stringify({ products: [], history: [] }), {
-      headers: { "Content-Type": "application/json" }
+    event.respondWith(fetch(request).catch(() => new Response(JSON.stringify({ offline: true, products: [], history: [] }), {
+      status: 503,
+      headers: { "Content-Type": "application/json", "X-SDC-Offline": "1" }
     })));
     return;
   }

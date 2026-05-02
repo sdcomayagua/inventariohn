@@ -1,0 +1,40 @@
+V42 MOBILE APP SEGURO - SDCOMAYAGUA
+
+Cambios principales:
+1. Se corrigió la pantalla pegada en "Cargando inventario...".
+   - La carga ahora tiene tiempo máximo.
+   - Botón "Seguir sin esperar".
+   - Si Apps Script tarda, la app se desbloquea sola.
+
+2. Carga más segura:
+   - Usa primero la copia local si existe.
+   - Si falla internet o Apps Script, no se bloquea.
+   - Ya no muestra alerta invasiva al iniciar.
+
+3. Nuevo panel de control móvil:
+   - Nueva venta.
+   - Productos.
+   - Facturas.
+   - Admin / agregar producto.
+   - Filtros.
+   - Resumen.
+
+4. Dock inferior tipo app con 5 accesos:
+   - Inicio.
+   - Vender.
+   - Facturas.
+   - Admin.
+   - Resumen.
+
+5. Diseño mejorado para celular y tablet:
+   - Tarjetas más limpias.
+   - Productos en 1 columna en celular y 2 en tablet.
+   - Modal más estable y más cómodo.
+   - Factura con botones nuevos.
+
+6. Factura / comprobante:
+   - Botón "Captura limpia".
+   - Botón "Copiar WhatsApp".
+   - Mejor preparado para mandar al cliente.
+
+7. Service Worker actualizado a v42 para limpiar caché vieja.

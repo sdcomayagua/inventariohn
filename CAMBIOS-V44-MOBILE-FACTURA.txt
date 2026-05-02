@@ -1,0 +1,30 @@
+V44 MOBILE FACTURA PRO - SDCOMAYAGUA
+
+Cambios principales:
+1. Vista móvil y tablet más ancha: la app ahora aprovecha casi todo el ancho disponible del celular sin salirse.
+2. Menos espacio muerto entre Inicio rápido y el buscador de productos.
+3. Dock inferior corregido: 4 botones en una sola fila para que no se desborde.
+   - Inicio
+   - Vender
+   - Producto
+   - Resumen
+4. Tarjetas de producto mejoradas: imagen cuadrada grande, mejor lectura de nombre, stock y precio.
+5. Se corrigió la lógica de envío:
+   - Envío Normal: Lps. 110.00.
+   - Pagar al Recibir: productos + Lps. 110 de envío + comisión del 6%.
+   - La comisión se redondea a Lempiras enteros.
+   - Ejemplo: (Lps. 500 + Lps. 110) x 6% = Lps. 36.60 => Lps. 37.
+6. La factura ahora muestra separado:
+   - Productos
+   - Envío Normal
+   - Comisión por Pagar al Recibir 6%
+   - Descuento
+   - Total
+7. Al editar una venta y cambiar de Pagar al Recibir a Depósito / Transferencia, se elimina la comisión y queda solo el envío normal.
+8. Se corrigió la recursión que podía causar congelamiento en el modal de venta y el aviso "La página no responde".
+9. Service Worker actualizado a V44 para evitar que el navegador use archivos antiguos en caché.
+
+Recomendación al subir a GitHub Pages:
+- Subir todos los archivos reemplazando los anteriores.
+- En el celular, abrir la página y hacer Actualizar.
+- Si aún mira la versión anterior, limpiar caché o abrir en modo incógnito una vez.

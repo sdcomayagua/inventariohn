@@ -1,5 +1,5 @@
-SD COMAYAGUA V73
+SD COMAYAGUA V75
 
-Cambios: cajas de productos rediseñadas con estilo gamer premium, mejor imagen, badges, costo, ganancia, valor de stock y barra visual de stock.
+Cambios: editor de productos rediseñado, vista previa, costo/precio/stock, métricas automáticas, galería de imágenes, promociones por cantidad, duplicar y eliminar.
 
 Sube index.html y .nojekyll a GitHub Pages.

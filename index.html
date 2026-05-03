@@ -10111,5 +10111,396 @@
 })();
 </script>
 
+
+
+<!-- SDC V85 · mejoras logo, alertas funcionales y tarjetas móviles -->
+<style id="sdc-v85-logo-alertas-tarjetas">
+  :root{ --v85-mint:#31ff9a; --v85-cyan:#10e8ff; --v85-bg:#07111e; --v85-card:#0d1b2c; }
+  img.v85-logo-fixed,
+  .v85-logo-fixed{
+    object-fit:contain !important;
+    object-position:center !important;
+    background:transparent !important;
+    image-rendering:auto !important;
+    filter:none !important;
+    max-width:100% !important;
+    max-height:100% !important;
+  }
+  .brandbar img.v85-logo-fixed,
+  .topbar img.v85-logo-fixed,
+  .login-card img.v85-logo-fixed,
+  .hero img.v85-logo-fixed,
+  .receipt-card img.v85-logo-fixed,
+  .quote-card img.v85-logo-fixed{
+    padding:0 !important;
+    border:0 !important;
+    box-shadow:none !important;
+    transform:none !important;
+  }
+  .brandbar img.v85-logo-fixed,.topbar img.v85-logo-fixed{
+    width:58px !important;height:58px !important;border-radius:16px !important;
+  }
+  .login-card img.v85-logo-fixed,.hero img.v85-logo-fixed{
+    width:min(190px,42vw) !important;height:min(190px,42vw) !important;border-radius:26px !important;
+  }
+  /* Quita la etiqueta vieja que se montaba encima de la categoría del producto */
+  .v72-card-badge{display:none !important;}
+  /* Encabezado de tarjetas: categoría y código separados, sin encimarse */
+  .v73-card-top{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    gap:8px !important;
+    align-items:center !important;
+    margin:0 0 12px !important;
+    min-height:auto !important;
+    overflow:visible !important;
+  }
+  .v73-card-top > *{position:static !important;max-width:100% !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;}
+  .v73-cat-pill,.v73-category,.cat-pill{
+    justify-self:start !important;
+    max-width:100% !important;
+    padding:9px 14px !important;
+    border-radius:999px !important;
+    line-height:1.1 !important;
+  }
+  .v73-code-pill,.code-pill{justify-self:end !important;min-width:max-content !important;}
+  .v73-card,.product-card,.card{
+    overflow:hidden !important;
+  }
+  .v73-photo,.pic,.product-photo,.photo-wrap{
+    overflow:hidden !important;
+  }
+  .v73-photo img,.pic img,.product-photo img,.card img.product-img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    border-radius:inherit !important;
+  }
+  .v73-stock-pill,.stock-pill,.status-pill{
+    z-index:8 !important;
+    max-width:calc(100% - 24px) !important;
+    white-space:nowrap !important;
+  }
+  @media(max-width:520px){
+    .v73-card,.product-card{border-radius:26px !important;padding:18px !important;}
+    .v73-card-top{gap:7px !important;margin-bottom:10px !important;}
+    .v73-cat-pill,.v73-category,.cat-pill{font-size:10.5px !important;padding:8px 12px !important;}
+    .v73-code-pill,.code-pill{font-size:10px !important;padding:8px 11px !important;}
+    .v73-title,.product-title,.card h3{font-size:19px !important;line-height:1.15 !important;}
+  }
+  /* Panel rápido: botones reales, visibles y tocables */
+  .v85-alert-modal{position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.72);backdrop-filter:blur(14px);display:flex;align-items:flex-end;justify-content:center;padding:14px;}
+  .v85-alert-sheet{width:min(720px,100%);max-height:min(82vh,850px);overflow:auto;background:linear-gradient(160deg,#081422,#0c1b2d 62%,#092b2f);border:1px solid rgba(16,232,255,.35);border-radius:30px;box-shadow:0 22px 80px rgba(0,0,0,.55);color:#f2fbff;padding:18px;}
+  .v85-alert-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;}
+  .v85-alert-title{font-size:22px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase;margin:0;}
+  .v85-alert-sub{font-size:13px;color:#a9bbc9;font-weight:800;margin-top:4px;}
+  .v85-x{border:0;background:rgba(255,255,255,.10);color:#fff;border-radius:18px;width:52px;height:52px;font-size:28px;font-weight:1000;}
+  .v85-list{display:grid;gap:10px;}
+  .v85-item{display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;align-items:center;padding:12px;border:1px solid rgba(16,232,255,.18);background:rgba(255,255,255,.055);border-radius:22px;}
+  .v85-thumb{width:62px;height:62px;border-radius:18px;background:#06101c;border:1px solid rgba(16,232,255,.22);display:grid;place-items:center;overflow:hidden;color:#16e7ff;font-weight:1000;}
+  .v85-thumb img{width:100%;height:100%;object-fit:cover;border-radius:18px;}
+  .v85-name{font-size:16px;font-weight:1000;line-height:1.12;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .v85-meta{font-size:12px;color:#aec0cf;font-weight:900;margin-top:3px;}
+  .v85-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px;}
+  .v85-actions button{border:1px solid rgba(16,232,255,.24);border-radius:16px;padding:12px 10px;font-weight:1000;letter-spacing:.04em;background:#0c2744;color:#e9f7ff;}
+  .v85-actions button.primary{background:linear-gradient(135deg,#32ff92,#08d9ff);color:#06111a;border-color:transparent;}
+  .v85-empty{padding:22px;border-radius:22px;background:rgba(255,255,255,.06);border:1px dashed rgba(49,255,154,.35);font-weight:900;color:#bdd0dc;text-align:center;}
+  .v85-profit-card{padding:18px;border-radius:24px;background:linear-gradient(135deg,rgba(49,255,154,.12),rgba(10,183,255,.10));border:1px solid rgba(49,255,154,.26);}
+  .v85-profit-big{font-size:36px;font-weight:1000;color:var(--v85-mint);line-height:1;margin:6px 0;}
+  @media(max-width:520px){
+    .v85-alert-modal{align-items:flex-end;padding:10px;}
+    .v85-alert-sheet{border-radius:28px 28px 22px 22px;padding:15px;max-height:84vh;}
+    .v85-alert-title{font-size:19px;}
+    .v85-item{grid-template-columns:54px minmax(0,1fr);padding:10px;border-radius:20px;}
+    .v85-thumb{width:54px;height:54px;border-radius:16px;}
+    .v85-actions{grid-template-columns:1fr 1fr 1fr;gap:7px;}
+    .v85-actions button{font-size:12px;padding:11px 6px;}
+  }
+  /* Botones viejos del panel rápido: que se miren como acciones y no como adorno */
+  button, .btn, [role="button"]{touch-action:manipulation;}
+</style>
+<script id="sdc-v85-logo-alertas-tarjetas">
+(function(){
+  const LOGO_URL = './assets/logo-sdc-comayagua.png?v=85';
+  window.SDC_LOGO_CLEAN_V84 = LOGO_URL;
+  window.SDC_LOGO_CLEAN_V85 = LOGO_URL;
+
+  const esc = (v)=>String(v ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const money = (n)=>'Lps. '+Math.round(Number(n)||0).toLocaleString('en-US');
+  const norm = (v)=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  function allProducts(){ try{return Array.isArray(products)?products:[]}catch(e){return []} }
+  function pid(p){return String(p?.id||p?.code||p?.name||'').replace(/'/g,"\\'");}
+  function productImg(p){ return String(p?.image || (Array.isArray(p?.gallery)&&p.gallery[0]) || '').trim(); }
+
+  function fixLogosV85(){
+    try{
+      document.querySelectorAll('img').forEach(img=>{
+        const ctx = ((img.className||'')+' '+(img.alt||'')+' '+(img.id||'')+' '+(img.closest('.brandbar,.topbar,.login-card,.hero,.receipt-card,.quote-card,.quotePreview,.v77-quote-card,.v84-quote-card,[class*="logo"],[class*="brand"],[class*="receipt"],[class*="quote"]')?.className||'')).toLowerCase();
+        if(ctx.includes('logo') || ctx.includes('brand') || ctx.includes('receipt') || ctx.includes('quote') || ctx.includes('hero') || ctx.includes('login')){
+          if(!img.closest('.pic,.v73-photo,.product-photo,.card-body,.v85-thumb')){
+            img.src = LOGO_URL;
+            img.removeAttribute('srcset');
+            img.classList.add('v85-logo-fixed');
+            img.loading = 'eager';
+            img.decoding = 'async';
+          }
+        }
+      });
+    }catch(e){}
+  }
+  window.fixLogosV85 = fixLogosV85;
+
+  let quickFilterV85 = 'all';
+  function rebuiltFilteredProductsV85(){
+    let list = allProducts().slice();
+    let q = '';
+    try{ q = norm(document.getElementById('search')?.value || ''); }catch(e){}
+    let cat = 'TODAS';
+    try{ cat = typeof activeCat !== 'undefined' ? String(activeCat||'TODAS') : 'TODAS'; }catch(e){}
+    if(cat && norm(cat) !== 'todas'){
+      const c = norm(cat);
+      list = list.filter(p => norm(p.category) === c || norm(p.cat) === c || norm(p.tags).includes(c));
+    }
+    if(q){
+      list = list.filter(p => [p.name,p.code,p.id,p.category,p.description,p.tags].some(x => norm(x).includes(q)));
+    }
+    if(quickFilterV85 === 'low') list = list.filter(p => (Number(p.stock)||0) > 0 && (Number(p.stock)||0) <= 5);
+    if(quickFilterV85 === 'out') list = list.filter(p => (Number(p.stock)||0) <= 0);
+    if(quickFilterV85 === 'cost') list = list.filter(p => (Number(p.cost)||0) <= 0);
+    return list;
+  }
+  try{ window.filteredProducts = filteredProducts = rebuiltFilteredProductsV85; }catch(e){ window.filteredProducts = rebuiltFilteredProductsV85; }
+
+  window.setQuickFilterV70 = function(type){
+    const t = String(type||'all').toLowerCase();
+    quickFilterV85 = (t.includes('low')||t.includes('bajo')) ? 'low' : (t.includes('out')||t.includes('agot')) ? 'out' : (t.includes('cost')||t.includes('costo')) ? 'cost' : 'all';
+    try{ if(quickFilterV85 === 'all') document.getElementById('search').value = ''; }catch(e){}
+    try{ render(); }catch(e){}
+    setTimeout(()=>{
+      const inv = [...document.querySelectorAll('h1,h2,h3,.section-title')].find(el=>/inventario/i.test(el.textContent||''));
+      (inv || document.querySelector('.grid,.products,.catalog,.inventory'))?.scrollIntoView({behavior:'smooth',block:'start'});
+    },80);
+  };
+
+  function showProductListV85(mode){
+    const ps = allProducts();
+    let title = 'Inventario';
+    let sub = 'Productos encontrados para revisar rápido.';
+    let list = ps;
+    if(mode === 'low'){
+      title = 'Bajo stock'; sub = 'Productos con 5 unidades o menos. Revisa reposición.';
+      list = ps.filter(p => (Number(p.stock)||0) > 0 && (Number(p.stock)||0) <= 5);
+    }else if(mode === 'cost'){
+      title = 'Productos sin costo'; sub = 'Agrega costo para calcular ganancia real.';
+      list = ps.filter(p => (Number(p.cost)||0) <= 0);
+    }else if(mode === 'profit'){
+      const sales = ps.reduce((a,p)=>a+(Number(p.price)||0)*(Number(p.stock)||0),0);
+      const cost = ps.reduce((a,p)=>a+(Number(p.cost)||0)*(Number(p.stock)||0),0);
+      const profit = sales-cost;
+      title = 'Ganancia estimada'; sub = 'Resumen calculado con el inventario actual.';
+      list = [];
+      document.querySelector('.v85-alert-modal')?.remove();
+      const modal = document.createElement('div');
+      modal.className='v85-alert-modal';
+      modal.innerHTML = `<div class="v85-alert-sheet"><div class="v85-alert-head"><div><h3 class="v85-alert-title">${esc(title)}</h3><div class="v85-alert-sub">${esc(sub)}</div></div><button class="v85-x" onclick="this.closest('.v85-alert-modal').remove()">×</button></div><div class="v85-profit-card"><div>Valor de venta</div><div class="v85-profit-big">${money(sales)}</div><div>Invertido: <b>${money(cost)}</b></div><div>Ganancia: <b>${money(profit)}</b></div></div><div style="height:12px"></div><button class="btn full" onclick="this.closest('.v85-alert-modal').remove(); window.setQuickFilterV70('all')">Ver inventario</button></div>`;
+      document.body.appendChild(modal);
+      return;
+    }
+    document.querySelector('.v85-alert-modal')?.remove();
+    const html = list.length ? list.map(p=>{
+      const img = productImg(p);
+      return `<div class="v85-item"><div class="v85-thumb">${img?`<img src="${esc(img)}" onerror="this.replaceWith(document.createTextNode('SD'))">`:'SD'}</div><div><div class="v85-name">${esc(p.name||'Producto')}</div><div class="v85-meta">${esc(p.code||p.id||'SDC')} · Stock ${Number(p.stock)||0} · Costo ${money(p.cost)} · Venta ${money(p.price)}</div></div><div class="v85-actions"><button onclick="this.closest('.v85-alert-modal').remove(); typeof openProduct==='function' && openProduct('${pid(p)}')">VER</button><button class="primary" onclick="this.closest('.v85-alert-modal').remove(); typeof openSale==='function' && openSale('${pid(p)}')">VENDER</button><button onclick="this.closest('.v85-alert-modal').remove(); typeof openProductForm==='function' && openProductForm('${pid(p)}')">EDITAR</button></div></div>`;
+    }).join('') : `<div class="v85-empty">No hay productos para esta revisión. Todo se mira bien.</div>`;
+    const modal = document.createElement('div');
+    modal.className='v85-alert-modal';
+    modal.innerHTML = `<div class="v85-alert-sheet"><div class="v85-alert-head"><div><h3 class="v85-alert-title">${esc(title)}</h3><div class="v85-alert-sub">${esc(sub)}</div></div><button class="v85-x" onclick="this.closest('.v85-alert-modal').remove()">×</button></div><div class="v85-list">${html}</div></div>`;
+    document.body.appendChild(modal);
+  }
+  window.showProductListV85 = showProductListV85;
+
+  function buttonText(el){return norm(el?.textContent||'');}
+  document.addEventListener('click', function(ev){
+    const btn = ev.target.closest('button,.btn,[role="button"],.qa');
+    if(!btn) return;
+    const txt = buttonText(btn);
+    const cardText = norm(btn.closest('.v72-alert,.alert,.notice,.qa,.v72-action,.quick-card,.panel-card,div')?.textContent || '');
+    if(txt === 'ver' && cardText.includes('bajo stock')){ ev.preventDefault(); ev.stopPropagation(); showProductListV85('low'); return; }
+    if(txt === 'revisar' && (cardText.includes('sin costo') || cardText.includes('costo'))){ ev.preventDefault(); ev.stopPropagation(); showProductListV85('cost'); return; }
+    if((txt === 'detalle' || txt === 'detalles') && cardText.includes('ganancia')){ ev.preventDefault(); ev.stopPropagation(); showProductListV85('profit'); return; }
+  }, true);
+
+  function polishOldAlertButtonsV85(){
+    [...document.querySelectorAll('button,.btn,[role="button"]')].forEach(b=>{
+      const t=buttonText(b), c=norm(b.closest('div,section,article')?.textContent||'');
+      if((t==='ver'&&c.includes('bajo stock'))||(t==='revisar'&&c.includes('sin costo'))||(t==='detalle'&&c.includes('ganancia'))){
+        b.style.cursor='pointer';
+        b.title='Tocar para revisar';
+      }
+    });
+  }
+
+  const oldRenderV85 = window.render;
+  if(typeof oldRenderV85 === 'function'){
+    window.render = render = function(){
+      const r = oldRenderV85.apply(this, arguments);
+      requestAnimationFrame(()=>{ fixLogosV85(); polishOldAlertButtonsV85(); });
+      return r;
+    };
+  }
+  document.addEventListener('DOMContentLoaded', ()=>{ fixLogosV85(); polishOldAlertButtonsV85(); setTimeout(fixLogosV85,450); setTimeout(polishOldAlertButtonsV85,700); });
+  setInterval(fixLogosV85, 1600);
+  setTimeout(()=>{ try{render()}catch(e){fixLogosV85();} }, 300);
+})();
+</script>
+
+
+
+<!-- SDC V86: etiquetas de producto corregidas para móvil -->
+<style id="sdc-v86-etiquetas-productos">
+  /* Quita la etiqueta duplicada que se montaba encima de la categoría.
+     El estado Bajo stock / Disponible ya se muestra sobre la imagen. */
+  .card > .v72-card-badge,
+  .v73-card > .v72-card-badge{
+    display:none !important;
+    visibility:hidden !important;
+    opacity:0 !important;
+    pointer-events:none !important;
+  }
+
+  /* Fila superior limpia: categoría a la izquierda y código a la derecha. */
+  .card .v73-card-top,
+  .v73-card .v73-card-top{
+    position:relative !important;
+    z-index:10 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:10px !important;
+    width:100% !important;
+    min-height:38px !important;
+    margin:0 0 12px !important;
+    padding:0 !important;
+    flex-wrap:nowrap !important;
+    overflow:visible !important;
+  }
+
+  .card .v73-cat-pill,
+  .v73-card .v73-cat-pill{
+    position:static !important;
+    flex:0 1 auto !important;
+    max-width:calc(100% - 120px) !important;
+    min-width:0 !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    height:34px !important;
+    padding:0 15px !important;
+    border-radius:999px !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    background:linear-gradient(135deg, rgba(30,255,180,.20), rgba(0,229,255,.10)) !important;
+    border:1px solid rgba(32,255,190,.35) !important;
+    color:#36ffbd !important;
+    box-shadow:0 10px 24px rgba(0,229,255,.10) !important;
+    font-size:11px !important;
+    font-weight:1000 !important;
+    letter-spacing:.09em !important;
+    text-transform:uppercase !important;
+  }
+
+  .card .v73-code-pill,
+  .v73-card .v73-code-pill{
+    position:static !important;
+    flex:0 0 auto !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    height:34px !important;
+    min-width:92px !important;
+    padding:0 13px !important;
+    border-radius:999px !important;
+    white-space:nowrap !important;
+    background:rgba(255,255,255,.075) !important;
+    border:1px solid rgba(255,255,255,.14) !important;
+    color:#dff8ff !important;
+    box-shadow:0 10px 22px rgba(0,0,0,.20) !important;
+    font-size:11px !important;
+    font-weight:1000 !important;
+    letter-spacing:.10em !important;
+    text-transform:uppercase !important;
+  }
+
+  /* Separa mejor la imagen para que ninguna etiqueta tape otra. */
+  .card .v73-image-shell,
+  .v73-card .v73-image-shell{
+    position:relative !important;
+    z-index:1 !important;
+    margin-top:2px !important;
+  }
+
+  .card .v73-stock-pill,
+  .v73-card .v73-stock-pill{
+    top:14px !important;
+    left:14px !important;
+    max-width:calc(100% - 28px) !important;
+    z-index:5 !important;
+  }
+
+  @media(max-width:480px){
+    .card .v73-card-top,
+    .v73-card .v73-card-top{
+      min-height:34px !important;
+      margin-bottom:10px !important;
+      gap:8px !important;
+    }
+    .card .v73-cat-pill,
+    .v73-card .v73-cat-pill{
+      height:31px !important;
+      max-width:calc(100% - 104px) !important;
+      padding:0 12px !important;
+      font-size:10px !important;
+      letter-spacing:.075em !important;
+    }
+    .card .v73-code-pill,
+    .v73-card .v73-code-pill{
+      height:31px !important;
+      min-width:86px !important;
+      padding:0 10px !important;
+      font-size:10px !important;
+      letter-spacing:.075em !important;
+    }
+    .card .v73-stock-pill,
+    .v73-card .v73-stock-pill{
+      top:12px !important;
+      left:12px !important;
+      transform:none !important;
+    }
+  }
+</style>
+<script id="sdc-v86-fix-etiquetas">
+  (function(){
+    function limpiarEtiquetasDuplicadas(){
+      document.querySelectorAll('.card > .v72-card-badge, .v73-card > .v72-card-badge').forEach(function(el){
+        el.remove();
+      });
+      document.querySelectorAll('.v73-card-top').forEach(function(row){
+        row.style.position = 'relative';
+        row.style.zIndex = '10';
+      });
+    }
+    limpiarEtiquetasDuplicadas();
+    document.addEventListener('DOMContentLoaded', limpiarEtiquetasDuplicadas);
+    window.addEventListener('load', limpiarEtiquetasDuplicadas);
+    var veces = 0;
+    var t = setInterval(function(){
+      limpiarEtiquetasDuplicadas();
+      veces += 1;
+      if(veces > 20) clearInterval(t);
+    }, 350);
+  })();
+</script>
+
 </body>
 </html>

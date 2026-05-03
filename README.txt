@@ -1,5 +1,5 @@
-SD COMAYAGUA V75
+SD COMAYAGUA V76
 
-Cambios: editor de productos rediseñado, vista previa, costo/precio/stock, métricas automáticas, galería de imágenes, promociones por cantidad, duplicar y eliminar.
+Correccion: editor de productos seguro para celular. Los botones ya no tapan los campos, mejor scroll, mejor acomodo móvil y campos más compactos.
 
 Sube index.html y .nojekyll a GitHub Pages.

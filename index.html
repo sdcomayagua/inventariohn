@@ -7426,5 +7426,322 @@
 })();
 </script>
 
+
+<style id="v76-editor-mobile-safe-css">
+  /* V76: editor seguro para celular. Evita que los botones tapen campos y mejora el scroll */
+  #formModal.v75-editor-modal .sheet{
+    max-height:92vh!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+
+  #formModal.v75-editor-modal .sheet-body{
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    scroll-padding-bottom:140px!important;
+  }
+
+  /* En pantalla grande los botones ya no flotan encima de los campos */
+  .v75-actions{
+    position:relative!important;
+    bottom:auto!important;
+    margin-top:8px!important;
+  }
+
+  .v75-chipbar{
+    max-width:100%!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    padding-bottom:4px!important;
+  }
+
+  .v75-cat-chip{
+    white-space:nowrap!important;
+  }
+
+  .v76-editor-note{
+    display:none;
+    margin-top:8px;
+    padding:10px 12px;
+    border-radius:16px;
+    background:rgba(0,229,255,.07);
+    border:1px solid rgba(0,229,255,.18);
+    color:#bfefff;
+    font-size:10.5px;
+    font-weight:850;
+    line-height:1.35;
+  }
+
+  @media(max-width:620px){
+    #formModal.v75-editor-modal .sheet{
+      width:100%!important;
+      height:auto!important;
+      max-height:calc(100dvh - 18px)!important;
+      border-radius:24px 24px 0 0!important;
+      margin-top:auto!important;
+    }
+
+    #formModal.v75-editor-modal .sheet-head{
+      min-height:62px!important;
+      padding:12px 14px!important;
+      flex:0 0 auto!important;
+    }
+
+    #formModal.v75-editor-modal .sheet-head h2,
+    #formModal.v75-editor-modal .sheet-head .title{
+      font-size:18px!important;
+      line-height:1!important;
+    }
+
+    #formModal.v75-editor-modal .sheet-body{
+      flex:1 1 auto!important;
+      max-height:calc(100dvh - 88px)!important;
+      padding:11px 11px calc(128px + env(safe-area-inset-bottom))!important;
+      overscroll-behavior:contain!important;
+    }
+
+    .v75-editor{
+      gap:11px!important;
+    }
+
+    .v75-editor-hero{
+      grid-template-columns:78px minmax(0,1fr)!important;
+      gap:10px!important;
+      padding:10px!important;
+      border-radius:20px!important;
+    }
+
+    .v75-preview{
+      width:78px!important;
+      height:78px!important;
+      border-radius:19px!important;
+      font-size:19px!important;
+    }
+
+    .v75-editor-title .tag{
+      min-height:24px!important;
+      max-width:100%!important;
+      padding:0 8px!important;
+      font-size:7.7px!important;
+      overflow:hidden!important;
+      text-overflow:ellipsis!important;
+      white-space:nowrap!important;
+    }
+
+    .v75-editor-title h3{
+      font-size:16.5px!important;
+      line-height:1.05!important;
+      margin:7px 0 4px!important;
+      word-break:break-word!important;
+    }
+
+    .v75-editor-title p{
+      font-size:10px!important;
+      line-height:1.25!important;
+    }
+
+    .v75-section{
+      padding:10px!important;
+      border-radius:20px!important;
+    }
+
+    .v75-section-head{
+      margin-bottom:8px!important;
+      align-items:flex-start!important;
+    }
+
+    .v75-section-head b{
+      font-size:10.5px!important;
+      line-height:1.1!important;
+    }
+
+    .v75-section-head small{
+      display:none!important;
+    }
+
+    .v75-grid-2,
+    .v75-grid-3{
+      grid-template-columns:1fr!important;
+      gap:8px!important;
+    }
+
+    .v75-editor .field label{
+      font-size:8.3px!important;
+      margin-bottom:5px!important;
+    }
+
+    .v75-editor input,
+    .v75-editor textarea,
+    .v75-editor select{
+      min-height:46px!important;
+      border-radius:16px!important;
+      font-size:13.5px!important;
+      padding-left:12px!important;
+      padding-right:12px!important;
+    }
+
+    .v75-editor textarea{
+      min-height:84px!important;
+    }
+
+    .v75-chipbar{
+      display:flex!important;
+      gap:7px!important;
+      margin-left:-2px!important;
+      margin-right:-2px!important;
+    }
+
+    .v75-cat-chip{
+      min-height:34px!important;
+      padding:0 10px!important;
+      font-size:8.4px!important;
+      border-radius:13px!important;
+    }
+
+    .v75-metrics{
+      grid-template-columns:1fr 1fr!important;
+      gap:7px!important;
+    }
+
+    .v75-metric{
+      min-height:54px!important;
+      padding:8px!important;
+      border-radius:16px!important;
+    }
+
+    .v75-metric span{
+      font-size:7.5px!important;
+    }
+
+    .v75-metric b{
+      font-size:12.2px!important;
+    }
+
+    .v75-stepper{
+      grid-template-columns:40px minmax(0,1fr) 40px!important;
+    }
+
+    .v75-stepper button{
+      width:40px!important;
+      height:40px!important;
+      border-radius:14px!important;
+    }
+
+    .v75-img-row{
+      grid-template-columns:46px minmax(0,1fr) 38px!important;
+      gap:7px!important;
+      padding:7px!important;
+      border-radius:16px!important;
+    }
+
+    .v75-img-mini{
+      width:46px!important;
+      height:46px!important;
+      border-radius:14px!important;
+      font-size:9px!important;
+    }
+
+    .v75-remove{
+      width:38px!important;
+      height:38px!important;
+      border-radius:13px!important;
+      font-size:17px!important;
+    }
+
+    .v75-promo-row{
+      grid-template-columns:1fr 1fr 38px!important;
+      gap:7px!important;
+      padding:8px!important;
+      border-radius:16px!important;
+    }
+
+    .v75-add-btn{
+      min-height:42px!important;
+      border-radius:15px!important;
+      font-size:9.7px!important;
+    }
+
+    /* En celular sí quedan abajo visibles, pero sin tapar campos */
+    .v75-actions{
+      position:sticky!important;
+      bottom:calc(6px + env(safe-area-inset-bottom))!important;
+      z-index:9!important;
+      grid-template-columns:1fr!important;
+      gap:7px!important;
+      margin:10px 0 0!important;
+      padding:9px!important;
+      border-radius:20px!important;
+      box-shadow:0 -16px 34px rgba(0,0,0,.36), 0 0 24px rgba(0,229,255,.10)!important;
+    }
+
+    .v75-actions .btn{
+      min-height:46px!important;
+      border-radius:16px!important;
+      font-size:10px!important;
+    }
+
+    .v76-editor-note{
+      display:block!important;
+    }
+  }
+
+  @media(max-width:380px){
+    .v75-editor-hero{
+      grid-template-columns:1fr!important;
+      text-align:center!important;
+    }
+
+    .v75-preview{
+      margin:auto!important;
+    }
+
+    .v75-editor-title .tag{
+      margin:auto!important;
+    }
+
+    .v75-metrics{
+      grid-template-columns:1fr!important;
+    }
+
+    .v75-promo-row{
+      grid-template-columns:1fr!important;
+    }
+
+    .v75-promo-row .v75-remove{
+      width:100%!important;
+    }
+  }
+</style>
+
+<script id="v76-editor-mobile-safe-js">
+(function(){
+  function addMobileEditorNoteV76(){
+    const editor = document.querySelector("#formModal .v75-editor");
+    if(!editor || document.querySelector(".v76-editor-note")) return;
+
+    const note = document.createElement("div");
+    note.className = "v76-editor-note";
+    note.textContent = "Editor optimizado para celular: desplázate hacia abajo para revisar imágenes, promociones, descripción y guardar sin que los botones tapen la información.";
+    const hero = editor.querySelector(".v75-editor-hero");
+    if(hero) hero.insertAdjacentElement("afterend", note);
+  }
+
+  const oldOpenV76 = window.openProductForm;
+  if(typeof oldOpenV76 === "function"){
+    window.openProductForm = function(){
+      const result = oldOpenV76.apply(this, arguments);
+      setTimeout(addMobileEditorNoteV76, 80);
+      setTimeout(addMobileEditorNoteV76, 350);
+      return result;
+    };
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(addMobileEditorNoteV76, 900);
+  });
+})();
+</script>
+
 </body>
 </html>

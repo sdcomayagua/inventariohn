@@ -68,7 +68,7 @@ const COMAYAGUA_SHIPPING_OPTIONS = [
 // Acceso básico para frontend estático en GitHub Pages.
 // Cambia ADMIN_PASS antes de subir si deseas usar una clave propia.
 const ADMIN_USER = "sdcomayagua";
-const ADMIN_PASS = "CAMBIAR_AQUI_MI_CONTRASEÑA";
+const ADMIN_PASS = "199311";
 
 const USERS = {
   [ADMIN_USER]: {

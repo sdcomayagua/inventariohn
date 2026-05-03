@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SDC DASHBOARD GAMER | Inventario</title>
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="description" content="Panel móvil de inventario, ventas y comprobantes de SDCOMAYAGUA.">
+  <meta name="theme-color" content="#03070c">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700;800&family=Rajdhani:wght@500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="stylesheet" href="style-v54-compacto-mobile.css?v=54">
+  <link rel="stylesheet" href="style-v55-pro-github.css?v=55">
+  <link rel="stylesheet" href="style-v56-gamer-ops.css?v=56">
+  <link rel="stylesheet" href="style-v57-command-header.css?v=57">
+  <link rel="stylesheet" href="style-v58-dashboard-gamer.css?v=58">
+</head>
+<body class="theme-light app-page v56-gamer-ops v35-premium-compacto v41-estable v43-safe-app v45-admin-panel v48-wow v48-pos-wow v49-wow-mobile v50-mobile-wow v54-compacto-mobile v58-dashboard">
+  <div class="app-shell ultra-shell">
+    <aside class="desktop-sidebar glass-panel">
+      <div class="sidebar-top">
+        <p class="eyebrow">Panel profesional</p>
+        <h2 class="sidebar-title">SDCOMAYAGUA</h2>
+        
+      </div>
+
+      <div class="sidebar-block">
+        <button class="sidebar-nav active" type="button" onclick="scrollToSection('productos')">Catálogo</button>
+        <button class="sidebar-nav" type="button" onclick="scrollToSection('ventas')">Ventas</button>
+        <button class="sidebar-nav" type="button" onclick="scrollToSection('movimientos')">Actividad</button>
+        <button class="sidebar-nav" type="button" onclick="scrollToSection('comprobantes')">Comprobantes</button>
+        <button class="sidebar-nav" type="button" onclick="toggleSummaryPanel()">Resumen</button>
+        <button class="sidebar-nav" type="button" onclick="toggleFiltersPanel()">Filtros</button>
+        <button class="sidebar-nav" type="button" onclick="invOpenModal(false)">Agregar producto</button>
+        <button class="sidebar-nav accent" type="button" onclick="openSaleModal()">Registrar venta</button>
+      </div>
+
+      <div class="sidebar-mini-stats">
+        <article class="sidebar-stat">
+          <span>Productos</span>
+          <strong id="sidebar-total-products">0</strong>
+        </article>
+        <article class="sidebar-stat">
+          <span>Ventas hoy</span>
+          <strong id="sidebar-sales-today">Lps. 0.00</strong>
+        </article>
+        <article class="sidebar-stat">
+          <span>Ganancia hoy</span>
+          <strong id="sidebar-profit-today">Lps. 0.00</strong>
+        </article>
+      </div>
+
+      <div class="sidebar-footer-note">
+        <span class="sync-dot"></span>
+        <small id="sidebar-sync-note">Listo para gestionar</small>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="app-header glass-panel cockpit-v58" aria-label="Panel principal gamer dashboard">
+        <div class="cockpit-v58__statusbar">
+          <div class="cockpit-v58__status-left">
+            <span class="cockpit-v58__signal"></span>
+            <span class="cockpit-v58__micro">SD COMAYAGUA · CONTROL PRIVADO</span>
+          </div>
+          <div class="header-tools header-tools-wide cockpit-v58__tools">
+            <span class="network-pill" id="network-pill">En línea</span>
+            <button class="icon-btn" id="install-btn" style="display:none;" onclick="installApp()" aria-label="Instalar app">⇣</button>
+            <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema">◐</button>
+            <button class="icon-btn cockpit-v58__logout" onclick="invLogout()" aria-label="Cerrar sesión">⎋</button>
+          </div>
+        </div>
+
+        <div class="cockpit-v58__grid">
+          <section class="cockpit-v58__brand">
+            <div class="cockpit-v58__brand-top">
+              <div class="cockpit-v58__logo-wrap">
+                <div class="user-chip cockpit-v58__logo" id="inv-avatar">SD</div>
+                <span class="cockpit-v58__logo-pulse"></span>
+              </div>
+              <div class="cockpit-v58__brand-copy">
+                <p class="eyebrow cockpit-v58__eyebrow">Modo operador activo</p>
+                <h1 class="hero-title" id="inv-store-name">SD COMAYAGUA</h1>
+                <p class="hero-subtitle" id="inv-welcome">Panel privado de ventas, inventario y facturación.</p>
+              </div>
+            </div>
+
+            <div class="cockpit-v58__operator-card">
+              <div>
+                <span>Operador</span>
+                <strong id="inv-user-name">Gabriel</strong>
+              </div>
+              <div>
+                <span>Rol</span>
+                <strong id="inv-role-label">Administrador</strong>
+              </div>
+              <div>
+                <span>Modo</span>
+                <strong>Ventas</strong>
+              </div>
+            </div>
+
+            <div class="cockpit-v58__quick-actions">
+              <button class="btn-primary cockpit-v58__btn" type="button" onclick="openSaleModal()">Nueva venta</button>
+              <button class="btn-secondary cockpit-v58__btn" type="button" onclick="invOpenModal(false)">Agregar producto</button>
+              <button class="btn-ghost cockpit-v58__btn" type="button" onclick="window.print()">Imprimir</button>
+            </div>
+          </section>
+
+          <section class="cockpit-v58__radar" aria-label="Resumen rápido">
+            <div class="cockpit-v58__radar-head">
+              <div>
+                <p class="eyebrow cockpit-v58__eyebrow">Dashboard</p>
+                <h2>Centro de control</h2>
+              </div>
+              <span class="cockpit-v58__tag">LIVE</span>
+            </div>
+
+            <div class="cockpit-v58__scan">
+              <span></span>
+            </div>
+
+            <div class="cockpit-v58__metric-grid money-stats-v52" aria-label="Resumen de inventario">
+              <div class="money-stat-v52 cockpit-v58__metric">
+                <span>Productos</span>
+                <strong id="stat-products-v52">0</strong>
+              </div>
+              <div class="money-stat-v52 cockpit-v58__metric">
+                <span>Invertido</span>
+                <strong id="stat-cost-v52">Lps. 0.00</strong>
+              </div>
+              <div class="money-stat-v52 cockpit-v58__metric">
+                <span>Valor venta</span>
+                <strong id="stat-value-v52">Lps. 0.00</strong>
+              </div>
+              <div class="money-stat-v52 profit cockpit-v58__metric">
+                <span>Ganancia</span>
+                <strong id="stat-profit-v52">Lps. 0.00</strong>
+              </div>
+            </div>
+          </section>
+        </div>
+      </header>
+
+      <section class="top-quickbar" id="productos">
+        <div class="search-card glass-panel compact-search luxe-search-card">
+          <div class="search-shell">
+            <span class="search-icon">⌕</span>
+            <input id="inv-search" class="search-input" placeholder="Buscar producto o código">
+          </div>
+          <div class="quick-stats-row">
+            <button type="button" class="mini-stat-chip" onclick="toggleSummaryPanel()">
+              <strong id="quick-total-products">0</strong>
+              <small>productos</small>
+            </button>
+            <button type="button" class="mini-stat-chip" onclick="setQuickStockFilter('in')">
+              <strong id="quick-in-stock">0</strong>
+              <small>con stock</small>
+            </button>
+            <button type="button" class="mini-stat-chip danger" onclick="setQuickStockFilter('out')">
+              <strong id="quick-out-stock">0</strong>
+              <small>agotados</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="action-scroller compact-actions luxe-actions-grid">
+          <button class="action-chip active" id="btn-quick-product" type="button">＋ Producto</button>
+          <button class="action-chip" id="btn-quick-sale" type="button">🧾 Vender</button>
+          <button class="action-chip" type="button" onclick="toggleFiltersPanel()">Filtros</button>
+          <button class="action-chip" type="button" onclick="toggleSummaryPanel()">Resumen</button>
+          <button class="action-chip" type="button" onclick="loadProducts(true)">Actualizar</button>
+          <button class="action-chip" type="button" onclick="clearFilters()">Limpiar</button>
+          <button class="action-chip" type="button" onclick="exportInventoryBackup()">Respaldo</button>
+          <button class="action-chip" type="button" onclick="triggerImportBackup()">Importar</button>
+          <input id="inventory-import-input" type="file" accept="application/json" hidden onchange="importInventoryBackup(this)">
+        </div>
+      </section>
+
+      <section class="catalog-section catalog-priority">
+        <div class="section-head enhanced-section-head">
+          <div>
+            <p class="section-kicker">Catálogo</p>
+            <h3 class="section-title">Productos</h3>
+            <p class="section-caption">Toca una tarjeta para ver detalles o vender.</p>
+          </div>
+          <span class="results-count" id="results-count">0 resultados</span>
+        </div>
+
+        <div class="quick-categories" id="quick-categories"></div>
+        <div class="products-list" id="inv-products"></div>
+
+        <div class="empty-state glass-panel" id="inv-empty" style="display:none;">
+          <div class="empty-icon">◌</div>
+          <h3>Sin productos</h3>
+          
+        <p>Agrega tu primer producto o importa un respaldo para iniciar.</p>
+          <button class="btn-primary" type="button" onclick="invOpenModal(false)">Agregar producto</button>
+          </div>
+
+        <div class="pagination" id="inv-pagination"></div>
+      </section>
+
+      <section class="ops-grid-two">
+        <section class="glass-panel ops-card" id="ventas">
+          <div class="section-head enhanced-section-head section-tight-head">
+            <div>
+              <p class="section-kicker">Ventas</p>
+              <h3 class="section-title">Ventas</h3>
+              <p class="section-caption">Resumen comercial rápido.</p>
+            </div>
+            <button class="btn-secondary section-inline-btn" type="button" onclick="openSaleModal()">Nueva venta</button>
+          </div>
+
+          <div class="sales-summary-grid">
+            <article class="sales-stat glass-panel">
+              <span>Ventas hoy</span>
+              <strong id="sales-today-count">0</strong>
+            </article>
+            <article class="sales-stat glass-panel">
+              <span>Total hoy</span>
+              <strong id="sales-today-total">Lps. 0.00</strong>
+            </article>
+            <article class="sales-stat glass-panel">
+              <span>Ganancia hoy</span>
+              <strong id="sales-today-profit">Lps. 0.00</strong>
+            </article>
+            <article class="sales-stat glass-panel">
+              <span>Total mes</span>
+              <strong id="sales-month-total">Lps. 0.00</strong>
+            </article>
+          </div>
+
+          <div class="panel-list" id="sales-list"></div>
+        </section>
+
+        <section class="glass-panel ops-card collapsible-card collapsed" id="movimientos" aria-hidden="false">
+          <div class="section-head enhanced-section-head section-tight-head">
+            <div>
+              <p class="section-kicker">Movimientos</p>
+              <h3 class="section-title">Movimientos</h3>
+              <p class="section-caption">Trazabilidad reciente del panel.</p>
+            </div>
+            <div class="section-head-actions">
+              <span class="results-count" id="movement-count-label">0 movimientos</span>
+              <button class="btn-secondary section-inline-btn section-inline-btn-sm" type="button" id="movement-toggle-btn" onclick="toggleMovementPanel()">Ver movimientos</button>
+            </div>
+          </div>
+
+          <div class="panel-list" id="movement-list" hidden></div>
+        </section>
+      </section>
+
+      <section class="glass-panel ops-card" id="comprobantes">
+        <div class="section-head enhanced-section-head section-tight-head">
+          <div>
+            <p class="section-kicker">Comprobantes</p>
+            <h3 class="section-title">Comprobantes</h3>
+            <p class="section-caption">Documentos generados recientemente.</p>
+          </div>
+        </div>
+
+        <div class="panel-list" id="receipts-list"></div>
+      </section>
+
+      <section class="history-card glass-panel collapsed" id="activity-card" aria-hidden="false">
+        <div class="section-head enhanced-section-head section-tight-head">
+          <div>
+            <p class="section-kicker">Actividad</p>
+            <h3 class="section-title">Actividad</h3>
+            <p class="section-caption">Eventos recientes del sistema y sincronización.</p>
+          </div>
+          <button class="btn-secondary section-inline-btn section-inline-btn-sm" type="button" id="activity-toggle-btn" onclick="toggleActivityPanel()">Ver actividad</button>
+        </div>
+        <ul id="inv-history-list" hidden></ul>
+      </section>
+
+      <button type="button" class="floating-top-btn" id="floating-top-btn" onclick="scrollToTop()" aria-label="Subir arriba">↑</button>
+
+      <nav class="bottom-dock glass-panel" aria-label="Acciones rápidas">
+        <button type="button" onclick="scrollToSection('productos')">
+          <span>⌕</span>
+          <small>Catálogo</small>
+        </button>
+        <button type="button" class="dock-primary" onclick="openSaleModal()">
+          <span>🧾</span>
+          <small>Vender</small>
+        </button>
+        <button type="button" onclick="invOpenModal(false)">
+          <span>＋</span>
+          <small>Producto</small>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <div class="sheet-backdrop hidden" id="summary-panel" onclick="if(event.target === this) closeSheets()">
+    <section class="sheet-panel glass-panel">
+      <div class="sheet-grab"></div>
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">Resumen general</p>
+          <h2 class="overview-title">Resumen</h2>
+        </div>
+        <button class="icon-btn" type="button" onclick="closeSheets()" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="sheet-scroll">
+        <div class="overview-row compact-overview-row">
+          <div>
+            
+          </div>
+          <div class="sync-pill">
+            <span class="sync-dot"></span>
+            <span id="sync-status">Sincronizado</span>
+          </div>
+        </div>
+        <div class="overview-tags">
+          <span class="tag-pill" id="inv-role">Administrador</span>
+          <span class="tag-pill muted" id="sync-time-pill">Actualizado ahora</span>
+        </div>
+
+        <section class="stats-grid compact-stats-grid">
+          <article class="stat-card glass-panel"><span>Total productos</span><strong id="dash-total-products">0</strong></article>
+          <article class="stat-card glass-panel"><span>Unidades</span><strong id="dash-total-qty">0</strong></article>
+          <article class="stat-card glass-panel"><span>Disponibles</span><strong id="dash-in-stock">0</strong></article>
+          <article class="stat-card glass-panel"><span>Agotados</span><strong id="dash-out-count">0</strong></article>
+          <article class="stat-card glass-panel"><span>Bajo stock</span><strong id="dash-low-stock">0</strong></article>
+          <article class="stat-card glass-panel"><span>Categorías</span><strong id="dash-category-count">0</strong></article>
+          <article class="stat-card glass-panel"><span>Precio medio</span><strong id="dash-avg-price">Lps. 0.00</strong></article>
+          <article class="stat-card glass-panel"><span>Ventas hoy</span><strong id="dash-sales-today">Lps. 0.00</strong></article>
+          <article class="stat-card glass-panel"><span>Ganancia hoy</span><strong id="dash-sales-profit">Lps. 0.00</strong></article>
+          <article class="stat-card glass-panel"><span>Ventas del mes</span><strong id="dash-sales-month">Lps. 0.00</strong></article>
+          <article class="stat-card glass-panel"><span>Movimientos</span><strong id="dash-movements">0</strong></article>
+          <article class="stat-card glass-panel full-width"><span>Valor inventario</span><strong id="dash-total-value">Lps. 0.00</strong></article>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <div class="sheet-backdrop hidden" id="filters-panel" onclick="if(event.target === this) closeSheets()">
+    <section class="sheet-panel glass-panel">
+      <div class="sheet-grab"></div>
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">Ajustes de vista</p>
+          <h2 class="overview-title">Filtros</h2>
+        </div>
+        <button class="icon-btn" type="button" onclick="closeSheets()" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="sheet-scroll">
+        <section class="filter-grid sheet-filter-grid">
+          <div class="field-group inline">
+            <label for="inv-filter">Categoría</label>
+            <select id="inv-filter"><option value="all">Todas</option></select>
+          </div>
+          <div class="field-group inline">
+            <label for="inv-stock-filter">Stock</label>
+            <select id="inv-stock-filter">
+              <option value="all">Todos</option>
+              <option value="in">Con stock</option>
+              <option value="low">Bajo stock</option>
+              <option value="out">Agotados</option>
+            </select>
+          </div>
+          <div class="field-group inline">
+            <label for="inv-min-price">Precio mínimo</label>
+            <input id="inv-min-price" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field-group inline">
+            <label for="inv-max-price">Precio máximo</label>
+            <input id="inv-max-price" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field-group inline">
+            <label for="inv-sort">Ordenar por</label>
+            <select id="inv-sort">
+              <option value="featured">Nombre A-Z</option>
+              <option value="name">Nombre A-Z</option>
+              <option value="priceAsc">Precio menor</option>
+              <option value="priceDesc">Precio mayor</option>
+              <option value="qtyDesc">Más stock</option>
+              <option value="qtyAsc">Menos stock</option>
+            </select>
+          </div>
+          <div class="field-group inline">
+            <label for="inv-items-per-page">Por página</label>
+            <select id="inv-items-per-page">
+              <option value="8" selected>8</option>
+              <option value="12">12</option>
+              <option value="24">24</option>
+            </select>
+          </div>
+        </section>
+        <div class="sheet-actions-row">
+          <button class="btn-primary" type="button" onclick="closeSheets()">Aplicar y volver</button>
+          <button class="btn-secondary" type="button" onclick="clearFilters(); closeSheets();">Limpiar filtros</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="inv-modal">
+    <div class="modal-content modal-form glass-panel">
+      <div class="modal-head sticky-head">
+        <div>
+          <p class="eyebrow">Productos</p>
+          <h2 id="inv-modal-title">Nuevo producto</h2>
+        </div>
+        <button class="icon-btn" onclick="invCloseModal()" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="modal-scroll-body">
+        <div class="field-group">
+          <label for="inv-name">Nombre del producto</label>
+          <input id="inv-name" placeholder="Ej: Audífonos Bluetooth">
+        </div>
+
+        <div class="form-grid form-grid-3">
+          <div class="field-group inline">
+            <label for="inv-price">Precio de venta</label>
+            <input id="inv-price" type="number" step="0.01" min="0" placeholder="0.00">
+          </div>
+          <div class="field-group inline">
+            <label for="inv-cost">Costo</label>
+            <input id="inv-cost" type="number" step="0.01" min="0" placeholder="0.00">
+          </div>
+          <div class="field-group inline">
+            <label for="inv-qty">Cantidad</label>
+            <input id="inv-qty" type="number" min="0" placeholder="0">
+          </div>
+        </div>
+
+        <section id="promo-editor" class="promo-editor-v52" aria-label="Promociones por cantidad">
+          <button type="button" id="promo-toggle" class="promo-toggle-v52">
+            <span>Promociones por cantidad</span>
+            <small id="promo-count-label">Opcional</small>
+          </button>
+          <div id="promo-panel" class="promo-panel-v52" hidden>
+            <p class="promo-help-v52">Agrega la cantidad y el total que cobrará el cliente. Ejemplo: 3 pares = Lps. 69. Si el cliente compra más que la última cantidad, se mantiene el precio unitario de la última promoción.</p>
+            <div class="promo-head-v52">
+              <span>Cantidad</span>
+              <span>Total a cobrar</span>
+            </div>
+            <div id="promo-list" class="promo-list-v52"></div>
+            <button type="button" id="promo-add-row" class="promo-add-row-v52">+ Agregar promoción</button>
+          </div>
+        </section>
+
+        <div class="form-grid">
+          <div class="field-group inline">
+            <label for="inv-category">Categoría</label>
+            <input id="inv-category" placeholder="Ej: Mouse, Consola, Monitor">
+          </div>
+          <div class="field-group inline">
+            <label for="inv-sku">SKU / referencia</label>
+            <input id="inv-sku" placeholder="Ej: GM-001">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="inv-notes">Notas internas</label>
+          <input id="inv-notes" placeholder="Ej: Garantía, proveedor, color, observación interna">
+        </div>
+
+        <div class="field-group">
+          <label>Imágenes del producto</label>
+          <p class="field-help" id="image-helper-text">Puedes subir hasta 5 fotos. La primera será la portada. También puedes arrastrarlas y soltarlas directamente.</p>
+          <div class="upload-tip-bar">
+            <span>Portada automática</span>
+            <span>Compresión móvil</span>
+            <span>Drag &amp; drop</span>
+          </div>
+          <div class="image-upload-box pro-upload-box">
+            <label class="image-slot" id="slot1"><span class="img-label">Imagen 1</span><span class="upload-btn">Seleccionar foto</span><span class="img-hint" id="hint1">Sin archivo</span><input id="inv-img1" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev1')"><img id="prev1" class="img-preview" alt="Preview 1"></label>
+            <label class="image-slot" id="slot2"><span class="img-label">Imagen 2</span><span class="upload-btn">Seleccionar foto</span><span class="img-hint" id="hint2">Sin archivo</span><input id="inv-img2" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev2')"><img id="prev2" class="img-preview" alt="Preview 2"></label>
+            <label class="image-slot" id="slot3"><span class="img-label">Imagen 3</span><span class="upload-btn">Seleccionar foto</span><span class="img-hint" id="hint3">Sin archivo</span><input id="inv-img3" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev3')"><img id="prev3" class="img-preview" alt="Preview 3"></label>
+            <label class="image-slot" id="slot4"><span class="img-label">Imagen 4</span><span class="upload-btn">Seleccionar foto</span><span class="img-hint" id="hint4">Sin archivo</span><input id="inv-img4" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev4')"><img id="prev4" class="img-preview" alt="Preview 4"></label>
+            <label class="image-slot" id="slot5"><span class="img-label">Imagen 5</span><span class="upload-btn">Seleccionar foto</span><span class="img-hint" id="hint5">Sin archivo</span><input id="inv-img5" type="file" accept="image/*" onchange="invPreviewImage(this, 'prev5')"><img id="prev5" class="img-preview" alt="Preview 5"></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions sticky-actions">
+        <button class="btn-primary" id="save-product-btn" onclick="invSaveProduct()">Guardar producto</button>
+        <button class="btn-secondary" onclick="invCloseModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="detail-modal">
+    <div class="modal-content modal-viewer glass-panel">
+      <div class="modal-head sticky-head">
+        <div>
+          <p class="eyebrow">Producto</p>
+          <h2 id="detail-name">Producto</h2>
+        </div>
+        <button class="icon-btn" onclick="closeDetailModal()" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="detail-gallery">
+        <div class="detail-hero">
+          <img id="detail-main-img" class="detail-main-img" alt="Imagen principal del producto">
+          <div class="detail-image-counter" id="detail-image-counter">1 / 1</div>
+        </div>
+        <div class="detail-thumbs" id="detail-thumbs"></div>
+      </div>
+
+      <div class="detail-meta">
+        <div class="detail-price" id="detail-price">Lps. 0.00</div>
+        <div class="detail-tags">
+          <span class="tag-pill" id="detail-category">Categoría</span>
+          <span class="tag-pill" id="detail-stock">Stock</span>
+          <span class="tag-pill muted" id="detail-sku">SKU</span>
+        </div>
+      </div>
+
+      <div class="detail-summary-grid detail-summary-grid-4 detail-summary-grid--compact">
+        <article class="detail-summary-card">
+          <span class="detail-summary-label">Precio</span>
+          <strong class="detail-summary-value" id="detail-summary-price">Lps. 0.00</strong>
+        </article>
+        <article class="detail-summary-card">
+          <span class="detail-summary-label">Costo</span>
+          <strong class="detail-summary-value" id="detail-summary-cost">Lps. 0.00</strong>
+        </article>
+        <article class="detail-summary-card detail-summary-card--accent">
+          <span class="detail-summary-label">Ganancia unitaria</span>
+          <strong class="detail-summary-value" id="detail-summary-margin">Lps. 0.00</strong>
+        </article>
+        <article class="detail-summary-card">
+          <span class="detail-summary-label">Stock disponible</span>
+          <strong class="detail-summary-value" id="detail-summary-stock">0</strong>
+        </article>
+      </div>
+
+      <div class="detail-stock-toolbar glass-panel">
+        <div>
+          <p class="detail-toolbar-title">Ajuste rápido de stock</p>
+          <small>Sube o baja existencias desde esta ficha</small>
+        </div>
+        <div class="detail-stock-actions">
+          <button type="button" onclick="quickAdjustDetailStock(-1)">−</button>
+          <button type="button" onclick="quickAdjustDetailStock(1)">＋</button>
+        </div>
+      </div>
+
+      <div class="detail-note-box glass-panel" id="detail-notes-box">
+        <p class="detail-toolbar-title">Notas internas</p>
+        <small id="detail-notes">Sin notas internas.</small>
+      </div>
+
+      <div class="detail-meta-note" id="detail-meta-note">Código interno</div>
+
+      <div class="detail-actions detail-actions-3">
+        <button class="btn-primary" id="detail-sale-btn">Vender</button>
+        <button class="btn-secondary" id="detail-edit-btn">Editar producto</button>
+        <button class="btn-secondary" id="detail-delete-btn">Eliminar producto</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="modal" id="sale-modal">
+    <div class="modal-content modal-form glass-panel">
+      <div class="modal-head sticky-head">
+        <div>
+          <p class="eyebrow">Registro de venta</p>
+          <h2 id="sale-modal-title">Nueva venta</h2>
+          <small class="sale-step-indicator" id="sale-step-indicator">Paso 1 de 2 · Datos de venta</small>
+        </div>
+        <button class="icon-btn" onclick="closeSaleModal()" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="modal-scroll-body sale-modal-body">
+        <section class="sale-step-panel" data-sale-step="1">
+          <div class="form-grid">
+            <div class="field-group inline">
+              <label for="sale-customer">Nombre</label>
+              <input id="sale-customer" placeholder="Nombre del cliente (opcional)">
+            </div>
+            <div class="field-group inline">
+              <label for="sale-payment">Pago</label>
+              <select id="sale-payment">
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="Tarjeta">Tarjeta</option>
+                <option value="Mixto">Mixto</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="glass-panel sale-builder-box sale-builder-box-pro">
+            <div class="sale-box-head">
+              <div>
+                <p class="eyebrow">Caja rápida</p>
+                <strong>Agregar artículo</strong>
+              </div>
+              <span class="meta-pill" id="sale-cart-pill">0 artículo(s)</span>
+            </div>
+            <div class="form-grid form-grid-3 sale-builder-grid-pro">
+              <div class="field-group inline field-product-wide">
+                <label for="sale-product-select">Producto</label>
+                <select id="sale-product-select"></select>
+              </div>
+              <div class="field-group inline field-qty-compact">
+                <label for="sale-qty">Cantidad</label>
+                <div class="qty-stepper">
+                  <button class="qty-btn" type="button" onclick="adjustSaleQty(-1)" aria-label="Restar">−</button>
+                  <input id="sale-qty" type="number" min="1" value="1">
+                  <button class="qty-btn" type="button" onclick="adjustSaleQty(1)" aria-label="Sumar">+</button>
+                </div>
+              </div>
+              <div class="field-group inline field-price-compact">
+                <label for="sale-price">Precio</label>
+                <input id="sale-price" type="number" min="0" step="0.01" value="0">
+              </div>
+            </div>
+            <div id="sale-promo-preview" class="sale-promo-preview-v52" hidden></div>
+            <button class="btn-primary sale-add-btn sale-add-btn-pro" type="button" onclick="addSaleLine()">+ Agregar a la venta</button>
+          </div>
+
+          <div class="panel-list sale-cart-list sale-cart-list-pro" id="sale-cart-list"></div>
+
+          <div class="form-grid">
+            <div class="field-group inline">
+              <label for="sale-discount">Descuento</label>
+              <input id="sale-discount" type="number" min="0" step="0.01" value="0" oninput="updateSaleSummary()">
+            </div>
+            <div class="field-group inline">
+              <label for="sale-note">Nota de venta</label>
+              <input id="sale-note" placeholder="Ej: entrega inmediata, garantía, observación">
+            </div>
+          </div>
+        </section>
+
+        <section class="sale-step-panel" data-sale-step="2" hidden>
+          <div class="sale-review-box glass-panel">
+            <div class="sale-review-head">
+              <div>
+                <p class="eyebrow">Resumen rápido</p>
+                <strong id="sale-review-customer">Cliente general</strong>
+              </div>
+              <span class="meta-pill" id="sale-review-payment">Efectivo</span>
+            </div>
+            <div class="sale-review-grid">
+              <article><span>Artículos</span><strong id="sale-review-items">0 artículo(s)</strong></article>
+              <article><span>Descuento</span><strong id="sale-review-discount">Lps. 0.00</strong></article>
+              <article class="sale-review-note-card"><span>Nota</span><strong id="sale-review-note">Sin nota</strong></article>
+            </div>
+          </div>
+
+          <div class="glass-panel sale-shipping-box">
+            <label class="shipping-toggle">
+              <input id="sale-shipping-enabled" type="checkbox">
+              <span>Agregar envío opcional</span>
+            </label>
+            <div id="sale-shipping-fields" hidden>
+              <div class="form-grid form-grid-2">
+                <div class="field-group inline">
+                  <label for="sale-shipping-zone">Envíos</label>
+                  <select id="sale-shipping-zone">
+                    <option value="NACIONAL">NACIONAL</option>
+                    <option value="COMAYAGUA">COMAYAGUA</option>
+                  </select>
+                </div>
+                <div class="field-group inline">
+                  <label for="sale-shipping-option">Tarifa</label>
+                  <select id="sale-shipping-option" hidden></select>
+                  <div id="sale-shipping-list" class="sale-shipping-list" role="listbox" aria-label="Tarifas de envío"></div>
+                </div>
+              </div>
+            </div>
+            <p class="sale-shipping-preview" id="sale-shipping-preview">Sin envío agregado</p>
+          </div>
+
+          <div class="sales-summary-grid sales-summary-grid-modal">
+            <article class="sales-stat glass-panel"><span>Subtotal</span><strong id="sale-subtotal">Lps. 0.00</strong></article>
+            <article class="sales-stat glass-panel"><span>Envío</span><strong id="sale-shipping-total">Lps. 0.00</strong></article>
+            <article class="sales-stat glass-panel"><span>Descuento</span><strong id="sale-discount-total">Lps. 0.00</strong></article>
+            <article class="sales-stat glass-panel"><span>Total</span><strong id="sale-total">Lps. 0.00</strong></article>
+            <article class="sales-stat glass-panel"><span>Ganancia</span><strong id="sale-profit">Lps. 0.00</strong></article>
+          </div>
+        </section>
+      </div>
+
+      <div class="modal-actions sticky-actions sale-wizard-actions">
+        <button class="btn-secondary sale-back-btn" id="sale-back-btn" type="button" onclick="prevSaleStep()" hidden>Atrás</button>
+        <button class="btn-secondary sale-next-btn" id="sale-next-btn" type="button" onclick="nextSaleStep()">Siguiente</button>
+        <button class="btn-primary" id="complete-sale-btn" type="button" onclick="completeSale()" hidden>Confirmar venta y generar comprobante</button>
+        <button class="btn-ghost sale-cancel-btn" type="button" onclick="closeSaleModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="receipt-modal">
+    <div class="modal-content modal-viewer glass-panel receipt-modal-content">
+      <div class="modal-head sticky-head">
+        <div>
+          <p class="eyebrow">Comprobante</p>
+          <h2 id="receipt-modal-title">Vista previa</h2>
+        </div>
+        <button class="icon-btn" onclick="closeReceiptModal()" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="receipt-frame-wrap">
+        <iframe id="receipt-frame" title="Comprobante"></iframe>
+      </div>
+
+      <div class="modal-actions sticky-actions receipt-actions">
+        <button class="btn-primary" type="button" onclick="printCurrentReceipt()">Imprimir</button>
+        <button class="btn-secondary" type="button" onclick="editCurrentReceiptSale()">Editar venta</button>
+        <button class="btn-secondary" type="button" onclick="openCurrentReceiptInTab()">Abrir en pestaña</button>
+        <button class="btn-secondary" type="button" onclick="closeReceiptModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-company-dock" aria-label="Acciones rápidas">
+    <button type="button" onclick="scrollToSection('productos')"><span>⌂</span><small>Catálogo</small></button>
+    <button type="button" class="accent" id="btn-dock-sale"><span>🧾</span><small>Vender</small></button>
+    <button type="button" id="btn-dock-product"><span>＋</span><small>Producto</small></button>
+    <button type="button" onclick="toggleSummaryPanel()"><span>◫</span><small>Resumen</small></button>
+  </nav>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="app-v54-compacto-mobile.js?v=54"></script>
+  <script src="fix-v55-github.js?v=55"></script>
+  <script src="fix-v56-gamer-ops.js?v=56"></script>
+</body>
+</html>

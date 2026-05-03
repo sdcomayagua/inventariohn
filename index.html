@@ -4141,5 +4141,577 @@
 })();
 </script>
 
+
+<style id="v69-receipt-download-whatsapp-css">
+  /* V69: recibo más fino, botón descargar imagen y WhatsApp compacto */
+  #receiptModal .sheet{
+    max-width:430px!important;
+  }
+
+  .v69-receipt-actions{
+    display:grid!important;
+    grid-template-columns:1fr .86fr 1fr!important;
+    gap:9px!important;
+    margin-top:12px!important;
+  }
+  .v69-receipt-actions .btn{
+    min-height:48px!important;
+    border-radius:16px!important;
+    font-size:10.5px!important;
+    letter-spacing:.06em!important;
+    padding:0 8px!important;
+    white-space:nowrap!important;
+  }
+  .v69-download-btn{
+    background:
+      radial-gradient(circle at 30% 0%,rgba(255,255,255,.32),transparent 30%),
+      linear-gradient(135deg,#0a7cff,#00e5ff)!important;
+    color:#06111f!important;
+    border:1px solid rgba(0,229,255,.42)!important;
+    box-shadow:0 14px 28px rgba(0,229,255,.18)!important;
+    font-weight:1000!important;
+  }
+
+  .v69-receipt-shell{
+    overflow:hidden!important;
+    border-radius:30px!important;
+    background:#f6fbff!important;
+    border:1px solid rgba(0,229,255,.35)!important;
+    box-shadow:
+      0 26px 80px rgba(0,0,0,.42),
+      0 0 36px rgba(0,229,255,.12)!important;
+  }
+  .v69-r-top{
+    position:relative;
+    min-height:150px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 74px;
+    gap:12px;
+    align-items:start;
+    padding:20px 18px 18px;
+    color:#fff;
+    background:
+      radial-gradient(circle at 92% 14%,rgba(0,229,255,.36),transparent 30%),
+      radial-gradient(circle at 18% 0%,rgba(51,255,153,.18),transparent 36%),
+      linear-gradient(135deg,#020b15 0%,#082842 62%,#03101d 100%);
+  }
+  .v69-r-top:before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px),
+      linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px);
+    background-size:28px 28px;
+    mask-image:linear-gradient(180deg,rgba(0,0,0,.55),transparent 78%);
+    pointer-events:none;
+  }
+  .v69-r-info,
+  .v69-r-logo{
+    position:relative;
+    z-index:1;
+  }
+  .v69-pill{
+    width:max-content;
+    max-width:100%;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 10px;
+    border-radius:999px;
+    color:#33ff99;
+    background:rgba(51,255,153,.10);
+    border:1px solid rgba(51,255,153,.25);
+    font-size:9px;
+    font-weight:1000;
+    letter-spacing:.08em;
+    line-height:1.05;
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .v69-r-info h3{
+    margin:12px 0 8px;
+    color:#fff;
+    font-size:22px;
+    line-height:.96;
+    letter-spacing:.015em;
+    font-weight:1000;
+    white-space:nowrap;
+    text-shadow:0 0 22px rgba(0,229,255,.18);
+  }
+  .v69-r-meta{
+    margin:0;
+    color:#d5e6f3;
+    font-size:11px;
+    line-height:1.35;
+    font-weight:850;
+  }
+  .v69-r-code{
+    display:block;
+    margin-top:4px;
+    color:#fff;
+    font-size:12px;
+    font-weight:1000;
+    letter-spacing:.025em;
+    word-break:break-word;
+  }
+  .v69-r-logo{
+    width:74px;
+    height:74px;
+    border-radius:20px;
+    overflow:hidden;
+    background:#020711;
+    border:1px solid rgba(0,229,255,.38);
+    box-shadow:
+      0 0 32px rgba(0,119,255,.28),
+      inset 0 0 0 1px rgba(255,255,255,.08);
+  }
+  .v69-r-logo img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+  }
+
+  .v69-r-body{
+    padding:16px 17px 19px;
+    background:
+      radial-gradient(circle at 100% 100%,rgba(0,229,255,.08),transparent 26%),
+      #f6fbff;
+    color:#07111f;
+  }
+  .v69-client-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-bottom:14px;
+  }
+  .v69-info-box{
+    min-height:51px;
+    padding:10px 12px;
+    border-radius:17px;
+    background:linear-gradient(180deg,#eef7fc,#eaf4fb);
+    border:1px solid #d8e8f3;
+    color:#0b2131;
+    font-size:12px;
+    line-height:1.22;
+    font-weight:1000;
+  }
+  .v69-info-box span{
+    display:block;
+    margin-bottom:4px;
+    color:#5e7184;
+    font-size:8.5px;
+    letter-spacing:.10em;
+    text-transform:uppercase;
+    font-weight:1000;
+  }
+  .v69-info-box.full{
+    grid-column:1/-1;
+  }
+
+  .v69-r-table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    font-size:11px;
+  }
+  .v69-r-table th{
+    padding:9px 4px;
+    border-bottom:1px solid #d6e4ee;
+    color:#4f6378;
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:.09em;
+    text-align:left;
+    font-weight:1000;
+  }
+  .v69-r-table td{
+    padding:10px 4px;
+    border-bottom:1px solid #e3edf4;
+    color:#07111f;
+    font-weight:950;
+    vertical-align:top;
+  }
+  .v69-r-table th:nth-child(1), .v69-r-table td:nth-child(1){width:43%}
+  .v69-r-table th:nth-child(2), .v69-r-table td:nth-child(2){width:15%;text-align:center}
+  .v69-r-table th:nth-child(3), .v69-r-table td:nth-child(3){width:20%;text-align:right}
+  .v69-r-table th:nth-child(4), .v69-r-table td:nth-child(4){width:22%;text-align:right}
+  .v69-r-table small{
+    display:block;
+    margin-top:4px;
+    color:#637789;
+    font-size:9px;
+    font-weight:850;
+    line-height:1.15;
+  }
+
+  .v69-summary{
+    margin-top:13px;
+    padding:14px 15px;
+    border-radius:22px;
+    color:#e9f8ff;
+    background:
+      radial-gradient(circle at 88% 5%,rgba(0,229,255,.22),transparent 34%),
+      linear-gradient(180deg,#071625,#092640 100%);
+    box-shadow:inset 0 0 0 1px rgba(0,229,255,.18);
+  }
+  .v69-summary div{
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    padding:4px 0;
+    font-size:11.5px;
+    line-height:1.2;
+    font-weight:850;
+  }
+  .v69-summary span{color:#bdd0de}
+  .v69-summary b{color:#fff}
+  .v69-summary .grand{
+    margin-top:8px;
+    padding-top:11px;
+    border-top:1px solid rgba(255,255,255,.13);
+    align-items:center;
+    font-size:20px;
+  }
+  .v69-summary .grand span,
+  .v69-summary .grand b{
+    color:#33ff99;
+    text-shadow:0 0 16px rgba(51,255,153,.18);
+  }
+  .v69-delivery{
+    margin-top:13px;
+    padding:11px 13px;
+    border-radius:18px;
+    background:#ecfff7;
+    border:1px solid #ccefe1;
+    color:#0b2a3c;
+    font-size:11.5px;
+    line-height:1.3;
+    font-weight:950;
+  }
+  .v69-footer{
+    margin-top:13px;
+    text-align:center;
+    color:#607486;
+    font-size:10.5px;
+    line-height:1.25;
+    font-weight:950;
+  }
+
+  @media(max-width:420px){
+    #receiptModal .sheet-body{padding:14px!important}
+    .v69-r-top{
+      min-height:136px;
+      grid-template-columns:minmax(0,1fr) 62px;
+      gap:9px;
+      padding:17px 15px 15px;
+    }
+    .v69-r-logo{width:62px;height:62px;border-radius:17px}
+    .v69-pill{font-size:7.8px;padding:6px 8px}
+    .v69-r-info h3{font-size:19px;letter-spacing:0}
+    .v69-r-meta{font-size:10.2px}
+    .v69-r-body{padding:14px 14px 17px}
+    .v69-info-box{font-size:11.2px;padding:9px 10px}
+    .v69-r-table{font-size:10.2px}
+    .v69-summary .grand{font-size:18px}
+    .v69-receipt-actions{gap:7px!important}
+    .v69-receipt-actions .btn{font-size:9.2px!important;min-height:46px!important;padding:0 5px!important}
+  }
+
+  @media print{
+    .v69-receipt-shell{
+      box-shadow:none!important;
+      border:1px solid #111!important;
+      border-radius:16px!important;
+      -webkit-print-color-adjust:exact!important;
+      print-color-adjust:exact!important;
+    }
+    .v69-r-top,
+    .v69-summary{
+      -webkit-print-color-adjust:exact!important;
+      print-color-adjust:exact!important;
+    }
+  }
+</style>
+
+<script id="v69-receipt-download-whatsapp-js">
+(function(){
+  function esc(v){
+    return String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  }
+  function moneyV69(n){
+    try{ if(typeof money === 'function') return money(n); }catch(e){}
+    return 'Lps. ' + Math.round(Number(n||0)).toLocaleString('es-HN');
+  }
+  function getCartV69(){
+    try{ if(Array.isArray(cart)) return cart; }catch(e){}
+    try{ if(Array.isArray(window.cart)) return window.cart; }catch(e){}
+    return [];
+  }
+  function lineTotalV69(item){
+    const total = Number(item?.total);
+    if(Number.isFinite(total) && total > 0) return total;
+    const qty = Number(item?.qty || 0);
+    const unit = Number(item?.unitPrice ?? item?.price ?? 0);
+    return Math.max(0, qty * unit - Number(item?.discount || 0));
+  }
+  function getLogoV69(){
+    const img = document.querySelector('.v68-logo-wrap img,.v69-r-logo img,.v67-r-logo img,.v66-main-logo-card img,.brand-logo-v63 img,.receipt-logo img');
+    return img?.src || '';
+  }
+  function getVal(id){
+    return (document.getElementById(id)?.value || '').trim();
+  }
+  function buildCompactWhatsappTextV69(payload, dateText){
+    const productLines = payload.items.map(item => {
+      const unit = Number(item.unitPrice ?? item.price ?? 0);
+      const lines = [
+        '• ' + (item.name || 'Producto'),
+        '  Cantidad: ' + Number(item.qty || 0),
+        '  Precio: ' + moneyV69(unit),
+        '  Total: ' + moneyV69(lineTotalV69(item))
+      ];
+      if(item.saving) lines.push('  Ahorro: ' + moneyV69(item.saving));
+      if(item.note) lines.push('  Nota: ' + item.note);
+      return lines.join('\n');
+    }).join('\n\n');
+
+    const info = [
+      '🧾 *RECIBO SD COMAYAGUA*',
+      '',
+      '📌 *Código:* ' + payload.code,
+      '📅 *Fecha:* ' + dateText,
+      '',
+      '👤 *Cliente:* ' + (payload.client || 'Cliente'),
+      payload.phone ? '📞 *Teléfono:* ' + payload.phone : '',
+      payload.department ? '🏷️ *Departamento:* ' + payload.department : '',
+      payload.municipio ? '📍 *Municipio:* ' + payload.municipio : '',
+      payload.reference ? '🏠 *Referencia:* ' + payload.reference : '',
+      '',
+      '🛒 *PRODUCTOS*',
+      productLines,
+      '',
+      '🚚 *ENVÍO*',
+      'Empresa / entrega: ' + (payload.carrier || 'No definida'),
+      'Envío: ' + moneyV69(payload.shipping || 0),
+      'Comisión por pagar al recibir: ' + moneyV69(payload.commission || 0),
+      'Total envío: ' + moneyV69(payload.shippingTotal || 0),
+      '',
+      '💰 *RESUMEN*',
+      'Productos: ' + moneyV69(payload.productSubtotal || 0),
+      'Descuento: ' + moneyV69(payload.finalDiscount || 0),
+      '*TOTAL A PAGAR: ' + moneyV69(payload.total || 0) + '*',
+      '',
+      'SD COMAYAGUA.',
+      'WhatsApp: +504 3151-7755'
+    ];
+
+    return info.filter(line => line !== '').join('\n').replace(/\n{3,}/g, '\n\n');
+  }
+
+  function installReceiptActionsV69(){
+    const body = document.querySelector('#receiptModal .sheet-body');
+    if(!body) return;
+    let row = body.querySelector('.v69-receipt-actions') || body.querySelector('.row2.print-hide');
+    if(!row) return;
+    row.classList.remove('row2');
+    row.classList.add('v69-receipt-actions','print-hide');
+
+    const buttons = row.querySelectorAll('button');
+    if(buttons[0]) buttons[0].textContent = 'IMPRIMIR/PDF';
+    if(buttons[buttons.length-1]) buttons[buttons.length-1].textContent = 'WHATSAPP';
+
+    if(!row.querySelector('[data-v69-download]')){
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn v69-download-btn full';
+      btn.dataset.v69Download = '1';
+      btn.innerHTML = '⬇ IMAGEN';
+      btn.onclick = window.downloadReceiptImageV69;
+      if(buttons.length >= 2) row.insertBefore(btn, buttons[1]);
+      else row.appendChild(btn);
+    }
+  }
+
+  window.downloadReceiptImageV69 = async function(){
+    const target = document.querySelector('#receiptBox .v69-receipt-shell') || document.querySelector('#receiptBox .receipt') || document.getElementById('receiptBox');
+    if(!target){
+      if(typeof toast === 'function') toast('Primero genera el recibo.');
+      return;
+    }
+
+    async function loadHtml2Canvas(){
+      if(window.html2canvas) return window.html2canvas;
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+      return window.html2canvas;
+    }
+
+    try{
+      if(typeof toast === 'function') toast('Preparando imagen del recibo...');
+      const html2canvas = await loadHtml2Canvas();
+      const canvas = await html2canvas(target, {
+        scale: Math.min(3, Math.max(2, window.devicePixelRatio || 2)),
+        backgroundColor: '#f6fbff',
+        useCORS: true,
+        allowTaint: true,
+        logging: false
+      });
+
+      const code = (window.__v69LastReceiptPayload?.code || window.__v62LastReceiptPayload?.code || 'recibo-sdc').replace(/[^\w-]+/g,'-');
+      const filename = code + '.png';
+
+      canvas.toBlob(blob => {
+        if(!blob){
+          const link = document.createElement('a');
+          link.download = filename;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      }, 'image/png', 0.95);
+
+      if(typeof toast === 'function') toast('Imagen descargada.');
+    }catch(err){
+      console.error(err);
+      if(typeof toast === 'function') toast('No se pudo descargar la imagen. Usa Imprimir/PDF como respaldo.');
+      else alert('No se pudo descargar la imagen. Usa Imprimir/PDF como respaldo.');
+    }
+  };
+
+  window.buildReceipt = function(keepCode=true){
+    const cartList = getCartV69();
+    if(!cartList.length){
+      if(typeof toast === 'function') toast('No hay productos para generar recibo.');
+      return null;
+    }
+
+    const totals = (typeof window.calcCart === 'function')
+      ? window.calcCart()
+      : {
+          productSubtotal: cartList.reduce((a,i)=>a+lineTotalV69(i),0),
+          shipping: 0,
+          commission: 0,
+          shippingTotal: 0,
+          finalDiscount: 0,
+          total: cartList.reduce((a,i)=>a+lineTotalV69(i),0),
+          carrier: ''
+        };
+
+    const oldCode = window.__v69LastReceiptPayload?.code || window.__v62LastReceiptPayload?.code || window.lastReceiptPayload?.code || '';
+    const payload = {
+      code: keepCode && oldCode ? oldCode : ('SDC-' + Date.now().toString().slice(-10)),
+      date: new Date().toISOString(),
+      client: getVal('clientName') || 'Cliente',
+      phone: getVal('clientPhone'),
+      department: getVal('clientDept'),
+      municipio: getVal('clientMunicipio'),
+      reference: getVal('clientAddress'),
+      note: getVal('receiptNote'),
+      items: JSON.parse(JSON.stringify(cartList)),
+      ...totals
+    };
+
+    window.__v69LastReceiptPayload = payload;
+    window.__v62LastReceiptPayload = payload;
+    window.lastReceiptPayload = payload;
+
+    const dateText = new Date(payload.date).toLocaleString('es-HN',{dateStyle:'medium',timeStyle:'short'});
+    const logo = getLogoV69();
+
+    const rows = payload.items.map(item => {
+      const unit = Number(item.unitPrice ?? item.price ?? 0);
+      return '<tr>' +
+        '<td><b>'+esc(item.name || 'Producto')+'</b><small>'+esc(item.code || '')+(item.note ? ' · '+esc(item.note) : '')+(item.saving ? ' · Ahorro '+moneyV69(item.saving) : '')+'</small></td>' +
+        '<td>'+Number(item.qty || 0)+'</td>' +
+        '<td>'+moneyV69(unit)+'</td>' +
+        '<td><b>'+moneyV69(lineTotalV69(item))+'</b></td>' +
+      '</tr>';
+    }).join('');
+
+    const whatsappText = buildCompactWhatsappTextV69(payload, dateText);
+    try{ lastReceiptText = whatsappText; }catch(e){}
+    window.lastReceiptText = whatsappText;
+
+    const box = document.getElementById('receiptBox');
+    if(box){
+      box.innerHTML =
+        '<div id="receiptCaptureArea" class="receipt v69-receipt-shell">' +
+          '<div class="v69-r-top">' +
+            '<div class="v69-r-info">' +
+              '<div class="v69-pill">Factura gamer · WhatsApp</div>' +
+              '<h3>SD COMAYAGUA</h3>' +
+              '<p class="v69-r-meta">Recibo de compra · '+esc(dateText)+'</p>' +
+              '<span class="v69-r-code">'+esc(payload.code)+'</span>' +
+            '</div>' +
+            '<div class="v69-r-logo">'+(logo ? '<img src="'+logo+'" alt="SD Comayagua">' : 'SD')+'</div>' +
+          '</div>' +
+          '<div class="v69-r-body">' +
+            '<div class="v69-client-grid">' +
+              '<div class="v69-info-box"><span>Cliente</span>'+esc(payload.client || 'Cliente')+'</div>' +
+              '<div class="v69-info-box"><span>Teléfono</span>'+esc(payload.phone || 'No registrado')+'</div>' +
+              '<div class="v69-info-box"><span>Departamento</span>'+esc(payload.department || 'No seleccionado')+'</div>' +
+              '<div class="v69-info-box"><span>Municipio</span>'+esc(payload.municipio || 'No seleccionado')+'</div>' +
+              (payload.reference ? '<div class="v69-info-box full"><span>Referencia / dirección</span>'+esc(payload.reference)+'</div>' : '') +
+            '</div>' +
+            '<table class="v69-r-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>'+rows+'</tbody></table>' +
+            '<div class="v69-summary">' +
+              '<div><span>Productos</span><b>'+moneyV69(payload.productSubtotal || 0)+'</b></div>' +
+              '<div><span>Envío</span><b>'+moneyV69(payload.shipping || 0)+'</b></div>' +
+              '<div><span>Comisión por pagar al recibir</span><b>'+moneyV69(payload.commission || 0)+'</b></div>' +
+              '<div><span>Total envío</span><b>'+moneyV69(payload.shippingTotal || 0)+'</b></div>' +
+              '<div><span>Descuento</span><b>'+moneyV69(payload.finalDiscount || 0)+'</b></div>' +
+              '<div class="grand"><span>Total</span><b>'+moneyV69(payload.total || 0)+'</b></div>' +
+            '</div>' +
+            '<div class="v69-delivery"><b>Empresa / entrega:</b> '+esc(payload.carrier || 'No definida')+(payload.note ? '<br><b>Observación:</b> '+esc(payload.note) : '')+'</div>' +
+            '<div class="v69-footer">Gracias por comprar en SD Comayagua · WhatsApp +504 3151-7755</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    if(typeof closeModal === 'function') closeModal('cartModal');
+    if(typeof openModal === 'function') openModal('receiptModal');
+    setTimeout(installReceiptActionsV69, 30);
+    setTimeout(installReceiptActionsV69, 300);
+    return payload;
+  };
+
+  const oldShareWhatsAppV69 = window.shareWhatsApp;
+  window.shareWhatsApp = function(){
+    if(!window.lastReceiptText){
+      window.buildReceipt(true);
+    }
+    const text = window.lastReceiptText || '';
+    const phone = (typeof WAPP !== 'undefined' ? WAPP : '50431517755');
+    window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
+  };
+
+  function boot(){
+    installReceiptActionsV69();
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(boot, 250);
+    setTimeout(boot, 1000);
+  });
+  window.addEventListener('load', () => {
+    setTimeout(boot, 250);
+  });
+})();
+</script>
+
 </body>
 </html>

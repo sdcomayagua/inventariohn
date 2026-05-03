@@ -1,5 +1,5 @@
-SD COMAYAGUA V68 - GitHub Pages
+SD COMAYAGUA V69 - GitHub Pages
 
-Cambios: encabezado superior rediseñado, un solo logo central, botón apagar, departamentos/municipios legibles y mejor estética gamer.
+Cambios: recibo más estético, botón para descargar como imagen PNG, WhatsApp con texto compacto y encabezado del recibo sin saltos feos.
 
 Sube index.html y .nojekyll a la raíz del repositorio.

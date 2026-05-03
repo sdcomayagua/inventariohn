@@ -1,5 +1,5 @@
-SD COMAYAGUA V69 - GitHub Pages
+SD COMAYAGUA V70 - GitHub Pages
 
-Cambios: recibo más estético, botón para descargar como imagen PNG, WhatsApp con texto compacto y encabezado del recibo sin saltos feos.
+Cambios extra: panel rápido, filtros bajo stock/agotados/ganancia, tarjetas de producto más gamer, buscador y dock más finos.
 
 Sube index.html y .nojekyll a la raíz del repositorio.

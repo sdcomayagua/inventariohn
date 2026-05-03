@@ -7743,5 +7743,880 @@
 })();
 </script>
 
+
+<style id="v77-cotizacion-pro-css">
+  /* V77 Cotización gamer: vista previa antes de vender */
+  .v77-quote{
+    background:linear-gradient(135deg,#31ffad,#00e5ff)!important;
+    color:#04121b!important;
+    border:0!important;
+    box-shadow:0 0 22px rgba(0,229,255,.24)!important;
+  }
+  .card-actions .v77-quote{font-size:10px!important}
+  @media(min-width:700px){
+    .card-actions{grid-template-columns:1fr 1fr 1fr!important}
+  }
+  @media(max-width:699px){
+    .card-actions{grid-template-columns:1fr 1fr!important}
+    .card-actions .v77-quote{grid-column:1/-1!important;min-height:40px!important}
+  }
+
+  #quoteModalV77{z-index:95}
+  #quoteModalV77 .sheet{
+    width:min(760px,100%);
+    max-height:94svh;
+    border-radius:28px;
+    overflow:hidden;
+    border:1px solid rgba(0,229,255,.38);
+    box-shadow:0 28px 100px rgba(0,0,0,.72),0 0 38px rgba(0,229,255,.10);
+  }
+  #quoteModalV77 .sheet-body{
+    overflow:auto;
+    max-height:calc(94svh - 74px);
+    padding:16px;
+    scroll-padding-bottom:110px;
+  }
+  .v77-topline{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .v77-mini-badge{
+    display:inline-flex;align-items:center;gap:7px;
+    min-height:30px;padding:0 12px;border-radius:999px;
+    color:#43ff9d;background:rgba(49,255,173,.10);
+    border:1px solid rgba(49,255,173,.30);
+    font-size:10px;font-weight:950;letter-spacing:.10em;text-transform:uppercase;
+  }
+  .v77-mini-badge:before{
+    content:"";width:8px;height:8px;border-radius:999px;background:#31ffad;box-shadow:0 0 16px #31ffad;
+  }
+  .v77-quote-layout{display:grid;grid-template-columns:1fr;gap:14px}
+  .v77-quote-panel{
+    border-radius:24px;
+    border:1px solid rgba(0,229,255,.20);
+    background:linear-gradient(180deg,rgba(7,23,42,.92),rgba(3,11,22,.96));
+    padding:14px;
+  }
+  .v77-panel-title{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    margin-bottom:10px;color:#eaf7ff;font-weight:950;letter-spacing:.08em;text-transform:uppercase;font-size:12px;
+  }
+  .v77-picker-tools{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:10px}
+  .v77-input,.v77-select{
+    width:100%;min-height:48px;border-radius:18px;border:1px solid rgba(0,229,255,.25);
+    background:#061121;color:#eaf7ff;padding:0 14px;outline:none;font-weight:850;
+  }
+  .v77-input:focus,.v77-select:focus{border-color:rgba(49,255,173,.70);box-shadow:0 0 0 3px rgba(49,255,173,.10)}
+  .v77-input::placeholder{color:rgba(234,247,255,.48)}
+  select.v77-select option{background:#07172a;color:#eaf7ff}
+  .v77-field label{
+    display:block;margin:0 0 6px 3px;color:#9fb4c7;
+    font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.08em;
+  }
+  .v77-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .v77-row3{display:grid;grid-template-columns:1.1fr .9fr .9fr;gap:10px}
+  .v77-chipbar{
+    display:flex;gap:8px;overflow:auto;padding:2px 2px 8px;margin-bottom:8px;
+    scrollbar-width:thin;
+  }
+  .v77-chip{
+    border:1px solid rgba(0,229,255,.25);background:rgba(255,255,255,.035);color:#c7d8e8;
+    border-radius:999px;min-height:34px;padding:0 13px;font-size:10px;font-weight:950;text-transform:uppercase;white-space:nowrap;
+  }
+  .v77-chip.active{
+    background:linear-gradient(135deg,#31ffad,#00e5ff);color:#04121b;border-color:transparent;
+    box-shadow:0 0 20px rgba(0,229,255,.18);
+  }
+  .v77-product-list{display:grid;gap:8px;max-height:250px;overflow:auto;padding-right:2px}
+  .v77-product-option{
+    width:100%;border:1px solid rgba(255,255,255,.09);
+    background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.025));
+    border-radius:20px;padding:9px;display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;text-align:left;color:#eaf7ff;
+  }
+  .v77-product-option:hover{border-color:rgba(0,229,255,.50)}
+  .v77-thumb{
+    width:48px;height:48px;border-radius:16px;background:#071322;border:1px solid rgba(0,229,255,.18);
+    display:grid;place-items:center;overflow:hidden;color:#00e5ff;font-weight:950;
+  }
+  .v77-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .v77-po-name{font-weight:950;font-size:13px;line-height:1.1}
+  .v77-po-meta{font-size:11px;color:#9fb4c7;font-weight:850;margin-top:3px}
+  .v77-po-add{
+    min-height:38px;border-radius:14px;border:0;padding:0 12px;
+    background:linear-gradient(135deg,#31ffad,#00e5ff);color:#03131c;font-weight:950;font-size:10px;
+  }
+
+  .v77-quote-items{display:grid;gap:10px}
+  .v77-line{
+    display:grid;grid-template-columns:54px 1fr auto;gap:10px;align-items:center;
+    border:1px solid rgba(0,229,255,.16);border-radius:22px;padding:10px;
+    background:linear-gradient(135deg,rgba(9,30,54,.90),rgba(4,12,24,.92));
+  }
+  .v77-line h4{margin:0;color:#f3fbff;font-size:14px;line-height:1.15}
+  .v77-line small{display:block;color:#9fb4c7;font-size:11px;font-weight:800;margin-top:3px}
+  .v77-step{
+    display:flex;align-items:center;gap:5px;justify-content:flex-end;
+  }
+  .v77-step button,.v77-remove-line{
+    width:34px;height:34px;border-radius:12px;border:1px solid rgba(0,229,255,.20);
+    background:rgba(255,255,255,.06);color:#eaf7ff;font-weight:950;font-size:16px;
+  }
+  .v77-step input{
+    width:54px;min-height:34px;border-radius:12px;border:1px solid rgba(0,229,255,.20);
+    background:#061121;color:#fff;text-align:center;font-weight:950;
+  }
+  .v77-remove-line{border-color:rgba(255,93,128,.35);color:#ffd2db;background:rgba(255,93,128,.10)}
+  .v77-line-total{color:#31ffad;font-weight:950;font-size:16px;text-align:right;margin-bottom:5px}
+  .v77-save-msg{
+    border:1px solid rgba(49,255,173,.24);background:rgba(49,255,173,.07);color:#dfffee;
+    border-radius:18px;padding:10px 12px;font-size:11.5px;font-weight:850;line-height:1.35;margin-top:10px;
+  }
+
+  .v77-quote-card{
+    background:#f6fbff;color:#081320;border-radius:30px;overflow:hidden;
+    border:1px solid rgba(0,229,255,.20);
+    box-shadow:0 26px 70px rgba(0,0,0,.30);
+  }
+  .v77-q-head{
+    min-height:158px;padding:20px;position:relative;overflow:hidden;
+    background:
+      radial-gradient(circle at 84% 18%,rgba(49,255,173,.28),transparent 28%),
+      radial-gradient(circle at 20% 20%,rgba(0,229,255,.22),transparent 26%),
+      linear-gradient(135deg,#06111e,#07294a 55%,#04111d);
+    color:#fff;
+  }
+  .v77-q-head:after{
+    content:"";position:absolute;inset:auto -20px -52px auto;width:220px;height:220px;border-radius:999px;
+    background:linear-gradient(135deg,rgba(0,229,255,.12),rgba(49,255,173,.08));filter:blur(2px);
+  }
+  .v77-q-brand{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1}
+  .v77-q-logo{
+    width:86px;height:86px;border-radius:22px;object-fit:cover;background:#020915;border:1px solid rgba(0,229,255,.40);
+    box-shadow:0 0 28px rgba(0,229,255,.18);
+  }
+  .v77-q-title{position:relative;z-index:1;margin-top:14px}
+  .v77-q-title b{display:block;font-size:29px;line-height:.95;letter-spacing:.02em}
+  .v77-q-title span{display:inline-block;margin-top:8px;color:#31ffad;font-size:10px;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
+  .v77-q-body{padding:18px}
+  .v77-q-info{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+  .v77-info-box{
+    background:#eaf4fb;border:1px solid #d6e5ef;border-radius:17px;padding:10px 12px;
+    font-size:12px;font-weight:900;color:#102234;min-height:54px;
+  }
+  .v77-info-box small{display:block;color:#718292;font-size:8.5px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+  .v77-q-table{width:100%;border-collapse:collapse;font-size:12px}
+  .v77-q-table th{
+    color:#3d4d5d;text-align:left;font-size:9px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid #d8e4ed;padding:9px 5px;
+  }
+  .v77-q-table td{padding:10px 5px;border-bottom:1px solid #e1ebf2;font-weight:900;vertical-align:top}
+  .v77-q-table .num{text-align:right;white-space:nowrap}
+  .v77-q-summary{
+    margin-top:14px;border-radius:24px;padding:15px 16px;color:#dcecff;
+    background:
+      radial-gradient(circle at 95% 0%,rgba(0,229,255,.20),transparent 35%),
+      linear-gradient(135deg,#061624,#0a2a43);
+  }
+  .v77-q-summary div{display:flex;justify-content:space-between;gap:15px;padding:5px 0;font-weight:850;font-size:13px}
+  .v77-q-summary .grand{border-top:1px solid rgba(255,255,255,.13);margin-top:7px;padding-top:12px;color:#31ffad;font-size:21px;font-weight:950}
+  .v77-q-footer{
+    margin-top:12px;border-radius:18px;background:#ecfff6;border:1px solid #c9f4df;color:#163225;
+    padding:11px 13px;font-size:12px;font-weight:900;
+  }
+  .v77-q-note{font-size:10.5px;color:#5b6d7d;text-align:center;font-weight:850;margin-top:12px;line-height:1.25}
+
+  .v77-action-grid{
+    position:sticky;bottom:0;z-index:5;margin-top:14px;padding:10px;border-radius:24px;
+    background:linear-gradient(180deg,rgba(5,13,26,.78),rgba(5,13,26,.97));backdrop-filter:blur(12px);
+    border:1px solid rgba(0,229,255,.16);display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+  }
+  .v77-action-grid .btn{min-height:48px;border-radius:17px;font-size:10px}
+  .v77-action-grid .v77-wide{grid-column:1/-1}
+  .v77-empty-quote{
+    border:1px dashed rgba(0,229,255,.25);border-radius:22px;padding:18px;text-align:center;color:#9fb4c7;font-weight:850;
+  }
+
+  @media(max-width:620px){
+    #quoteModalV77{padding:8px}
+    #quoteModalV77 .sheet{max-height:calc(100dvh - 12px);border-radius:24px}
+    #quoteModalV77 .sheet-body{max-height:calc(100dvh - 82px);padding:11px 10px calc(12px + env(safe-area-inset-bottom))}
+    .v77-row2,.v77-row3{grid-template-columns:1fr!important}
+    .v77-product-list{max-height:210px}
+    .v77-product-option{grid-template-columns:42px 1fr auto;border-radius:18px}
+    .v77-thumb{width:42px;height:42px;border-radius:14px}
+    .v77-line{grid-template-columns:46px 1fr;align-items:start}
+    .v77-line .v77-line-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px}
+    .v77-step{justify-content:flex-start}
+    .v77-q-head{padding:16px;min-height:148px}
+    .v77-q-logo{width:76px;height:76px;border-radius:20px}
+    .v77-q-title b{font-size:24px}
+    .v77-q-body{padding:13px}
+    .v77-q-info{grid-template-columns:1fr}
+    .v77-q-table{font-size:11px}
+    .v77-q-table th{font-size:8px}
+    .v77-q-summary .grand{font-size:19px}
+    .v77-action-grid{grid-template-columns:1fr 1fr;gap:7px;border-radius:20px}
+    .v77-action-grid .btn{min-height:46px}
+    .v77-action-grid .v77-wide{grid-column:1/-1}
+  }
+</style>
+
+<script id="v77-cotizacion-pro-js">
+(function(){
+  const MUNICIPIOS_V77 = {"Atlántida": ["La Ceiba", "El Porvenir", "Esparta", "Jutiapa", "La Masica", "San Francisco", "Tela", "Arizona"], "Colón": ["Trujillo", "Balfate", "Iriona", "Limón", "Sabá", "Santa Fe", "Santa Rosa de Aguán", "Sonaguera", "Tocoa", "Bonito Oriental"], "Comayagua": ["Comayagua", "Ajuterique", "El Rosario", "Esquías", "Humuya", "La Libertad", "Lamaní", "La Trinidad", "Lejamaní", "Meámbar", "Minas de Oro", "Ojos de Agua", "San Jerónimo", "San José de Comayagua", "San José del Potrero", "San Luis", "San Sebastián", "Siguatepeque", "Villa de San Antonio", "Las Lajas", "Taulabé"], "Copán": ["Santa Rosa de Copán", "Cabañas", "Concepción", "Copán Ruinas", "Corquín", "Cucuyagua", "Dolores", "Dulce Nombre", "El Paraíso", "Florida", "La Jigua", "La Unión", "Nueva Arcadia", "San Agustín", "San Antonio", "San Jerónimo", "San José", "San Juan de Opoa", "San Nicolás", "San Pedro", "Santa Rita", "Trinidad de Copán", "Veracruz"], "Cortés": ["San Pedro Sula", "Choloma", "Omoa", "Pimienta", "Potrerillos", "Puerto Cortés", "San Antonio de Cortés", "San Francisco de Yojoa", "San Manuel", "Santa Cruz de Yojoa", "Villanueva", "La Lima"], "Choluteca": ["Choluteca", "Apacilagua", "Concepción de María", "Duyure", "El Corpus", "El Triunfo", "Marcovia", "Morolica", "Namasigüe", "Orocuina", "Pespire", "San Antonio de Flores", "San Isidro", "San José", "San Marcos de Colón", "Santa Ana de Yusguare"], "El Paraíso": ["Yuscarán", "Alauca", "Danlí", "El Paraíso", "Güinope", "Jacaleapa", "Liure", "Morocelí", "Oropolí", "Potrerillos", "San Antonio de Flores", "San Lucas", "San Matías", "Soledad", "Teupasenti", "Texiguat", "Vado Ancho", "Yauyupe", "Trojes"], "Francisco Morazán": ["Distrito Central", "Alubarén", "Cedros", "Curarén", "El Porvenir", "Guaimaca", "La Libertad", "La Venta", "Lepaterique", "Maraita", "Marale", "Nueva Armenia", "Ojojona", "Orica", "Reitoca", "Sabanagrande", "San Antonio de Oriente", "San Buenaventura", "San Ignacio", "San Juan de Flores", "San Miguelito", "Santa Ana", "Santa Lucía", "Talanga", "Tatumbla", "Valle de Ángeles", "Villa de San Francisco", "Vallecillo"], "Gracias a Dios": ["Puerto Lempira", "Brus Laguna", "Ahuas", "Juan Francisco Bulnes", "Villeda Morales", "Wampusirpi"], "Intibucá": ["La Esperanza", "Camasca", "Colomoncagua", "Concepción", "Dolores", "Intibucá", "Jesús de Otoro", "Magdalena", "Masaguara", "San Antonio", "San Isidro", "San Juan", "San Marcos de la Sierra", "San Miguelito", "Santa Lucía", "Yamaranguila", "San Francisco de Opalaca"], "Islas de la Bahía": ["Roatán", "Guanaja", "José Santos Guardiola", "Utila"], "La Paz": ["La Paz", "Aguanqueterique", "Cabañas", "Cane", "Chinacla", "Guajiquiro", "Lauterique", "Marcala", "Mercedes de Oriente", "Opatoro", "San Antonio del Norte", "San José", "San Juan", "San Pedro de Tutule", "Santa Ana", "Santa Elena", "Santa María", "Santiago de Puringla", "Yarula"], "Lempira": ["Gracias", "Belén", "Candelaria", "Cololaca", "Erandique", "Gualcince", "Guarita", "La Campa", "La Iguala", "Las Flores", "La Unión", "La Virtud", "Lepaera", "Mapulaca", "Piraera", "San Andrés", "San Francisco", "San Juan Guarita", "San Manuel Colohete", "San Rafael", "San Sebastián", "Santa Cruz", "Talgua", "Tambla", "Tomalá", "Valladolid", "Virginia", "San Marcos de Caiquín"], "Ocotepeque": ["Ocotepeque", "Belén Gualcho", "Concepción", "Dolores Merendón", "Fraternidad", "La Encarnación", "La Labor", "Lucerna", "Mercedes", "San Fernando", "San Francisco del Valle", "San Jorge", "San Marcos", "Santa Fe", "Sensenti", "Sinuapa"], "Olancho": ["Juticalpa", "Campamento", "Catacamas", "Concordia", "Dulce Nombre de Culmí", "El Rosario", "Esquipulas del Norte", "Gualaco", "Guarizama", "Guata", "Guayape", "Jano", "La Unión", "Mangulile", "Manto", "Salamá", "San Esteban", "San Francisco de Becerra", "San Francisco de la Paz", "Santa María del Real", "Silca", "Yocón", "Patuca"], "Santa Bárbara": ["Santa Bárbara", "Arada", "Atima", "Azacualpa", "Ceguaca", "Concepción del Norte", "Concepción del Sur", "Chinda", "El Níspero", "Gualala", "Ilama", "Macuelizo", "Naranjito", "Nuevo Celilac", "Petoa", "Protección", "Quimistán", "San Francisco de Ojuera", "San José de las Colinas", "San Luis", "San Marcos", "San Nicolás", "San Pedro Zacapa", "San Vicente Centenario", "Santa Rita", "Trinidad"], "Valle": ["Nacaome", "Alianza", "Amapala", "Aramecina", "Caridad", "Goascorán", "Langue", "San Francisco de Coray", "San Lorenzo"], "Yoro": ["Yoro", "Arenal", "El Negrito", "El Progreso", "Jocón", "Morazán", "Olanchito", "Santa Rita", "Sulaco", "Victoria", "Yorito"]};
+  let quoteItemsV77 = [];
+  let quoteCatV77 = "Todos";
+  let quoteSearchV77 = "";
+  let activeQuoteIdV77 = null;
+
+  function escV77(s){
+    return String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  }
+  function normV77(s){
+    return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+  }
+  function mnyV77(n){
+    try{ if(typeof money === "function") return money(n); }catch(e){}
+    return "Lps. " + Math.round(Number(n||0)).toLocaleString("es-HN");
+  }
+  function getProductsV77(){
+    try{ return Array.isArray(products) ? products : []; }catch(e){ return []; }
+  }
+  function productImgV77(p){
+    return p?.img || (Array.isArray(p?.images) && p.images[0]) || (Array.isArray(p?.galeria) && p.galeria[0]) || "";
+  }
+  function getLogoSrcV77(){
+    const img = document.querySelector(".v67-main-logo img, .v65-logo img, img[src^='data:image'], img[src*='SD'], img[src*='logo']");
+    return img?.src || "";
+  }
+  function categoriesV77(){
+    const cats = new Set(["Todos"]);
+    getProductsV77().forEach(p => {
+      const c = p.category || p.categoria || "Otro";
+      if(c) cats.add(c);
+    });
+    return [...cats];
+  }
+  function bestPriceV77(p, qty){
+    qty = Math.max(1, Number(qty||1));
+    const normal = Number(p?.price || p?.precio || 0);
+    const promos = Array.isArray(p?.promos) ? p.promos : [];
+    let best = null;
+    promos.forEach(pr => {
+      const q = Number(pr.qty || pr.cantidad || 0);
+      const totalPromo = Number(pr.total || pr.precio || pr.totalPromo || 0);
+      if(q > 0 && totalPromo > 0 && qty >= q){
+        const unit = totalPromo / q;
+        if(!best || q > best.qty) best = {qty:q, total:totalPromo, unit};
+      }
+    });
+    if(best){
+      const total = Math.round(best.unit * qty);
+      const unit = Math.round(best.unit);
+      return {
+        unit, total,
+        label:`Promo ${best.qty}+ · ${mnyV77(unit)} c/u`,
+        savings: Math.max(0, Math.round((normal * qty) - total))
+      };
+    }
+    return {unit:normal, total:Math.round(normal * qty), label:"Precio normal", savings:0};
+  }
+  function quoteTotalsV77(){
+    const subtotal = quoteItemsV77.reduce((a,it)=>{
+      const p = getProductsV77().find(x=>x.id===it.id) || it.product || {};
+      return a + bestPriceV77(p, it.qty).total;
+    },0);
+    const shipType = document.getElementById("quoteShipTypeV77")?.value || "none";
+    let envio = 0, commission = 0, shipLabel = "Sin envío";
+    if(shipType === "normal"){ envio = 110; shipLabel = "Envío normal prepago"; }
+    if(shipType === "cod"){
+      envio = 100;
+      commission = Math.round((subtotal + envio) * 0.06);
+      shipLabel = "Pagar al recibir";
+    }
+    if(shipType === "local"){
+      envio = Math.max(0, Number(document.getElementById("quoteLocalAmountV77")?.value || 0));
+      shipLabel = "Domicilio local / otro monto";
+    }
+    const shippingTotal = envio + commission;
+    const total = subtotal + shippingTotal;
+    return {subtotal, envio, commission, shippingTotal, total, shipType, shipLabel};
+  }
+  function ensureQuoteModalV77(){
+    if(document.getElementById("quoteModalV77")) return;
+    const modal = document.createElement("div");
+    modal.id = "quoteModalV77";
+    modal.className = "modal";
+    modal.innerHTML = `
+      <div class="sheet">
+        <div class="sheet-head">
+          <div class="sheet-title">Cotización previa</div>
+          <button class="x" onclick="closeQuoteV77()">×</button>
+        </div>
+        <div class="sheet-body">
+          <div class="v77-topline">
+            <span class="v77-mini-badge">Preventa / información</span>
+          </div>
+
+          <div class="v77-quote-layout">
+            <div class="v77-quote-panel">
+              <div class="v77-panel-title"><span>Seleccionar producto</span><small id="quoteCountV77"></small></div>
+              <div class="v77-picker-tools">
+                <input id="quoteSearchV77" class="v77-input" placeholder="Buscar por nombre, categoría o código..." oninput="quoteSearchV77=this.value;renderQuotePickerV77()">
+                <div id="quoteCatsV77" class="v77-chipbar"></div>
+              </div>
+              <div id="quoteProductListV77" class="v77-product-list"></div>
+            </div>
+
+            <div class="v77-quote-panel">
+              <div class="v77-panel-title"><span>Datos para calcular</span><small>No registra venta todavía</small></div>
+              <div class="v77-row2">
+                <div class="v77-field"><label>Cliente opcional</label><input id="quoteClientV77" class="v77-input" placeholder="Nombre del cliente" oninput="renderQuoteV77()"></div>
+                <div class="v77-field"><label>Teléfono opcional</label><input id="quotePhoneV77" class="v77-input" placeholder="Número" oninput="renderQuoteV77()"></div>
+              </div>
+              <div style="height:10px"></div>
+              <div class="v77-row2">
+                <div class="v77-field"><label>Departamento</label><select id="quoteDeptV77" class="v77-select" onchange="updateQuoteMunicipiosV77();renderQuoteV77()"></select></div>
+                <div class="v77-field"><label>Municipio</label><select id="quoteMuniV77" class="v77-select" onchange="renderQuoteV77()"></select></div>
+              </div>
+              <div style="height:10px"></div>
+              <div class="v77-row3">
+                <div class="v77-field"><label>Tipo de envío</label>
+                  <select id="quoteShipTypeV77" class="v77-select" onchange="toggleQuoteLocalV77();renderQuoteV77()">
+                    <option value="none">Sin envío</option>
+                    <option value="normal">Envío normal prepago - Lps. 110</option>
+                    <option value="cod">Pagar al recibir - Lps. 100 × 6%</option>
+                    <option value="local">Domicilio local / otro monto</option>
+                  </select>
+                </div>
+                <div class="v77-field"><label>Empresa / entrega</label>
+                  <select id="quoteCarrierV77" class="v77-select" onchange="renderQuoteV77()">
+                    <option value="Entrega en tienda">Entrega en tienda</option>
+                    <option value="Domicilio">Domicilio</option>
+                    <option value="CO807">CO807</option>
+                    <option value="Forza">Forza</option>
+                    <option value="Cargo Expreso">Cargo Expreso</option>
+                  </select>
+                </div>
+                <div class="v77-field" id="quoteLocalFieldV77" style="display:none"><label>Monto local</label><input id="quoteLocalAmountV77" class="v77-input" type="number" min="0" step="1" value="0" oninput="renderQuoteV77()"></div>
+              </div>
+              <div class="v77-save-msg">
+                Esta cotización es solo para informar al cliente. Al tocar <b>Pasar a venta</b>, se manda al carrito/factura real.
+              </div>
+            </div>
+
+            <div class="v77-quote-panel">
+              <div class="v77-panel-title"><span>Productos cotizados</span><small>Edita cantidades</small></div>
+              <div id="quoteItemsV77" class="v77-quote-items"></div>
+            </div>
+
+            <div id="quoteCardV77" class="v77-quote-card"></div>
+
+            <div class="v77-action-grid">
+              <button class="btn blue" onclick="downloadQuoteImageV77()">⬇ Imagen</button>
+              <button class="btn blue" onclick="shareQuoteTextV77()">WhatsApp texto</button>
+              <button class="btn sell" onclick="shareQuoteImageV77()">WhatsApp foto</button>
+              <button class="btn sell v77-wide" onclick="quoteToSaleV77()">Pasar a venta / factura real</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    buildQuoteDeptOptionsV77();
+  }
+  function buildQuoteDeptOptionsV77(){
+    const dept = document.getElementById("quoteDeptV77");
+    if(!dept) return;
+    const depts = Object.keys(MUNICIPIOS_V77);
+    dept.innerHTML = '<option value="">Seleccionar departamento</option>' + depts.map(d=>`<option value="${escV77(d)}">${escV77(d)}</option>`).join("");
+    updateQuoteMunicipiosV77();
+  }
+  window.updateQuoteMunicipiosV77 = function(){
+    const dept = document.getElementById("quoteDeptV77")?.value || "";
+    const muni = document.getElementById("quoteMuniV77");
+    if(!muni) return;
+    const list = MUNICIPIOS_V77[dept] || [];
+    muni.innerHTML = '<option value="">Seleccionar municipio</option>' + list.map(m=>`<option value="${escV77(m)}">${escV77(m)}</option>`).join("");
+  };
+  window.toggleQuoteLocalV77 = function(){
+    const type = document.getElementById("quoteShipTypeV77")?.value;
+    const field = document.getElementById("quoteLocalFieldV77");
+    if(field) field.style.display = type === "local" ? "" : "none";
+    if(type === "normal"){
+      const carrier = document.getElementById("quoteCarrierV77");
+      if(carrier && (carrier.value === "Entrega en tienda" || carrier.value === "Domicilio")) carrier.value = "CO807";
+    }
+    if(type === "cod"){
+      const carrier = document.getElementById("quoteCarrierV77");
+      if(carrier && (carrier.value === "Entrega en tienda" || carrier.value === "Domicilio")) carrier.value = "Forza";
+    }
+  };
+  window.openQuoteV77 = function(id, keep=false){
+    ensureQuoteModalV77();
+    activeQuoteIdV77 = id || activeQuoteIdV77;
+    if(!keep && id){
+      quoteItemsV77 = [];
+      addQuoteProductV77(id, 1, true);
+    }
+    renderQuotePickerV77();
+    renderQuoteV77();
+    try{ openModal("quoteModalV77"); }catch(e){ document.getElementById("quoteModalV77").classList.add("show"); }
+  };
+  window.closeQuoteV77 = function(){
+    try{ closeModal("quoteModalV77"); }catch(e){ document.getElementById("quoteModalV77")?.classList.remove("show"); }
+  };
+  window.renderQuotePickerV77 = function(){
+    ensureQuoteModalV77();
+    const cats = categoriesV77();
+    const catBox = document.getElementById("quoteCatsV77");
+    if(catBox){
+      catBox.innerHTML = cats.map(c=>`<button class="v77-chip ${c===quoteCatV77?'active':''}" onclick="quoteCatV77='${escV77(c)}';renderQuotePickerV77()">${escV77(c)}</button>`).join("");
+    }
+    const list = document.getElementById("quoteProductListV77");
+    const q = normV77(document.getElementById("quoteSearchV77")?.value || quoteSearchV77);
+    const productsList = getProductsV77().filter(p => {
+      const cat = p.category || p.categoria || "Otro";
+      const hay = normV77([p.name,p.nombre,p.code,p.codigo,cat,p.desc,p.descripcion].join(" "));
+      return (quoteCatV77 === "Todos" || normV77(cat) === normV77(quoteCatV77)) && (!q || hay.includes(q));
+    });
+    const count = document.getElementById("quoteCountV77");
+    if(count) count.textContent = `${productsList.length} encontrados`;
+    if(!list) return;
+    if(!productsList.length){
+      list.innerHTML = `<div class="v77-empty-quote">No encontré productos con esa búsqueda o categoría.</div>`;
+      return;
+    }
+    list.innerHTML = productsList.map(p=>{
+      const img = productImgV77(p);
+      return `<button class="v77-product-option" onclick="addQuoteProductV77('${escV77(p.id)}')">
+        <div class="v77-thumb">${img?`<img src="${escV77(img)}" alt="">`:"SD"}</div>
+        <div>
+          <div class="v77-po-name">${escV77(p.name || p.nombre || "Producto")}</div>
+          <div class="v77-po-meta">${mnyV77(p.price || p.precio || 0)} · Stock ${Number(p.stock||0)} · ${escV77(p.category||p.categoria||"Otro")}</div>
+        </div>
+        <span class="v77-po-add">Agregar</span>
+      </button>`;
+    }).join("");
+  };
+  window.addQuoteProductV77 = function(id, qty=1, silent=false){
+    const p = getProductsV77().find(x=>x.id===id);
+    if(!p) return;
+    const found = quoteItemsV77.find(x=>x.id===id);
+    if(found) found.qty += Number(qty||1);
+    else quoteItemsV77.push({id, qty:Number(qty||1)});
+    if(!silent && typeof toast === "function") toast("Producto agregado a cotización.");
+    renderQuoteV77();
+  };
+  window.changeQuoteQtyV77 = function(id, delta){
+    const item = quoteItemsV77.find(x=>x.id===id);
+    if(!item) return;
+    item.qty = Math.max(1, Number(item.qty||1) + Number(delta||0));
+    renderQuoteV77();
+  };
+  window.setQuoteQtyV77 = function(id, value){
+    const item = quoteItemsV77.find(x=>x.id===id);
+    if(!item) return;
+    item.qty = Math.max(1, Number(value||1));
+    renderQuoteV77();
+  };
+  window.removeQuoteItemV77 = function(id){
+    quoteItemsV77 = quoteItemsV77.filter(x=>x.id!==id);
+    renderQuoteV77();
+  };
+  window.renderQuoteV77 = function(){
+    ensureQuoteModalV77();
+    const itemsBox = document.getElementById("quoteItemsV77");
+    const card = document.getElementById("quoteCardV77");
+    const logo = getLogoSrcV77();
+    const t = quoteTotalsV77();
+    const client = document.getElementById("quoteClientV77")?.value.trim() || "Cliente";
+    const phone = document.getElementById("quotePhoneV77")?.value.trim() || "";
+    const dept = document.getElementById("quoteDeptV77")?.value || "";
+    const muni = document.getElementById("quoteMuniV77")?.value || "";
+    const carrier = document.getElementById("quoteCarrierV77")?.value || "Entrega en tienda";
+    const date = new Date().toLocaleString("es-HN",{day:"numeric",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"});
+    const code = "COT-" + Date.now().toString().slice(-9);
+
+    if(itemsBox){
+      if(!quoteItemsV77.length){
+        itemsBox.innerHTML = `<div class="v77-empty-quote">Agrega un producto para calcular la cotización.</div>`;
+      }else{
+        itemsBox.innerHTML = quoteItemsV77.map(it=>{
+          const p = getProductsV77().find(x=>x.id===it.id) || {};
+          const pr = bestPriceV77(p, it.qty);
+          const img = productImgV77(p);
+          return `<div class="v77-line">
+            <div class="v77-thumb">${img?`<img src="${escV77(img)}" alt="">`:"SD"}</div>
+            <div>
+              <h4>${escV77(p.name || p.nombre || "Producto")}</h4>
+              <small>${escV77(pr.label)} ${pr.savings?`· Ahorra ${mnyV77(pr.savings)}`:""}</small>
+              <div class="v77-step" style="margin-top:8px">
+                <button onclick="changeQuoteQtyV77('${escV77(it.id)}',-1)">−</button>
+                <input value="${Number(it.qty||1)}" type="number" min="1" oninput="setQuoteQtyV77('${escV77(it.id)}',this.value)">
+                <button onclick="changeQuoteQtyV77('${escV77(it.id)}',1)">+</button>
+              </div>
+            </div>
+            <div class="v77-line-actions">
+              <div>
+                <div class="v77-line-total">${mnyV77(pr.total)}</div>
+                <button class="v77-remove-line" onclick="removeQuoteItemV77('${escV77(it.id)}')">×</button>
+              </div>
+            </div>
+          </div>`;
+        }).join("");
+      }
+    }
+
+    if(card){
+      const rows = quoteItemsV77.map(it=>{
+        const p = getProductsV77().find(x=>x.id===it.id) || {};
+        const pr = bestPriceV77(p, it.qty);
+        return `<tr>
+          <td><b>${escV77(p.name || p.nombre || "Producto")}</b><br><small>${escV77(p.code || p.codigo || "")}${pr.savings?` · Ahorro ${mnyV77(pr.savings)}`:""}</small></td>
+          <td class="num">${Number(it.qty||1)}</td>
+          <td class="num">${mnyV77(pr.unit)}</td>
+          <td class="num">${mnyV77(pr.total)}</td>
+        </tr>`;
+      }).join("");
+      card.innerHTML = `
+        <div class="v77-q-head">
+          <div class="v77-q-brand">
+            <span class="v77-mini-badge">Cotización lista</span>
+            ${logo?`<img class="v77-q-logo" src="${escV77(logo)}" alt="SD Comayagua">`:`<div class="v77-q-logo" style="display:grid;place-items:center;color:#00e5ff;font-weight:950">SD</div>`}
+          </div>
+          <div class="v77-q-title"><span>Vista previa para cliente</span><b>SD<br>COMAYAGUA</b></div>
+        </div>
+        <div class="v77-q-body">
+          <div class="v77-q-info">
+            <div class="v77-info-box"><small>Cliente</small>${escV77(client)}</div>
+            <div class="v77-info-box"><small>Fecha</small>${escV77(date)}</div>
+            ${phone?`<div class="v77-info-box"><small>Teléfono</small>${escV77(phone)}</div>`:""}
+            ${dept?`<div class="v77-info-box"><small>Departamento</small>${escV77(dept)}</div>`:""}
+            ${muni?`<div class="v77-info-box"><small>Municipio</small>${escV77(muni)}</div>`:""}
+          </div>
+          <table class="v77-q-table">
+            <thead><tr><th>Producto</th><th class="num">Cant.</th><th class="num">Precio</th><th class="num">Total</th></tr></thead>
+            <tbody>${rows || `<tr><td colspan="4">Sin productos agregados.</td></tr>`}</tbody>
+          </table>
+          <div class="v77-q-summary">
+            <div><span>Productos</span><b>${mnyV77(t.subtotal)}</b></div>
+            <div><span>Envío</span><b>${mnyV77(t.envio)}</b></div>
+            <div><span>Comisión por pagar al recibir</span><b>${mnyV77(t.commission)}</b></div>
+            <div><span>Total envío</span><b>${mnyV77(t.shippingTotal)}</b></div>
+            <div class="grand"><span>Total cotizado</span><b>${mnyV77(t.total)}</b></div>
+          </div>
+          <div class="v77-q-footer">Empresa / entrega: ${escV77(carrier)}${t.shipType==="cod"?" · Pagar al recibir con comisión de empresa":""}</div>
+          <div class="v77-q-note">Cotización informativa. La venta queda registrada únicamente al pasarla a factura real. WhatsApp +504 3151-7755</div>
+        </div>`;
+    }
+  };
+  function quoteTextV77(){
+    const t = quoteTotalsV77();
+    const client = document.getElementById("quoteClientV77")?.value.trim() || "Cliente";
+    const phone = document.getElementById("quotePhoneV77")?.value.trim() || "";
+    const dept = document.getElementById("quoteDeptV77")?.value || "";
+    const muni = document.getElementById("quoteMuniV77")?.value || "";
+    const carrier = document.getElementById("quoteCarrierV77")?.value || "Entrega en tienda";
+    const date = new Date().toLocaleString("es-HN",{day:"numeric",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"});
+    const lines = [
+      "🧾 *COTIZACIÓN SD COMAYAGUA*",
+      "",
+      `📅 *Fecha:* ${date}`,
+      `👤 *Cliente:* ${client}`,
+      phone ? `📞 *Teléfono:* ${phone}` : "",
+      dept ? `🏷️ *Departamento:* ${dept}` : "",
+      muni ? `📍 *Municipio:* ${muni}` : "",
+      "",
+      "🛒 *PRODUCTOS*"
+    ].filter(Boolean);
+    quoteItemsV77.forEach(it=>{
+      const p = getProductsV77().find(x=>x.id===it.id) || {};
+      const pr = bestPriceV77(p, it.qty);
+      lines.push(
+        `• ${p.name || p.nombre || "Producto"}`,
+        `  Cantidad: ${Number(it.qty||1)}`,
+        `  Precio: ${mnyV77(pr.unit)}`,
+        `  Total: ${mnyV77(pr.total)}${pr.savings ? ` | Ahorra ${mnyV77(pr.savings)}` : ""}`
+      );
+    });
+    lines.push(
+      "",
+      "🚚 *ENVÍO*",
+      `Empresa / entrega: ${carrier}`,
+      `Envío: ${mnyV77(t.envio)}`,
+      `Comisión por pagar al recibir: ${mnyV77(t.commission)}`,
+      `Total envío: ${mnyV77(t.shippingTotal)}`,
+      "",
+      "💰 *RESUMEN*",
+      `Productos: ${mnyV77(t.subtotal)}`,
+      `*TOTAL COTIZADO: ${mnyV77(t.total)}*`,
+      "",
+      "SD COMAYAGUA.",
+      "WhatsApp: +504 3151-7755"
+    );
+    return lines.join("\n");
+  }
+  window.shareQuoteTextV77 = function(){
+    if(!quoteItemsV77.length){ if(typeof toast==="function") toast("Agrega productos a la cotización."); return; }
+    const msg = quoteTextV77();
+    window.open(`https://wa.me/50431517755?text=${encodeURIComponent(msg)}`,"_blank");
+  };
+
+  function wrapTextCanvasV77(ctx, text, x, y, maxWidth, lineHeight, maxLines=3){
+    const words = String(text||"").split(/\s+/);
+    let line = "", lines = 0;
+    for(let n=0;n<words.length;n++){
+      const test = line ? line + " " + words[n] : words[n];
+      if(ctx.measureText(test).width > maxWidth && n > 0){
+        ctx.fillText(line, x, y); y += lineHeight; lines++;
+        line = words[n];
+        if(lines >= maxLines-1) break;
+      }else line = test;
+    }
+    if(line){ ctx.fillText(line, x, y); y += lineHeight; }
+    return y;
+  }
+  function roundRectV77(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+  }
+  function loadImgV77(src){
+    return new Promise(resolve=>{
+      if(!src) return resolve(null);
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload=()=>resolve(img);
+      img.onerror=()=>resolve(null);
+      img.src=src;
+      setTimeout(()=>resolve(null),1800);
+    });
+  }
+  async function quoteBlobV77(){
+    const t = quoteTotalsV77();
+    const logoSrc = getLogoSrcV77();
+    const logo = await loadImgV77(logoSrc);
+    const W = 1080;
+    const productRows = Math.max(1, quoteItemsV77.length);
+    const H = 980 + productRows * 95;
+    const canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = "#f6fbff"; ctx.fillRect(0,0,W,H);
+
+    const grad = ctx.createLinearGradient(0,0,W,300);
+    grad.addColorStop(0,"#06111e"); grad.addColorStop(.55,"#083254"); grad.addColorStop(1,"#04111d");
+    ctx.fillStyle = grad; roundRectV77(ctx,45,45,W-90,270,34); ctx.fill();
+
+    ctx.fillStyle = "#31ffad";
+    ctx.font = "800 26px Arial";
+    ctx.fillText("COTIZACIÓN LISTA PARA WHATSAPP",80,105);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 56px Arial";
+    ctx.fillText("SD COMAYAGUA",80,180);
+    ctx.font = "800 28px Arial";
+    ctx.fillText(new Date().toLocaleString("es-HN",{day:"numeric",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"}),80,228);
+    ctx.fillText("WhatsApp +504 3151-7755",80,268);
+
+    if(logo){
+      ctx.save();
+      roundRectV77(ctx,W-260,82,150,150,28); ctx.clip();
+      ctx.drawImage(logo,W-260,82,150,150);
+      ctx.restore();
+    }else{
+      ctx.fillStyle="#04111d"; roundRectV77(ctx,W-260,82,150,150,28); ctx.fill();
+      ctx.fillStyle="#00e5ff"; ctx.font="900 50px Arial"; ctx.fillText("SD",W-218,170);
+    }
+
+    let y = 360;
+    const client = document.getElementById("quoteClientV77")?.value.trim() || "Cliente";
+    const dept = document.getElementById("quoteDeptV77")?.value || "";
+    const muni = document.getElementById("quoteMuniV77")?.value || "";
+    const carrier = document.getElementById("quoteCarrierV77")?.value || "Entrega en tienda";
+
+    ctx.fillStyle="#eaf4fb"; roundRectV77(ctx,65,y,W-130,82,22); ctx.fill();
+    ctx.fillStyle="#718292"; ctx.font="800 20px Arial"; ctx.fillText("CLIENTE",95,y+30);
+    ctx.fillStyle="#081320"; ctx.font="900 28px Arial"; ctx.fillText(client,95,y+62);
+    y += 110;
+    if(dept || muni){
+      ctx.fillStyle="#eaf4fb"; roundRectV77(ctx,65,y,W-130,82,22); ctx.fill();
+      ctx.fillStyle="#718292"; ctx.font="800 20px Arial"; ctx.fillText("UBICACIÓN",95,y+30);
+      ctx.fillStyle="#081320"; ctx.font="900 28px Arial"; ctx.fillText([dept,muni].filter(Boolean).join(" · "),95,y+62);
+      y += 110;
+    }
+
+    ctx.fillStyle="#3d4d5d"; ctx.font="900 22px Arial";
+    ctx.fillText("PRODUCTO",75,y); ctx.fillText("CANT.",650,y); ctx.fillText("PRECIO",760,y); ctx.fillText("TOTAL",910,y);
+    y += 36;
+    ctx.strokeStyle="#d8e4ed"; ctx.beginPath(); ctx.moveTo(65,y); ctx.lineTo(W-65,y); ctx.stroke(); y += 40;
+
+    ctx.fillStyle="#081320"; ctx.font="900 26px Arial";
+    quoteItemsV77.forEach(it=>{
+      const p = getProductsV77().find(x=>x.id===it.id) || {};
+      const pr = bestPriceV77(p, it.qty);
+      ctx.fillStyle="#081320"; ctx.font="900 26px Arial";
+      wrapTextCanvasV77(ctx, p.name || p.nombre || "Producto", 75, y, 520, 30, 2);
+      ctx.fillStyle="#6a7b8b"; ctx.font="800 20px Arial";
+      if(pr.savings) ctx.fillText("Ahorra " + mnyV77(pr.savings),75,y+34);
+      ctx.fillStyle="#081320"; ctx.font="900 26px Arial";
+      ctx.fillText(String(Number(it.qty||1)),650,y);
+      ctx.fillText(mnyV77(pr.unit),760,y);
+      ctx.fillText(mnyV77(pr.total),910,y);
+      y += 90;
+      ctx.strokeStyle="#e1ebf2"; ctx.beginPath(); ctx.moveTo(65,y-18); ctx.lineTo(W-65,y-18); ctx.stroke();
+    });
+
+    y += 15;
+    const sy = y;
+    const sh = 230;
+    const sgrad = ctx.createLinearGradient(65,sy,W-65,sy+sh);
+    sgrad.addColorStop(0,"#061624"); sgrad.addColorStop(1,"#0a2a43");
+    ctx.fillStyle=sgrad; roundRectV77(ctx,65,sy,W-130,sh,28); ctx.fill();
+
+    ctx.font="800 27px Arial"; ctx.fillStyle="#dcecff";
+    const summary = [
+      ["Productos", mnyV77(t.subtotal)],
+      ["Envío", mnyV77(t.envio)],
+      ["Comisión por pagar al recibir", mnyV77(t.commission)],
+      ["Total envío", mnyV77(t.shippingTotal)]
+    ];
+    let yy = sy+45;
+    summary.forEach(([a,b])=>{ctx.fillText(a,95,yy); ctx.fillText(b,W-270,yy); yy+=42;});
+    ctx.strokeStyle="rgba(255,255,255,.18)"; ctx.beginPath(); ctx.moveTo(95,yy-18); ctx.lineTo(W-95,yy-18); ctx.stroke();
+    ctx.fillStyle="#31ffad"; ctx.font="900 42px Arial"; ctx.fillText("Total",95,yy+28); ctx.fillText(mnyV77(t.total),W-315,yy+28);
+
+    y = sy + sh + 40;
+    ctx.fillStyle="#ecfff6"; roundRectV77(ctx,65,y,W-130,70,22); ctx.fill();
+    ctx.fillStyle="#163225"; ctx.font="900 26px Arial"; ctx.fillText("Empresa / entrega: " + carrier,95,y+44);
+    y += 110;
+    ctx.fillStyle="#5b6d7d"; ctx.font="800 22px Arial";
+    ctx.textAlign="center";
+    ctx.fillText("Cotización informativa · La venta se registra al pasarla a factura real",W/2,y);
+    ctx.textAlign="start";
+
+    return await new Promise(resolve => canvas.toBlob(resolve, "image/png", .95));
+  }
+  window.downloadQuoteImageV77 = async function(){
+    if(!quoteItemsV77.length){ if(typeof toast==="function") toast("Agrega productos a la cotización."); return; }
+    const blob = await quoteBlobV77();
+    if(!blob){ if(typeof toast==="function") toast("No se pudo generar la imagen."); return; }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "cotizacion-sd-comayagua.png";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1200);
+  };
+  window.shareQuoteImageV77 = async function(){
+    if(!quoteItemsV77.length){ if(typeof toast==="function") toast("Agrega productos a la cotización."); return; }
+    try{
+      const blob = await quoteBlobV77();
+      const file = new File([blob], "cotizacion-sd-comayagua.png", {type:"image/png"});
+      if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
+        await navigator.share({files:[file], title:"Cotización SD Comayagua", text:"Cotización SD Comayagua"});
+        return;
+      }
+    }catch(e){}
+    shareQuoteTextV77();
+  };
+  window.quoteToSaleV77 = function(){
+    if(!quoteItemsV77.length){ if(typeof toast==="function") toast("Agrega productos a la cotización."); return; }
+    try{
+      quoteItemsV77.forEach(it=>{
+        const p = getProductsV77().find(x=>x.id===it.id);
+        if(!p) return;
+        const pr = bestPriceV77(p, it.qty);
+        cart.push({id:p.id,name:p.name || p.nombre || "Producto",code:p.code || p.codigo || "",img:productImgV77(p),qty:Number(it.qty||1),price:pr.unit,note:"Cotización previa"});
+      });
+      if(typeof saveCart === "function") saveCart();
+      if(typeof renderCart === "function") renderCart();
+      closeQuoteV77();
+      if(typeof openCart === "function") openCart(); else try{ openModal("cartModal"); }catch(e){}
+
+      setTimeout(()=>{
+        const client = document.getElementById("quoteClientV77")?.value || "";
+        const phone = document.getElementById("quotePhoneV77")?.value || "";
+        const dept = document.getElementById("quoteDeptV77")?.value || "";
+        const muni = document.getElementById("quoteMuniV77")?.value || "";
+        const shipType = document.getElementById("quoteShipTypeV77")?.value || "none";
+        const carrier = document.getElementById("quoteCarrierV77")?.value || "";
+        const localAmount = document.getElementById("quoteLocalAmountV77")?.value || "0";
+        if(document.getElementById("clientName")) document.getElementById("clientName").value = client;
+        if(document.getElementById("clientPhone")) document.getElementById("clientPhone").value = phone;
+        if(document.getElementById("clientDept")){ document.getElementById("clientDept").value = dept; try{ window.updateMunicipiosV67(); }catch(e){} }
+        if(document.getElementById("clientMunicipio")) document.getElementById("clientMunicipio").value = muni;
+        if(document.getElementById("shippingType")) document.getElementById("shippingType").value = shipType;
+        if(document.getElementById("shippingCustom")) document.getElementById("shippingCustom").value = localAmount;
+        if(document.getElementById("carrier")) document.getElementById("carrier").value = carrier;
+        try{ if(typeof handleShippingV62==="function") handleShippingV62(); }catch(e){}
+        try{ if(typeof calcCart==="function") calcCart(); }catch(e){}
+      },250);
+
+      if(typeof toast === "function") toast("Cotización enviada al carrito/factura.");
+    }catch(e){
+      console.error(e);
+      if(typeof toast === "function") toast("No se pudo pasar a venta.");
+    }
+  };
+
+  function installQuoteHooksV77(){
+    if(window.__quoteHooksV77) return;
+    window.__quoteHooksV77 = true;
+
+    if(typeof cardHTML === "function"){
+      const oldCardHTML = cardHTML;
+      window.cardHTML = cardHTML = function(p){
+        let out = oldCardHTML(p);
+        const id = escV77(p?.id || "");
+        out = out.replace('<article class="card"', `<article class="card" data-v77-id="${id}"`);
+        out = out.replace(/(<div[^>]*class="[^"]*card-actions[^"]*"[^>]*>)/, `$1<button class="btn v77-quote" onclick="event.stopPropagation();openQuoteV77('${id}')">Cotizar</button>`);
+        return out;
+      };
+    }
+
+    document.addEventListener("click", function(ev){
+      const pic = ev.target.closest?.(".card[data-v77-id] .pic");
+      if(pic){
+        const card = pic.closest(".card[data-v77-id]");
+        const id = card?.getAttribute("data-v77-id");
+        if(id){
+          ev.preventDefault(); ev.stopPropagation();
+          openQuoteV77(id);
+        }
+      }
+    }, true);
+
+    if(typeof openProduct === "function"){
+      const oldOpenProduct = openProduct;
+      window.openProduct = openProduct = function(id){
+        const result = oldOpenProduct.apply(this, arguments);
+        setTimeout(()=>{
+          const body = document.querySelector("#productModal .sheet-body");
+          if(body && !document.getElementById("quoteBtnProductV77")){
+            const btn = document.createElement("button");
+            btn.id = "quoteBtnProductV77";
+            btn.className = "btn v77-quote full";
+            btn.style.marginTop = "10px";
+            btn.textContent = "Cotizar este producto";
+            btn.onclick = function(){ closeModal("productModal"); openQuoteV77(id); };
+            body.appendChild(btn);
+          }
+        },120);
+        return result;
+      };
+    }
+
+    try{ if(typeof render === "function") render(); }catch(e){}
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>setTimeout(installQuoteHooksV77,450));
+  window.addEventListener("load",()=>setTimeout(installQuoteHooksV77,350));
+  setTimeout(installQuoteHooksV77,900);
+})();
+</script>
+
 </body>
 </html>

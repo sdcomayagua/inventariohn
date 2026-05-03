@@ -8398,108 +8398,246 @@
     const t = quoteTotalsV77();
     const logoSrc = getLogoSrcV77();
     const logo = await loadImgV77(logoSrc);
+
+    const items = quoteItemsV77.map(it => {
+      const p = getProductsV77().find(x=>x.id===it.id) || {};
+      const pr = bestPriceV77(p, it.qty);
+      return {it,p,pr};
+    });
+
     const W = 1080;
-    const productRows = Math.max(1, quoteItemsV77.length);
-    const H = 980 + productRows * 95;
+    const minH = 1740;
+    const H = Math.max(minH, 1320 + (Math.max(1, items.length) * 112));
     const canvas = document.createElement("canvas");
-    canvas.width = W; canvas.height = H;
+    canvas.width = W; 
+    canvas.height = H;
     const ctx = canvas.getContext("2d");
 
-    ctx.fillStyle = "#f6fbff"; ctx.fillRect(0,0,W,H);
+    function rr(x,y,w,h,r,fill=true,stroke=false){
+      roundRectV77(ctx,x,y,w,h,r);
+      if(fill) ctx.fill();
+      if(stroke) ctx.stroke();
+    }
+    function line(x1,y1,x2,y2,color="#d8e4ed",w=2){
+      ctx.save(); ctx.strokeStyle=color; ctx.lineWidth=w; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.restore();
+    }
+    function fitText(text, x, y, maxWidth, size, weight="900", color="#081320", font="Arial"){
+      let s = String(text || "");
+      ctx.font = `${weight} ${size}px ${font}`;
+      while(ctx.measureText(s).width > maxWidth && size > 15){
+        size -= 1;
+        ctx.font = `${weight} ${size}px ${font}`;
+      }
+      ctx.fillStyle = color;
+      ctx.fillText(s, x, y);
+      return size;
+    }
+    function smallCaps(text, x, y, color="#6b7d8e"){
+      ctx.fillStyle = color;
+      ctx.font = "900 20px Arial";
+      ctx.fillText(String(text || "").toUpperCase(), x, y);
+    }
 
-    const grad = ctx.createLinearGradient(0,0,W,300);
-    grad.addColorStop(0,"#06111e"); grad.addColorStop(.55,"#083254"); grad.addColorStop(1,"#04111d");
-    ctx.fillStyle = grad; roundRectV77(ctx,45,45,W-90,270,34); ctx.fill();
+    // Fondo vertical premium
+    const bg = ctx.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,"#031019");
+    bg.addColorStop(.45,"#061b2d");
+    bg.addColorStop(1,"#02070d");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
 
-    ctx.fillStyle = "#31ffad";
-    ctx.font = "800 26px Arial";
-    ctx.fillText("COTIZACIÓN LISTA PARA WHATSAPP",80,105);
+    // Luces gamer
+    ctx.save();
+    ctx.globalAlpha = .65;
+    let g1 = ctx.createRadialGradient(160,120,20,160,120,470);
+    g1.addColorStop(0,"rgba(0,229,255,.40)");
+    g1.addColorStop(1,"rgba(0,229,255,0)");
+    ctx.fillStyle = g1; ctx.fillRect(0,0,W,H);
+    let g2 = ctx.createRadialGradient(930,320,30,930,320,520);
+    g2.addColorStop(0,"rgba(49,255,173,.28)");
+    g2.addColorStop(1,"rgba(49,255,173,0)");
+    ctx.fillStyle = g2; ctx.fillRect(0,0,W,H);
+    ctx.restore();
 
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "900 56px Arial";
-    ctx.fillText("SD COMAYAGUA",80,180);
-    ctx.font = "800 28px Arial";
-    ctx.fillText(new Date().toLocaleString("es-HN",{day:"numeric",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"}),80,228);
-    ctx.fillText("WhatsApp +504 3151-7755",80,268);
+    // Rejilla sutil
+    ctx.save();
+    ctx.globalAlpha = .09;
+    ctx.strokeStyle = "#00e5ff";
+    ctx.lineWidth = 1;
+    for(let x=70; x<W; x+=70){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for(let y=70; y<H; y+=70){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    ctx.restore();
+
+    // Tarjeta principal
+    const cardX = 48, cardY = 48, cardW = W-96, cardH = H-96;
+    ctx.fillStyle = "#f4fbff";
+    rr(cardX,cardY,cardW,cardH,42,true,false);
+    ctx.strokeStyle = "rgba(0,229,255,.45)";
+    ctx.lineWidth = 4;
+    rr(cardX,cardY,cardW,cardH,42,false,true);
+
+    // Encabezado
+    const headX = 78, headY = 78, headW = W-156, headH = 270;
+    const headGrad = ctx.createLinearGradient(headX,headY,headX+headW,headY+headH);
+    headGrad.addColorStop(0,"#06111e");
+    headGrad.addColorStop(.55,"#083254");
+    headGrad.addColorStop(1,"#020b14");
+    ctx.fillStyle = headGrad;
+    rr(headX,headY,headW,headH,34,true,false);
+
+    ctx.save();
+    ctx.globalAlpha = .20;
+    ctx.fillStyle = "#00e5ff";
+    for(let x=headX+25; x<headX+headW; x+=62){ ctx.fillRect(x,headY,2,headH); }
+    for(let y=headY+25; y<headY+headH; y+=58){ ctx.fillRect(headX,y,headW,2); }
+    ctx.restore();
+
+    ctx.fillStyle = "rgba(49,255,173,.12)";
+    rr(headX+36, headY+36, 342, 48, 24, true, false);
+    ctx.strokeStyle = "rgba(49,255,173,.35)";
+    ctx.lineWidth = 2;
+    rr(headX+36, headY+36, 342, 48, 24, false, true);
+    fitText("COTIZACIÓN • WHATSAPP", headX+58, headY+68, 300, 22, "900", "#31ffad");
+
+    fitText("SD COMAYAGUA", headX+36, headY+150, 600, 58, "900", "#ffffff");
+    fitText(new Date().toLocaleString("es-HN",{day:"numeric",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"}), headX+38, headY+202, 520, 30, "900", "#dbe8f3");
+    fitText("WhatsApp +504 3151-7755", headX+38, headY+242, 520, 29, "900", "#ffffff");
 
     if(logo){
       ctx.save();
-      roundRectV77(ctx,W-260,82,150,150,28); ctx.clip();
-      ctx.drawImage(logo,W-260,82,150,150);
+      rr(headX+headW-208, headY+52, 148, 148, 30, false, false);
+      ctx.clip();
+      ctx.drawImage(logo, headX+headW-208, headY+52, 148, 148);
       ctx.restore();
+      ctx.strokeStyle = "rgba(0,229,255,.45)";
+      ctx.lineWidth = 3;
+      rr(headX+headW-208, headY+52, 148, 148, 30, false, true);
     }else{
-      ctx.fillStyle="#04111d"; roundRectV77(ctx,W-260,82,150,150,28); ctx.fill();
-      ctx.fillStyle="#00e5ff"; ctx.font="900 50px Arial"; ctx.fillText("SD",W-218,170);
+      ctx.fillStyle="#03111d";
+      rr(headX+headW-208, headY+52, 148, 148, 30, true, false);
+      fitText("SD", headX+headW-165, headY+140, 100, 52, "900", "#00e5ff");
     }
 
-    let y = 360;
+    let y = headY + headH + 42;
     const client = document.getElementById("quoteClientV77")?.value.trim() || "Cliente";
+    const phone = document.getElementById("quotePhoneV77")?.value.trim() || "";
     const dept = document.getElementById("quoteDeptV77")?.value || "";
     const muni = document.getElementById("quoteMuniV77")?.value || "";
     const carrier = document.getElementById("quoteCarrierV77")?.value || "Entrega en tienda";
 
-    ctx.fillStyle="#eaf4fb"; roundRectV77(ctx,65,y,W-130,82,22); ctx.fill();
-    ctx.fillStyle="#718292"; ctx.font="800 20px Arial"; ctx.fillText("CLIENTE",95,y+30);
-    ctx.fillStyle="#081320"; ctx.font="900 28px Arial"; ctx.fillText(client,95,y+62);
-    y += 110;
-    if(dept || muni){
-      ctx.fillStyle="#eaf4fb"; roundRectV77(ctx,65,y,W-130,82,22); ctx.fill();
-      ctx.fillStyle="#718292"; ctx.font="800 20px Arial"; ctx.fillText("UBICACIÓN",95,y+30);
-      ctx.fillStyle="#081320"; ctx.font="900 28px Arial"; ctx.fillText([dept,muni].filter(Boolean).join(" · "),95,y+62);
-      y += 110;
+    // Datos en dos columnas
+    const boxGap = 18;
+    const boxW = (cardW - 60 - boxGap) / 2;
+    const boxH = 90;
+    function infoBox(label, value, x, yy){
+      ctx.fillStyle = "#e7f3fb";
+      rr(x,yy,boxW,boxH,22,true,false);
+      ctx.strokeStyle = "#d5e6f0";
+      ctx.lineWidth = 2;
+      rr(x,yy,boxW,boxH,22,false,true);
+      smallCaps(label, x+24, yy+34);
+      fitText(value || "No indicado", x+24, yy+68, boxW-48, 27, "900", "#071522");
+    }
+    infoBox("Cliente", client, cardX+30, y);
+    infoBox("Teléfono", phone || "No indicado", cardX+30+boxW+boxGap, y);
+    y += boxH + 18;
+    infoBox("Departamento", dept || "No indicado", cardX+30, y);
+    infoBox("Municipio", muni || "No indicado", cardX+30+boxW+boxGap, y);
+    y += boxH + 46;
+
+    // Tabla de productos
+    ctx.fillStyle = "#3f5162";
+    ctx.font = "900 24px Arial";
+    ctx.fillText("PRODUCTO", cardX+42, y);
+    ctx.fillText("CANT.", cardX+610, y);
+    ctx.fillText("PRECIO", cardX+725, y);
+    ctx.fillText("TOTAL", cardX+860, y);
+    y += 28;
+    line(cardX+30, y, cardX+cardW-30, y, "#d7e5ee", 2);
+    y += 52;
+
+    if(!items.length){
+      fitText("Sin productos agregados", cardX+42, y, 800, 30, "900", "#081320");
+      y += 80;
+    }else{
+      items.forEach(({it,p,pr})=>{
+        fitText(p.name || p.nombre || "Producto", cardX+42, y, 520, 30, "900", "#081320");
+        ctx.fillStyle = "#6b7d8e";
+        ctx.font = "900 19px Arial";
+        const detail = [p.code || p.codigo || "", pr.savings ? ("Ahorra " + mnyV77(pr.savings)) : ""].filter(Boolean).join(" · ");
+        if(detail) ctx.fillText(detail, cardX+42, y+30);
+        fitText(String(Number(it.qty||1)), cardX+625, y, 70, 29, "900", "#081320");
+        fitText(mnyV77(pr.unit), cardX+715, y, 120, 28, "900", "#081320");
+        fitText(mnyV77(pr.total), cardX+850, y, 125, 28, "900", "#081320");
+        y += 78;
+        line(cardX+30, y, cardX+cardW-30, y, "#e1ebf2", 2);
+        y += 34;
+      });
     }
 
-    ctx.fillStyle="#3d4d5d"; ctx.font="900 22px Arial";
-    ctx.fillText("PRODUCTO",75,y); ctx.fillText("CANT.",650,y); ctx.fillText("PRECIO",760,y); ctx.fillText("TOTAL",910,y);
-    y += 36;
-    ctx.strokeStyle="#d8e4ed"; ctx.beginPath(); ctx.moveTo(65,y); ctx.lineTo(W-65,y); ctx.stroke(); y += 40;
+    // Resumen
+    y += 10;
+    const sumX = cardX+30, sumW = cardW-60, sumH = 318;
+    const sumGrad = ctx.createLinearGradient(sumX,y,sumX+sumW,y+sumH);
+    sumGrad.addColorStop(0,"#041522");
+    sumGrad.addColorStop(.55,"#0a314c");
+    sumGrad.addColorStop(1,"#04111d");
+    ctx.fillStyle = sumGrad;
+    rr(sumX,y,sumW,sumH,32,true,false);
 
-    ctx.fillStyle="#081320"; ctx.font="900 26px Arial";
-    quoteItemsV77.forEach(it=>{
-      const p = getProductsV77().find(x=>x.id===it.id) || {};
-      const pr = bestPriceV77(p, it.qty);
-      ctx.fillStyle="#081320"; ctx.font="900 26px Arial";
-      wrapTextCanvasV77(ctx, p.name || p.nombre || "Producto", 75, y, 520, 30, 2);
-      ctx.fillStyle="#6a7b8b"; ctx.font="800 20px Arial";
-      if(pr.savings) ctx.fillText("Ahorra " + mnyV77(pr.savings),75,y+34);
-      ctx.fillStyle="#081320"; ctx.font="900 26px Arial";
-      ctx.fillText(String(Number(it.qty||1)),650,y);
-      ctx.fillText(mnyV77(pr.unit),760,y);
-      ctx.fillText(mnyV77(pr.total),910,y);
-      y += 90;
-      ctx.strokeStyle="#e1ebf2"; ctx.beginPath(); ctx.moveTo(65,y-18); ctx.lineTo(W-65,y-18); ctx.stroke();
-    });
+    ctx.save();
+    ctx.globalAlpha = .18;
+    ctx.fillStyle = "#00e5ff";
+    ctx.fillRect(sumX, y, 105, sumH);
+    ctx.fillStyle = "#31ffad";
+    ctx.fillRect(sumX+sumW-120, y, 120, sumH);
+    ctx.restore();
 
-    y += 15;
-    const sy = y;
-    const sh = 230;
-    const sgrad = ctx.createLinearGradient(65,sy,W-65,sy+sh);
-    sgrad.addColorStop(0,"#061624"); sgrad.addColorStop(1,"#0a2a43");
-    ctx.fillStyle=sgrad; roundRectV77(ctx,65,sy,W-130,sh,28); ctx.fill();
-
-    ctx.font="800 27px Arial"; ctx.fillStyle="#dcecff";
-    const summary = [
+    const sRows = [
       ["Productos", mnyV77(t.subtotal)],
       ["Envío", mnyV77(t.envio)],
       ["Comisión por pagar al recibir", mnyV77(t.commission)],
-      ["Total envío", mnyV77(t.shippingTotal)]
+      ["Total envío", mnyV77(t.shippingTotal)],
+      ["Descuento", mnyV77(0)]
     ];
-    let yy = sy+45;
-    summary.forEach(([a,b])=>{ctx.fillText(a,95,yy); ctx.fillText(b,W-270,yy); yy+=42;});
-    ctx.strokeStyle="rgba(255,255,255,.18)"; ctx.beginPath(); ctx.moveTo(95,yy-18); ctx.lineTo(W-95,yy-18); ctx.stroke();
-    ctx.fillStyle="#31ffad"; ctx.font="900 42px Arial"; ctx.fillText("Total",95,yy+28); ctx.fillText(mnyV77(t.total),W-315,yy+28);
+    let sy = y + 56;
+    sRows.forEach(([label,val])=>{
+      fitText(label, sumX+36, sy, 520, 30, "900", "#dcecff");
+      ctx.textAlign = "right";
+      fitText(val, sumX+sumW-38, sy, 220, 30, "900", "#ffffff");
+      ctx.textAlign = "start";
+      sy += 46;
+    });
+    line(sumX+36, y+236, sumX+sumW-36, y+236, "rgba(255,255,255,.17)", 2);
+    fitText("TOTAL", sumX+36, y+292, 250, 43, "900", "#31ffad");
+    ctx.textAlign = "right";
+    fitText(mnyV77(t.total), sumX+sumW-38, y+292, 330, 43, "900", "#31ffad");
+    ctx.textAlign = "start";
 
-    y = sy + sh + 40;
-    ctx.fillStyle="#ecfff6"; roundRectV77(ctx,65,y,W-130,70,22); ctx.fill();
-    ctx.fillStyle="#163225"; ctx.font="900 26px Arial"; ctx.fillText("Empresa / entrega: " + carrier,95,y+44);
-    y += 110;
-    ctx.fillStyle="#5b6d7d"; ctx.font="800 22px Arial";
-    ctx.textAlign="center";
-    ctx.fillText("Cotización informativa · La venta se registra al pasarla a factura real",W/2,y);
-    ctx.textAlign="start";
+    y += sumH + 30;
+
+    // Empresa / entrega
+    ctx.fillStyle = "#eafff6";
+    rr(cardX+30, y, sumW, 78, 24, true, false);
+    ctx.strokeStyle = "#c9f4df";
+    ctx.lineWidth = 2;
+    rr(cardX+30, y, sumW, 78, 24, false, true);
+    fitText("Empresa / entrega: " + carrier, cardX+58, y+50, sumW-56, 28, "900", "#143224");
+    y += 120;
+
+    // Nota final
+    ctx.fillStyle = "#5f7182";
+    ctx.font = "900 22px Arial";
+    ctx.textAlign = "center";
+    wrapTextCanvasV77(ctx, "Cotización informativa. La venta se registra únicamente al pasarla a factura real.", W/2-410, y, 820, 28, 2);
+    ctx.fillStyle = "#102234";
+    ctx.font = "900 25px Arial";
+    ctx.fillText("SD COMAYAGUA · WhatsApp +504 3151-7755", W/2, y+75);
+    ctx.textAlign = "start";
 
     return await new Promise(resolve => canvas.toBlob(resolve, "image/png", .95));
   }
+
   window.downloadQuoteImageV77 = async function(){
     if(!quoteItemsV77.length){ if(typeof toast==="function") toast("Agrega productos a la cotización."); return; }
     const blob = await quoteBlobV77();
@@ -9188,6 +9326,28 @@
   };
 })();
 </script>
+
+
+<style id="v79-cotizacion-vertical-css">
+  #quoteCardV77.v77-quote-card,
+  .v77-quote-card{
+    border-radius:32px!important;
+    border:2px solid rgba(0,229,255,.22)!important;
+    box-shadow:0 24px 70px rgba(0,0,0,.40),0 0 28px rgba(0,229,255,.10)!important;
+  }
+  .v77-q-head{
+    min-height:190px!important;
+    border-radius:28px!important;
+    margin:12px!important;
+  }
+  .v77-q-body{padding:16px 18px 20px!important}
+  @media(max-width:620px){
+    .v77-q-info{grid-template-columns:1fr 1fr!important;gap:8px!important}
+    .v77-info-box{min-height:58px!important;padding:9px 10px!important;font-size:11px!important}
+    .v77-q-title b{font-size:22px!important}
+    .v77-q-summary{border-radius:22px!important}
+  }
+</style>
 
 </body>
 </html>

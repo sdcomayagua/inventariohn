@@ -1,12 +1,10 @@
-SD COMAYAGUA V77
+SD COMAYAGUA V79
 
-Nueva función: Cotización previa antes de venta.
-- Botón Cotizar en productos.
-- Al tocar foto del producto abre cotización.
-- Permite cantidades, promociones, envío normal, pagar al recibir 100 x 6%, domicilio local.
-- Vista previa para cliente con logo.
-- Descargar cotización como imagen PNG.
-- Compartir por WhatsApp como texto o foto si el navegador soporta compartir archivos.
-- Pasar cotización a carrito/factura real.
+Mejora principal: imagen de cotización vertical, más estética y legible para WhatsApp.
+- Encabezado gamer con logo.
+- Datos en 2 columnas.
+- Resumen mejor encajado, sin cortar el total.
+- WhatsApp y fecha más compactos.
+- Mejor vista previa de cotización dentro de la app.
 
-Sube index.html y .nojekyll a GitHub Pages.
+Para GitHub Pages: sube index.html y .nojekyll.

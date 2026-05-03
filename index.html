@@ -8618,5 +8618,576 @@
 })();
 </script>
 
+
+<!-- =========================================================
+     V78 - MEJORAS VISIBLES PARA CELULAR:
+     - Imagen de producto más grande y al tamaño real de la tarjeta.
+     - Recibo más compacto y profesional para captura/imagen.
+     - Cliente/Teléfono y Departamento/Municipio en 2 columnas.
+     - Fecha, hora y WhatsApp optimizados para que no se bajen de línea.
+========================================================= -->
+<style id="v78-mobile-product-receipt-polish">
+  /* PRODUCTOS: imagen completa, más tipo catálogo gamer */
+  .card.v73-card{
+    overflow:hidden !important;
+  }
+  .card.v73-card .pic{
+    width:100% !important;
+    max-width:100% !important;
+    aspect-ratio: 1 / 1 !important;
+    min-height: unset !important;
+    height:auto !important;
+    padding:0 !important;
+    margin: 10px 0 18px !important;
+    border-radius: 28px !important;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(34,255,179,.20), transparent 34%),
+      linear-gradient(145deg, rgba(0,18,34,.98), rgba(0,41,56,.94)) !important;
+    border:1px solid rgba(30,255,225,.18) !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.035),
+      0 20px 48px rgba(0,0,0,.34),
+      0 0 28px rgba(0,242,255,.08) !important;
+  }
+  .card.v73-card .pic img{
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    object-fit:cover !important;
+    display:block !important;
+    padding:0 !important;
+    border-radius: 26px !important;
+    background:#07111f !important;
+  }
+  .card.v73-card .pic:not(:has(img)){
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+  .card.v73-card .pic:after{
+    content:"";
+    position:absolute;
+    inset:10px;
+    pointer-events:none;
+    border-radius:22px;
+    border:1px solid rgba(48,255,220,.16);
+    box-shadow:inset 0 -18px 40px rgba(0,245,255,.10);
+  }
+  .card.v73-card .v73-price-chip{
+    right:18px !important;
+    bottom:18px !important;
+    font-size: clamp(18px, 5.2vw, 27px) !important;
+    border-radius:18px !important;
+    padding: 10px 15px !important;
+    background: linear-gradient(135deg, rgba(4,28,38,.92), rgba(8,20,34,.96)) !important;
+    border:1px solid rgba(51,255,191,.32) !important;
+  }
+  .card.v73-card h3{
+    letter-spacing:-.025em !important;
+    line-height:1.08 !important;
+  }
+  @media (max-width: 520px){
+    .card.v73-card{
+      padding: 16px !important;
+      border-radius: 28px !important;
+    }
+    .card.v73-card .pic{
+      border-radius: 26px !important;
+      margin-top: 6px !important;
+    }
+    .card.v73-card .product-actions,
+    .card.v73-card .actions{
+      gap:10px !important;
+    }
+    .card.v73-card .product-actions .btn,
+    .card.v73-card .actions .btn{
+      min-height:52px !important;
+      border-radius:18px !important;
+    }
+  }
+
+  /* RECIBO V78: más compacto, ancho y elegante para captura / PDF */
+  .v78-receipt-shell{
+    width:100% !important;
+    max-width: 620px !important;
+    padding:18px !important;
+    border-radius: 28px !important;
+    background:
+      linear-gradient(180deg, #f7fcff 0%, #edf9ff 100%) !important;
+    border:1px solid rgba(0,220,255,.24) !important;
+    box-shadow:0 18px 45px rgba(0,0,0,.22) !important;
+    overflow:hidden !important;
+  }
+  .v78-r-top{
+    min-height:0 !important;
+    padding:18px !important;
+    display:grid !important;
+    grid-template-columns: minmax(0, 1fr) 78px !important;
+    gap:14px !important;
+    align-items:center !important;
+    border-radius: 0 !important;
+    background:
+      linear-gradient(135deg, rgba(4,19,35,.98), rgba(4,61,74,.94)),
+      radial-gradient(circle at 82% 18%, rgba(0,241,255,.38), transparent 28%) !important;
+    position:relative !important;
+    overflow:hidden !important;
+  }
+  .v78-r-top:before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size:34px 34px;
+    opacity:.38;
+    pointer-events:none;
+  }
+  .v78-r-info,
+  .v78-r-logo{
+    position:relative;
+    z-index:1;
+  }
+  .v78-pill{
+    width:max-content;
+    max-width:100%;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 11px;
+    border-radius:999px;
+    background:rgba(35,255,185,.12);
+    border:1px solid rgba(35,255,185,.28);
+    color:#34ffb2;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font:900 10px/1.1 system-ui, sans-serif;
+    white-space:nowrap;
+  }
+  .v78-r-title{
+    margin:11px 0 8px !important;
+    font:1000 clamp(25px, 7vw, 38px)/.95 system-ui, sans-serif !important;
+    letter-spacing:-.055em !important;
+    color:#fff !important;
+    text-transform:uppercase !important;
+  }
+  .v78-r-meta{
+    margin:0 !important;
+    color:#d6e6f4 !important;
+    font-weight:900 !important;
+    font-size:clamp(10.5px, 2.75vw, 13px) !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+  .v78-r-code{
+    display:block;
+    margin-top:7px;
+    color:#fff;
+    font-weight:1000;
+    font-size:clamp(16px, 4.8vw, 24px);
+    letter-spacing:.02em;
+    white-space:nowrap;
+  }
+  .v78-r-logo{
+    width:78px !important;
+    height:78px !important;
+    border-radius:18px !important;
+    padding:3px !important;
+    background:#020b13 !important;
+    border:1px solid rgba(37,240,255,.28) !important;
+    box-shadow:0 0 22px rgba(0,217,255,.24) !important;
+    overflow:hidden !important;
+  }
+  .v78-r-logo img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    border-radius:15px !important;
+    display:block !important;
+  }
+  .v78-r-body{
+    padding:18px 0 0 !important;
+  }
+  .v78-info-grid{
+    display:grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap:10px !important;
+    margin-bottom:16px !important;
+  }
+  .v78-info-box{
+    min-width:0 !important;
+    padding:13px 14px !important;
+    border-radius:18px !important;
+    background:linear-gradient(180deg, #eef8ff, #e9f5fc) !important;
+    border:1px solid #d5e6ef !important;
+    color:#061524 !important;
+    font-weight:1000 !important;
+    font-size:clamp(12.5px, 3.25vw, 15px) !important;
+    line-height:1.15 !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+  .v78-info-box.full{
+    grid-column:1 / -1 !important;
+  }
+  .v78-info-box span{
+    display:block !important;
+    margin-bottom:6px !important;
+    color:#66798a !important;
+    font-size:9px !important;
+    letter-spacing:.16em !important;
+    text-transform:uppercase !important;
+  }
+  .v78-r-table{
+    width:100% !important;
+    border-collapse:collapse !important;
+    margin:10px 0 14px !important;
+    table-layout:fixed !important;
+  }
+  .v78-r-table th{
+    color:#435467 !important;
+    font:1000 clamp(9.5px, 2.7vw, 12px)/1 system-ui, sans-serif !important;
+    letter-spacing:.09em !important;
+    text-transform:uppercase !important;
+    border-bottom:1px solid #d5e2ec !important;
+    padding:10px 6px !important;
+    text-align:left !important;
+  }
+  .v78-r-table th:nth-child(2),
+  .v78-r-table th:nth-child(3),
+  .v78-r-table th:nth-child(4),
+  .v78-r-table td:nth-child(2),
+  .v78-r-table td:nth-child(3),
+  .v78-r-table td:nth-child(4){
+    text-align:right !important;
+  }
+  .v78-r-table td{
+    padding:12px 6px !important;
+    border-bottom:1px solid #e0ebf3 !important;
+    color:#061524 !important;
+    font-weight:1000 !important;
+    font-size:clamp(11px, 3vw, 14px) !important;
+    vertical-align:top !important;
+  }
+  .v78-r-table td:first-child{
+    width:44% !important;
+    overflow-wrap:anywhere !important;
+  }
+  .v78-r-table small{
+    display:block !important;
+    margin-top:4px !important;
+    color:#6a7f90 !important;
+    font-size:10px !important;
+    font-weight:900 !important;
+  }
+  .v78-summary{
+    padding:16px 16px 18px !important;
+    border-radius:24px !important;
+    background:
+      radial-gradient(circle at 88% 14%, rgba(0,239,255,.22), transparent 30%),
+      linear-gradient(135deg, #061827, #08283a) !important;
+    color:#e6f6ff !important;
+    margin-top:8px !important;
+    overflow:hidden !important;
+    border:1px solid rgba(0,236,255,.16) !important;
+  }
+  .v78-summary div{
+    display:flex !important;
+    justify-content:space-between !important;
+    align-items:center !important;
+    gap:10px !important;
+    color:#c9d8e4 !important;
+    font-weight:900 !important;
+    font-size:clamp(12px, 3.25vw, 14px) !important;
+    margin:0 0 10px !important;
+  }
+  .v78-summary div b{
+    color:#fff !important;
+    white-space:nowrap !important;
+  }
+  .v78-summary .grand{
+    border-top:1px solid rgba(255,255,255,.13) !important;
+    padding-top:13px !important;
+    margin-top:8px !important;
+    margin-bottom:0 !important;
+    color:#32ffad !important;
+    font-size:clamp(21px, 6vw, 30px) !important;
+  }
+  .v78-summary .grand span,
+  .v78-summary .grand b{
+    color:#32ffad !important;
+  }
+  .v78-delivery{
+    margin-top:14px !important;
+    padding:13px 14px !important;
+    border-radius:18px !important;
+    color:#10283a !important;
+    background:#ecfff6 !important;
+    border:1px solid #caefe1 !important;
+    font-weight:1000 !important;
+    font-size:clamp(12px, 3.25vw, 14px) !important;
+  }
+  .v78-footer{
+    margin-top:14px !important;
+    color:#687d8e !important;
+    text-align:center !important;
+    font-weight:1000 !important;
+    font-size:clamp(8px, 2.45vw, 11px) !important;
+    white-space:nowrap !important;
+    line-height:1 !important;
+  }
+  @media (max-width: 440px){
+    .v78-receipt-shell{
+      padding:14px !important;
+      border-radius:26px !important;
+    }
+    .v78-r-top{
+      grid-template-columns:minmax(0,1fr) 70px !important;
+      gap:10px !important;
+      padding:16px !important;
+    }
+    .v78-r-logo{
+      width:70px !important;
+      height:70px !important;
+      border-radius:17px !important;
+    }
+    .v78-info-grid{
+      grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+      gap:9px !important;
+    }
+    .v78-info-box{
+      padding:12px 10px !important;
+      border-radius:16px !important;
+    }
+    .v78-r-table th,
+    .v78-r-table td{
+      padding-left:4px !important;
+      padding-right:4px !important;
+    }
+    .v78-r-table th:nth-child(3),
+    .v78-r-table td:nth-child(3){
+      display:none !important;
+    }
+    .v78-footer{
+      letter-spacing:-.02em !important;
+    }
+  }
+  @media print{
+    .v78-receipt-shell{
+      max-width:100% !important;
+      box-shadow:none !important;
+      border:1px solid #d8e5ef !important;
+      page-break-inside:avoid !important;
+    }
+    .v78-r-top{
+      -webkit-print-color-adjust:exact !important;
+      print-color-adjust:exact !important;
+    }
+  }
+</style>
+
+<script id="v78-receipt-mobile-polish-js">
+(function(){
+  function escV78(s){
+    return String(s ?? '').replace(/[&<>"']/g, function(m){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m];
+    });
+  }
+  function moneyV78(n){
+    try{ if(typeof money === 'function') return money(n); }catch(e){}
+    return 'Lps. ' + Math.round(Number(n||0)).toLocaleString('es-HN');
+  }
+  function getValV78(id){
+    const el = document.getElementById(id);
+    return (el && 'value' in el) ? String(el.value||'').trim() : '';
+  }
+  function getCartV78(){
+    try{ if(Array.isArray(cart)) return cart; }catch(e){}
+    try{ if(Array.isArray(window.cart)) return window.cart; }catch(e){}
+    return [];
+  }
+  function lineTotalV78(item){
+    const qty = Number(item.qty || 0);
+    const unit = Number(item.unitPrice ?? item.price ?? 0);
+    if(Number.isFinite(Number(item.total))) return Number(item.total);
+    return qty * unit;
+  }
+  function getLogoV78(){
+    if(window.SDC_LOGO_V66) return window.SDC_LOGO_V66;
+    if(window.SDC_LOGO_DATA) return window.SDC_LOGO_DATA;
+    const img = document.querySelector('.v71-login-logo img, .v68-main-logo img, .v66-main-logo-card img, .v69-r-logo img, .brand img, img[alt*="SD"]');
+    return img ? img.src : '';
+  }
+  function datePartsV78(iso){
+    const d = new Date(iso || Date.now());
+    const date = d.toLocaleDateString('es-HN', {day:'2-digit', month:'short', year:'numeric'}).replace('.', '');
+    const time = d.toLocaleTimeString('es-HN', {hour:'numeric', minute:'2-digit'}).replace(/\s+/g,' ').replace('a. m.','a.m.').replace('p. m.','p.m.');
+    return {date, time, full: date + ' · ' + time};
+  }
+  function whatsappTextV78(payload, dateText){
+    const lines = [];
+    lines.push('🧾 *RECIBO SD COMAYAGUA*');
+    lines.push('');
+    lines.push('📌 *Código:* ' + (payload.code || ''));
+    lines.push('📅 *Fecha:* ' + dateText);
+    lines.push('');
+    lines.push('👤 *Cliente:* ' + (payload.client || 'Cliente'));
+    if(payload.phone) lines.push('📞 *Teléfono:* ' + payload.phone);
+    if(payload.department) lines.push('🏷️ *Departamento:* ' + payload.department);
+    if(payload.municipio) lines.push('📍 *Municipio:* ' + payload.municipio);
+    if(payload.reference) lines.push('🏠 *Referencia:* ' + payload.reference);
+    lines.push('');
+    lines.push('🛒 *PRODUCTOS*');
+    (payload.items || []).forEach(function(item){
+      const unit = Number(item.unitPrice ?? item.price ?? 0);
+      lines.push('• ' + (item.name || 'Producto'));
+      lines.push('  Cantidad: ' + Number(item.qty || 0));
+      lines.push('  Precio: ' + moneyV78(unit));
+      lines.push('  Total: ' + moneyV78(lineTotalV78(item)));
+      if(item.note) lines.push('  Detalle: ' + item.note);
+    });
+    lines.push('');
+    lines.push('🚚 *ENVÍO*');
+    lines.push('Empresa / entrega: ' + (payload.carrier || 'No definida'));
+    lines.push('Envío: ' + moneyV78(payload.shipping || 0));
+    lines.push('Comisión por pagar al recibir: ' + moneyV78(payload.commission || 0));
+    lines.push('Total envío: ' + moneyV78(payload.shippingTotal || 0));
+    lines.push('');
+    lines.push('💰 *RESUMEN*');
+    lines.push('Productos: ' + moneyV78(payload.productSubtotal || 0));
+    lines.push('Descuento: ' + moneyV78(payload.finalDiscount || 0));
+    lines.push('*TOTAL A PAGAR: ' + moneyV78(payload.total || 0) + '*');
+    lines.push('');
+    lines.push('SD COMAYAGUA.');
+    lines.push('WhatsApp: +504 3151-7755');
+    return lines.join('\n');
+  }
+
+  window.buildReceipt = function(keepCode=true){
+    const cartList = getCartV78();
+    if(!cartList.length){
+      if(typeof toast === 'function') toast('No hay productos para generar recibo.');
+      else alert('No hay productos para generar recibo.');
+      return null;
+    }
+
+    const fallbackSubtotal = cartList.reduce((a,i)=>a+lineTotalV78(i),0);
+    const totals = (typeof window.calcCart === 'function')
+      ? window.calcCart()
+      : {
+          productSubtotal: fallbackSubtotal,
+          shipping: 0,
+          commission: 0,
+          shippingTotal: 0,
+          finalDiscount: 0,
+          total: fallbackSubtotal,
+          carrier: ''
+        };
+
+    const oldCode = window.__v69LastReceiptPayload?.code || window.__v62LastReceiptPayload?.code || window.lastReceiptPayload?.code || '';
+    const payload = {
+      code: keepCode && oldCode ? oldCode : ('SDC-' + Date.now().toString().slice(-10)),
+      date: new Date().toISOString(),
+      client: getValV78('clientName') || 'Cliente',
+      phone: getValV78('clientPhone'),
+      department: getValV78('clientDept'),
+      municipio: getValV78('clientMunicipio'),
+      reference: getValV78('clientAddress'),
+      note: getValV78('receiptNote'),
+      items: JSON.parse(JSON.stringify(cartList)),
+      ...totals
+    };
+
+    window.__v69LastReceiptPayload = payload;
+    window.__v62LastReceiptPayload = payload;
+    window.lastReceiptPayload = payload;
+
+    const dp = datePartsV78(payload.date);
+    const logo = getLogoV78();
+
+    const rows = payload.items.map(function(item){
+      const unit = Number(item.unitPrice ?? item.price ?? 0);
+      return '<tr>' +
+        '<td><b>'+escV78(item.name || 'Producto')+'</b><small>'+escV78(item.code || '')+(item.note ? ' · '+escV78(item.note) : '')+(item.saving ? ' · Ahorro '+moneyV78(item.saving) : '')+'</small></td>' +
+        '<td>'+Number(item.qty || 0)+'</td>' +
+        '<td>'+moneyV78(unit)+'</td>' +
+        '<td><b>'+moneyV78(lineTotalV78(item))+'</b></td>' +
+      '</tr>';
+    }).join('');
+
+    const whatsappText = whatsappTextV78(payload, dp.full);
+    try{ lastReceiptText = whatsappText; }catch(e){}
+    window.lastReceiptText = whatsappText;
+
+    const box = document.getElementById('receiptBox');
+    if(box){
+      box.innerHTML =
+        '<div id="receiptCaptureArea" class="receipt v69-receipt-shell v78-receipt-shell">' +
+          '<div class="v69-r-top v78-r-top">' +
+            '<div class="v69-r-info v78-r-info">' +
+              '<div class="v78-pill">Factura gamer · WhatsApp</div>' +
+              '<h3 class="v78-r-title">SD COMAYAGUA</h3>' +
+              '<p class="v78-r-meta">Recibo · '+escV78(dp.full)+'</p>' +
+              '<span class="v78-r-code">'+escV78(payload.code)+'</span>' +
+            '</div>' +
+            '<div class="v69-r-logo v78-r-logo">'+(logo ? '<img src="'+logo+'" alt="SD Comayagua">' : 'SD')+'</div>' +
+          '</div>' +
+          '<div class="v69-r-body v78-r-body">' +
+            '<div class="v69-client-grid v78-info-grid">' +
+              '<div class="v69-info-box v78-info-box"><span>Cliente</span>'+escV78(payload.client || 'Cliente')+'</div>' +
+              '<div class="v69-info-box v78-info-box"><span>Teléfono</span>'+escV78(payload.phone || 'No registrado')+'</div>' +
+              '<div class="v69-info-box v78-info-box"><span>Departamento</span>'+escV78(payload.department || 'No seleccionado')+'</div>' +
+              '<div class="v69-info-box v78-info-box"><span>Municipio</span>'+escV78(payload.municipio || 'No seleccionado')+'</div>' +
+              (payload.reference ? '<div class="v69-info-box v78-info-box full"><span>Referencia / barrio / colonia</span>'+escV78(payload.reference)+'</div>' : '') +
+            '</div>' +
+            '<table class="v69-r-table v78-r-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>'+rows+'</tbody></table>' +
+            '<div class="v69-summary v78-summary">' +
+              '<div><span>Productos</span><b>'+moneyV78(payload.productSubtotal || 0)+'</b></div>' +
+              '<div><span>Envío</span><b>'+moneyV78(payload.shipping || 0)+'</b></div>' +
+              '<div><span>Comisión por pagar al recibir</span><b>'+moneyV78(payload.commission || 0)+'</b></div>' +
+              '<div><span>Total envío</span><b>'+moneyV78(payload.shippingTotal || 0)+'</b></div>' +
+              '<div><span>Descuento</span><b>'+moneyV78(payload.finalDiscount || 0)+'</b></div>' +
+              '<div class="grand"><span>Total</span><b>'+moneyV78(payload.total || 0)+'</b></div>' +
+            '</div>' +
+            '<div class="v69-delivery v78-delivery"><b>Empresa / entrega:</b> '+escV78(payload.carrier || 'No definida')+(payload.note ? '<br><b>Observación:</b> '+escV78(payload.note) : '')+'</div>' +
+            '<div class="v69-footer v78-footer">SD Comayagua · WhatsApp +504 3151-7755</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    if(typeof closeModal === 'function') closeModal('cartModal');
+    if(typeof openModal === 'function') openModal('receiptModal');
+    if(typeof installReceiptActionsV69 === 'function'){
+      setTimeout(installReceiptActionsV69, 30);
+      setTimeout(installReceiptActionsV69, 300);
+    }else{
+      setTimeout(function(){
+        const actions = document.querySelector('.receipt-actions');
+        if(actions && !actions.querySelector('[data-download-receipt]')){
+          const b = document.createElement('button');
+          b.className = 'btn ghost';
+          b.type = 'button';
+          b.setAttribute('data-download-receipt','1');
+          b.textContent = '⬇ Descargar';
+          if(actions.children[1]) actions.insertBefore(b, actions.children[1]); else actions.appendChild(b);
+        }
+      }, 80);
+    }
+    return payload;
+  };
+
+  window.shareWhatsApp = function(){
+    if(!window.lastReceiptText){
+      window.buildReceipt(true);
+    }
+    const text = window.lastReceiptText || '';
+    const phone = (typeof WAPP !== 'undefined' ? WAPP : '50431517755');
+    window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
+  };
+})();
+</script>
+
 </body>
 </html>

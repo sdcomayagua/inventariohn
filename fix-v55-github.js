@@ -6,7 +6,7 @@
 
   const LOCAL_PRODUCTS_KEY = 'sdc_v55_products_local';
   const LOCAL_MODE_KEY = 'sdc_v55_mode';
-  const DEFAULT_PASS_TEXT = 'CAMBIAR_AQUI_MI_CONTRASEÑA';
+  const DEFAULT_PASS_TEXT = '199311';
 
   function q(id) { return document.getElementById(id); }
   function money(n) {

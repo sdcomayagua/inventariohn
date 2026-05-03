@@ -1,5 +1,5 @@
-SD COMAYAGUA V70 - GitHub Pages
+SD COMAYAGUA V73
 
-Cambios extra: panel rápido, filtros bajo stock/agotados/ganancia, tarjetas de producto más gamer, buscador y dock más finos.
+Cambios: cajas de productos rediseñadas con estilo gamer premium, mejor imagen, badges, costo, ganancia, valor de stock y barra visual de stock.
 
-Sube index.html y .nojekyll a la raíz del repositorio.
+Sube index.html y .nojekyll a GitHub Pages.

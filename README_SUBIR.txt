@@ -1,4 +1,4 @@
-SD COMAYAGUA V91 PRO MÓVIL
+SD COMAYAGUA V92 PRO MÓVIL
 
 SUBIR A GITHUB PAGES:
 1. Borra los archivos viejos de la página.
@@ -24,3 +24,9 @@ MEJORAS V91:
 
 RECOMENDACIÓN:
 Antes de reemplazar la versión anterior, entra a Backup y descarga tu JSON de respaldo.
+
+
+V92 PRO MÓVIL
+- Corregidos los accesos rápidos: Catálogo, Vender, Producto, Ganancias, Recibos y Backup ya no montan subtítulos sobre títulos.
+- Se agregaron iconos discretos y mejor lectura en celular sin perder la estética oscura/neón SDC.
+- Se ajustaron chips largos para que no rompan el diseño móvil.

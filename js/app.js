@@ -219,13 +219,13 @@
     ).length;
     const nocost = state.products.filter((p) => Number(p.cost) <= 0).length;
     const st = stats();
-    return `<section class="quick no-print">
-      <button data-action="catalog"><b>Catálogo</b><span>Ver productos</span></button>
-      <button data-action="sell"><b>Vender</b><span>Seleccionar producto</span></button>
-      <button data-action="newProduct"><b>Producto</b><span>Agregar nuevo</span></button>
-      <button data-action="profit"><b>Ganancias</b><span>Por producto</span></button>
-      <button data-action="receipts"><b>Recibos</b><span>Caja del día</span></button>
-      <button data-action="backup"><b>Backup</b><span>Exportar datos</span></button>
+    return `<section class="quick no-print" aria-label="Accesos rápidos">
+      <button data-action="catalog"><em class="quick-ico">⌂</em><b>Catálogo</b><span>Ver productos</span></button>
+      <button data-action="sell"><em class="quick-ico">🛒</em><b>Vender</b><span>Seleccionar</span></button>
+      <button data-action="newProduct"><em class="quick-ico">＋</em><b>Producto</b><span>Agregar nuevo</span></button>
+      <button data-action="profit"><em class="quick-ico">▴</em><b>Ganancias</b><span>Por producto</span></button>
+      <button data-action="receipts"><em class="quick-ico">▤</em><b>Recibos</b><span>Caja del día</span></button>
+      <button data-action="backup"><em class="quick-ico">▧</em><b>Backup</b><span>Exportar</span></button>
     </section>
     <section class="alert-row no-print">
       <div class="alert-card"><div><b>${low} bajo stock</b><span>Revisa reposición.</span></div><button class="btn small secondary" data-action="lowStock">Ver</button></div>

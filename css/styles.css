@@ -1907,3 +1907,116 @@ body {
     margin: 0.25in;
   }
 }
+
+
+/* V92: corrección visual de accesos rápidos en móvil.
+   Evita que el subtítulo se monte sobre el título y conserva estética SDC. */
+.quick button {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 4px;
+  isolation: isolate;
+  overflow: hidden;
+  line-height: 1.08;
+}
+.quick button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(40, 246, 161, 0.08), rgba(24, 231, 255, 0.035));
+  opacity: 0.85;
+  z-index: -1;
+}
+.quick button:active {
+  transform: scale(0.985);
+}
+.quick b,
+.quick span {
+  display: block;
+  max-width: calc(100% - 4px);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.quick b {
+  line-height: 1.04;
+}
+.quick span {
+  line-height: 1.18;
+}
+.quick-ico {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 13px;
+  background: rgba(24, 231, 255, 0.1);
+  color: var(--mint);
+  border: 1px solid rgba(24, 231, 255, 0.14);
+  font-style: normal;
+  font-size: 15px;
+  line-height: 1;
+}
+.alert-card {
+  min-width: 0;
+}
+.alert-card > div {
+  min-width: 0;
+}
+@media (max-width: 720px) {
+  .quick button {
+    min-height: 76px;
+    padding: 10px 9px 9px;
+    gap: 4px;
+  }
+  .quick b {
+    font-size: 13px;
+    letter-spacing: -0.02em;
+  }
+  .quick span {
+    font-size: 8px;
+    letter-spacing: 0.055em;
+    opacity: 0.96;
+  }
+  .quick-ico {
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+  .search-panel {
+    overflow: hidden;
+  }
+  .chips {
+    scroll-padding-left: 2px;
+  }
+  .chip {
+    max-width: 78vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+@media (max-width: 390px) {
+  .quick {
+    gap: 7px;
+  }
+  .quick button {
+    min-height: 72px;
+    border-radius: 17px;
+  }
+  .quick b {
+    font-size: 12.2px;
+  }
+  .quick span {
+    font-size: 7.5px;
+  }
+}

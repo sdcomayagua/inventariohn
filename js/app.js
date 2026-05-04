@@ -87,6 +87,29 @@
   function productImage(p) {
     return galleryOf(p)[0] || placeholderFor(p);
   }
+  function statusOf(p) {
+    const stock = Number(p.stock || 0);
+    const raw = String(p.status || "").trim();
+    if (stock <= 0) return "Agotado";
+    if (raw && raw !== "Disponible") return raw;
+    if (stock <= Number(state.settings.lowStockLimit || 3)) return "Bajo stock";
+    return "Disponible";
+  }
+  function statusClass(label) {
+    const x = String(label || "").toLowerCase();
+    if (x.includes("agot")) return "sold";
+    if (x.includes("bajo")) return "low";
+    if (x.includes("consult")) return "ask";
+    return "ok";
+  }
+  function richDescription(p) {
+    const parts = [];
+    if (p.description) parts.push(`<p>${escapeHtml(p.description)}</p>`);
+    if (p.benefits) parts.push(`<p><b>Beneficios:</b> ${escapeHtml(p.benefits)}</p>`);
+    if (p.includes) parts.push(`<p><b>Incluye:</b> ${escapeHtml(p.includes)}</p>`);
+    if (p.note) parts.push(`<p><b>Nota:</b> ${escapeHtml(p.note)}</p>`);
+    return parts.join("") || "<p>Sin descripción.</p>";
+  }
   function onImgError(img, p) {
     img.onerror = null;
     img.src = placeholderFor(p || {});
@@ -260,16 +283,14 @@
   }
   function productCard(p) {
     const tags = parseTags(p.categories);
-    const low =
-      Number(p.stock) > 0 &&
-      Number(p.stock) <= Number(state.settings.lowStockLimit || 3);
-    const sold = Number(p.stock) <= 0;
+    const status = statusOf(p);
     const percent = Math.max(
       5,
       Math.min(100, ((Number(p.stock) || 0) / 20) * 100),
     );
+    const old = Number(p.oldPrice || 0);
     return `<article class="product-card" data-id="${escapeHtml(p.id)}"><div class="product-top"><div class="tag-stack"><span class="tag-pill">${escapeHtml(tags[0] || "General")}</span>${tags.length > 1 ? `<span class="tag-pill">+${tags.length - 1}</span>` : ""}</div><span class="code-pill">${escapeHtml(p.id)}</span></div>
-      <div class="product-media"><img src="${escapeHtml(productImage(p))}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><span class="stock-badge ${low ? "low" : ""}"><span class="dot" style="background:#031018;box-shadow:none"></span>${sold ? "Agotado" : low ? "Bajo stock" : "Disponible"}</span><b class="price-badge">${money(p.price)}</b></div>
+      <div class="product-media"><img src="${escapeHtml(productImage(p))}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><span class="stock-badge ${statusClass(status)}"><span class="dot" style="background:#031018;box-shadow:none"></span>${escapeHtml(status)}</span><b class="price-badge">${money(p.price)}</b>${old > 0 && old > Number(p.price || 0) ? `<span class="old-price-badge">Antes ${money(old)}</span>` : ""}</div>
       <h3 class="product-title">${escapeHtml(p.name)}</h3><div class="metrics"><div class="metric"><span>Stock</span><b>${num(p.stock)} disponibles</b></div><div class="metric"><span>Ganancia C/U</span><b>${money((+p.price || 0) - (+p.cost || 0))}</b></div><div class="metric"><span>Costo</span><b>${(+p.cost || 0) > 0 ? money(p.cost) : "Sin costo"}</b></div><div class="metric"><span>Valor stock</span><b>${money((+p.stock || 0) * (+p.price || 0))}</b></div></div><div class="stock-line"><i style="width:${percent}%"></i></div>
       <div class="card-actions"><button class="btn secondary quote" data-action="quoteProduct" data-id="${escapeHtml(p.id)}">Cotizar</button><button class="btn" data-action="sellProduct" data-id="${escapeHtml(p.id)}">Vender</button><button class="btn secondary" data-action="viewProduct" data-id="${escapeHtml(p.id)}">Ver</button><button class="btn ghost" data-action="editProduct" data-id="${escapeHtml(p.id)}">Editar</button></div></article>`;
   }
@@ -366,18 +387,34 @@
       <label class="promo-field"><span>Cantidad</span><input class="promo-qty" type="number" inputmode="numeric" min="1" value="${escapeHtml(qty)}" placeholder="Ej. 3"></label>
       <label class="promo-field"><span>Precio</span><input class="promo-price" type="number" inputmode="decimal" min="0" value="${escapeHtml(price)}" placeholder="Ej. 72"></label>
       <button type="button" class="promo-remove" title="Quitar promoción">×</button>
+      <div class="promo-mini">Completa cantidad y precio.</div>
     </div>`;
   }
 
   function promoRowsHTML(promos) {
     return `<div class="promo-rows" id="promoRows">${parsePromoRows(promos)
       .map((r) => promoRowHTML(r.qty, r.price))
-      .join("")}</div>`;
+      .join("")}</div><div class="promo-summary" id="promoSummary"></div>`;
   }
 
   function bindPromoBuilder() {
     const rowsBox = $("#promoRows", modalRoot);
     if (!rowsBox) return;
+    const updatePromos = () => {
+      const lines = $$(".promo-row", rowsBox).map((row) => {
+        const qty = Number($(".promo-qty", row)?.value || 0);
+        const price = Number($(".promo-price", row)?.value || 0);
+        const mini = $(".promo-mini", row);
+        const txt = qty > 0 && price > 0 ? `${num(qty)} unidad${qty === 1 ? "" : "es"} = ${money(price)}` : "Completa cantidad y precio.";
+        if (mini) mini.textContent = txt;
+        return qty > 0 && price > 0 ? txt : "";
+      }).filter(Boolean);
+      const box = $("#promoSummary", modalRoot);
+      if (box) box.innerHTML = lines.length ? `<b>Resumen:</b> ${lines.map(escapeHtml).join(" · ")}` : "Sin promociones agregadas todavía.";
+    };
+    const bindRow = (row) => {
+      $$("input", row).forEach((inp) => (inp.oninput = updatePromos));
+    };
     const bindRemove = () => {
       $$(".promo-remove", rowsBox).forEach((btn) => {
         btn.onclick = () => {
@@ -385,19 +422,25 @@
           if (rows.length <= 1) {
             $(".promo-qty", rows[0]).value = "";
             $(".promo-price", rows[0]).value = "";
+            updatePromos();
             return;
           }
           btn.closest(".promo-row")?.remove();
+          updatePromos();
         };
       });
     };
     $("#addPromoRow", modalRoot).onclick = () => {
       rowsBox.insertAdjacentHTML("beforeend", promoRowHTML());
-      bindRemove();
       const last = rowsBox.lastElementChild;
+      bindRow(last);
+      bindRemove();
+      updatePromos();
       $(".promo-qty", last)?.focus();
     };
+    $$(".promo-row", rowsBox).forEach(bindRow);
     bindRemove();
+    updatePromos();
   }
 
   function collectPromos() {
@@ -417,14 +460,14 @@
       .split(/\n+/)
       .map((x) => x.trim())
       .filter(Boolean);
-    return rows.length ? rows : [""];
+    return rows.length ? rows : [];
   }
 
   function imageRowHTML(url = "") {
     const safe = escapeHtml(url);
     return `<div class="image-row">
       <div class="image-preview">${safe ? `<img src="${safe}" alt="">` : `<span>IMG</span>`}</div>
-      <label class="image-field"><span>URL de imagen</span><input class="image-url" type="url" value="${safe}" placeholder="https://..."></label>
+      <label class="image-field"><span class="image-title">Imagen adicional</span><input class="image-url" type="url" value="${safe}" placeholder="https://..."></label>
       <button type="button" class="image-remove" title="Quitar imagen">×</button>
     </div>`;
   }
@@ -446,9 +489,22 @@
     const rowsBox = $("#imageRows", modalRoot);
     if (!rowsBox) return;
     const counter = $("#imageCounter", modalRoot);
+    const updateMainPreview = () => {
+      const input = $("#pImage", modalRoot);
+      const preview = $("#mainImagePreview", modalRoot);
+      const url = input?.value.trim() || "";
+      if (preview) preview.innerHTML = url ? `<img src="${escapeHtml(url)}" alt="">` : `<span>Principal</span>`;
+    };
+    const refreshNumbers = () => {
+      $$(".image-row", rowsBox).forEach((row, idx) => {
+        const title = $(".image-title", row);
+        if (title) title.textContent = `Imagen ${idx + 2}`;
+      });
+    };
     const updateCounter = () => {
       const count = $$(".image-url", rowsBox).filter((input) => input.value.trim()).length;
-      if (counter) counter.textContent = `${count} imagen${count === 1 ? "" : "es"} extra`;
+      if (counter) counter.textContent = `${count} foto${count === 1 ? "" : "s"} extra`;
+      refreshNumbers();
     };
     const bindPreview = (row) => {
       const input = $(".image-url", row);
@@ -463,22 +519,11 @@
     const bindRemove = () => {
       $$(".image-remove", rowsBox).forEach((btn) => {
         btn.onclick = () => {
-          const rows = $$(".image-row", rowsBox);
-          if (rows.length <= 1) {
-            const input = $(".image-url", rows[0]);
-            if (input) input.value = "";
-            const preview = $(".image-preview", rows[0]);
-            if (preview) preview.innerHTML = `<span>IMG</span>`;
-            updateCounter();
-            return;
-          }
           btn.closest(".image-row")?.remove();
           updateCounter();
         };
       });
     };
-    $$(".image-row", rowsBox).forEach(bindPreview);
-    bindRemove();
     const addBtn = $("#addImageRow", modalRoot);
     if (addBtn) {
       addBtn.onclick = () => {
@@ -490,60 +535,122 @@
         $(".image-url", last)?.focus();
       };
     }
+    $$(".image-row", rowsBox).forEach(bindPreview);
+    bindRemove();
+    $("#pImage", modalRoot)?.addEventListener("input", updateMainPreview);
+    updateMainPreview();
     updateCounter();
+  }
+
+  function currentProductFromForm() {
+    return {
+      id: $("#pId", modalRoot)?.value.trim() || nextCode(),
+      name: $("#pName", modalRoot)?.value.trim() || "Producto sin nombre",
+      categories: $("#pCats", modalRoot)?.value.trim() || "General",
+      cost: +($("#pCost", modalRoot)?.value || 0) || 0,
+      price: +($("#pPrice", modalRoot)?.value || 0) || 0,
+      oldPrice: +($("#pOldPrice", modalRoot)?.value || 0) || 0,
+      stock: +($("#pStock", modalRoot)?.value || 0) || 0,
+      status: $("input[name='pStatus']:checked", modalRoot)?.value || "Disponible",
+      image: $("#pImage", modalRoot)?.value.trim() || "",
+      gallery: collectGallery(),
+      promos: collectPromos(),
+      description: $("#pDesc", modalRoot)?.value.trim() || "",
+      benefits: $("#pBenefits", modalRoot)?.value.trim() || "",
+      includes: $("#pIncludes", modalRoot)?.value.trim() || "",
+      note: $("#pNote", modalRoot)?.value.trim() || "",
+    };
+  }
+
+  function productEditorPreview(p) {
+    const tags = parseTags(p.categories);
+    const old = Number(p.oldPrice || 0);
+    return `<article class="product-card preview-product-card"><div class="product-top"><div class="tag-stack"><span class="tag-pill">${escapeHtml(tags[0] || "General")}</span>${tags.length > 1 ? `<span class="tag-pill">+${tags.length - 1}</span>` : ""}</div><span class="code-pill">${escapeHtml(p.id)}</span></div>
+      <div class="product-media"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><span class="stock-badge ${statusClass(statusOf(p))}"><span class="dot" style="background:#031018;box-shadow:none"></span>${escapeHtml(statusOf(p))}</span><b class="price-badge">${money(p.price)}</b>${old > 0 && old > Number(p.price || 0) ? `<span class="old-price-badge">Antes ${money(old)}</span>` : ""}</div>
+      <h3 class="product-title">${escapeHtml(p.name)}</h3><div class="preview-desc">${richDescription(p)}</div></article>`;
   }
 
   function productForm(p = {}) {
     const prod = SDCStore.normalizeProduct(p, state.products.length);
     if (!p.id) prod.id = nextCode();
-    const quickCats = ["Gamer Móvil", "Dedales", "Gatillos", "Tecnología", "Celulares", "Audio", "Cables", "Hogar", "Cocina"];
+    const quickCats = ["Gamer Móvil", "Dedales", "Gatillos", "Tecnología", "Celulares", "Audio", "Cables", "Hogar", "Cocina", "Accesorios"];
+    const selected = parseTags(prod.categories).map((x) => x.toLowerCase());
+    const statuses = ["Disponible", "Bajo stock", "Agotado", "Consultar"];
+    const st = statuses.includes(prod.status) ? prod.status : "Disponible";
     return `<div class="modal-head"><h3>${p.id ? "Editar" : "Nuevo"} producto</h3><button class="close">×</button></div>
-      <div class="modal-body"><div class="card-box"><h4>Información básica</h4><div class="modal-grid">
-      <label><span class="label">Nombre del producto</span><input id="pName" class="input" value="${escapeHtml(prod.name)}"></label>
+      <div class="modal-body product-editor-body">
+      <div class="card-box"><h4>Información básica</h4><div class="modal-grid">
+      <label><span class="label">Nombre del producto</span><input id="pName" class="input" value="${escapeHtml(prod.name)}" placeholder="Ej. Dedales gamer V1"></label>
       <label><span class="label">Código</span><input id="pId" class="input" value="${escapeHtml(prod.id)}"></label>
-      <label class="span2"><span class="label">Categorías / etiquetas</span><input id="pCats" class="input" value="${escapeHtml(prod.categories)}" placeholder="Ejemplo: Dedales, Gamer Móvil"></label>
       <label><span class="label">Costo compra</span><input id="pCost" class="input" type="number" value="${prod.cost}"></label>
-      <label><span class="label">Precio venta</span><input id="pPrice" class="input" type="number" value="${prod.price}"></label>
+      <label><span class="label">Precio actual</span><input id="pPrice" class="input" type="number" value="${prod.price}"></label>
+      <label><span class="label">Precio antes / tachado</span><input id="pOldPrice" class="input" type="number" value="${prod.oldPrice || ""}" placeholder="Opcional"></label>
       <label><span class="label">Stock</span><input id="pStock" class="input" type="number" value="${prod.stock}"></label>
-      <label><span class="label">Imagen principal URL</span><input id="pImage" class="input" value="${escapeHtml(prod.image)}" placeholder="https://..."></label>
-      <div class="span2 image-box"><div class="image-box-head"><span class="label">Imágenes adicionales</span><span class="image-counter" id="imageCounter">0 imágenes extra</span></div><p class="form-help image-help">Toca <b>Añadir imagen</b> cada vez que quieras agregar otra foto. Puedes seguir agregando hasta dejar completo el producto.</p>${galleryRowsHTML(prod.gallery)}<button type="button" class="btn secondary small image-add" id="addImageRow">+ Añadir imagen</button></div>
-      <div class="span2 promo-box"><span class="label">Añadir promociones</span><div class="promo-head"><b>Cantidad</b><b>Precio</b><i></i></div>${promoRowsHTML(prod.promos)}<button type="button" class="btn secondary small promo-add" id="addPromoRow">+ Agregar otra promoción</button><p class="form-help">Ejemplo: cantidad 3 y precio 72. Se guarda como 3=72 para mantener compatibilidad.</p></div>
-      <label class="span2"><span class="label">Descripción / beneficios / incluye</span><textarea id="pDesc" class="textarea">${escapeHtml(prod.description)}</textarea></label>
-      </div><div class="chips cat-shortcuts">${quickCats.map((c) => `<button class="chip" data-addcat="${c}">${c}</button>`).join("")}</div></div>
-      <div class="modal-actions"><button class="btn" id="saveProduct">Guardar producto</button>${p.id ? `<button class="btn secondary" id="duplicateProduct">Duplicar</button><button class="btn danger" id="deleteProduct">Eliminar</button>` : ""}</div></div>`;
+      <label class="span2"><span class="label">Categorías / etiquetas</span><input id="pCats" class="input" value="${escapeHtml(prod.categories)}" placeholder="Ejemplo: Dedales, Gamer Móvil"></label>
+      <div class="span2 category-picker"><span class="label">Toca para agregar o quitar categoría</span><div class="chips cat-shortcuts">${quickCats.map((c) => `<button type="button" class="chip ${selected.includes(c.toLowerCase()) ? "active" : ""}" data-addcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("")}</div></div>
+      <div class="span2 status-picker"><span class="label">Estado del producto</span><div class="status-options">${statuses.map((x) => `<label class="status-option ${x === st ? "active" : ""}"><input type="radio" name="pStatus" value="${x}" ${x === st ? "checked" : ""}>${x}</label>`).join("")}</div></div>
+      </div></div>
+
+      <div class="card-box media-section"><h4>Imágenes del producto</h4><div class="modal-grid">
+      <label class="span2 main-image-block"><span class="label">Imagen principal del producto</span><div class="main-image-line"><div class="main-image-preview" id="mainImagePreview"><span>Principal</span></div><input id="pImage" class="input" value="${escapeHtml(prod.image)}" placeholder="https://..."></div><small>Esta será la primera foto que aparece en el catálogo.</small></label>
+      <div class="span2 image-box"><div class="image-box-head"><span class="label">Fotos adicionales del producto</span><span class="image-counter" id="imageCounter">0 fotos extra</span></div><p class="form-help image-help">Presiona <b>Añadir imagen</b> y se abre otro campo. Puedes repetirlo hasta terminar tus fotos.</p>${galleryRowsHTML(prod.gallery)}<button type="button" class="btn secondary small image-add" id="addImageRow">+ Añadir imagen</button></div>
+      </div></div>
+
+      <div class="card-box"><h4>Promociones y contenido</h4><div class="modal-grid">
+      <div class="span2 promo-box"><span class="label">Añadir promociones</span><div class="promo-head"><b>Cantidad</b><b>Precio</b><i></i></div>${promoRowsHTML(prod.promos)}<button type="button" class="btn secondary small promo-add" id="addPromoRow">+ Agregar otra promoción</button><p class="form-help">Ejemplo: cantidad 3 y precio 72. Abajo verás el resumen automático antes de guardar.</p></div>
+      <label class="span2"><span class="label">Descripción corta</span><textarea id="pDesc" class="textarea" placeholder="Describe el producto de forma clara y vendible.">${escapeHtml(prod.description)}</textarea></label>
+      <label class="span2"><span class="label">Beneficios</span><textarea id="pBenefits" class="textarea small-textarea" placeholder="Ej. Mejor agarre, más comodidad, ideal para jugar.">${escapeHtml(prod.benefits || "")}</textarea></label>
+      <label class="span2"><span class="label">Qué incluye</span><textarea id="pIncludes" class="textarea small-textarea" placeholder="Ej. 1 par, caja, cable, manual, etc.">${escapeHtml(prod.includes || "")}</textarea></label>
+      <label class="span2"><span class="label">Nota especial</span><textarea id="pNote" class="textarea small-textarea" placeholder="Ej. Stock limitado, colores según existencia.">${escapeHtml(prod.note || "")}</textarea></label>
+      </div></div>
+
+      <div class="card-box preview-panel" id="productPreviewPanel" hidden><div class="section-head"><h4>Vista previa</h4><span>Así se verá antes de guardar</span></div><div id="productPreviewBox"></div></div>
+      <div class="modal-actions product-savebar"><button class="btn secondary" id="previewProduct" type="button">Vista previa</button><button class="btn ghost" id="resetProductForm" type="button">Nuevo desde cero</button>${p.id ? `<button class="btn secondary" id="duplicateProduct" type="button">Duplicar</button><button class="btn danger" id="deleteProduct" type="button">Eliminar</button>` : ""}<button class="btn" id="saveProduct" type="button">Guardar producto</button></div>
+      </div>`;
   }
+
   function openProductEditor(id) {
     const p = id ? productById(id) : {};
     openModal(productForm(p), true);
+    const syncCategoryActive = () => {
+      const tags = parseTags($("#pCats", modalRoot).value).map((x) => x.toLowerCase());
+      $$("[data-addcat]", modalRoot).forEach((b) => b.classList.toggle("active", tags.includes(b.dataset.addcat.toLowerCase())));
+    };
     $$("[data-addcat]", modalRoot).forEach(
       (b) =>
         (b.onclick = () => {
-          const inp = $("#pCats");
-          const tags = parseTags(inp.value);
-          if (
-            !tags.some(
-              (t) => t.toLowerCase() === b.dataset.addcat.toLowerCase(),
-            )
-          )
-            tags.push(b.dataset.addcat);
-          inp.value = tags.join(", ");
+          const inp = $("#pCats", modalRoot);
+          let tags = parseTags(inp.value);
+          const exists = tags.some((t) => t.toLowerCase() === b.dataset.addcat.toLowerCase());
+          tags = exists ? tags.filter((t) => t.toLowerCase() !== b.dataset.addcat.toLowerCase()) : [...tags, b.dataset.addcat];
+          inp.value = tags.join(", ") || "General";
+          syncCategoryActive();
         }),
     );
+    $("#pCats", modalRoot)?.addEventListener("input", syncCategoryActive);
+    $$(".status-option", modalRoot).forEach((lbl) => {
+      lbl.onclick = () => {
+        setTimeout(() => {
+          $$(".status-option", modalRoot).forEach((x) => x.classList.toggle("active", $("input", x).checked));
+        }, 0);
+      };
+    });
     bindImageBuilder();
     bindPromoBuilder();
+    $("#previewProduct").onclick = () => {
+      const np = currentProductFromForm();
+      const panel = $("#productPreviewPanel", modalRoot);
+      $("#productPreviewBox", modalRoot).innerHTML = productEditorPreview(np);
+      panel.hidden = false;
+      panel.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
+    $("#resetProductForm").onclick = () => {
+      if (!confirm("¿Limpiar el formulario para crear otro producto?")) return;
+      closeModal();
+      openProductEditor();
+    };
     $("#saveProduct").onclick = () => {
-      const np = {
-        id: $("#pId").value.trim() || nextCode(),
-        name: $("#pName").value.trim() || "Producto sin nombre",
-        categories: $("#pCats").value.trim() || "General",
-        cost: +$("#pCost").value || 0,
-        price: +$("#pPrice").value || 0,
-        stock: +$("#pStock").value || 0,
-        image: $("#pImage").value.trim(),
-        gallery: collectGallery(),
-        promos: collectPromos(),
-        description: $("#pDesc").value.trim(),
-      };
+      const np = currentProductFromForm();
       const ix = state.products.findIndex((x) => x.id === id);
       if (ix >= 0) state.products[ix] = np;
       else state.products.push(np);
@@ -555,7 +662,7 @@
     };
     $("#duplicateProduct") &&
       ($("#duplicateProduct").onclick = () => {
-        const cp = { ...p, id: nextCode(), name: p.name + " copia" };
+        const cp = { ...currentProductFromForm(), id: nextCode(), name: currentProductFromForm().name + " copia" };
         state.products.push(cp);
         save();
         closeModal();
@@ -579,7 +686,7 @@
     if (!p) return;
     const imgs = galleryOf(p);
     openModal(
-      `<div class="modal-head"><h3>Producto</h3><button class="close">×</button></div><div class="modal-body"><div class="doc-wrap" style="background:#07111f;color:#eef8ff"><div class="product-media"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><b class="price-badge">${money(p.price)}</b></div><h2>${escapeHtml(p.name)}</h2><p style="color:#b8c8d8">${escapeHtml(p.description || "Sin descripción.")}</p><div class="metrics"><div class="metric"><span>Stock</span><b>${num(p.stock)}</b></div><div class="metric"><span>Categorías</span><b>${escapeHtml(parseTags(p.categories).join(", "))}</b></div><div class="metric"><span>Costo</span><b>${money(p.cost)}</b></div><div class="metric"><span>Ganancia C/U</span><b>${money((+p.price || 0) - (+p.cost || 0))}</b></div></div></div><div class="modal-actions"><button class="btn" data-action="sellProduct" data-id="${escapeHtml(id)}">Vender</button><button class="btn secondary" data-action="quoteProduct" data-id="${escapeHtml(id)}">Cotizar</button><button class="btn ghost" data-action="editProduct" data-id="${escapeHtml(id)}">Editar</button></div></div>`,
+      `<div class="modal-head"><h3>Producto</h3><button class="close">×</button></div><div class="modal-body"><div class="doc-wrap" style="background:#07111f;color:#eef8ff"><div class="product-media"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><span class="stock-badge ${statusClass(statusOf(p))}">${escapeHtml(statusOf(p))}</span><b class="price-badge">${money(p.price)}</b>${(+p.oldPrice || 0) > (+p.price || 0) ? `<span class="old-price-badge">Antes ${money(p.oldPrice)}</span>` : ""}</div><h2>${escapeHtml(p.name)}</h2><div style="color:#b8c8d8">${richDescription(p)}</div><div class="metrics"><div class="metric"><span>Stock</span><b>${num(p.stock)}</b></div><div class="metric"><span>Categorías</span><b>${escapeHtml(parseTags(p.categories).join(", "))}</b></div><div class="metric"><span>Costo</span><b>${money(p.cost)}</b></div><div class="metric"><span>Ganancia C/U</span><b>${money((+p.price || 0) - (+p.cost || 0))}</b></div></div></div><div class="modal-actions"><button class="btn" data-action="sellProduct" data-id="${escapeHtml(id)}">Vender</button><button class="btn secondary" data-action="quoteProduct" data-id="${escapeHtml(id)}">Cotizar</button><button class="btn ghost" data-action="editProduct" data-id="${escapeHtml(id)}">Editar</button></div></div>`,
     );
     $$("[data-action]", modalRoot).forEach(
       (b) =>

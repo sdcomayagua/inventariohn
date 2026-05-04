@@ -41,13 +41,18 @@
       name: String(p.name || p.nombre || "Producto sin nombre"),
       categories: String(categories || "General"),
       price: Number(p.price ?? p.precio ?? p.precio_venta ?? 0) || 0,
+      oldPrice: Number(p.oldPrice ?? p.precio_anterior ?? p.priceOld ?? p.beforePrice ?? 0) || 0,
       cost: Number(p.cost ?? p.costo ?? p.costo_compra ?? 0) || 0,
       stock: Number(p.stock ?? p.existencia ?? 0) || 0,
+      status: String(p.status || p.estado || "Disponible"),
       image: String(image || ""),
       gallery: Array.isArray(gallery)
         ? gallery.join("\n")
         : String(gallery || ""),
       description: String(p.description || p.descripcion || ""),
+      benefits: String(p.benefits || p.beneficios || ""),
+      includes: String(p.includes || p.incluye || p.contenido || ""),
+      note: String(p.note || p.nota || p.notaEspecial || ""),
       promos: String(p.promos || p.promociones || p.preciosCantidad || ""),
     };
   }

@@ -411,6 +411,88 @@
       .join("\n");
   }
 
+
+  function parseGalleryRows(str) {
+    const rows = String(str || "")
+      .split(/\n+/)
+      .map((x) => x.trim())
+      .filter(Boolean);
+    return rows.length ? rows : [""];
+  }
+
+  function imageRowHTML(url = "") {
+    const safe = escapeHtml(url);
+    return `<div class="image-row">
+      <div class="image-preview">${safe ? `<img src="${safe}" alt="">` : `<span>IMG</span>`}</div>
+      <label class="image-field"><span>URL de imagen</span><input class="image-url" type="url" value="${safe}" placeholder="https://..."></label>
+      <button type="button" class="image-remove" title="Quitar imagen">×</button>
+    </div>`;
+  }
+
+  function galleryRowsHTML(gallery) {
+    return `<div class="image-rows" id="imageRows">${parseGalleryRows(gallery)
+      .map((url) => imageRowHTML(url))
+      .join("")}</div>`;
+  }
+
+  function collectGallery() {
+    return $$(".image-url", modalRoot)
+      .map((input) => input.value.trim())
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  function bindImageBuilder() {
+    const rowsBox = $("#imageRows", modalRoot);
+    if (!rowsBox) return;
+    const counter = $("#imageCounter", modalRoot);
+    const updateCounter = () => {
+      const count = $$(".image-url", rowsBox).filter((input) => input.value.trim()).length;
+      if (counter) counter.textContent = `${count} imagen${count === 1 ? "" : "es"} extra`;
+    };
+    const bindPreview = (row) => {
+      const input = $(".image-url", row);
+      const preview = $(".image-preview", row);
+      if (!input || !preview) return;
+      input.oninput = () => {
+        const url = input.value.trim();
+        preview.innerHTML = url ? `<img src="${escapeHtml(url)}" alt="">` : `<span>IMG</span>`;
+        updateCounter();
+      };
+    };
+    const bindRemove = () => {
+      $$(".image-remove", rowsBox).forEach((btn) => {
+        btn.onclick = () => {
+          const rows = $$(".image-row", rowsBox);
+          if (rows.length <= 1) {
+            const input = $(".image-url", rows[0]);
+            if (input) input.value = "";
+            const preview = $(".image-preview", rows[0]);
+            if (preview) preview.innerHTML = `<span>IMG</span>`;
+            updateCounter();
+            return;
+          }
+          btn.closest(".image-row")?.remove();
+          updateCounter();
+        };
+      });
+    };
+    $$(".image-row", rowsBox).forEach(bindPreview);
+    bindRemove();
+    const addBtn = $("#addImageRow", modalRoot);
+    if (addBtn) {
+      addBtn.onclick = () => {
+        rowsBox.insertAdjacentHTML("beforeend", imageRowHTML());
+        const last = rowsBox.lastElementChild;
+        bindPreview(last);
+        bindRemove();
+        updateCounter();
+        $(".image-url", last)?.focus();
+      };
+    }
+    updateCounter();
+  }
+
   function productForm(p = {}) {
     const prod = SDCStore.normalizeProduct(p, state.products.length);
     if (!p.id) prod.id = nextCode();
@@ -424,7 +506,7 @@
       <label><span class="label">Precio venta</span><input id="pPrice" class="input" type="number" value="${prod.price}"></label>
       <label><span class="label">Stock</span><input id="pStock" class="input" type="number" value="${prod.stock}"></label>
       <label><span class="label">Imagen principal URL</span><input id="pImage" class="input" value="${escapeHtml(prod.image)}" placeholder="https://..."></label>
-      <label class="span2"><span class="label">Agregar más imágenes</span><textarea id="pGallery" class="textarea" placeholder="Una URL por línea. Puedes agregar más fotos cuando quieras.">${escapeHtml(prod.gallery)}</textarea><small class="field-help">Pega aquí fotos adicionales del producto, una URL por línea.</small></label>
+      <div class="span2 image-box"><div class="image-box-head"><span class="label">Imágenes adicionales</span><span class="image-counter" id="imageCounter">0 imágenes extra</span></div><p class="form-help image-help">Toca <b>Añadir imagen</b> cada vez que quieras agregar otra foto. Puedes seguir agregando hasta dejar completo el producto.</p>${galleryRowsHTML(prod.gallery)}<button type="button" class="btn secondary small image-add" id="addImageRow">+ Añadir imagen</button></div>
       <div class="span2 promo-box"><span class="label">Añadir promociones</span><div class="promo-head"><b>Cantidad</b><b>Precio</b><i></i></div>${promoRowsHTML(prod.promos)}<button type="button" class="btn secondary small promo-add" id="addPromoRow">+ Agregar otra promoción</button><p class="form-help">Ejemplo: cantidad 3 y precio 72. Se guarda como 3=72 para mantener compatibilidad.</p></div>
       <label class="span2"><span class="label">Descripción / beneficios / incluye</span><textarea id="pDesc" class="textarea">${escapeHtml(prod.description)}</textarea></label>
       </div><div class="chips cat-shortcuts">${quickCats.map((c) => `<button class="chip" data-addcat="${c}">${c}</button>`).join("")}</div></div>
@@ -447,6 +529,7 @@
           inp.value = tags.join(", ");
         }),
     );
+    bindImageBuilder();
     bindPromoBuilder();
     $("#saveProduct").onclick = () => {
       const np = {
@@ -457,7 +540,7 @@
         price: +$("#pPrice").value || 0,
         stock: +$("#pStock").value || 0,
         image: $("#pImage").value.trim(),
-        gallery: $("#pGallery").value.trim(),
+        gallery: collectGallery(),
         promos: collectPromos(),
         description: $("#pDesc").value.trim(),
       };

@@ -30,3 +30,16 @@ V92 PRO MÓVIL
 - Corregidos los accesos rápidos: Catálogo, Vender, Producto, Ganancias, Recibos y Backup ya no montan subtítulos sobre títulos.
 - Se agregaron iconos discretos y mejor lectura en celular sin perder la estética oscura/neón SDC.
 - Se ajustaron chips largos para que no rompan el diseño móvil.
+
+V93 PRO MÓVIL
+- Categorías/chips corregidos para que se lean completos y se deslicen normal en celular.
+- Promociones por cantidad rediseñadas como filas Cantidad / Precio con botón para agregar otra promoción.
+
+V94 PRO MÓVIL
+- Texto ajustado en sección de imágenes adicionales.
+
+V95 PRO MÓVIL
+- Cambiada la sección de imágenes: ya no es un cuadro grande de texto.
+- Ahora cada imagen adicional se agrega de forma individual con el botón “Añadir imagen”.
+- Después de agregar una imagen, el botón sigue disponible para seguir agregando más fotos hasta terminar.
+- Cada imagen adicional muestra una mini vista previa, contador de imágenes extra y botón para quitarla.

@@ -424,7 +424,7 @@
       <label><span class="label">Precio venta</span><input id="pPrice" class="input" type="number" value="${prod.price}"></label>
       <label><span class="label">Stock</span><input id="pStock" class="input" type="number" value="${prod.stock}"></label>
       <label><span class="label">Imagen principal URL</span><input id="pImage" class="input" value="${escapeHtml(prod.image)}" placeholder="https://..."></label>
-      <label class="span2"><span class="label">Galería / más imágenes</span><textarea id="pGallery" class="textarea" placeholder="Una URL por línea">${escapeHtml(prod.gallery)}</textarea></label>
+      <label class="span2"><span class="label">Agregar más imágenes</span><textarea id="pGallery" class="textarea" placeholder="Una URL por línea. Puedes agregar más fotos cuando quieras.">${escapeHtml(prod.gallery)}</textarea><small class="field-help">Pega aquí fotos adicionales del producto, una URL por línea.</small></label>
       <div class="span2 promo-box"><span class="label">Añadir promociones</span><div class="promo-head"><b>Cantidad</b><b>Precio</b><i></i></div>${promoRowsHTML(prod.promos)}<button type="button" class="btn secondary small promo-add" id="addPromoRow">+ Agregar otra promoción</button><p class="form-help">Ejemplo: cantidad 3 y precio 72. Se guarda como 3=72 para mantener compatibilidad.</p></div>
       <label class="span2"><span class="label">Descripción / beneficios / incluye</span><textarea id="pDesc" class="textarea">${escapeHtml(prod.description)}</textarea></label>
       </div><div class="chips cat-shortcuts">${quickCats.map((c) => `<button class="chip" data-addcat="${c}">${c}</button>`).join("")}</div></div>

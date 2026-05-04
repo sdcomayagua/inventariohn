@@ -12,8 +12,8 @@
   function defaultState(){return {version:90,unlocked:false,products:clone(window.SDC_DEFAULT_PRODUCTS||[]),sales:[],quotes:[],lastReceipt:null,lastQuote:null,settings:clone(window.SDC_CONFIG||{})}}
   function normalizeProduct(p,i=0){
     const categories = p.categories || p.category || p.categoria || p.etiquetas || 'General';
-    const image = p.image || p.imagen || p.foto || (Array.isArray(p.images)&&p.images[0]) || '';
-    const gallery = p.gallery || p.galeria || p.images || '';
+    const image = p.image || p.imagen || p.imagenes || p.foto || p.fotos || (Array.isArray(p.images)&&p.images[0]) || '';
+    const gallery = p.gallery || p.galeria || p.imagenes_extra || p.fotos_extra || p.images || '';
     return {
       id:textField(p.id||p.codigo||`SDC-${String(i+1).padStart(3,'0')}`),
       name:textField(p.name||p.nombre||'Producto sin nombre','Producto sin nombre'),
@@ -24,7 +24,7 @@
       image:textField(image,''),
       gallery:Array.isArray(gallery)?gallery.map(x=>textField(x,'')).filter(Boolean).join('\n'):textField(gallery,''),
       description:textField(p.description||p.descripcion||''),
-      promos:textField(p.promos||p.promociones||p.preciosCantidad||'')
+      promos:textField(p.promos||p.promociones||p.preciosCantidad||p.precios_cantidad||p.mayoreo||p.ofertas||'')
     }
   }
   function normalizeState(s){

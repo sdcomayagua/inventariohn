@@ -159,7 +159,7 @@
     return urls.length?urls:[''];
   }
   function parsePromoRows(text){
-    const rows=String(text||'').split(/\n+/).map(line=>line.trim()).filter(Boolean).map(line=>{
+    const rows=String(text||'').split(/[\n|;]+/).map(line=>line.trim()).filter(Boolean).map(line=>{
       const m=line.match(/^(\d+)\s*[=:xX-]\s*(\d+(?:\.\d+)?)$/);
       return m?{qty:m[1],price:m[2]}:{qty:'',price:''};
     }).filter(r=>r.qty||r.price);
@@ -294,7 +294,166 @@
   async function shareDocPhoto(isSale){const doc=currentDoc(isSale); if(!doc.items.length)return toast('Agrega productos primero.'); const c=calc(doc); if(c.products<=0||c.total<=0)return toast('El total está en cero. Revisa producto, precio y envío antes de enviar.'); const phone=chooseWaPhone(doc); if(phone===null)return; const blob=await docToBlob(); const text=whatsappText(doc,isSale); if(blob && navigator.canShare){const file=new File([blob],`${isSale?'recibo':'cotizacion'}-sd-comayagua.png`,{type:'image/png'}); if(navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text}); return}catch(e){}}} if(blob) await downloadDocImage(isSale?'recibo':'cotizacion'); window.open(waUrl(phone,text),'_blank'); toast('Se descargó la imagen y se abrió WhatsApp.');}
   function finishSale(){ if(!saleDraft.items.length)return toast('Agrega productos primero.'); const c=calc(saleDraft); saleDraft.date=new Date().toISOString(); saleDraft.total=c.total; state.sales.unshift(SDCStore.clone(saleDraft)); saleDraft.items.forEach(it=>{const p=productById(it.id); if(p)p.stock=Math.max(0,(+p.stock||0)-(+it.qty||0));}); state.lastReceipt=SDCStore.clone(saleDraft); SDCStore.saveBackup(state,'Venta registrada'); save(); refreshQuoteUI(true); render(); toast('Venta finalizada y recibo guardado.'); }
 
-  function openBackup(){openModal(`<div class="modal-head"><h3>Backup de datos</h3><button class="close">×</button></div><div class="modal-body"><div class="card-box"><h4>Exportar / importar</h4><p style="color:#b8c8d8">Guarda este archivo antes de borrar o subir una versión nueva.</p><div class="modal-actions" style="position:static"><button class="btn" id="exportBackup">Descargar backup JSON</button><label class="btn secondary">Importar backup<input id="importBackup" type="file" accept="application/json" hidden></label><button class="btn ghost" id="manualBackup">Guardar copia local</button></div></div><div class="card-box"><h4>Copias locales</h4><div id="backupList"></div></div></div>`,true); function draw(){const b=SDCStore.listBackups(); $('#backupList').innerHTML=b.map(x=>`<div class="cart-row"><div><b>${escapeHtml(x.label)}</b><br><span>${new Date(x.date).toLocaleString('es-HN')}</span></div><button class="btn small secondary" data-restore="${x.id}">Restaurar</button></div>`).join('')||'<div class="empty-state">Sin copias locales.</div>'; $$('[data-restore]',modalRoot).forEach(btn=>btn.onclick=()=>{state=SDCStore.restoreBackup(btn.dataset.restore)||state; closeModal(); render(); toast('Backup restaurado.')}); } draw(); $('#exportBackup').onclick=()=>{const blob=new Blob([SDCStore.exportData(state)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='backup-sd-comayagua.json'; a.click();}; $('#manualBackup').onclick=()=>{SDCStore.saveBackup(state,'Backup manual');draw();toast('Copia local guardada.')}; $('#importBackup').onchange=e=>{const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{try{state=SDCStore.importData(r.result);closeModal();render();toast('Backup importado.')}catch(err){toast('No se pudo importar.')}}; r.readAsText(f)}; }
+  function normalizeImportHeader(h){
+    return String(h||'').replace(/^\uFEFF/,'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+  }
+  function importCleanValue(v){
+    if(v===undefined||v===null) return '';
+    return String(v).replace(/^\uFEFF/,'').trim();
+  }
+  function parseImportNumber(v){
+    let s=importCleanValue(v).replace(/lps\.?|hnl|lempiras?/ig,'').replace(/\s+/g,'');
+    if(!s) return 0;
+    s=s.replace(/[^0-9,.-]/g,'');
+    if(s.includes(',') && s.includes('.')) s=s.replace(/,/g,'');
+    else if(s.includes(',') && !s.includes('.')){
+      const parts=s.split(',');
+      s=(parts.length===2 && parts[1].length===3)?parts.join(''):s.replace(',', '.');
+    }
+    const n=Number(s);
+    return Number.isFinite(n)?n:0;
+  }
+  function csvEscape(v){
+    const s=String(v??'');
+    return /[",\n\r]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;
+  }
+  function detectDelimiter(text){
+    const sample=String(text||'').split(/\r?\n/).find(x=>x.trim())||'';
+    const count=(ch)=>{let c=0,q=false; for(let i=0;i<sample.length;i++){const a=sample[i]; if(a==='"'){ if(q&&sample[i+1]==='"')i++; else q=!q;} else if(!q && a===ch)c++; } return c;};
+    const opts=[',',';','\t'].map(ch=>({ch,n:count(ch)})).sort((a,b)=>b.n-a.n);
+    return opts[0].n?opts[0].ch:',';
+  }
+  function parseCSVText(text){
+    text=String(text||'').replace(/^\uFEFF/,'');
+    const delim=detectDelimiter(text);
+    const rows=[]; let row=[], cell='', q=false;
+    for(let i=0;i<text.length;i++){
+      const ch=text[i];
+      if(ch==='"'){
+        if(q && text[i+1]==='"'){cell+='"'; i++;}
+        else q=!q;
+      } else if(ch===delim && !q){row.push(cell); cell='';}
+      else if((ch==='\n'||ch==='\r') && !q){
+        if(ch==='\r' && text[i+1]==='\n') i++;
+        row.push(cell); cell='';
+        if(row.some(x=>String(x).trim()!=='')) rows.push(row);
+        row=[];
+      } else cell+=ch;
+    }
+    row.push(cell);
+    if(row.some(x=>String(x).trim()!=='')) rows.push(row);
+    if(!rows.length) return [];
+    const headers=rows.shift().map(h=>importCleanValue(h));
+    return rows.map(r=>{const o={}; headers.forEach((h,i)=>o[h]=r[i]??''); return o;});
+  }
+  function splitImportImages(v){
+    const raw=importCleanValue(v);
+    if(!raw) return [];
+    return raw.split(/\s*(?:\r?\n|\||;)\s*/).map(x=>x.trim()).filter(Boolean);
+  }
+  function normalizeImportPromos(v){
+    const raw=importCleanValue(v);
+    if(!raw) return '';
+    return raw.split(/\s*(?:\r?\n|\||;|,)\s*/).map(part=>{
+      const m=part.match(/(\d+)\s*(?:=|:|x|X|-|a|por|par|pares|unidad|unidades)?\s*[^0-9]*([0-9]+(?:[.,][0-9]+)?)/i);
+      if(!m) return '';
+      return `${Number(m[1])}=${parseImportNumber(m[2])}`;
+    }).filter(Boolean).join('\n');
+  }
+  function importRowToProduct(row,i){
+    const n={}; Object.keys(row||{}).forEach(k=>n[normalizeImportHeader(k)]=row[k]);
+    const val=(keys)=>{for(const k of keys){const nk=normalizeImportHeader(k); if(n[nk]!==undefined && importCleanValue(n[nk])!=='') return importCleanValue(n[nk]);} return '';};
+    const images=splitImportImages(val(['imagenes','imagen','foto','fotos','image','images','galeria','gallery','urlimagen','linkimagen']));
+    const p={
+      id:val(['codigo','cod','id','sku','code']) || `SDC-${String(i+1).padStart(3,'0')}`,
+      name:val(['nombre','producto','name','title','articulo','item']) || 'Producto sin nombre',
+      categories:val(['categoria','categorias','category','categories','etiquetas','tags']) || 'General',
+      price:parseImportNumber(val(['precio','precioventa','precioactual','venta','price'])),
+      cost:parseImportNumber(val(['costo','cost','costocompra','preciocompra','compra'])),
+      stock:parseImportNumber(val(['stock','existencia','cantidad','inventario','disponible'])),
+      image:images[0]||'',
+      gallery:images.slice(1).join('\n'),
+      promos:normalizeImportPromos(val(['promos','promociones','precioscantidad','preciosporcantidad','mayoreo','ofertas','promo'])),
+      description:val(['descripcion','description','beneficios','detalle','incluye','info'])
+    };
+    return SDCStore.normalizeProduct(p,i);
+  }
+  async function readRowsFromProductFile(file){
+    const name=(file.name||'').toLowerCase();
+    if(name.endsWith('.csv') || file.type.includes('csv') || file.type.startsWith('text/')){
+      const txt=await file.text();
+      return parseCSVText(txt);
+    }
+    if(name.endsWith('.xlsx') || name.endsWith('.xls')){
+      if(!window.XLSX) throw new Error('La librería XLSX no cargó. Revisa internet o usa CSV.');
+      const buf=await file.arrayBuffer();
+      const wb=XLSX.read(buf,{type:'array'});
+      const first=wb.SheetNames[0];
+      if(!first) return [];
+      return XLSX.utils.sheet_to_json(wb.Sheets[first],{defval:'',raw:false});
+    }
+    throw new Error('Formato no soportado. Usa .csv o .xlsx');
+  }
+  function importProducts(products,mode){
+    if(!products.length) throw new Error('No encontré productos válidos.');
+    SDCStore.saveBackup(state,'Antes de importar productos');
+    if(mode==='replace'){
+      state.products=products;
+    }else{
+      const byId=new Map(state.products.map((p,i)=>[String(p.id).trim().toLowerCase(),i]));
+      products.forEach(p=>{
+        const key=String(p.id||'').trim().toLowerCase();
+        if(key && byId.has(key)) state.products[byId.get(key)]={...state.products[byId.get(key)],...p};
+        else state.products.push(p);
+      });
+    }
+    state.products=state.products.map(SDCStore.normalizeProduct);
+    save(); SDCStore.saveBackup(state,`Importados ${products.length} productos`);
+  }
+  async function handleProductImportFile(file){
+    try{
+      $('#importProductsStatus',modalRoot).innerHTML='Leyendo archivo...';
+      const rows=await readRowsFromProductFile(file);
+      const products=rows.map(importRowToProduct).filter(p=>p.name && p.name!=='Producto sin nombre');
+      if(!products.length) throw new Error('El archivo no tiene filas de productos.');
+      const mode=$('#importProductsMode',modalRoot)?.value||'merge';
+      const msg=`Encontré ${products.length} productos en ${file.name}.\n\n${mode==='replace'?'REEMPLAZARÁ todo el catálogo actual.':'Actualizará por código y agregará los nuevos.'}\n\n¿Importar ahora?`;
+      if(!confirm(msg)){ $('#importProductsStatus',modalRoot).innerHTML='Importación cancelada.'; return; }
+      importProducts(products,mode);
+      closeModal(); render(); toast(`${products.length} productos importados correctamente.`);
+    }catch(err){
+      console.error(err);
+      $('#importProductsStatus',modalRoot).innerHTML=`No se pudo importar: ${escapeHtml(err.message||err)}`;
+      toast('No se pudo importar el archivo.');
+    }
+  }
+  function exportProductsCSV(){
+    const headers=['codigo','nombre','categoria','precio','costo','stock','imagenes','promos','descripcion'];
+    const rows=state.products.map(p=>{
+      const imgs=[p.image,...String(p.gallery||'').split(/\n+/).filter(Boolean)].join(' | ');
+      return [p.id,p.name,p.categories,p.price,p.cost,p.stock,imgs,String(p.promos||'').replace(/\n+/g,' | '),p.description].map(csvEscape).join(',');
+    });
+    const blob=new Blob([[headers.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='productos-sd-comayagua.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  function downloadProductTemplateCSV(){
+    const csv='codigo,nombre,categoria,precio,costo,stock,imagenes,promos,descripcion\nSDC-001,Producto ejemplo,Gamer Móvil,350,110,5,https://link-imagen.jpg,"1:350 | 2:690",Descripción del producto';
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='plantilla-productos-sdc.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+
+  function openBackup(){
+    openModal(`<div class="modal-head"><h3>Backup e importación</h3><button class="close">×</button></div><div class="modal-body"><div class="card-box import-box"><h4>Importar productos CSV / XLSX</h4><p style="color:#b8c8d8">Puedes subir el archivo de Excel o CSV con columnas: código, nombre, categoría, precio, costo, stock, imágenes, promos y descripción.</p><label><span class="label">Modo de importación</span><select class="select" id="importProductsMode"><option value="merge">Actualizar por código y agregar nuevos</option><option value="replace">Reemplazar todo el catálogo</option></select></label><div class="modal-actions import-actions" style="position:static"><label class="btn full">Importar .CSV o .XLSX<input id="importProductsFile" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden></label><button class="btn secondary" id="exportProductsCsv">Exportar productos CSV</button><button class="btn ghost" id="downloadTemplateCsv">Plantilla CSV</button></div><div id="importProductsStatus" class="import-status">Tu archivo enviado sí trae las columnas correctas. Si usas Excel, guarda como .xlsx o .csv UTF-8.</div></div><div class="card-box"><h4>Backup completo JSON</h4><p style="color:#b8c8d8">Este respaldo guarda productos, ventas, cotizaciones y configuración.</p><div class="modal-actions" style="position:static"><button class="btn" id="exportBackup">Descargar backup JSON</button><label class="btn secondary">Importar backup<input id="importBackup" type="file" accept="application/json" hidden></label><button class="btn ghost" id="manualBackup">Guardar copia local</button></div></div><div class="card-box"><h4>Copias locales</h4><div id="backupList"></div></div></div>`,true);
+    function draw(){const b=SDCStore.listBackups(); $('#backupList').innerHTML=b.map(x=>`<div class="cart-row"><div><b>${escapeHtml(x.label)}</b><br><span>${new Date(x.date).toLocaleString('es-HN')}</span></div><button class="btn small secondary" data-restore="${x.id}">Restaurar</button></div>`).join('')||'<div class="empty-state">Sin copias locales.</div>'; $$('[data-restore]',modalRoot).forEach(btn=>btn.onclick=()=>{state=SDCStore.restoreBackup(btn.dataset.restore)||state; closeModal(); render(); toast('Backup restaurado.')}); }
+    draw();
+    $('#exportProductsCsv').onclick=exportProductsCSV;
+    $('#downloadTemplateCsv').onclick=downloadProductTemplateCSV;
+    $('#importProductsFile').onchange=e=>{const f=e.target.files[0]; if(f) handleProductImportFile(f); e.target.value='';};
+    $('#exportBackup').onclick=()=>{const blob=new Blob([SDCStore.exportData(state)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='backup-sd-comayagua.json'; a.click();};
+    $('#manualBackup').onclick=()=>{SDCStore.saveBackup(state,'Backup manual');draw();toast('Copia local guardada.')};
+    $('#importBackup').onchange=e=>{const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{try{state=SDCStore.importData(r.result);closeModal();render();toast('Backup importado.')}catch(err){toast('No se pudo importar.')}}; r.readAsText(f)};
+  }
+
   function openProfit(){const rows=state.products.map(p=>({p,profit:(+p.price||0)-(+p.cost||0),total:((+p.price||0)-(+p.cost||0))*(+p.stock||0)})); openModal(`<div class="modal-head"><h3>Ganancias</h3><button class="close">×</button></div><div class="modal-body"><table class="profit-table"><thead><tr><th>Producto</th><th>C/U</th><th>Stock</th><th>Total</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${escapeHtml(r.p.name)}</td><td>${money(r.profit)}</td><td>${num(r.p.stock)}</td><td>${money(r.total)}</td></tr>`).join('')}</tbody></table></div>`,true)}
   function openReceipts(){openModal(`<div class="modal-head"><h3>Caja / recibos</h3><button class="close">×</button></div><div class="modal-body"><div class="cart-list">${state.sales.map(s=>`<div class="cart-row"><div><b>${escapeHtml(s.client||'Cliente')}</b><br><span>${escapeHtml(s.id)} · ${money(s.total||calc(s).total)}</span></div><button class="btn small secondary" data-openreceipt="${s.id}">Ver</button></div>`).join('')||'<div class="empty-state">Todavía no hay ventas registradas.</div>'}</div></div>`,true); $$('[data-openreceipt]',modalRoot).forEach(b=>b.onclick=()=>{const s=state.sales.find(x=>x.id===b.dataset.openreceipt); if(s){saleDraft=SDCStore.clone(s); openModal(quoteModalHTML(true),true); bindQuoteCommon(true)}}); }
   function openNoCost(){openModal(`<div class="modal-head"><h3>Productos sin costo</h3><button class="close">×</button></div><div class="modal-body"><div class="cart-list">${state.products.filter(p=>+p.cost<=0).map(p=>`<div class="cart-row"><div><b>${escapeHtml(p.name)}</b><br><span>${escapeHtml(p.id)}</span></div><button class="btn small secondary" data-editcost="${p.id}">Editar</button></div>`).join('')||'<div class="empty-state">Todo tiene costo registrado.</div>'}</div></div>`,true); $$('[data-editcost]',modalRoot).forEach(b=>b.onclick=()=>{closeModal();openProductEditor(b.dataset.editcost)})}

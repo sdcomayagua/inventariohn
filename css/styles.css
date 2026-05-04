@@ -150,3 +150,111 @@ h1,h2,h3,h4,.btn,.chip,.label,.top-title h1,.quick b,.quick span,.nav-btn{font-f
 
 @media(max-width:720px){.app{padding-left:12px!important;padding-right:12px!important}.top-logo{width:54px!important;height:54px!important;border-radius:17px!important}.topbar{gap:9px!important}.quick{gap:11px!important}.quick button{min-height:98px!important;border-radius:25px!important;padding:14px 13px!important}.quick button b{font-size:clamp(22px,7.2vw,29px)!important}.quick button span{font-size:clamp(10px,3vw,12px)!important;letter-spacing:.115em!important}.product-actions.product-actions-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;padding:12px!important;border-radius:24px!important}.product-actions-grid .prod-action{min-height:70px!important;border-radius:18px!important;padding:8px 4px!important}.product-actions-grid .prod-action .ico{font-size:18px!important}.product-actions-grid .prod-action b{font-size:10px!important}.product-actions-grid .prod-action small{font-size:8px!important}.product-share-card{padding:13px!important}.public-metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}.public-metrics div{padding:10px 8px!important}.public-metrics span{font-size:9px!important;letter-spacing:.09em!important}.public-metrics b{font-size:13px!important}.close{width:58px!important;height:58px!important;border-radius:22px!important}.modal-body{padding-bottom:22px!important}}
 @media(max-width:380px){.top-title h1{font-size:16px!important}.top-title p{font-size:11.5px!important}.sync-btn{font-size:10px!important;padding-inline:10px!important}.quick button{min-height:91px!important;padding:12px 11px!important}.quick button b{font-size:22px!important}.quick button span{font-size:9.5px!important;letter-spacing:.10em!important}.product-actions.product-actions-grid{gap:7px!important;padding:10px!important}.product-actions-grid .prod-action{min-height:64px!important;border-radius:16px!important}.product-actions-grid .prod-action b{font-size:9.5px!important}.product-actions-grid .prod-action small{display:none!important}.product-actions-grid .prod-action .ico{font-size:18px!important;margin-bottom:2px}.public-metrics b{font-size:12px!important}.price-badge{font-size:20px!important;padding:10px 13px!important}}
+
+/* V5: tarjeta pública con totales claros para cliente */
+.public-metrics span{min-height:2.15em;display:flex!important;align-items:flex-end!important}
+.public-metrics div:nth-child(2),.public-metrics div:nth-child(3){background:linear-gradient(160deg,rgba(40,246,161,.10),rgba(24,231,255,.055))!important;border-color:rgba(40,246,161,.18)!important}
+.public-metrics div:nth-child(3) b{color:#65ffd0!important}
+@media(max-width:720px){.public-metrics span{min-height:2.55em!important}.public-metrics b{font-size:12.5px!important;line-height:1.08!important}}
+
+
+/* V6: Fuente gamer elegante, más legible y menos pesada */
+:root{
+  --font-pro:"Rajdhani","Segoe UI",Roboto,Arial,sans-serif;
+  --font-gamer:"Oxanium","Rajdhani","Segoe UI",Roboto,Arial,sans-serif;
+}
+body{
+  font-family:var(--font-pro)!important;
+  font-weight:700!important;
+  letter-spacing:.005em!important;
+}
+h1,h2,h3,h4,
+.top-title h1,
+.login-title,
+.hero h2,
+.section-head h2,
+.modal-head h3,
+.card-box h4,
+.quick b,
+.product-title,
+.product-share-card h2,
+.price-badge,
+.btn,
+.chip,
+.label,
+.nav-btn,
+.count-pill,
+.pill,
+.tag-pill,
+.code-pill,
+.stock-badge{
+  font-family:var(--font-gamer)!important;
+}
+.top-title h1{
+  font-size:clamp(16px,4.9vw,23px)!important;
+  font-weight:800!important;
+  letter-spacing:.085em!important;
+}
+.top-title p{
+  font-family:var(--font-pro)!important;
+  font-weight:700!important;
+  font-size:13px!important;
+}
+.quick button b{
+  font-size:clamp(19px,6.2vw,27px)!important;
+  font-weight:800!important;
+  letter-spacing:-.025em!important;
+}
+.quick button span{
+  font-family:var(--font-gamer)!important;
+  font-size:clamp(9.5px,2.8vw,12px)!important;
+  font-weight:700!important;
+  letter-spacing:.12em!important;
+}
+.section-head h2,
+.modal-head h3{
+  font-weight:800!important;
+  letter-spacing:.08em!important;
+}
+.product-title,
+.product-share-card h2{
+  font-weight:800!important;
+  letter-spacing:-.02em!important;
+}
+.metric span,
+.public-metrics span,
+.stat span{
+  font-family:var(--font-gamer)!important;
+  font-weight:700!important;
+  letter-spacing:.11em!important;
+}
+.metric b,
+.public-metrics b,
+.stat b{
+  font-family:var(--font-pro)!important;
+  font-weight:700!important;
+  letter-spacing:.005em!important;
+}
+.btn,.chip,.nav-btn{
+  font-weight:800!important;
+  letter-spacing:.075em!important;
+}
+.input,.select,.textarea,.searchbar input{
+  font-family:var(--font-pro)!important;
+  font-weight:700!important;
+}
+.product-actions-grid .prod-action b{
+  font-family:var(--font-gamer)!important;
+  font-weight:800!important;
+  letter-spacing:.06em!important;
+}
+.product-actions-grid .prod-action small{
+  font-family:var(--font-pro)!important;
+  font-weight:700!important;
+  letter-spacing:.04em!important;
+}
+@media(max-width:420px){
+  .top-title h1{font-size:15.5px!important;letter-spacing:.075em!important}
+  .quick button b{font-size:clamp(18px,6.4vw,25px)!important}
+  .modal-head h3{font-size:clamp(25px,8vw,34px)!important}
+}

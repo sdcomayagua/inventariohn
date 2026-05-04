@@ -128,8 +128,15 @@
     if(a==='noCost'){filter.cat='Todos'; filter.q='Sin costo'; render(); openNoCost();}
   }
 
-  function openModal(html,wide=false){modalRoot.innerHTML=`<div class="modal-backdrop"><section class="modal ${wide?'wide':''}">${html}</section></div>`; $('.close',modalRoot)?.addEventListener('click',closeModal); modalRoot.querySelector('.modal-backdrop').addEventListener('click',e=>{if(e.target.classList.contains('modal-backdrop'))closeModal()});}
-  function closeModal(){modalRoot.innerHTML=''}
+  function openModal(html,wide=false){
+    document.body.classList.add('modal-open');
+    document.documentElement.scrollLeft=0; document.body.scrollLeft=0;
+    modalRoot.innerHTML=`<div class="modal-backdrop"><section class="modal ${wide?'wide':''}">${html}</section></div>`;
+    const m=$('.modal',modalRoot); if(m){m.scrollLeft=0; m.scrollTop=0;}
+    $('.close',modalRoot)?.addEventListener('click',closeModal);
+    modalRoot.querySelector('.modal-backdrop').addEventListener('click',e=>{if(e.target.classList.contains('modal-backdrop'))closeModal()});
+  }
+  function closeModal(){document.body.classList.remove('modal-open'); modalRoot.innerHTML=''}
 
   function splitGallery(prod){
     const p=SDCStore.normalizeProduct(prod||{},state.products.length);
@@ -205,7 +212,7 @@
 
   function quoteModalHTML(isSale=false){
     const doc=isSale?saleDraft:quote; const title=isSale?'Venta / factura real':'Cotización previa';
-    return `<div class="modal-head"><h3>${title}</h3><button class="close">×</button></div><div class="modal-body"><div class="pill"><span class="dot"></span>${isSale?'Factura y registro':'Preventa / información'}</div><div class="modal-grid" style="margin-top:14px"><div class="card-box span2"><div class="section-head" style="margin:0 0 12px"><h4>Seleccionar producto</h4><span>${state.products.length} encontrados</span></div><div class="searchbar"><span class="icon">⌕</span><input id="pickSearch" placeholder="Buscar por nombre, categoría o código..."></div><div class="chips" id="pickChips">${allCategories().map(c=>`<button class="chip ${c==='Todos'?'active':''}" data-pickcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="pickerList" class="picker-list"></div></div><div class="card-box"><h4>Datos para calcular</h4>${fieldsHTML(doc)}</div><div class="card-box"><h4>${isSale?'Factura':'Cotización'} actual</h4><div id="cartList" class="cart-list"></div><div id="totalsMini"></div></div><div class="span2"><div id="docPreview">${docCard(doc,isSale)}</div></div></div><div class="modal-actions quote-actions"><button class="btn secondary" id="downloadDoc">↓ Imagen</button><button class="btn secondary" id="waText">WhatsApp texto</button><button class="btn" id="waPhoto">WhatsApp foto</button>${!isSale?'<button class="btn ghost" id="saveQuote">Guardar cotización</button><button class="btn" id="toSale">Pasar a venta / factura real</button>':'<button class="btn" id="finishSale">Finalizar venta</button><button class="btn secondary" id="printDoc">Imprimir / PDF</button>'}</div></div>`
+    return `<div class="modal-head quote-head"><h3>${title}</h3><button class="close">×</button></div><div class="modal-body quote-body"><div class="pill quote-status"><span class="dot"></span>${isSale?'Factura y registro':'Preventa / información'}</div><div class="modal-grid quote-grid" style="margin-top:14px"><div class="card-box span2 picker-card"><div class="section-head quote-section-head" style="margin:0 0 12px"><h4>Seleccionar producto</h4><span class="found-pill">${state.products.length} encontrados</span></div><div class="searchbar"><span class="icon">⌕</span><input id="pickSearch" placeholder="Buscar por nombre, categoría o código..."></div><div class="chips" id="pickChips">${allCategories().map(c=>`<button class="chip ${c==='Todos'?'active':''}" data-pickcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="pickerList" class="picker-list"></div></div><div class="card-box calc-card"><h4>Datos para calcular</h4>${fieldsHTML(doc)}</div><div class="card-box current-card"><h4>${isSale?'Factura':'Cotización'} actual</h4><div id="cartList" class="cart-list"></div><div id="totalsMini"></div></div><div class="span2 preview-card"><div id="docPreview">${docCard(doc,isSale)}</div></div></div><div class="modal-actions quote-actions premium-actions"><button class="btn secondary" id="downloadDoc"><b>Imagen</b><small>Descargar</small></button><button class="btn secondary" id="waText"><b>Texto</b><small>WhatsApp</small></button><button class="btn" id="waPhoto"><b>Foto</b><small>WhatsApp</small></button>${!isSale?'<button class="btn ghost" id="saveQuote"><b>Guardar</b><small>Cotización</small></button><button class="btn" id="toSale"><b>Pasar a factura</b><small>Venta real</small></button>':'<button class="btn" id="finishSale"><b>Finalizar</b><small>Venta</small></button><button class="btn secondary" id="printDoc"><b>PDF</b><small>Imprimir</small></button>'}</div></div>`
   }
   function fieldsHTML(doc){
     const type=doc.shippingType || (doc.cod?'COD':'Normal');

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#07121f"/><stop offset="1" stop-color="#073f42"/></linearGradient>
+    <radialGradient id="r" cx="70%" cy="18%" r="55%"><stop stop-color="#ffd166" stop-opacity=".35"/><stop offset="1" stop-color="#ffd166" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#g)"/>
+  <rect width="1200" height="1200" fill="url(#r)"/>
+  <g opacity=".16" stroke="#83fff1" stroke-width="2">
+    <path d="M0 0V1200"/><path d="M120 0V1200"/><path d="M240 0V1200"/><path d="M360 0V1200"/><path d="M480 0V1200"/><path d="M600 0V1200"/><path d="M720 0V1200"/><path d="M840 0V1200"/><path d="M960 0V1200"/><path d="M1080 0V1200"/><path d="M1200 0V1200"/>
+    <path d="M0 0H1200"/><path d="M0 120H1200"/><path d="M0 240H1200"/><path d="M0 360H1200"/><path d="M0 480H1200"/><path d="M0 600H1200"/><path d="M0 720H1200"/><path d="M0 840H1200"/><path d="M0 960H1200"/><path d="M0 1080H1200"/><path d="M0 1200H1200"/>
+  </g>
+  <rect x="120" y="120" width="960" height="960" rx="90" fill="#06101d" fill-opacity=".55" stroke="#ffd166" stroke-opacity=".45" stroke-width="6"/>
+  <circle cx="600" cy="450" r="140" fill="none" stroke="#ffd166" stroke-width="18" opacity=".85"/>
+  <path d="M520 450h160M600 370v160" stroke="#ffd166" stroke-width="28" stroke-linecap="round" opacity=".9"/>
+  <text x="600" y="720" fill="#f5fbff" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="900" text-anchor="middle" letter-spacing="8">HOGAR</text>
+  <text x="600" y="815" fill="#ffd166" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="800" text-anchor="middle" letter-spacing="6">SIN IMAGEN</text>
+  <text x="600" y="920" fill="#b8c7d9" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" text-anchor="middle">SD COMAYAGUA</text>
+</svg>

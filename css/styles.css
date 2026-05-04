@@ -2020,3 +2020,145 @@ body {
     font-size: 7.5px;
   }
 }
+
+/* V93: categorías legibles y promociones por cantidad tipo filas. */
+.chips {
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+.chip {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: none !important;
+  min-width: max-content;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  scroll-snap-align: start;
+}
+.cat-shortcuts {
+  padding-bottom: 8px;
+}
+.promo-box {
+  border: 1px solid rgba(24, 231, 255, 0.16);
+  border-radius: 22px;
+  padding: 14px;
+  background: rgba(6, 16, 28, 0.55);
+}
+.promo-head,
+.promo-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 42px;
+  gap: 10px;
+  align-items: end;
+}
+.promo-head {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 10px;
+  margin: 0 0 8px;
+  padding: 0 4px;
+}
+.promo-rows {
+  display: grid;
+  gap: 10px;
+}
+.promo-row {
+  padding: 10px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.promo-field {
+  display: grid;
+  gap: 5px;
+}
+.promo-field span {
+  color: #b5c8dc;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.promo-field input {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 15px;
+  border: 1px solid rgba(24, 231, 255, 0.24);
+  background: #06101c;
+  color: var(--text);
+  outline: none;
+  padding: 10px 12px;
+  font-weight: 900;
+}
+.promo-field input:focus {
+  border-color: var(--mint);
+  box-shadow: 0 0 0 4px rgba(40, 246, 161, 0.1);
+}
+.promo-remove {
+  width: 42px;
+  height: 48px;
+  border-radius: 15px;
+  color: #fff;
+  background: rgba(255, 95, 143, 0.18);
+  border: 1px solid rgba(255, 95, 143, 0.32);
+  font-size: 24px;
+  line-height: 1;
+}
+.promo-add {
+  margin-top: 10px;
+  width: 100%;
+}
+.form-help {
+  margin: 9px 4px 0;
+  color: #93a9bd;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.quick b,
+.quick span {
+  display: block !important;
+  width: calc(100% - 28px);
+}
+.quick b {
+  margin-bottom: 3px;
+}
+@media (max-width: 720px) {
+  .chips {
+    padding-bottom: 8px;
+  }
+  .chip {
+    font-size: 11px;
+    padding: 11px 14px;
+    letter-spacing: 0.075em;
+  }
+  .promo-box {
+    padding: 12px;
+    border-radius: 20px;
+  }
+  .promo-head,
+  .promo-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 38px;
+    gap: 8px;
+  }
+  .promo-row {
+    padding: 9px;
+    border-radius: 17px;
+  }
+  .promo-field input {
+    min-height: 44px;
+    border-radius: 14px;
+    padding: 9px 10px;
+  }
+  .promo-remove {
+    width: 38px;
+    height: 44px;
+    border-radius: 14px;
+  }
+  .quick b,
+  .quick span {
+    width: calc(100% - 24px);
+  }
+}

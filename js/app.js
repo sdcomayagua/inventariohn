@@ -345,10 +345,90 @@
     modalRoot.innerHTML = "";
   }
 
+
+  function parsePromoRows(str) {
+    const raw = String(str || "")
+      .split(/[\n;|]+/)
+      .map((x) => x.trim())
+      .filter(Boolean);
+    const rows = raw
+      .map((line) => {
+        const m = line.match(/(\d+(?:\.\d+)?)\s*(?:=|:|-|→|,)\s*(\d+(?:\.\d+)?)/);
+        if (!m) return null;
+        return { qty: m[1], price: m[2] };
+      })
+      .filter(Boolean);
+    return rows.length ? rows : [{ qty: "", price: "" }];
+  }
+
+  function promoRowHTML(qty = "", price = "") {
+    return `<div class="promo-row">
+      <label class="promo-field"><span>Cantidad</span><input class="promo-qty" type="number" inputmode="numeric" min="1" value="${escapeHtml(qty)}" placeholder="Ej. 3"></label>
+      <label class="promo-field"><span>Precio</span><input class="promo-price" type="number" inputmode="decimal" min="0" value="${escapeHtml(price)}" placeholder="Ej. 72"></label>
+      <button type="button" class="promo-remove" title="Quitar promoción">×</button>
+    </div>`;
+  }
+
+  function promoRowsHTML(promos) {
+    return `<div class="promo-rows" id="promoRows">${parsePromoRows(promos)
+      .map((r) => promoRowHTML(r.qty, r.price))
+      .join("")}</div>`;
+  }
+
+  function bindPromoBuilder() {
+    const rowsBox = $("#promoRows", modalRoot);
+    if (!rowsBox) return;
+    const bindRemove = () => {
+      $$(".promo-remove", rowsBox).forEach((btn) => {
+        btn.onclick = () => {
+          const rows = $$(".promo-row", rowsBox);
+          if (rows.length <= 1) {
+            $(".promo-qty", rows[0]).value = "";
+            $(".promo-price", rows[0]).value = "";
+            return;
+          }
+          btn.closest(".promo-row")?.remove();
+        };
+      });
+    };
+    $("#addPromoRow", modalRoot).onclick = () => {
+      rowsBox.insertAdjacentHTML("beforeend", promoRowHTML());
+      bindRemove();
+      const last = rowsBox.lastElementChild;
+      $(".promo-qty", last)?.focus();
+    };
+    bindRemove();
+  }
+
+  function collectPromos() {
+    return $$(".promo-row", modalRoot)
+      .map((row) => {
+        const qty = Number($(".promo-qty", row)?.value || 0);
+        const price = Number($(".promo-price", row)?.value || 0);
+        return qty > 0 && price > 0 ? `${qty}=${price}` : "";
+      })
+      .filter(Boolean)
+      .join("\n");
+  }
+
   function productForm(p = {}) {
     const prod = SDCStore.normalizeProduct(p, state.products.length);
     if (!p.id) prod.id = nextCode();
-    return `<div class="modal-head"><h3>${p.id ? "Editar" : "Nuevo"} producto</h3><button class="close">×</button></div><div class="modal-body"><div class="card-box"><h4>Información básica</h4><div class="modal-grid"><label><span class="label">Nombre del producto</span><input id="pName" class="input" value="${escapeHtml(prod.name)}"></label><label><span class="label">Código</span><input id="pId" class="input" value="${escapeHtml(prod.id)}"></label><label class="span2"><span class="label">Categorías / etiquetas</span><input id="pCats" class="input" value="${escapeHtml(prod.categories)}" placeholder="Ejemplo: Dedales, Gamer Móvil"></label><label><span class="label">Costo compra</span><input id="pCost" class="input" type="number" value="${prod.cost}"></label><label><span class="label">Precio venta</span><input id="pPrice" class="input" type="number" value="${prod.price}"></label><label><span class="label">Stock</span><input id="pStock" class="input" type="number" value="${prod.stock}"></label><label><span class="label">Imagen principal URL</span><input id="pImage" class="input" value="${escapeHtml(prod.image)}" placeholder="https://..."></label><label class="span2"><span class="label">Galería / más imágenes</span><textarea id="pGallery" class="textarea" placeholder="Una URL por línea">${escapeHtml(prod.gallery)}</textarea></label><label class="span2"><span class="label">Promociones por cantidad</span><textarea id="pPromos" class="textarea" placeholder="Ejemplo: 3=72">${escapeHtml(prod.promos)}</textarea></label><label class="span2"><span class="label">Descripción / beneficios / incluye</span><textarea id="pDesc" class="textarea">${escapeHtml(prod.description)}</textarea></label></div><div class="chips">${["Gamer Móvil", "Dedales", "Gatillos", "Tecnología", "Celulares", "Audio", "Cables", "Hogar", "Cocina"].map((c) => `<button class="chip" data-addcat="${c}">${c}</button>`).join("")}</div></div><div class="modal-actions"><button class="btn" id="saveProduct">Guardar producto</button>${p.id ? `<button class="btn secondary" id="duplicateProduct">Duplicar</button><button class="btn danger" id="deleteProduct">Eliminar</button>` : ""}</div></div>`;
+    const quickCats = ["Gamer Móvil", "Dedales", "Gatillos", "Tecnología", "Celulares", "Audio", "Cables", "Hogar", "Cocina"];
+    return `<div class="modal-head"><h3>${p.id ? "Editar" : "Nuevo"} producto</h3><button class="close">×</button></div>
+      <div class="modal-body"><div class="card-box"><h4>Información básica</h4><div class="modal-grid">
+      <label><span class="label">Nombre del producto</span><input id="pName" class="input" value="${escapeHtml(prod.name)}"></label>
+      <label><span class="label">Código</span><input id="pId" class="input" value="${escapeHtml(prod.id)}"></label>
+      <label class="span2"><span class="label">Categorías / etiquetas</span><input id="pCats" class="input" value="${escapeHtml(prod.categories)}" placeholder="Ejemplo: Dedales, Gamer Móvil"></label>
+      <label><span class="label">Costo compra</span><input id="pCost" class="input" type="number" value="${prod.cost}"></label>
+      <label><span class="label">Precio venta</span><input id="pPrice" class="input" type="number" value="${prod.price}"></label>
+      <label><span class="label">Stock</span><input id="pStock" class="input" type="number" value="${prod.stock}"></label>
+      <label><span class="label">Imagen principal URL</span><input id="pImage" class="input" value="${escapeHtml(prod.image)}" placeholder="https://..."></label>
+      <label class="span2"><span class="label">Galería / más imágenes</span><textarea id="pGallery" class="textarea" placeholder="Una URL por línea">${escapeHtml(prod.gallery)}</textarea></label>
+      <div class="span2 promo-box"><span class="label">Añadir promociones</span><div class="promo-head"><b>Cantidad</b><b>Precio</b><i></i></div>${promoRowsHTML(prod.promos)}<button type="button" class="btn secondary small promo-add" id="addPromoRow">+ Agregar otra promoción</button><p class="form-help">Ejemplo: cantidad 3 y precio 72. Se guarda como 3=72 para mantener compatibilidad.</p></div>
+      <label class="span2"><span class="label">Descripción / beneficios / incluye</span><textarea id="pDesc" class="textarea">${escapeHtml(prod.description)}</textarea></label>
+      </div><div class="chips cat-shortcuts">${quickCats.map((c) => `<button class="chip" data-addcat="${c}">${c}</button>`).join("")}</div></div>
+      <div class="modal-actions"><button class="btn" id="saveProduct">Guardar producto</button>${p.id ? `<button class="btn secondary" id="duplicateProduct">Duplicar</button><button class="btn danger" id="deleteProduct">Eliminar</button>` : ""}</div></div>`;
   }
   function openProductEditor(id) {
     const p = id ? productById(id) : {};
@@ -367,6 +447,7 @@
           inp.value = tags.join(", ");
         }),
     );
+    bindPromoBuilder();
     $("#saveProduct").onclick = () => {
       const np = {
         id: $("#pId").value.trim() || nextCode(),
@@ -377,7 +458,7 @@
         stock: +$("#pStock").value || 0,
         image: $("#pImage").value.trim(),
         gallery: $("#pGallery").value.trim(),
-        promos: $("#pPromos").value.trim(),
+        promos: collectPromos(),
         description: $("#pDesc").value.trim(),
       };
       const ix = state.products.findIndex((x) => x.id === id);

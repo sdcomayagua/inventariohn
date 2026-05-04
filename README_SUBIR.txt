@@ -27,3 +27,9 @@ MEJORAS APLICADAS:
 
 NOTA SOBRE SINCRONIZACIÓN:
 Esta página usa almacenamiento local del navegador. El botón Sync recarga lo guardado en ese mismo dispositivo. Para sincronizar entre teléfono, tablet y otro celular de forma automática, se necesita conectar la página a una base compartida, por ejemplo Google Sheets, Apps Script, Firebase o Supabase.
+
+CAMBIOS V2 COTIZAR MOBILE:
+- Cotizar ya no se extiende horizontalmente en celular.
+- Modal de cotización se acomoda en una sola columna en móvil.
+- El recibo/cotización se adapta al ancho del teléfono.
+- Botones inferiores rediseñados con estilo glass premium, más compactos y acordes a la página.

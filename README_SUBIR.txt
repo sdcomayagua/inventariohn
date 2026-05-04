@@ -1,60 +1,43 @@
-SD COMAYAGUA - V97 PRO MÓVIL
+SD COMAYAGUA · V91 MODULAR CORREGIDA
 
-Cambios incluidos en esta versión:
+CÓMO SUBIR:
+1. Abre tu repositorio de GitHub Pages.
+2. Borra o reemplaza estos elementos del sitio anterior:
+   - index.html
+   - carpeta css
+   - carpeta js
+   - carpeta assets
+3. Sube TODO el contenido de esta carpeta V91.
+4. En el celular abre la página y, si miras algo viejo, borra caché o agrega ?v=91 al final de la URL.
 
-1. Venta rápida mejorada.
-   - Botón nuevo: Venta rápida.
-   - Flujo más directo para agregar productos, cantidad, envío y generar resumen.
+QUÉ SE CORRIGIÓ:
+- Botones de Cotización: Imagen, WhatsApp texto, WhatsApp foto, Guardar y Pasar a venta ya no quedan flotando encima. Ahora quedan al final del modal.
+- Inventario: tarjetas con imagen cuadrada 1:1, sin salirse del cuadro ni tapar precio/stock/costo.
+- Texto sobrepuesto: corregidos botones iniciales Catálogo, Vender, Producto, Ganancias, Recibos y Backup.
+- Categorías múltiples: puedes escribirlas separadas por coma, punto y coma o barra vertical. Ejemplo: Dedales, Gamer Móvil, Gatillos.
+- [object Object]: se limpiaron categorías, promociones y backups antiguos para que no vuelvan a salir como [object Object].
+- Cotización en cero: se reconstruyó el cálculo para que productos, envío, comisión y total se calculen correctamente.
+- Envíos:
+  * Envío normal: Lps. 110 automático.
+  * Pagar al recibir: Lps. 100 + comisión del 6% sobre productos + envío.
+  * Domicilio local: activa campo manual para escribir el envío.
+- Recibo: ahora muestra Productos, Envío, Comisión por pagar al recibir, Total envío, Descuento y Total.
+- Imágenes vacías: ya no usa el logo como foto de producto; usa diseños de “imagen no disponible” según categoría.
+- Impresión/PDF: preparado para hoja carta horizontal, intentando mantener el recibo en una sola página.
 
-2. Plantillas de WhatsApp ordenadas con emojis.
-   - Disponibilidad.
-   - Precio y detalles.
-   - Total con envío normal.
-   - Total pagar al recibir.
-   - Datos para depósito.
-   - Pedido en camino.
-   - Confirmación de datos.
+ARCHIVOS MODIFICADOS:
+- index.html
+- css/styles.css
+- js/storage.js
+- js/app.js
+- js/data.js
+- assets/logo_sdc_comayagua_clean_512.png
+- assets/placeholder-default.svg
+- assets/placeholder-gamer.svg
+- assets/placeholder-dedales.svg
+- assets/placeholder-tecnologia.svg
+- assets/placeholder-celulares.svg
+- assets/placeholder-hogar.svg
 
-3. Resumen de WhatsApp mejor estructurado.
-   - Cliente.
-   - Ubicación.
-   - Productos.
-   - Envío.
-   - Comisión.
-   - Total a pagar.
-
-4. Botón nuevo: Copiar resumen.
-   - Copia el mensaje listo para pegarlo en WhatsApp.
-
-5. Factura / cotización más limpia para captura.
-   - Estado del pedido visible.
-   - Total a pagar destacado.
-   - Estructura más ordenada.
-
-6. Control de stock dentro de venta.
-   - Muestra stock actual.
-   - Muestra cuánto quedará.
-   - Avisa si la cantidad supera el inventario.
-   - Evita finalizar ventas con stock insuficiente.
-
-7. Ganancia estimada dentro del cálculo de venta.
-   - Visible solo en el panel administrativo, no en la factura para cliente.
-
-8. Caja / recibos mejorada.
-   - Buscador.
-   - Filtros por Hoy, Semana y Mes.
-   - Filtros por estado: confirmado, pendiente, pagado, en camino, entregado, cancelado.
-   - Permite abrir y editar recibos.
-
-9. Modo Cliente.
-   - Galería limpia para mostrar productos desde el celular.
-   - Sin costos, sin ganancias y sin botones administrativos.
-   - Botón para copiar información del producto.
-
-10. Buscador mejorado.
-   - Busca por nombre, código, categoría, precio, stock y estado.
-
-Para subir:
-- Reemplaza los archivos del hosting/GitHub Pages por los de esta carpeta.
-- Si usas GitHub Pages, sube todo el contenido manteniendo carpetas: assets, css y js.
-- Haz backup antes de reemplazar una versión anterior.
+NOTA:
+Si ya tienes productos guardados en el celular, la V91 intenta leer backups de versiones anteriores y limpiarlos automáticamente.

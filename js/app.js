@@ -139,6 +139,7 @@
       shipping: 110,
       cod: true,
       discount: 0,
+      status: "Cotización",
       date: new Date().toISOString(),
       saved: false,
     };
@@ -148,6 +149,7 @@
       ...emptyQuote(),
       id: "SDC-" + Date.now().toString().slice(-10),
       kind: "receipt",
+      status: "Pedido confirmado",
     };
   }
   function itemTotal(it) {
@@ -155,6 +157,10 @@
   }
   function calc(doc) {
     const products = (doc.items || []).reduce((a, it) => a + itemTotal(it), 0);
+    const cost = (doc.items || []).reduce(
+      (a, it) => a + Number(it.qty || 0) * Number(it.cost || 0),
+      0,
+    );
     const shipping = Number(doc.shipping || 0);
     const discount = Number(doc.discount || 0);
     const base = Math.max(0, products + shipping);
@@ -163,7 +169,8 @@
       : 0;
     const delivery = shipping + commission;
     const total = Math.max(0, products + delivery - discount);
-    return { products, shipping, commission, delivery, discount, total };
+    const profit = products - cost - discount;
+    return { products, cost, profit, shipping, commission, delivery, discount, total };
   }
   function setView(v) {
     currentView = v;
@@ -244,8 +251,11 @@
     const st = stats();
     return `<section class="quick no-print" aria-label="Accesos rápidos">
       <button data-action="catalog"><em class="quick-ico">⌂</em><b>Catálogo</b><span>Ver productos</span></button>
-      <button data-action="sell"><em class="quick-ico">🛒</em><b>Vender</b><span>Seleccionar</span></button>
+      <button data-action="quickSale"><em class="quick-ico">⚡</em><b>Venta rápida</b><span>Calcular ahora</span></button>
+      <button data-action="sell"><em class="quick-ico">🛒</em><b>Vender</b><span>Factura completa</span></button>
       <button data-action="newProduct"><em class="quick-ico">＋</em><b>Producto</b><span>Agregar nuevo</span></button>
+      <button data-action="clientMode"><em class="quick-ico">👁</em><b>Cliente</b><span>Galería limpia</span></button>
+      <button data-action="templates"><em class="quick-ico">💬</em><b>Plantillas</b><span>WhatsApp</span></button>
       <button data-action="profit"><em class="quick-ico">▴</em><b>Ganancias</b><span>Por producto</span></button>
       <button data-action="receipts"><em class="quick-ico">▤</em><b>Recibos</b><span>Caja del día</span></button>
       <button data-action="backup"><em class="quick-ico">▧</em><b>Backup</b><span>Exportar</span></button>
@@ -271,7 +281,16 @@
       const inCat =
         filter.cat === "Todos" ||
         tags.some((t) => t.toLowerCase() === filter.cat.toLowerCase());
-      const hay = [p.name, p.id, p.categories, p.description]
+      const hay = [
+        p.name,
+        p.id,
+        p.categories,
+        p.description,
+        p.status,
+        p.price,
+        p.oldPrice,
+        p.stock,
+      ]
         .join(" ")
         .toLowerCase();
       return inCat && (!q || hay.includes(q));
@@ -325,6 +344,9 @@
     const a = e.currentTarget.dataset.action,
       id = e.currentTarget.dataset.id;
     if (a === "catalog") return setView("catalog");
+    if (a === "quickSale") return openQuickSale();
+    if (a === "clientMode") return openClientGallery();
+    if (a === "templates") return openTemplates();
     if (a === "sell") return openSale();
     if (a === "quote") return openQuote();
     if (a === "newProduct") return openProductEditor();
@@ -700,17 +722,29 @@
   function quoteModalHTML(isSale = false) {
     const doc = isSale ? saleDraft : quote;
     const title = isSale ? "Venta / factura real" : "Cotización previa";
-    return `<div class="modal-head"><h3>${title}</h3><button class="close">×</button></div><div class="modal-body"><div class="pill"><span class="dot"></span>${isSale ? "Factura y registro" : "Preventa / información"}</div><div class="modal-grid flow-grid ${doc.items.length ? "has-items" : ""}" style="margin-top:14px"><div class="card-box picker-card span2"><div class="section-head" style="margin:0 0 12px"><h4>Seleccionar producto</h4><span>${state.products.length} encontrados</span></div><div class="searchbar"><span class="icon">⌕</span><input id="pickSearch" placeholder="Buscar por nombre, categoría o código..."></div><div class="chips" id="pickChips">${allCategories()
+    return `<div class="modal-head"><h3>${title}</h3><button class="close">×</button></div><div class="modal-body"><div class="pill"><span class="dot"></span>${isSale ? "Factura y registro" : "Preventa / información"}</div><div class="quick-sale-note"><b>${isSale ? "Modo venta rápida activo" : "Cotización ordenada"}</b><span>Agrega producto, cantidad, envío y copia el resumen con emojis para WhatsApp.</span></div><div class="modal-grid flow-grid ${doc.items.length ? "has-items" : ""}" style="margin-top:14px"><div class="card-box picker-card span2"><div class="section-head" style="margin:0 0 12px"><h4>Seleccionar producto</h4><span>${state.products.length} encontrados</span></div><div class="searchbar"><span class="icon">⌕</span><input id="pickSearch" placeholder="Buscar nombre, categoría, código, precio o estado..."></div><div class="chips" id="pickChips">${allCategories()
       .map(
         (c) =>
           `<button class="chip ${c === "Todos" ? "active" : ""}" data-pickcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`,
       )
       .join(
         "",
-      )}</div><div id="pickerList" class="picker-list"></div></div><div class="card-box calc-card"><h4>Datos para calcular</h4>${fieldsHTML(doc)}</div><div class="card-box cart-card"><h4>${isSale ? "Factura" : "Cotización"} actual</h4><div id="cartList" class="cart-list"></div><div id="totalsMini"></div></div><div class="preview-area span2"><div id="docPreview">${docCard(doc, isSale)}</div></div></div><div class="modal-actions"><button class="btn secondary" id="downloadDoc">↓ Imagen</button><button class="btn secondary" id="waText">WhatsApp texto</button><button class="btn" id="waPhoto">WhatsApp foto</button>${!isSale ? '<button class="btn ghost" id="saveQuote">Guardar cotización</button><button class="btn" id="toSale">Pasar a venta / factura real</button>' : '<button class="btn" id="finishSale">Finalizar venta</button><button class="btn secondary" id="printDoc">Imprimir / PDF</button>'}</div></div>`;
+      )}</div><div id="pickerList" class="picker-list"></div></div><div class="card-box calc-card"><h4>Datos para calcular</h4>${fieldsHTML(doc, isSale)}</div><div class="card-box cart-card"><h4>${isSale ? "Factura" : "Cotización"} actual</h4><div id="cartList" class="cart-list"></div><div id="totalsMini"></div></div><div class="preview-area span2"><div id="docPreview">${docCard(doc, isSale)}</div></div></div><div class="modal-actions doc-actions"><button class="btn secondary" id="copyWaText">Copiar resumen</button><button class="btn secondary" id="waText">Enviar texto</button><button class="btn" id="waPhoto">WhatsApp foto</button><button class="btn ghost" id="openTemplatesDoc">Plantillas</button><button class="btn secondary" id="downloadDoc">↓ Imagen</button>${!isSale ? '<button class="btn ghost" id="saveQuote">Guardar cotización</button><button class="btn" id="toSale">Pasar a venta / factura real</button>' : '<button class="btn" id="finishSale">Finalizar venta</button><button class="btn secondary" id="printDoc">Imprimir / PDF</button>'}</div></div>`;
   }
-  function fieldsHTML(doc) {
-    return `<div class="modal-grid"><label><span class="label">Cliente opcional</span><input class="input bindDoc" data-k="client" value="${escapeHtml(doc.client)}"></label><label><span class="label">Teléfono cliente / WhatsApp</span><input class="input bindDoc" data-k="phone" inputmode="tel" value="${escapeHtml(doc.phone)}" placeholder="Sin +504 también funciona"></label><label><span class="label">Departamento</span><select class="select bindDoc" data-k="department">${SDC_DEPARTMENTS.map((d) => `<option ${doc.department === d ? "selected" : ""}>${d}</option>`).join("")}</select></label><label><span class="label">Municipio</span><select class="select bindDoc" data-k="municipality"></select></label><label class="span2"><span class="label">Referencia / barrio / colonia</span><input class="input bindDoc" data-k="reference" value="${escapeHtml(doc.reference)}"></label><label><span class="label">Empresa / entrega</span><select class="select bindDoc" data-k="company"><option>Domicilio</option><option>Forza</option><option>C807</option><option>Cargo Expreso</option><option>Bus local</option></select></label><label><span class="label">Envío Lps.</span><input class="input bindDoc" data-k="shipping" type="number" value="${doc.shipping}"></label><label><span class="label">Pagar al recibir</span><select class="select bindDoc" data-k="cod"><option value="true" ${doc.cod ? "selected" : ""}>Sí, aplicar comisión ${state.settings.codPercent || 6}%</option><option value="false" ${!doc.cod ? "selected" : ""}>No, sin comisión</option></select></label><label><span class="label">Descuento Lps.</span><input class="input bindDoc" data-k="discount" type="number" value="${doc.discount}"></label></div>`;
+  function fieldsHTML(doc, isSale = false) {
+    const saleStatuses = [
+      "Cotización",
+      "Pedido confirmado",
+      "Pendiente de pago",
+      "Pagado",
+      "En camino",
+      "Entregado",
+      "Cancelado",
+    ];
+    const quoteStatuses = ["Cotización", "Cliente interesado", "Pendiente de confirmar"];
+    const statuses = isSale ? saleStatuses : quoteStatuses;
+    const currentStatus = doc.status || statuses[0];
+    return `<div class="modal-grid"><label><span class="label">Cliente opcional</span><input class="input bindDoc" data-k="client" value="${escapeHtml(doc.client)}"></label><label><span class="label">Teléfono cliente / WhatsApp</span><input class="input bindDoc" data-k="phone" inputmode="tel" value="${escapeHtml(doc.phone)}" placeholder="Sin +504 también funciona"></label><label><span class="label">Departamento</span><select class="select bindDoc" data-k="department">${SDC_DEPARTMENTS.map((d) => `<option ${doc.department === d ? "selected" : ""}>${d}</option>`).join("")}</select></label><label><span class="label">Municipio</span><select class="select bindDoc" data-k="municipality"></select></label><label class="span2"><span class="label">Referencia / barrio / colonia</span><input class="input bindDoc" data-k="reference" value="${escapeHtml(doc.reference)}"></label><label><span class="label">Estado de venta</span><select class="select bindDoc" data-k="status">${statuses.map((x) => `<option ${currentStatus === x ? "selected" : ""}>${x}</option>`).join("")}</select></label><label><span class="label">Empresa / entrega</span><select class="select bindDoc" data-k="company"><option>Domicilio</option><option>Forza</option><option>C807</option><option>Cargo Expreso</option><option>Bus local</option></select></label><label><span class="label">Envío Lps.</span><input class="input bindDoc" data-k="shipping" type="number" value="${doc.shipping}"></label><label><span class="label">Pagar al recibir</span><select class="select bindDoc" data-k="cod"><option value="true" ${doc.cod ? "selected" : ""}>Sí, aplicar comisión ${state.settings.codPercent || 6}%</option><option value="false" ${!doc.cod ? "selected" : ""}>No, sin comisión</option></select></label><label><span class="label">Descuento Lps.</span><input class="input bindDoc" data-k="discount" type="number" value="${doc.discount}"></label></div>`;
   }
   function bindDocFields(isSale) {
     const doc = isSale ? saleDraft : quote;
@@ -759,7 +793,7 @@
               (t) => t.toLowerCase() === cat.toLowerCase(),
             )) &&
           (!term ||
-            [p.name, p.id, p.categories]
+            [p.name, p.id, p.categories, p.status, p.price, p.stock]
               .join(" ")
               .toLowerCase()
               .includes(term)),
@@ -809,28 +843,55 @@
     refreshQuoteUI(isSale);
     toast("Producto agregado.");
   }
+  function openQuickSale() {
+    openSale();
+    toast("Venta rápida lista: agrega producto, cantidad y copia el resumen.");
+  }
+
+  function availableStockFor(doc, it) {
+    const p = productById(it.id);
+    if (!p) return Number.POSITIVE_INFINITY;
+    let available = Number(p.stock || 0);
+    if (doc && doc._editingId) {
+      available += (doc._originalItems || [])
+        .filter((x) => x.id === it.id)
+        .reduce((a, x) => a + Number(x.qty || 0), 0);
+    }
+    return available;
+  }
+
+  function stockInfoHTML(doc, it) {
+    const p = productById(it.id);
+    if (!p) return `<em class="stock-note ok">Producto anterior o no encontrado en inventario actual.</em>`;
+    const available = availableStockFor(doc, it);
+    const left = available - Number(it.qty || 0);
+    const cls = left < 0 ? "bad" : left <= Number(state.settings.lowStockLimit || 3) ? "warn" : "ok";
+    const msg = left < 0 ? `Faltan ${num(Math.abs(left))}` : `Quedará ${num(left)}`;
+    return `<em class="stock-note ${cls}">Stock actual: ${num(available)} · Vas a vender: ${num(it.qty)} · ${msg}</em>`;
+  }
+
   function refreshQuoteUI(isSale) {
     const doc = isSale ? saleDraft : quote;
     $("#cartList", modalRoot).innerHTML = doc.items.length
       ? doc.items
-          .map(
-            (it, i) =>
-              `<div class="cart-row"><div><b>${escapeHtml(it.name)}</b><br><span>${escapeHtml(it.id)} · Total ${money(itemTotal(it))}</span></div><div class="line-edit"><label><span>Precio</span><input data-price="${i}" type="number" inputmode="decimal" value="${it.price}"></label><label><span>Cant.</span><div class="qtybox"><button data-dec="${i}">−</button><input data-qty="${i}" type="number" inputmode="numeric" value="${it.qty}"><button data-inc="${i}">+</button></div></label></div><button class="btn small danger" data-rem="${i}">×</button></div>`,
-          )
+          .map((it, i) => {
+            const stock = stockInfoHTML(doc, it);
+            return `<div class="cart-row ${stock.includes('bad') ? 'stock-danger' : ''}"><div><b>${escapeHtml(it.name)}</b><br><span>${escapeHtml(it.id)} · Total ${money(itemTotal(it))}</span><br>${stock}</div><div class="line-edit"><label><span>Precio</span><input data-price="${i}" type="number" inputmode="decimal" value="${it.price}"></label><label><span>Cant.</span><div class="qtybox"><button data-dec="${i}">−</button><input data-qty="${i}" type="number" inputmode="numeric" value="${it.qty}"><button data-inc="${i}">+</button></div></label></div><button class="btn small danger" data-rem="${i}">×</button></div>`;
+          })
           .join("")
       : '<div class="empty-state">Agrega productos para calcular.</div>';
     const c = calc(doc);
     $("#totalsMini", modalRoot).innerHTML =
-      `<div class="summary"><div class="summary-row"><b>Productos</b><b>${money(c.products)}</b></div><div class="summary-row"><b>Envío</b><b>${money(c.shipping)}</b></div><div class="summary-row"><b>Comisión</b><b>${money(c.commission)}</b></div><div class="summary-total"><b>Total</b><b>${money(c.total)}</b></div></div>`;
+      `<div class="summary admin-summary"><div class="summary-row"><b>Productos</b><b>${money(c.products)}</b></div><div class="summary-row"><b>Costo productos</b><b>${money(c.cost)}</b></div><div class="summary-row"><b>Ganancia estimada</b><b>${money(c.profit)}</b></div><div class="summary-row"><b>Envío</b><b>${money(c.shipping)}</b></div><div class="summary-row"><b>Comisión</b><b>${money(c.commission)}</b></div><div class="summary-total"><b>Total cliente</b><b>${money(c.total)}</b></div></div>`;
     $("#docPreview", modalRoot).innerHTML = docCard(doc, isSale);
-    $$("[data-inc]", modalRoot).forEach(
+    $$('[data-inc]', modalRoot).forEach(
       (b) =>
         (b.onclick = () => {
           doc.items[+b.dataset.inc].qty++;
           refreshQuoteUI(isSale);
         }),
     );
-    $$("[data-dec]", modalRoot).forEach(
+    $$('[data-dec]', modalRoot).forEach(
       (b) =>
         (b.onclick = () => {
           const it = doc.items[+b.dataset.dec];
@@ -838,21 +899,21 @@
           refreshQuoteUI(isSale);
         }),
     );
-    $$("[data-rem]", modalRoot).forEach(
+    $$('[data-rem]', modalRoot).forEach(
       (b) =>
         (b.onclick = () => {
           doc.items.splice(+b.dataset.rem, 1);
           refreshQuoteUI(isSale);
         }),
     );
-    $$("[data-qty]", modalRoot).forEach(
+    $$('[data-qty]', modalRoot).forEach(
       (inp) =>
         (inp.oninput = () => {
           doc.items[+inp.dataset.qty].qty = Math.max(1, +inp.value || 1);
           refreshQuoteUI(isSale);
         }),
     );
-    $$("[data-price]", modalRoot).forEach(
+    $$('[data-price]', modalRoot).forEach(
       (inp) =>
         (inp.onchange = () => {
           doc.items[+inp.dataset.price].price = Math.max(0, +inp.value || 0);
@@ -870,6 +931,9 @@
   function openSale(id, fromDoc = null) {
     saleDraft = fromDoc ? SDCStore.clone(fromDoc) : emptySale();
     saleDraft.id = "SDC-" + Date.now().toString().slice(-10);
+    saleDraft.kind = "receipt";
+    if (!saleDraft.status || saleDraft.status === "Cotización")
+      saleDraft.status = "Pedido confirmado";
     if (id) addDocItemTo(saleDraft, id);
     openModal(quoteModalHTML(true), true);
     bindQuoteCommon(true);
@@ -895,6 +959,8 @@
     refreshQuoteUI(isSale);
     $("#downloadDoc").onclick = () =>
       downloadDocImage(isSale ? "recibo" : "cotizacion");
+    $("#copyWaText").onclick = () => copyDocText(isSale);
+    $("#openTemplatesDoc").onclick = () => openTemplates(currentDoc(isSale));
     $("#waText").onclick = () => sendWhatsAppText(isSale);
     $("#waPhoto").onclick = () => shareDocPhoto(isSale);
     $("#printDoc") && ($("#printDoc").onclick = () => window.print());
@@ -925,7 +991,8 @@
       hour: "numeric",
       minute: "2-digit",
     });
-    return `<div class="doc-wrap" id="printableDoc"><div class="doc-head"><div><span class="doc-pill">${isSale ? "Factura gamer · WhatsApp" : "Cotización · WhatsApp"}</span><h2>SD COMAYAGUA</h2><p>${isSale ? "Recibo" : "Cotización"} · ${date}</p><p><b>${escapeHtml(code)}</b></p></div><img class="doc-logo" src="assets/logo-sdc.png" alt="Logo"></div><div class="doc-fields"><div class="doc-field"><span>Cliente</span><b>${escapeHtml(doc.client || "Cliente")}</b></div><div class="doc-field"><span>Teléfono</span><b>${escapeHtml(doc.phone || "No registrado")}</b></div><div class="doc-field"><span>Departamento</span><b>${escapeHtml(doc.department || "No seleccionado")}</b></div><div class="doc-field"><span>Municipio</span><b>${escapeHtml(doc.municipality || "No seleccionado")}</b></div>${doc.reference ? `<div class="doc-field wide"><span>Referencia / barrio / colonia</span><b>${escapeHtml(doc.reference)}</b></div>` : ""}</div><table class="doc-table"><thead><tr><th>Producto</th><th class="num">Cant.</th><th class="num">Precio</th><th class="num">Total</th></tr></thead><tbody>${doc.items.map((it) => `<tr><td><div class="doc-product"><img src="${escapeHtml(it.image || SDC_PLACEHOLDERS.default)}" onerror="this.onerror=null;this.src='${SDC_PLACEHOLDERS.default}'"><div>${escapeHtml(it.name)}<br><span style="color:#718191">${escapeHtml(it.id)}</span></div></div></td><td class="num">${num(it.qty)}</td><td class="num">${money(it.price)}</td><td class="num">${money(itemTotal(it))}</td></tr>`).join("") || '<tr><td colspan="4">Sin productos agregados</td></tr>'}</tbody></table><div class="summary"><div class="summary-row"><b>Productos</b><b>${money(c.products)}</b></div><div class="summary-row"><b>Envío</b><b>${money(c.shipping)}</b></div><div class="summary-row"><b>Comisión por pagar al recibir</b><b>${money(c.commission)}</b></div><div class="summary-row"><b>Total envío</b><b>${money(c.delivery)}</b></div><div class="summary-row"><b>Descuento</b><b>${money(c.discount)}</b></div><div class="summary-total"><b>${isSale ? "Total" : "Total cotizado"}</b><b>${money(c.total)}</b></div></div><div class="delivery-box"><b>Empresa / entrega:</b> ${escapeHtml(doc.company || "No seleccionada")}${doc.cod ? " · Pagar al recibir con comisión de empresa" : ""}</div><p class="doc-note">${isSale ? "Gracias por comprar en SD Comayagua." : "Cotización informativa. La venta se registra únicamente al pasarla a factura real."}<br>SD Comayagua · WhatsApp +504 3151-7755</p></div>`;
+    const status = doc.status || (isSale ? "Pedido confirmado" : "Cotización");
+    return `<div class="doc-wrap doc-clean" id="printableDoc"><div class="doc-head"><div><span class="doc-pill">${isSale ? "Factura / pedido" : "Cotización"}</span><h2>SD COMAYAGUA</h2><p>${date}</p><p><b>${escapeHtml(code)}</b></p></div><img class="doc-logo" src="assets/logo-sdc.png" alt="Logo"></div><div class="doc-status-line"><span>Estado: <b>${escapeHtml(status)}</b></span><span>${doc.cod ? "Pagar al recibir" : "Pago previo / depósito"}</span></div><div class="doc-fields"><div class="doc-field"><span>Cliente</span><b>${escapeHtml(doc.client || "Cliente")}</b></div><div class="doc-field"><span>Teléfono</span><b>${escapeHtml(doc.phone || "No registrado")}</b></div><div class="doc-field"><span>Departamento</span><b>${escapeHtml(doc.department || "No seleccionado")}</b></div><div class="doc-field"><span>Municipio</span><b>${escapeHtml(doc.municipality || "No seleccionado")}</b></div>${doc.reference ? `<div class="doc-field wide"><span>Dirección / referencia</span><b>${escapeHtml(doc.reference)}</b></div>` : ""}</div><table class="doc-table"><thead><tr><th>Producto</th><th class="num">Cant.</th><th class="num">Precio</th><th class="num">Total</th></tr></thead><tbody>${doc.items.map((it) => `<tr><td><div class="doc-product"><img src="${escapeHtml(it.image || SDC_PLACEHOLDERS.default)}" onerror="this.onerror=null;this.src='${SDC_PLACEHOLDERS.default}'"><div>${escapeHtml(it.name)}<br><span style="color:#718191">${escapeHtml(it.id)}</span></div></div></td><td class="num">${num(it.qty)}</td><td class="num">${money(it.price)}</td><td class="num">${money(itemTotal(it))}</td></tr>`).join("") || '<tr><td colspan="4">Sin productos agregados</td></tr>'}</tbody></table><div class="summary"><div class="summary-row"><b>Productos</b><b>${money(c.products)}</b></div><div class="summary-row"><b>Envío</b><b>${money(c.shipping)}</b></div><div class="summary-row"><b>Comisión por pagar al recibir</b><b>${money(c.commission)}</b></div><div class="summary-row"><b>Descuento</b><b>${money(c.discount)}</b></div><div class="summary-total"><b>Total a pagar</b><b>${money(c.total)}</b></div></div><div class="delivery-box"><b>Entrega:</b> ${escapeHtml(doc.company || "No seleccionada")} · ${escapeHtml(doc.department || "")} / ${escapeHtml(doc.municipality || "")}</div><p class="doc-note">Gracias por preferirnos. Conserva este resumen para confirmar tu pedido.<br>SD Comayagua · WhatsApp +504 3151-7755</p></div>`;
   }
   function whatsappText(doc, isSale) {
     const c = calc(doc);
@@ -936,8 +1003,39 @@
       hour: "numeric",
       minute: "2-digit",
     });
-    return `🧾 *${isSale ? "RECIBO" : "COTIZACIÓN"} SD COMAYAGUA*\n\n📌 *Código:* ${doc.id}\n📅 *Fecha:* ${date}\n\n👤 *Cliente:* ${doc.client || "Cliente"}\n📞 *Teléfono:* ${doc.phone || "No registrado"}\n🏷️ *Departamento:* ${doc.department || "No seleccionado"}\n📍 *Municipio:* ${doc.municipality || "No seleccionado"}${doc.reference ? `\n🏠 *Referencia:* ${doc.reference}` : ""}\n\n🛒 *PRODUCTOS*\n${doc.items.map((it) => `• ${it.name}\n  Cantidad: ${it.qty}\n  Precio: ${money(it.price)}\n  Total: ${money(itemTotal(it))}`).join("\n")}\n\n🚚 *ENVÍO*\nEmpresa / entrega: ${doc.company || "No seleccionada"}\nEnvío: ${money(c.shipping)}\nComisión por pagar al recibir: ${money(c.commission)}\nTotal envío: ${money(c.delivery)}\n\n💰 *RESUMEN*\nProductos: ${money(c.products)}\nDescuento: ${money(c.discount)}\n*TOTAL A PAGAR: ${money(c.total)}*\n\nSD COMAYAGUA.\nWhatsApp: +504 3151-7755`;
+    const title = isSale ? "RESUMEN DE PEDIDO" : "COTIZACIÓN";
+    const status = doc.status || (isSale ? "Pedido confirmado" : "Cotización");
+    const products = (doc.items || [])
+      .map(
+        (it, i) =>
+          `${i + 1}. *${it.name}*\n   • Cantidad: ${num(it.qty)}\n   • Precio unitario: ${money(it.price)}\n   • Total producto: ${money(itemTotal(it))}`,
+      )
+      .join("\n\n") || "Sin productos agregados.";
+    return `🧾 *${title} - SD COMAYAGUA*\n━━━━━━━━━━━━━━━━━━━━\n\n📌 *Código:* ${doc.id || "SDC"}\n📅 *Fecha:* ${date}\n📍 *Estado:* ${status}\n\n👤 *DATOS DEL CLIENTE*\n• Nombre: ${doc.client || "Cliente"}\n• Teléfono: ${doc.phone || "No registrado"}\n• Departamento: ${doc.department || "No seleccionado"}\n• Municipio: ${doc.municipality || "No seleccionado"}${doc.reference ? `\n• Dirección / referencia: ${doc.reference}` : ""}\n\n🛒 *PRODUCTOS SOLICITADOS*\n${products}\n\n🚚 *ENVÍO Y ENTREGA*\n• Tipo / empresa: ${doc.company || "No seleccionada"}\n• Envío: ${money(c.shipping)}\n• Pagar al recibir: ${doc.cod ? "Sí" : "No"}\n• Comisión por pagar al recibir: ${money(c.commission)}\n\n💰 *RESUMEN DE PAGO*\n• Subtotal productos: ${money(c.products)}\n• Descuento: ${money(c.discount)}\n✅ *TOTAL A PAGAR: ${money(c.total)}*\n\n📲 Para confirmar, envíenos su nombre completo y dirección exacta.\n\n*SD COMAYAGUA*\nWhatsApp: +504 3151-7755`;
   }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+    return Promise.resolve();
+  }
+
+  async function copyDocText(isSale) {
+    const doc = currentDoc(isSale);
+    if (!doc.items.length) return toast("Agrega productos primero.");
+    await copyToClipboard(whatsappText(doc, isSale));
+    toast("Resumen copiado con emojis para WhatsApp.");
+  }
+
   function waUrl(phone, text) {
     const p = cleanPhone(phone);
     return p
@@ -1016,6 +1114,8 @@
   }
   function finishSale() {
     if (!saleDraft.items.length) return toast("Agrega productos primero.");
+    const over = saleDraft.items.find((it) => Number.isFinite(availableStockFor(saleDraft, it)) && Number(it.qty || 0) > availableStockFor(saleDraft, it));
+    if (over) return toast(`No hay suficiente stock para ${over.name}. Revisa cantidad.`);
     const c = calc(saleDraft);
     saleDraft.date = new Date().toISOString();
     saleDraft.total = c.total;
@@ -1057,6 +1157,115 @@
     save();
     refreshQuoteUI(true);
     render();
+  }
+
+  function templateData(doc = null) {
+    const active = doc && (doc.items || []).length ? doc : null;
+    const first = active?.items?.[0];
+    const c = active ? calc(active) : null;
+    const name = first?.name || "el producto que le interesa";
+    const total = c ? money(c.total) : "Lps. ___";
+    const normalTotal = active ? money(Math.max(0, c.products + 110 - Number(active.discount || 0))) : "Lps. ___";
+    const codBase = active ? c.products + 110 : 0;
+    const codTotal = active ? money(Math.round(codBase + codBase * ((state.settings.codPercent || 6) / 100)) - Number(active.discount || 0)) : "Lps. ___";
+    return [
+      {
+        title: "Disponibilidad",
+        tag: "Respuesta rápida",
+        text: `👋 ¡Hola! Gracias por escribir a *SD COMAYAGUA*.\n\n✅ Sí tenemos disponibilidad de *${name}*.\n\n📌 Para confirmarle mejor, por favor envíenos:\n• Nombre completo\n• Departamento y municipio\n• Dirección o referencia de entrega\n• Cantidad que desea\n\nCon esos datos le confirmamos el total exacto.`,
+      },
+      {
+        title: "Precio y detalles",
+        tag: "Producto",
+        text: `📦 *Información del producto*\n\nProducto: *${name}*\nPrecio: ${first ? money(first.price) : "Lps. ___"}\n\n✅ Producto disponible para entrega.\n📍 Enviamos dentro y fuera de Comayagua.\n\nPara calcularle el total, indíquenos su departamento, municipio y cantidad.`,
+      },
+      {
+        title: "Total con envío normal",
+        tag: "Depósito / pago previo",
+        text: `🧾 *Total con Envío Normal - SD COMAYAGUA*\n\n🛒 Productos: ${active ? money(c.products) : "Lps. ___"}\n🚚 Envío normal: Lps. 110\n✅ *Total a depositar: ${normalTotal}*\n\n📌 Este total aplica cuando el cliente realiza pago previo por depósito o Tigo Money.\n\nDespués del pago, por favor envíenos la captura del comprobante y sus datos de entrega.`,
+      },
+      {
+        title: "Total pagar al recibir",
+        tag: "Contra entrega",
+        text: `🚚 *Pagar al Recibir - SD COMAYAGUA*\n\n🛒 Productos: ${active ? money(c.products) : "Lps. ___"}\n🚚 Envío base: Lps. 110\n🏷️ Comisión de empresa: incluida según porcentaje configurado\n✅ *Total aproximado a pagar al recibir: ${codTotal}*\n\n📌 Para confirmar el envío necesitamos nombre completo, departamento, municipio, dirección exacta y número de contacto.`,
+      },
+      {
+        title: "Datos para depósito",
+        tag: "Pago",
+        text: `🏦 *Datos para pago / depósito*\n\nGracias por confirmar su pedido. Para procesarlo puede realizar el pago y enviarnos la captura.\n\n🧾 Total: ${total}\n📌 Concepto: Pedido SD Comayagua\n\nDespués del pago, envíenos:\n• Captura del comprobante\n• Nombre completo\n• Dirección exacta\n• Teléfono de contacto`,
+      },
+      {
+        title: "Pedido en camino",
+        tag: "Seguimiento",
+        text: `📦 *Su pedido ya está en proceso de envío*\n\nHola, le confirmamos que su pedido de *SD COMAYAGUA* está en camino o en proceso de entrega.\n\n🚚 Empresa / entrega: ${active?.company || "por confirmar"}\n📍 Destino: ${active ? `${active.department || ""} / ${active.municipality || ""}` : "por confirmar"}\n\nPor favor esté pendiente de su teléfono para cualquier llamada de entrega.`,
+      },
+      {
+        title: "Confirmar datos",
+        tag: "Antes de enviar",
+        text: `📌 *Confirmación de datos para envío*\n\nAntes de procesar el pedido, por favor confirme que estos datos están correctos:\n\n👤 Nombre completo: ${active?.client || "___"}\n📞 Teléfono: ${active?.phone || "___"}\n📍 Departamento: ${active?.department || "___"}\n🏘️ Municipio: ${active?.municipality || "___"}\n🏠 Dirección / referencia: ${active?.reference || "___"}\n\n✅ Cuando confirme, seguimos con el pedido.`,
+      },
+    ];
+  }
+
+  function openTemplates(doc = null) {
+    const items = templateData(doc);
+    openModal(
+      `<div class="modal-head"><h3>Plantillas WhatsApp</h3><button class="close">×</button></div><div class="modal-body"><div class="quick-sale-note"><b>Mensajes ordenados</b><span>Copian textos con emojis, estructura clara y detalles listos para enviar al cliente.</span></div>${doc ? '<button class="btn secondary small back-doc" id="backToDoc">← Volver a factura/cotización</button>' : ''}<div class="template-list">${items.map((t, i) => `<article class="template-card"><span>${escapeHtml(t.tag)}</span><h4>${escapeHtml(t.title)}</h4><pre>${escapeHtml(t.text)}</pre><div class="template-actions"><button class="btn small secondary" data-copytemplate="${i}">Copiar</button><button class="btn small" data-sendtemplate="${i}">Enviar WA</button></div></article>`).join("")}</div></div>`,
+      true,
+    );
+    $("#backToDoc", modalRoot) && ($("#backToDoc", modalRoot).onclick = () => {
+      const isSale = doc === saleDraft || doc?.kind === "receipt";
+      openModal(quoteModalHTML(isSale), true);
+      bindQuoteCommon(isSale);
+    });
+    $$('[data-copytemplate]', modalRoot).forEach((b) => (b.onclick = async () => {
+      await copyToClipboard(items[+b.dataset.copytemplate].text);
+      toast("Plantilla copiada para WhatsApp.");
+    }));
+    $$('[data-sendtemplate]', modalRoot).forEach((b) => (b.onclick = () => {
+      const active = doc || saleDraft || quote || {};
+      const phone = active.phone || "";
+      window.open(waUrl(phone, items[+b.dataset.sendtemplate].text), "_blank");
+    }));
+  }
+
+  function clientProductText(p) {
+    return `📦 *${p.name}*\n\n💰 Precio: ${money(p.price)}\n🏷️ Categoría: ${firstTag(p)}\n✅ Estado: ${statusOf(p)}\n\n${p.description || "Producto disponible en SD Comayagua."}\n\n📲 Para pedirlo, escríbanos a WhatsApp +504 3151-7755.`;
+  }
+
+  function openClientGallery() {
+    let q = "";
+    let cat = "Todos";
+    openModal(
+      `<div class="modal-head"><h3>Modo cliente</h3><button class="close">×</button></div><div class="modal-body"><div class="quick-sale-note"><b>Galería limpia</b><span>Vista sin costos, ganancias ni botones de administración. Ideal para mostrar el catálogo desde tu celular.</span></div><div class="searchbar"><span class="icon">⌕</span><input id="clientSearch" placeholder="Buscar producto para mostrar al cliente..."></div><div class="chips" id="clientChips">${allCategories().map((c) => `<button class="chip ${c === "Todos" ? "active" : ""}" data-clientcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("")}</div><div id="clientGrid" class="client-grid"></div></div>`,
+      true,
+    );
+    function draw() {
+      const term = q.toLowerCase();
+      const rows = state.products.filter((p) => {
+        const tags = parseTags(p.categories);
+        const inCat = cat === "Todos" || tags.some((t) => t.toLowerCase() === cat.toLowerCase());
+        const hay = [p.name, p.id, p.categories, p.description, p.price, p.status].join(" ").toLowerCase();
+        return inCat && (!term || hay.includes(term));
+      });
+      $("#clientGrid", modalRoot).innerHTML = rows.map((p) => `<article class="client-card"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><div><span>${escapeHtml(firstTag(p))}</span><h4>${escapeHtml(p.name)}</h4><b>${money(p.price)}</b><em>${escapeHtml(statusOf(p))}</em></div><button class="btn small secondary" data-copyclient="${escapeHtml(p.id)}">Copiar</button></article>`).join("") || '<div class="empty-state">No hay productos para mostrar.</div>';
+      $$('[data-copyclient]', modalRoot).forEach((b) => (b.onclick = async () => {
+        const p = productById(b.dataset.copyclient);
+        if (!p) return;
+        await copyToClipboard(clientProductText(p));
+        toast("Info del producto copiada.");
+      }));
+    }
+    $("#clientSearch", modalRoot).oninput = (e) => {
+      q = e.target.value;
+      draw();
+    };
+    $$('[data-clientcat]', modalRoot).forEach((b) => (b.onclick = () => {
+      cat = b.dataset.clientcat;
+      $$('[data-clientcat]', modalRoot).forEach((x) => x.classList.toggle('active', x === b));
+      draw();
+    }));
+    draw();
   }
 
   function openBackup() {
@@ -1126,25 +1335,91 @@
       true,
     );
   }
+  function saleStatusOptions() {
+    return [
+      "Todos",
+      "Cotización",
+      "Pedido confirmado",
+      "Pendiente de pago",
+      "Pagado",
+      "En camino",
+      "Entregado",
+      "Cancelado",
+    ];
+  }
+
+  function inDateFilter(sale, filterName) {
+    if (filterName === "Todos") return true;
+    const d = new Date(sale.date || Date.now());
+    const now = new Date();
+    const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (filterName === "Hoy") return d >= startToday;
+    if (filterName === "Semana") {
+      const week = new Date(startToday);
+      week.setDate(week.getDate() - 7);
+      return d >= week;
+    }
+    if (filterName === "Mes") {
+      const month = new Date(now.getFullYear(), now.getMonth(), 1);
+      return d >= month;
+    }
+    return true;
+  }
+
   function openReceipts() {
+    let statusFilter = "Todos";
+    let dateFilter = "Todos";
+    let term = "";
     openModal(
-      `<div class="modal-head"><h3>Caja / recibos</h3><button class="close">×</button></div><div class="modal-body"><div class="cart-list">${state.sales.map((s) => `<div class="cart-row"><div><b>${escapeHtml(s.client || "Cliente")}</b><br><span>${escapeHtml(s.id)} · ${money(s.total || calc(s).total)}</span></div><button class="btn small secondary" data-openreceipt="${s.id}">Ver</button></div>`).join("") || '<div class="empty-state">Todavía no hay ventas registradas.</div>'}</div></div>`,
+      `<div class="modal-head"><h3>Caja / recibos</h3><button class="close">×</button></div><div class="modal-body"><div class="receipt-toolbar"><div class="searchbar"><span class="icon">⌕</span><input id="receiptSearch" placeholder="Buscar cliente, código, teléfono o estado..."></div><div class="chips receipt-date"><button class="chip active" data-datefilter="Todos">Todos</button><button class="chip" data-datefilter="Hoy">Hoy</button><button class="chip" data-datefilter="Semana">Semana</button><button class="chip" data-datefilter="Mes">Mes</button></div><div class="chips receipt-status">${saleStatusOptions().map((x) => `<button class="chip ${x === "Todos" ? "active" : ""}" data-statusfilter="${escapeHtml(x)}">${escapeHtml(x)}</button>`).join("")}</div></div><div id="receiptList" class="cart-list receipt-list"></div></div>`,
       true,
     );
-    $$("[data-openreceipt]", modalRoot).forEach(
-      (b) =>
-        (b.onclick = () => {
-          const s = state.sales.find((x) => x.id === b.dataset.openreceipt);
-          if (s) {
-            saleDraft = SDCStore.clone(s);
-            saleDraft._editingId = s.id;
-            saleDraft._originalItems = SDCStore.clone(s.items || []);
-            openModal(quoteModalHTML(true), true);
-            bindQuoteCommon(true);
-          }
-        }),
-    );
+    function draw() {
+      const q = term.toLowerCase();
+      const rows = state.sales.filter((s) => {
+        const status = s.status || "Pedido confirmado";
+        const hay = [s.client, s.phone, s.id, status, s.department, s.municipality]
+          .join(" ")
+          .toLowerCase();
+        return (statusFilter === "Todos" || status === statusFilter) && inDateFilter(s, dateFilter) && (!q || hay.includes(q));
+      });
+      $("#receiptList", modalRoot).innerHTML = rows
+        .map((s) => {
+          const c = calc(s);
+          return `<div class="receipt-row"><div><b>${escapeHtml(s.client || "Cliente")}</b><span>${escapeHtml(s.id)} · ${new Date(s.date || Date.now()).toLocaleDateString("es-HN")} · ${escapeHtml(s.status || "Pedido confirmado")}</span><em>${money(s.total || c.total)} · Ganancia estimada ${money(c.profit)}</em></div><button class="btn small secondary" data-openreceipt="${escapeHtml(s.id)}">Ver / editar</button></div>`;
+        })
+        .join("") || '<div class="empty-state">No hay recibos con esos filtros.</div>';
+      $$('[data-openreceipt]', modalRoot).forEach(
+        (b) =>
+          (b.onclick = () => {
+            const s = state.sales.find((x) => x.id === b.dataset.openreceipt);
+            if (s) {
+              saleDraft = SDCStore.clone(s);
+              saleDraft._editingId = s.id;
+              saleDraft._originalItems = SDCStore.clone(s.items || []);
+              openModal(quoteModalHTML(true), true);
+              bindQuoteCommon(true);
+            }
+          }),
+      );
+    }
+    $("#receiptSearch", modalRoot).oninput = (e) => {
+      term = e.target.value;
+      draw();
+    };
+    $$('[data-datefilter]', modalRoot).forEach((b) => (b.onclick = () => {
+      dateFilter = b.dataset.datefilter;
+      $$('[data-datefilter]', modalRoot).forEach((x) => x.classList.toggle('active', x === b));
+      draw();
+    }));
+    $$('[data-statusfilter]', modalRoot).forEach((b) => (b.onclick = () => {
+      statusFilter = b.dataset.statusfilter;
+      $$('[data-statusfilter]', modalRoot).forEach((x) => x.classList.toggle('active', x === b));
+      draw();
+    }));
+    draw();
   }
+
   function openNoCost() {
     openModal(
       `<div class="modal-head"><h3>Productos sin costo</h3><button class="close">×</button></div><div class="modal-body"><div class="cart-list">${

@@ -1,33 +1,60 @@
-SD COMAYAGUA - V96 PRO MÓVIL
+SD COMAYAGUA - V97 PRO MÓVIL
 
-Versión mejorada sin perder la estética de la V95.
+Cambios incluidos en esta versión:
 
-CAMBIOS IMPORTANTES V96:
-1. Editor de producto más profesional para celular.
-2. Imagen principal separada de fotos adicionales.
-3. Botón "Añadir imagen" agrega un nuevo campo cada vez, con vista previa y numeración: Imagen 2, Imagen 3, etc.
-4. Promociones por cantidad con campos separados: Cantidad y Precio.
-5. Resumen automático de promociones antes de guardar.
-6. Vista previa del producto antes de guardar.
-7. Botón Guardar producto fijo abajo dentro del modal, sin tapar el contenido.
-8. Campo Precio antes / tachado para ofertas.
-9. Estado visual del producto: Disponible, Bajo stock, Agotado o Consultar.
-10. Categorías mejoradas como chips seleccionables.
-11. Descripción separada en: descripción corta, beneficios, qué incluye y nota especial.
-12. Botón Nuevo desde cero para limpiar el formulario.
+1. Venta rápida mejorada.
+   - Botón nuevo: Venta rápida.
+   - Flujo más directo para agregar productos, cantidad, envío y generar resumen.
 
-CÓMO SUBIR:
-- Sube todo el contenido del ZIP a tu repositorio de GitHub Pages.
-- Reemplaza los archivos anteriores por estos.
-- Mantén la estructura de carpetas:
-  index.html
-  css/styles.css
-  js/app.js
-  js/data.js
-  js/storage.js
-  assets/
+2. Plantillas de WhatsApp ordenadas con emojis.
+   - Disponibilidad.
+   - Precio y detalles.
+   - Total con envío normal.
+   - Total pagar al recibir.
+   - Datos para depósito.
+   - Pedido en camino.
+   - Confirmación de datos.
 
-IMPORTANTE:
-- No borres la carpeta assets porque contiene el logo y placeholders.
-- Antes de reemplazar, puedes usar Backup dentro de la página para guardar tus datos locales.
-- Esta versión conserva compatibilidad con promociones guardadas como 3=72, 6=138, etc.
+3. Resumen de WhatsApp mejor estructurado.
+   - Cliente.
+   - Ubicación.
+   - Productos.
+   - Envío.
+   - Comisión.
+   - Total a pagar.
+
+4. Botón nuevo: Copiar resumen.
+   - Copia el mensaje listo para pegarlo en WhatsApp.
+
+5. Factura / cotización más limpia para captura.
+   - Estado del pedido visible.
+   - Total a pagar destacado.
+   - Estructura más ordenada.
+
+6. Control de stock dentro de venta.
+   - Muestra stock actual.
+   - Muestra cuánto quedará.
+   - Avisa si la cantidad supera el inventario.
+   - Evita finalizar ventas con stock insuficiente.
+
+7. Ganancia estimada dentro del cálculo de venta.
+   - Visible solo en el panel administrativo, no en la factura para cliente.
+
+8. Caja / recibos mejorada.
+   - Buscador.
+   - Filtros por Hoy, Semana y Mes.
+   - Filtros por estado: confirmado, pendiente, pagado, en camino, entregado, cancelado.
+   - Permite abrir y editar recibos.
+
+9. Modo Cliente.
+   - Galería limpia para mostrar productos desde el celular.
+   - Sin costos, sin ganancias y sin botones administrativos.
+   - Botón para copiar información del producto.
+
+10. Buscador mejorado.
+   - Busca por nombre, código, categoría, precio, stock y estado.
+
+Para subir:
+- Reemplaza los archivos del hosting/GitHub Pages por los de esta carpeta.
+- Si usas GitHub Pages, sube todo el contenido manteniendo carpetas: assets, css y js.
+- Haz backup antes de reemplazar una versión anterior.

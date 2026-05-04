@@ -48,3 +48,14 @@ window.SDC_PLACEHOLDERS = {
   cocina:'assets/placeholders/hogar.svg',
   default:'assets/placeholders/no-image.svg'
 };
+
+window.SDC_DEFAULT_DATA = window.SDC_DEFAULT_DATA || {
+  products: window.SDC_DEFAULT_PRODUCTS || [],
+  sales: [],
+  settings: {
+    logo: 'assets/logo_sdc_comayagua_clean_512.png',
+    whatsapp: '+50431517755',
+    accessKey: '199311',
+    storeName: 'SD COMAYAGUA'
+  }
+};

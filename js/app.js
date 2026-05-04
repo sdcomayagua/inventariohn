@@ -1,180 +1,334 @@
-(function(){
-  const $ = (s,root=document)=>root.querySelector(s);
-  const $$ = (s,root=document)=>Array.from(root.querySelectorAll(s));
-  let state = SDCStore.load();
-  const app = $('#app'), modalRoot = $('#modalRoot'), toastEl = $('#toast');
-  let currentView = 'catalog';
-  let filter = {q:'',cat:'Todos'};
-  let quote = emptyQuote();
-  let saleDraft = null;
+(() => {
+  const { loadState, saveState, exportState, importState, normalizeProduct, parseCategories, promosToText, toNumber, cleanText } = window.SDCStorage;
+  const root = document.getElementById('app');
+  const state = {
+    data: loadState(),
+    unlocked: localStorage.getItem('sdc-unlocked') === '1',
+    view: 'home',
+    filter: 'Todos',
+    search: '',
+    modal: null,
+    toast: '',
+    quote: newQuote()
+  };
 
-  function money(n){return `${state.settings.currency||'Lps.'} ${Number(n||0).toLocaleString('es-HN',{maximumFractionDigits:0})}`}
-  function num(n){return Number(n||0).toLocaleString('es-HN',{maximumFractionDigits:0})}
-  function cleanPhone(p){return String(p||'').replace(/\D/g,'').replace(/^5040?/,'504')}
-  function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),2600)}
-  function save(){SDCStore.save(state);}
-  function escapeHtml(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-  function parseTags(str){return String(str||'General').split(/[;,|]+/).map(x=>x.trim()).filter(Boolean)}
-  function firstTag(p){return parseTags(p.categories)[0]||'General'}
-  function allCategories(){return ['Todos',...Array.from(new Set(state.products.flatMap(parseTags).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'es'))]}
-  function placeholderFor(p){const tags=parseTags(p.categories).join(' ').toLowerCase(); if(tags.includes('gamer')||tags.includes('dedal')||tags.includes('gatillo'))return SDC_PLACEHOLDERS.gamer; if(tags.includes('tec')||tags.includes('celular')||tags.includes('audio')||tags.includes('cable'))return SDC_PLACEHOLDERS.tecnologia; if(tags.includes('hogar')||tags.includes('cocina'))return SDC_PLACEHOLDERS.hogar; return SDC_PLACEHOLDERS.default}
-  function galleryOf(p){const g=String(p.gallery||'').split(/[\n,]+/).map(x=>x.trim()).filter(Boolean); const list=[p.image,...g].filter(Boolean); return Array.from(new Set(list))}
-  function productImage(p){return galleryOf(p)[0] || placeholderFor(p)}
-  function onImgError(img,p){img.onerror=null; img.src=placeholderFor(p||{});}
-  function productById(id){return state.products.find(p=>p.id===id)}
-  function nextCode(){let max=0; state.products.forEach(p=>{const m=String(p.id).match(/(\d+)$/); if(m) max=Math.max(max,Number(m[1]))}); return `SDC-${String(max+1).padStart(3,'0')}`}
-  function emptyQuote(){return {id:'COT-'+Date.now(),items:[],client:'',phone:'',department:'Comayagua',municipality:'Comayagua',reference:'',shippingType:'Normal',company:'Forza',shipping:100,cod:true,discount:0,date:new Date().toISOString(),saved:false}}
-  function emptySale(){return {...emptyQuote(), id:'SDC-'+Date.now().toString().slice(-10), kind:'receipt'}}
-  function itemTotal(it){return Number(it.qty||0)*Number(it.price||0)}
-  function calc(doc){const products=(doc.items||[]).reduce((a,it)=>a+itemTotal(it),0); const shipping=Number(doc.shipping||0); const discount=Number(doc.discount||0); const base=Math.max(0,products+shipping); const commission=doc.cod?Math.round(base*((state.settings.codPercent||6)/100)):0; const delivery=shipping+commission; const total=Math.max(0,products+delivery-discount); return {products,shipping,commission,delivery,discount,total}}
-  function setView(v){currentView=v; render(); window.scrollTo({top:0,behavior:'smooth'});}
+  const MONEY = new Intl.NumberFormat('es-HN', { maximumFractionDigits: 0 });
+  const fmt = n => `Lps. ${MONEY.format(Math.round(toNumber(n)))}`;
+  const esc = v => String(v ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+  function newQuote(){
+    return {
+      id: `SDC-${Date.now()}`,
+      date: new Date().toISOString(),
+      items: [],
+      customer: '', phone: '', department: 'Comayagua', municipality: 'Comayagua', reference: '',
+      deliveryType: 'normal', manualShipping: 0, discount: 0,
+      savedOnly: false
+    };
+  }
+
+  function persist(){ saveState(state.data); }
+  function toast(msg){ state.toast = msg; render(); setTimeout(() => { if(state.toast === msg){ state.toast=''; render(); } }, 2200); }
+
+  function logo(){ return state.data.settings.logo || 'assets/logo_sdc_comayagua_clean_512.png'; }
+  function validImage(src){ return /^https?:\/\//i.test(src || '') || /^data:image\//i.test(src || '') || /^assets\//i.test(src || ''); }
+  function placeholderFor(product){
+    const cats = categoriesOf(product).join(' ').toLowerCase();
+    if(cats.includes('dedal')) return 'assets/placeholder-dedales.svg';
+    if(cats.includes('gamer') || cats.includes('gatillo') || cats.includes('enfriador')) return 'assets/placeholder-gamer.svg';
+    if(cats.includes('cel')) return 'assets/placeholder-celulares.svg';
+    if(cats.includes('hogar') || cats.includes('cocina')) return 'assets/placeholder-hogar.svg';
+    if(cats.includes('tec')) return 'assets/placeholder-tecnologia.svg';
+    return 'assets/placeholder-default.svg';
+  }
+  function imageOf(product){ const img = cleanText(product?.image || product?.gallery?.[0] || ''); return validImage(img) ? img : placeholderFor(product || {}); }
+  function categoriesOf(product){ return parseCategories(product?.categories ?? product?.category ?? product?.categoria).filter(Boolean); }
+  function allCategories(){ return ['Todos', ...new Set(state.data.products.flatMap(categoriesOf))]; }
+  function productById(id){ return state.data.products.find(p => p.id === id); }
+
+  function stats(){
+    const products = state.data.products;
+    const stock = products.reduce((s,p)=>s+toNumber(p.stock),0);
+    const value = products.reduce((s,p)=>s+toNumber(p.price)*toNumber(p.stock),0);
+    const invested = products.reduce((s,p)=>s+toNumber(p.cost)*toNumber(p.stock),0);
+    return { count: products.length, stock, value, invested, gain: value - invested, low: products.filter(p=>p.stock > 0 && p.stock <= 3).length, noCost: products.filter(p=>toNumber(p.cost) <= 0).length, soldOut: products.filter(p=>toNumber(p.stock) <= 0).length };
+  }
+
+  function filteredProducts(){
+    const q = state.search.trim().toLowerCase();
+    return state.data.products.filter(p => {
+      const cats = categoriesOf(p);
+      let passFilter = true;
+      if(state.filter === 'Bajo stock') passFilter = p.stock > 0 && p.stock <= 3;
+      else if(state.filter === 'Sin costo') passFilter = toNumber(p.cost) <= 0;
+      else if(state.filter !== 'Todos') passFilter = cats.some(c => c.toLowerCase() === state.filter.toLowerCase());
+      const text = `${p.id} ${p.name} ${cats.join(' ')}`.toLowerCase();
+      return passFilter && (!q || text.includes(q));
+    });
+  }
+
+  function appFrame(content){
+    return `${headerHTML()}<main class="app-main">${content}</main>${bottomNav()}${state.toast ? `<div class="toast">${esc(state.toast)}</div>`:''}${state.modal ? modalHTML() : ''}<button class="scrolltop" data-action="top">↑</button>`;
+  }
+
+
+  function bottomNav(){
+    const active = name => state.view === name ? 'active' : '';
+    return `<nav class="bottom-nav"><button class="${active('catalog')}" data-action="catalog"><span>⌂</span><b>CATÁLOGO</b></button><button data-action="quote"><span>🛒</span><b>VENDER</b></button><button class="${active('receipts')}" data-action="receipts"><span>▤</span><b>CAJA</b></button><button data-action="new-product"><span>＋</span><b>PRODUCTO</b></button><button data-action="quote"><span>▧</span><b>COTIZAR</b></button></nav>`;
+  }
+
+  function headerHTML(){
+    return `<header class="topbar"><img class="top-logo" src="${esc(logo())}" onerror="this.src='assets/placeholder-default.svg'"><div><strong>SD COMAYAGUA</strong><span>Modo venta móvil</span></div><button class="btn small ghost" data-action="logout">SALIR</button></header>`;
+  }
+
+  function loginHTML(){
+    return `<section class="login-screen"><div class="login-card"><img class="login-logo" src="${esc(logo())}" onerror="this.src='assets/placeholder-default.svg'"><h1>CAJA SDC</h1><p class="pill ok">● PANEL PRIVADO DE VENTAS</p><div class="field"><label>CLAVE DE ACCESO</label><input id="loginKey" type="password" placeholder="Ingresa tu clave" autocomplete="current-password"></div><button class="btn primary" data-action="login">ENTRAR AL PANEL</button></div></section>`;
+  }
+
+  function homeHTML(){
+    const s = stats();
+    return appFrame(`<section class="hero-card"><p class="pill ok">● SD COMAYAGUA · SISTEMA PRIVADO</p><h1>CONTROL DE VENTAS</h1><p class="hero-copy">Inventario, cotizaciones, ventas, recibos editables, envíos y respaldo para trabajar rápido desde celular.</p><div class="stat-grid">${statBox(s.count,'PRODUCTOS')}${statBox(s.stock,'STOCK TOTAL')}${statBox(fmt(s.value),'VALOR VENTA')}${statBox(fmt(s.invested),'INVERTIDO')}${statBox(fmt(s.gain),'GANANCIA')}</div></section>${quickGrid()}${warningPanel(s)}`);
+  }
+  function statBox(num,label){ return `<div class="stat"><b>${esc(num)}</b><span>${esc(label)}</span></div>`; }
+  function quickGrid(){
+    const items = [
+      ['catalog','Catálogo','Ver productos'],['quote','Vender','Seleccionar producto'],['new-product','Producto','Agregar nuevo'],
+      ['profit','Ganancias','Por producto'],['receipts','Recibos','Caja del día'],['backup','Backup','Exportar datos']
+    ];
+    return `<section class="quick-grid">${items.map(([a,t,s])=>`<button data-action="${a}" class="quick"><b>${t}</b><span>${s}</span></button>`).join('')}</section>`;
+  }
+  function warningPanel(s){
+    return `<section class="alerts"><article><div><b>${s.low} BAJO STOCK</b><span>Revisa reposición.</span></div><button data-action="low-stock" class="btn tiny ghost">VER</button></article><article><div><b>${s.noCost} SIN COSTO</b><span>Agrega costo para ganancia real.</span></div><button data-action="no-cost" class="btn tiny ghost">REVISAR</button></article><article><div><b>GANANCIA</b><span>${fmt(s.gain)} estimado.</span></div><button data-action="profit" class="btn tiny ghost">DETALLE</button></article></section>`;
+  }
+
+  function catalogHTML(){
+    const items = filteredProducts();
+    return appFrame(`${filterHTML()}<section class="section-title"><h2>INVENTARIO</h2><span>${items.length} resultados</span></section><section class="products-grid">${items.map(productCard).join('') || `<div class="empty">No hay productos con este filtro.</div>`}</section>`);
+  }
+  function filterHTML(){
+    const cats = allCategories();
+    return `<section class="filters"><div class="searchbox">⌕<input value="${esc(state.search)}" data-input="search" placeholder="Buscar producto o código"></div><div class="chips">${cats.map(c => `<button class="chip ${state.filter===c?'active':''}" data-filter="${esc(c)}">${esc(c)}</button>`).join('')}<button class="chip ${state.filter==='Bajo stock'?'active':''}" data-filter="Bajo stock">Bajo stock</button><button class="chip ${state.filter==='Sin costo'?'active':''}" data-filter="Sin costo">Sin costo</button></div></section>`;
+  }
+  function productCard(p){
+    const cats = categoriesOf(p); const low = p.stock > 0 && p.stock <= 3; const out = p.stock <= 0; const more = Math.max(0, cats.length - 1);
+    return `<article class="product-card"><div class="product-top"><span class="tag main">${esc(cats[0] || 'General')}</span>${more?`<span class="tag plus">+${more}</span>`:''}<span class="code-pill" title="${esc(p.id)}">${esc(p.id)}</span></div><div class="product-media"><img src="${esc(imageOf(p))}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='${placeholderFor(p)}'"><span class="stock-badge ${out?'out':low?'low':'ok'}">● ${out?'AGOTADO':low?'BAJO STOCK':'DISPONIBLE'}</span><span class="price-badge">${fmt(p.price)}</span></div><h3>${esc(p.name)}</h3><div class="mini-grid"><div><span>STOCK</span><b>${p.stock} disponibles</b></div><div><span>GANANCIA C/U</span><b>${fmt(toNumber(p.price)-toNumber(p.cost))}</b></div><div><span>COSTO</span><b>${fmt(p.cost)}</b></div><div><span>VALOR STOCK</span><b>${fmt(toNumber(p.price)*toNumber(p.stock))}</b></div></div><div class="progress"><i style="width:${Math.min(100,Math.max(6,p.stock*8))}%"></i></div><div class="card-actions"><button class="btn ghost" data-action="quote-product" data-id="${esc(p.id)}">COTIZAR</button><button class="btn primary" data-action="sell-product" data-id="${esc(p.id)}">VENDER</button><button class="btn ghost" data-action="view-product" data-id="${esc(p.id)}">VER</button></div></article>`;
+  }
+
+  function receiptsHTML(){
+    const sales = [...state.data.sales].reverse();
+    return appFrame(`<section class="section-title"><h2>RECIBOS</h2><span>${sales.length} guardados</span></section><section class="receipt-list">${sales.map(r => `<article class="receipt-row"><div><b>${esc(r.customer || 'Cliente')}</b><span>${esc(r.id)} · ${fmt(r.total || 0)}</span></div><button class="btn tiny ghost" data-action="open-receipt" data-id="${esc(r.id)}">VER</button></article>`).join('') || `<div class="empty">Todavía no hay recibos guardados.</div>`}</section>`);
+  }
+
+  function productModalHTML(p){
+    const cats = categoriesOf(p).join(', ');
+    return `<div class="product-detail"><div class="product-media detail-img"><img src="${esc(imageOf(p))}" onerror="this.onerror=null;this.src='${placeholderFor(p)}'"><span class="price-badge">${fmt(p.price)}</span></div><h2>${esc(p.name)}</h2><p>${esc(p.description || 'Sin descripción.')}</p><div class="mini-grid"><div><span>STOCK</span><b>${p.stock}</b></div><div><span>CATEGORÍAS</span><b>${esc(cats)}</b></div><div><span>COSTO</span><b>${fmt(p.cost)}</b></div><div><span>GANANCIA C/U</span><b>${fmt(p.price-p.cost)}</b></div></div><div class="modal-actions"><button class="btn primary" data-action="sell-product" data-id="${esc(p.id)}">VENDER</button><button class="btn ghost" data-action="quote-product" data-id="${esc(p.id)}">COTIZAR</button><button class="btn ghost" data-action="edit-product" data-id="${esc(p.id)}">EDITAR</button></div></div>`;
+  }
+
+  function editProductHTML(product){
+    const p = product || { id:'', name:'', price:0, cost:0, stock:0, categories:['General'], image:'', gallery:[], description:'', promos:[] };
+    return `<form class="edit-form"><input type="hidden" name="originalId" value="${esc(p.id)}"><div class="two"><div class="field"><label>CÓDIGO</label><input name="id" value="${esc(p.id)}" placeholder="SDC-001"></div><div class="field"><label>STOCK</label><input name="stock" inputmode="numeric" value="${esc(p.stock)}"></div></div><div class="field"><label>NOMBRE DEL PRODUCTO</label><input name="name" value="${esc(p.name)}"></div><div class="two"><div class="field"><label>PRECIO VENTA</label><input name="price" inputmode="numeric" value="${esc(p.price)}"></div><div class="field"><label>COSTO</label><input name="cost" inputmode="numeric" value="${esc(p.cost)}"></div></div><div class="field"><label>CATEGORÍAS / ETIQUETAS</label><input name="categories" value="${esc(categoriesOf(p).join(', '))}" placeholder="Dedales, Gamer Móvil"></div><div class="field"><label>IMAGEN PRINCIPAL</label><textarea name="image" rows="3">${esc(p.image || '')}</textarea></div><div class="field"><label>GALERÍA / MÁS IMÁGENES</label><textarea name="gallery" rows="4" placeholder="Un enlace por línea">${esc((p.gallery||[]).filter(x=>x!==p.image).join('\n'))}</textarea></div><div class="field"><label>PROMOCIONES POR CANTIDAD</label><textarea name="promos" rows="4" placeholder="Ejemplo: 3, 72">${esc(promosToText(p.promos))}</textarea></div><div class="field"><label>DESCRIPCIÓN / BENEFICIOS / INCLUYE</label><textarea name="description" rows="4">${esc(p.description || '')}</textarea></div><div class="modal-actions normal-flow"><button type="button" class="btn primary" data-action="save-product">GUARDAR PRODUCTO</button>${p.id?`<button type="button" class="btn ghost" data-action="duplicate-product" data-id="${esc(p.id)}">DUPLICAR</button><button type="button" class="btn danger" data-action="delete-product" data-id="${esc(p.id)}">ELIMINAR</button>`:''}</div></form>`;
+  }
+
+  function quoteModalHTML(){
+    const list = filteredProductsForQuote();
+    const totals = calcQuote(state.quote);
+    return `<section class="quote-flow"><p class="pill ok">● PREVENTA / INFORMACIÓN</p><div class="picker"><div class="picker-head"><h3>SELECCIONAR PRODUCTO</h3><span>${list.length} encontrados</span></div><div class="searchbox"><span>⌕</span><input value="${esc(state.quoteSearch || '')}" data-input="quoteSearch" placeholder="Buscar por nombre, categoría o código..."></div><div class="chips">${allCategories().map(c => `<button class="chip ${state.quoteFilter===c||(!state.quoteFilter&&c==='Todos')?'active':''}" data-quote-filter="${esc(c)}">${esc(c)}</button>`).join('')}</div><div class="picker-list">${list.map(p => `<article><img src="${esc(imageOf(p))}" onerror="this.onerror=null;this.src='${placeholderFor(p)}'"><div><b>${esc(p.name)}</b><span>${fmt(p.price)} · Stock ${p.stock} · ${esc(categoriesOf(p).join(', '))}</span></div><button class="btn add" data-action="add-quote" data-id="${esc(p.id)}">Agregar</button></article>`).join('')}</div></div>${quoteCartHTML(totals)}${quoteFormHTML()}${receiptCardHTML(state.quote, totals, 'preview')}<div class="modal-actions normal-flow quote-actions"><button class="btn ghost" data-action="download-quote-image">↓ IMAGEN</button><button class="btn ghost" data-action="send-quote-text">WHATSAPP TEXTO</button><button class="btn primary" data-action="share-quote-image">WHATSAPP FOTO</button><button class="btn ghost" data-action="save-quote">GUARDAR COTIZACIÓN</button><button class="btn primary wide" data-action="quote-to-sale">PASAR A VENTA / FACTURA REAL</button></div></section>`;
+  }
+
+  function filteredProductsForQuote(){
+    const oldFilter = state.filter, oldSearch = state.search;
+    state.filter = state.quoteFilter || 'Todos'; state.search = state.quoteSearch || '';
+    const out = filteredProducts();
+    state.filter = oldFilter; state.search = oldSearch;
+    return out;
+  }
+  function quoteCartHTML(t){
+    return `<section class="quote-cart"><h3>PRODUCTOS AGREGADOS</h3>${state.quote.items.map((it,idx)=>`<article><div><b>${esc(it.name)}</b><span>${fmt(it.price)} c/u</span></div><div class="qty"><button data-action="qty-minus" data-index="${idx}">−</button><b>${it.qty}</b><button data-action="qty-plus" data-index="${idx}">+</button></div><strong>${fmt(it.price*it.qty)}</strong><button class="x" data-action="remove-quote" data-index="${idx}">×</button></article>`).join('') || `<p class="empty small">Agrega productos para calcular.</p>`}<div class="quote-total"><span>Productos</span><b>${fmt(t.products)}</b></div></section>`;
+  }
+  function quoteFormHTML(){
+    const q = state.quote;
+    const manual = q.deliveryType === 'domicilio';
+    return `<section class="quote-data"><div class="two"><div class="field"><label>CLIENTE OPCIONAL</label><input data-quote="customer" value="${esc(q.customer)}"></div><div class="field"><label>WHATSAPP DEL CLIENTE</label><input data-quote="phone" value="${esc(q.phone)}" inputmode="tel" placeholder="Ej. 93278489"></div></div><div class="two"><div class="field"><label>DEPARTAMENTO</label><input data-quote="department" value="${esc(q.department)}"></div><div class="field"><label>MUNICIPIO</label><input data-quote="municipality" value="${esc(q.municipality)}"></div></div><div class="field"><label>REFERENCIA / BARRIO / COLONIA</label><input data-quote="reference" value="${esc(q.reference)}"></div><div class="field"><label>TIPO DE ENVÍO</label><select data-quote="deliveryType"><option value="normal" ${q.deliveryType==='normal'?'selected':''}>Envío normal · Lps. 110</option><option value="cod" ${q.deliveryType==='cod'?'selected':''}>Pagar al recibir · Lps. 100 + 6%</option><option value="domicilio" ${q.deliveryType==='domicilio'?'selected':''}>Domicilio local · manual</option></select></div>${manual?`<div class="field"><label>ENVÍO LOCAL LPS.</label><input data-quote="manualShipping" inputmode="numeric" value="${esc(q.manualShipping)}" placeholder="Ej. 30"></div>`:''}<div class="field"><label>DESCUENTO LPS.</label><input data-quote="discount" inputmode="numeric" value="${esc(q.discount)}"></div></section>`;
+  }
+
+  function calcQuote(q){
+    const products = q.items.reduce((s,it)=>s+toNumber(it.price)*toNumber(it.qty),0);
+    let shipping = 110, commission = 0, label = 'Envío normal';
+    if(q.deliveryType === 'domicilio'){ shipping = toNumber(q.manualShipping); label = 'Domicilio'; }
+    if(q.deliveryType === 'cod'){ shipping = 100; commission = Math.round((products + shipping) * 0.06); label = 'Pagar al recibir'; }
+    const discount = toNumber(q.discount);
+    return { products, shipping, commission, totalShipping: shipping + commission, discount, total: Math.max(0, products + shipping + commission - discount), label };
+  }
+
+  function receiptCardHTML(q, totals = calcQuote(q), mode = 'receipt'){
+    const date = new Date(q.date || Date.now()).toLocaleString('es-HN', { dateStyle:'medium', timeStyle:'short' });
+    return `<article class="receipt-card print-area" id="receiptCard"><header class="doc-header"><div><span>${mode==='preview'?'COTIZACIÓN · WHATSAPP':'FACTURA GAMER · WHATSAPP'}</span><h2>SD COMAYAGUA</h2><p>${mode==='preview'?'Preventa':'Recibo'} · ${esc(date)}</p><h3>${esc(q.id)}</h3></div><img src="${esc(logo())}" onerror="this.src='assets/placeholder-default.svg'"></header><section class="doc-fields"><div><span>CLIENTE</span><b>${esc(q.customer || 'Cliente')}</b></div><div><span>TELÉFONO</span><b>${esc(q.phone || '-')}</b></div><div><span>DEPARTAMENTO</span><b>${esc(q.department || '-')}</b></div><div><span>MUNICIPIO</span><b>${esc(q.municipality || '-')}</b></div>${q.reference?`<div class="wide"><span>REFERENCIA / BARRIO / COLONIA</span><b>${esc(q.reference)}</b></div>`:''}</section><table class="doc-table"><thead><tr><th>PRODUCTO</th><th>CANT.</th><th>PRECIO</th><th>TOTAL</th></tr></thead><tbody>${q.items.map(it=>`<tr><td><b>${esc(it.name)}</b><small>${esc(it.id || '')}</small></td><td>${it.qty}</td><td>${fmt(it.price)}</td><td>${fmt(it.price*it.qty)}</td></tr>`).join('') || `<tr><td colspan="4">Sin productos agregados.</td></tr>`}</tbody></table><section class="doc-total"><div><span>Productos</span><b>${fmt(totals.products)}</b></div><div><span>Envío</span><b>${fmt(totals.shipping)}</b></div><div><span>Comisión por pagar al recibir</span><b>${fmt(totals.commission)}</b></div><div><span>Total envío</span><b>${fmt(totals.totalShipping)}</b></div><div><span>Descuento</span><b>${fmt(totals.discount)}</b></div><div class="grand"><span>Total</span><b>${fmt(totals.total)}</b></div></section><p class="delivery-note">Empresa / entrega: ${esc(totals.label)}</p><footer>SD Comayagua · WhatsApp +504 3151-7755</footer></article>`;
+  }
+
+  function quoteText(q, totals = calcQuote(q)){
+    const date = new Date(q.date || Date.now()).toLocaleString('es-HN', { dateStyle:'medium', timeStyle:'short' });
+    const products = q.items.map(it => `• ${it.name}\n  Cantidad: ${it.qty}\n  Precio: ${fmt(it.price)}\n  Total: ${fmt(it.price*it.qty)}`).join('\n');
+    return `📌 Código: ${q.id}\n🗓️ Fecha: ${date}\n\n👤 Cliente: ${q.customer || 'Cliente'}\n📞 Teléfono: ${q.phone || '-'}\n🏷️ Departamento: ${q.department || '-'}\n📍 Municipio: ${q.municipality || '-'}\n🏠 Referencia: ${q.reference || '-'}\n\n🛒 PRODUCTOS\n${products || 'Sin productos agregados.'}\n\n🚚 ENVÍO\nEmpresa / entrega: ${totals.label}\nEnvío: ${fmt(totals.shipping)}\nComisión por pagar al recibir: ${fmt(totals.commission)}\nTotal envío: ${fmt(totals.totalShipping)}\n\n💰 RESUMEN\nProductos: ${fmt(totals.products)}\nDescuento: ${fmt(totals.discount)}\nTOTAL A PAGAR: ${fmt(totals.total)}\n\nSD COMAYAGUA.\nWhatsApp: +504 3151-7755`;
+  }
+
+  function modalHTML(){
+    const m = state.modal;
+    let title = '', body = '';
+    if(m.type === 'product'){ title = 'PRODUCTO'; body = productModalHTML(productById(m.id)); }
+    if(m.type === 'edit'){ title = m.id ? 'EDITAR PRODUCTO' : 'NUEVO PRODUCTO'; body = editProductHTML(m.id ? productById(m.id) : null); }
+    if(m.type === 'quote'){ title = 'COTIZACIÓN PREVIA'; body = quoteModalHTML(); }
+    if(m.type === 'receipt'){ title = 'RECIBO / FACTURA'; const q = state.data.sales.find(x=>x.id===m.id); body = `${receiptCardHTML(q, q.totals || calcQuote(q), 'receipt')}<div class="modal-actions normal-flow"><button class="btn ghost" data-action="print-receipt">IMPRIMIR / PDF</button><button class="btn ghost" data-action="download-receipt-image">↓ IMAGEN</button><button class="btn primary" data-action="send-receipt-text" data-id="${esc(q.id)}">WHATSAPP</button></div>`; }
+    return `<div class="modal-backdrop"><div class="modal"><header class="modal-head"><h2>${title}</h2><button class="modal-close" data-action="close-modal">×</button></header><div class="modal-body">${body}</div></div></div>`;
+  }
 
   function render(){
-    if(!state.unlocked){renderLogin();return}
-    app.className='app';
-    app.innerHTML = `${topbar()}${hero()}${quickPanel()}${searchPanel()}${inventoryHTML()}${bottomNav()}`;
-    bindMain();
-  }
-  function renderLogin(){
-    app.className='login-wrap';
-    app.innerHTML=`<section class="login-card">
-      <img class="login-logo" src="assets/logo-sdc.png" alt="Logo SD Comayagua">
-      <h1 class="login-title">CAJA SDC</h1>
-      <div class="pill login-pill"><span class="dot"></span> Panel privado de ventas</div>
-      <div class="form-box">
-        <label class="label" for="keyInput">Clave de acceso</label>
-        <input id="keyInput" class="input" type="password" inputmode="numeric" placeholder="Ingresa tu clave" autocomplete="current-password">
-        <button id="loginBtn" class="btn full" style="margin-top:14px">Entrar al panel</button>
-      </div>
-    </section>`;
-    $('#loginBtn').onclick=unlock; $('#keyInput').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
-  }
-  function unlock(){ if($('#keyInput').value.trim()===(state.settings.accessKey||'199311')){state.unlocked=true;save();render();toast('Panel desbloqueado.')} else toast('Clave incorrecta.'); }
-  function topbar(){return `<header class="topbar"><img class="top-logo" src="assets/logo-sdc.png" alt="SD"><div class="top-title"><h1>SD COMAYAGUA</h1><p>Modo venta móvil</p></div><div class="spacer"></div><button class="btn small secondary" data-action="lock">Salir</button></header>`}
-  function hero(){
-    const st=stats();
-    return `<section class="hero" id="inicio">
-      <div class="pill login-pill"><span class="dot"></span> SD Comayagua · Sistema privado</div>
-      <h2>CONTROL DE VENTAS</h2><p>Inventario, cotizaciones, ventas, recibos editables, envíos y respaldo para trabajar rápido desde celular.</p>
-      <div class="stats">
-        <div class="stat"><b>${num(st.count)}</b><span>Productos</span></div><div class="stat"><b>${num(st.stock)}</b><span>Stock total</span></div>
-        <div class="stat"><b>${money(st.value)}</b><span>Valor venta</span></div><div class="stat"><b>${money(st.invested)}</b><span>Invertido</span></div>
-        <div class="stat"><b>${money(st.profit)}</b><span>Ganancia</span></div>
-      </div>
-    </section>`
-  }
-  function stats(){let count=state.products.length,stock=0,value=0,invested=0; state.products.forEach(p=>{stock+=+p.stock||0; value+=(+p.stock||0)*(+p.price||0); invested+=(+p.stock||0)*(+p.cost||0)}); return {count,stock,value,invested,profit:value-invested}}
-  function quickPanel(){
-    const low=state.products.filter(p=>Number(p.stock)>0 && Number(p.stock)<=Number(state.settings.lowStockLimit||3)).length;
-    const nocost=state.products.filter(p=>Number(p.cost)<=0).length;
-    const st=stats();
-    return `<section class="quick no-print">
-      <button data-action="catalog"><b>Catálogo</b><span>Ver productos</span></button>
-      <button data-action="sell"><b>Vender</b><span>Seleccionar producto</span></button>
-      <button data-action="newProduct"><b>Producto</b><span>Agregar nuevo</span></button>
-      <button data-action="profit"><b>Ganancias</b><span>Por producto</span></button>
-      <button data-action="receipts"><b>Recibos</b><span>Caja del día</span></button>
-      <button data-action="backup"><b>Backup</b><span>Exportar datos</span></button>
-    </section>
-    <section class="alert-row no-print">
-      <div class="alert-card"><div><b>${low} bajo stock</b><span>Revisa reposición.</span></div><button class="btn small secondary" data-action="lowStock">Ver</button></div>
-      <div class="alert-card"><div><b>${nocost} sin costo</b><span>Agrega costo para ganancia real.</span></div><button class="btn small secondary" data-action="noCost">Revisar</button></div>
-      <div class="alert-card"><div><b>Ganancia</b><span>${money(st.profit)} estimado.</span></div><button class="btn small secondary" data-action="profit">Detalle</button></div>
-    </section>`
-  }
-  function searchPanel(){return `<section class="search-panel no-print"><div class="searchbar"><span class="icon">⌕</span><input id="searchInput" placeholder="Buscar producto o código" value="${escapeHtml(filter.q)}"></div><div class="chips">${allCategories().map(c=>`<button class="chip ${filter.cat===c?'active':''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div></section>`}
-  function filteredProducts(){
-    const q=filter.q.trim().toLowerCase();
-    return state.products.filter(p=>{
-      const tags=parseTags(p.categories);
-      const inCat=filter.cat==='Todos'||tags.some(t=>t.toLowerCase()===filter.cat.toLowerCase());
-      const hay=[p.name,p.id,p.categories,p.description].join(' ').toLowerCase();
-      return inCat && (!q || hay.includes(q));
-    })
-  }
-  function inventoryHTML(){const list=filteredProducts(); return `<section id="inventario"><div class="section-head"><h2>INVENTARIO</h2><span class="count-pill">${list.length} resultados</span></div>${list.length?`<div class="grid">${list.map(productCard).join('')}</div>`:`<div class="empty-state">No encontré productos con esa búsqueda o etiqueta.</div>`}</section>`}
-  function productCard(p){
-    const tags=parseTags(p.categories); const low=Number(p.stock)>0&&Number(p.stock)<=Number(state.settings.lowStockLimit||3); const sold=Number(p.stock)<=0;
-    const percent=Math.max(5,Math.min(100,(Number(p.stock)||0)/20*100));
-    return `<article class="product-card" data-id="${escapeHtml(p.id)}"><div class="product-top"><div class="tag-stack"><span class="tag-pill">${escapeHtml(tags[0]||'General')}</span>${tags.length>1?`<span class="tag-pill">+${tags.length-1}</span>`:''}</div><span class="code-pill">${escapeHtml(p.id)}</span></div>
-      <div class="product-media"><img src="${escapeHtml(productImage(p))}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><span class="stock-badge ${low?'low':''}"><span class="dot" style="background:#031018;box-shadow:none"></span>${sold?'Agotado':low?'Bajo stock':'Disponible'}</span><b class="price-badge">${money(p.price)}</b></div>
-      <h3 class="product-title">${escapeHtml(p.name)}</h3><div class="metrics"><div class="metric"><span>Stock</span><b>${num(p.stock)} disponibles</b></div><div class="metric"><span>Ganancia C/U</span><b>${money((+p.price||0)-(+p.cost||0))}</b></div><div class="metric"><span>Costo</span><b>${(+p.cost||0)>0?money(p.cost):'Sin costo'}</b></div><div class="metric"><span>Valor stock</span><b>${money((+p.stock||0)*(+p.price||0))}</b></div></div><div class="stock-line"><i style="width:${percent}%"></i></div>
-      <div class="card-actions"><button class="btn secondary quote" data-action="quoteProduct" data-id="${escapeHtml(p.id)}">Cotizar</button><button class="btn" data-action="sellProduct" data-id="${escapeHtml(p.id)}">Vender</button><button class="btn secondary" data-action="viewProduct" data-id="${escapeHtml(p.id)}">Ver</button><button class="btn ghost" data-action="editProduct" data-id="${escapeHtml(p.id)}">Editar</button></div></article>`
-  }
-  function bottomNav(){return `<nav class="bottom-nav no-print"><button class="nav-btn ${currentView==='catalog'?'active':''}" data-action="catalog"><i>⌂</i><span>Catálogo</span></button><button class="nav-btn" data-action="sell"><i>🛒</i><span>Vender</span></button><button class="nav-btn" data-action="receipts"><i>▤</i><span>Caja</span></button><button class="nav-btn" data-action="newProduct"><i>＋</i><span>Producto</span></button><button class="nav-btn ${currentView==='quote'?'active':''}" data-action="quote"><i>▧</i><span>Cotizar</span></button></nav>`}
-
-  function bindMain(){
-    $('[data-action="lock"]')?.addEventListener('click',()=>{state.unlocked=false;save();render()});
-    $('#searchInput')?.addEventListener('input',e=>{filter.q=e.target.value; render()});
-    $$('.chip').forEach(b=>b.onclick=()=>{filter.cat=b.dataset.cat;render()});
-    document.querySelectorAll('[data-action]').forEach(btn=>{ if(btn.dataset.bound)return; btn.dataset.bound=1; btn.addEventListener('click',mainAction)});
-  }
-  function mainAction(e){
-    const a=e.currentTarget.dataset.action, id=e.currentTarget.dataset.id;
-    if(a==='catalog') return setView('catalog');
-    if(a==='sell') return openSale();
-    if(a==='quote') return openQuote();
-    if(a==='newProduct') return openProductEditor();
-    if(a==='editProduct') return openProductEditor(id);
-    if(a==='viewProduct') return openProductDetails(id);
-    if(a==='sellProduct') return openSale(id);
-    if(a==='quoteProduct') return openQuote(id);
-    if(a==='backup') return openBackup();
-    if(a==='profit') return openProfit();
-    if(a==='receipts') return openReceipts();
-    if(a==='lowStock'){filter.cat='Todos'; filter.q=''; render(); setTimeout(()=>{state.products.filter(p=>+p.stock>0&&+p.stock<=3).length?toast('Productos de bajo stock marcados con etiqueta amarilla.'):toast('No hay productos en bajo stock.')},50)}
-    if(a==='noCost'){filter.cat='Todos'; filter.q='Sin costo'; render(); openNoCost();}
+    if(!state.unlocked){ root.innerHTML = loginHTML(); return; }
+    root.innerHTML = state.view === 'home' ? homeHTML() : state.view === 'catalog' ? catalogHTML() : receiptsHTML();
   }
 
-  function openModal(html,wide=false){modalRoot.innerHTML=`<div class="modal-backdrop"><section class="modal ${wide?'wide':''}">${html}</section></div>`; $('.close',modalRoot)?.addEventListener('click',closeModal); modalRoot.querySelector('.modal-backdrop').addEventListener('click',e=>{if(e.target.classList.contains('modal-backdrop'))closeModal()});}
-  function closeModal(){modalRoot.innerHTML=''}
-
-  function productForm(p={}){ const prod=SDCStore.normalizeProduct(p,state.products.length); if(!p.id) prod.id=nextCode(); return `<div class="modal-head"><h3>${p.id?'Editar':'Nuevo'} producto</h3><button class="close">×</button></div><div class="modal-body"><div class="card-box"><h4>Información básica</h4><div class="modal-grid"><label><span class="label">Nombre del producto</span><input id="pName" class="input" value="${escapeHtml(prod.name)}"></label><label><span class="label">Código</span><input id="pId" class="input" value="${escapeHtml(prod.id)}"></label><label class="span2"><span class="label">Categorías / etiquetas</span><input id="pCats" class="input" value="${escapeHtml(prod.categories)}" placeholder="Ejemplo: Dedales, Gamer Móvil"></label><label><span class="label">Costo compra</span><input id="pCost" class="input" type="number" value="${prod.cost}"></label><label><span class="label">Precio venta</span><input id="pPrice" class="input" type="number" value="${prod.price}"></label><label><span class="label">Stock</span><input id="pStock" class="input" type="number" value="${prod.stock}"></label><label><span class="label">Imagen principal URL</span><input id="pImage" class="input" value="${escapeHtml(prod.image)}" placeholder="https://..."></label><label class="span2"><span class="label">Galería / más imágenes</span><textarea id="pGallery" class="textarea" placeholder="Una URL por línea">${escapeHtml(prod.gallery)}</textarea></label><label class="span2"><span class="label">Promociones por cantidad</span><textarea id="pPromos" class="textarea" placeholder="Ejemplo: 3=72">${escapeHtml(prod.promos)}</textarea></label><label class="span2"><span class="label">Descripción / beneficios / incluye</span><textarea id="pDesc" class="textarea">${escapeHtml(prod.description)}</textarea></label></div><div class="chips">${['Gamer Móvil','Dedales','Gatillos','Tecnología','Celulares','Audio','Cables','Hogar','Cocina'].map(c=>`<button class="chip" data-addcat="${c}">${c}</button>`).join('')}</div></div><div class="modal-actions"><button class="btn" id="saveProduct">Guardar producto</button>${p.id?`<button class="btn secondary" id="duplicateProduct">Duplicar</button><button class="btn danger" id="deleteProduct">Eliminar</button>`:''}</div></div>` }
-  function openProductEditor(id){const p=id?productById(id):{}; openModal(productForm(p),true); $$('[data-addcat]',modalRoot).forEach(b=>b.onclick=()=>{const inp=$('#pCats'); const tags=parseTags(inp.value); if(!tags.some(t=>t.toLowerCase()===b.dataset.addcat.toLowerCase())) tags.push(b.dataset.addcat); inp.value=tags.join(', ')}); $('#saveProduct').onclick=()=>{const np={id:$('#pId').value.trim()||nextCode(),name:$('#pName').value.trim()||'Producto sin nombre',categories:$('#pCats').value.trim()||'General',cost:+$('#pCost').value||0,price:+$('#pPrice').value||0,stock:+$('#pStock').value||0,image:$('#pImage').value.trim(),gallery:$('#pGallery').value.trim(),promos:$('#pPromos').value.trim(),description:$('#pDesc').value.trim()}; const ix=state.products.findIndex(x=>x.id===id); if(ix>=0)state.products[ix]=np; else state.products.push(np); save(); SDCStore.saveBackup(state,'Antes/después de editar producto'); closeModal(); render(); toast('Producto guardado.');}; $('#duplicateProduct')&&( $('#duplicateProduct').onclick=()=>{const cp={...p,id:nextCode(),name:p.name+' copia'}; state.products.push(cp); save(); closeModal(); render(); toast('Producto duplicado.');}); $('#deleteProduct')&&( $('#deleteProduct').onclick=()=>{if(confirm('¿Eliminar este producto?')){state.products=state.products.filter(x=>x.id!==id);save();closeModal();render();toast('Producto eliminado.')}})}
-
-  function openProductDetails(id){const p=productById(id); if(!p)return; const imgs=galleryOf(p); openModal(`<div class="modal-head"><h3>Producto</h3><button class="close">×</button></div><div class="modal-body"><div class="doc-wrap" style="background:#07111f;color:#eef8ff"><div class="product-media"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><b class="price-badge">${money(p.price)}</b></div><h2>${escapeHtml(p.name)}</h2><p style="color:#b8c8d8">${escapeHtml(p.description||'Sin descripción.')}</p><div class="metrics"><div class="metric"><span>Stock</span><b>${num(p.stock)}</b></div><div class="metric"><span>Categorías</span><b>${escapeHtml(parseTags(p.categories).join(', '))}</b></div><div class="metric"><span>Costo</span><b>${money(p.cost)}</b></div><div class="metric"><span>Ganancia C/U</span><b>${money((+p.price||0)-(+p.cost||0))}</b></div></div></div><div class="modal-actions"><button class="btn" data-action="sellProduct" data-id="${escapeHtml(id)}">Vender</button><button class="btn secondary" data-action="quoteProduct" data-id="${escapeHtml(id)}">Cotizar</button><button class="btn ghost" data-action="editProduct" data-id="${escapeHtml(id)}">Editar</button></div></div>`); $$('[data-action]',modalRoot).forEach(b=>b.onclick=(e)=>{closeModal();mainAction({currentTarget:b})}); }
-
-  function quoteModalHTML(isSale=false){
-    const doc=isSale?saleDraft:quote; const title=isSale?'Venta / factura real':'Cotización previa';
-    return `<div class="modal-head"><h3>${title}</h3><button class="close">×</button></div><div class="modal-body"><div class="pill"><span class="dot"></span>${isSale?'Factura y registro':'Preventa / información'}</div><div class="modal-grid" style="margin-top:14px"><div class="card-box span2"><div class="section-head" style="margin:0 0 12px"><h4>Seleccionar producto</h4><span>${state.products.length} encontrados</span></div><div class="searchbar"><span class="icon">⌕</span><input id="pickSearch" placeholder="Buscar por nombre, categoría o código..."></div><div class="chips" id="pickChips">${allCategories().map(c=>`<button class="chip ${c==='Todos'?'active':''}" data-pickcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="pickerList" class="picker-list"></div></div><div class="card-box"><h4>Datos para calcular</h4>${fieldsHTML(doc)}</div><div class="card-box"><h4>${isSale?'Factura':'Cotización'} actual</h4><div id="cartList" class="cart-list"></div><div id="totalsMini"></div></div><div class="span2"><div id="docPreview">${docCard(doc,isSale)}</div></div></div><div class="modal-actions"><button class="btn secondary" id="downloadDoc">↓ Imagen</button><button class="btn secondary" id="waText">WhatsApp texto</button><button class="btn" id="waPhoto">WhatsApp foto</button>${!isSale?'<button class="btn ghost" id="saveQuote">Guardar cotización</button><button class="btn" id="toSale">Pasar a venta / factura real</button>':'<button class="btn" id="finishSale">Finalizar venta</button><button class="btn secondary" id="printDoc">Imprimir / PDF</button>'}</div></div>`
+  function renderKeepFocus(selector, value){
+    render();
+    requestAnimationFrame(() => {
+      const el = document.querySelector(selector);
+      if(!el) return;
+      el.focus();
+      const end = String(value || '').length;
+      try{ el.setSelectionRange(end, end); }catch(e){}
+    });
   }
-  function fieldsHTML(doc){return `<div class="modal-grid"><label><span class="label">Cliente opcional</span><input class="input bindDoc" data-k="client" value="${escapeHtml(doc.client)}"></label><label><span class="label">Teléfono cliente / WhatsApp</span><input class="input bindDoc" data-k="phone" inputmode="tel" value="${escapeHtml(doc.phone)}" placeholder="Sin +504 también funciona"></label><label><span class="label">Departamento</span><select class="select bindDoc" data-k="department">${SDC_DEPARTMENTS.map(d=>`<option ${doc.department===d?'selected':''}>${d}</option>`).join('')}</select></label><label><span class="label">Municipio</span><select class="select bindDoc" data-k="municipality"></select></label><label class="span2"><span class="label">Referencia / barrio / colonia</span><input class="input bindDoc" data-k="reference" value="${escapeHtml(doc.reference)}"></label><label><span class="label">Empresa / entrega</span><select class="select bindDoc" data-k="company"><option>Domicilio</option><option>Forza</option><option>C807</option><option>Cargo Expreso</option><option>Bus local</option></select></label><label><span class="label">Envío Lps.</span><input class="input bindDoc" data-k="shipping" type="number" value="${doc.shipping}"></label><label><span class="label">Pagar al recibir</span><select class="select bindDoc" data-k="cod"><option value="true" ${doc.cod?'selected':''}>Sí, aplicar comisión ${state.settings.codPercent||6}%</option><option value="false" ${!doc.cod?'selected':''}>No, sin comisión</option></select></label><label><span class="label">Descuento Lps.</span><input class="input bindDoc" data-k="discount" type="number" value="${doc.discount}"></label></div>`}
-  function bindDocFields(isSale){ const doc=isSale?saleDraft:quote; const mun=$('[data-k="municipality"]',modalRoot); function fillMun(){const dep=$('[data-k="department"]',modalRoot).value; const list=SDC_MUNICIPALITIES[dep]||[]; mun.innerHTML=list.map(m=>`<option ${doc.municipality===m?'selected':''}>${m}</option>`).join('')+'<option>Otro municipio</option>'; if(!list.includes(doc.municipality)) mun.value=list[0]||'Otro municipio'; doc.department=dep; doc.municipality=mun.value} fillMun(); $('[data-k="company"]',modalRoot).value=doc.company||'Forza'; $$('.bindDoc',modalRoot).forEach(el=>el.oninput=el.onchange=()=>{let v=el.value; if(el.dataset.k==='shipping'||el.dataset.k==='discount')v=+v||0; if(el.dataset.k==='cod')v=v==='true'; doc[el.dataset.k]=v; if(el.dataset.k==='department')fillMun(); refreshQuoteUI(isSale);}); }
-  function renderPicker(isSale){ const list=$('#pickerList',modalRoot); let q='',cat='Todos'; function draw(){const term=q.toLowerCase(); const items=state.products.filter(p=>(cat==='Todos'||parseTags(p.categories).some(t=>t.toLowerCase()===cat.toLowerCase())) && (!term||[p.name,p.id,p.categories].join(' ').toLowerCase().includes(term))); list.innerHTML=items.map(p=>`<div class="picker-item"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><div><b>${escapeHtml(p.name)}</b><span>${money(p.price)} · Stock ${num(p.stock)} · ${escapeHtml(firstTag(p))}</span></div><button class="btn small" data-additem="${escapeHtml(p.id)}">Agregar</button></div>`).join('')||'<div class="empty-state">Sin productos.</div>'; $$('[data-additem]',list).forEach(b=>b.onclick=()=>addDocItem(b.dataset.additem,isSale)); }
-    $('#pickSearch',modalRoot).oninput=e=>{q=e.target.value;draw()}; $$('[data-pickcat]',modalRoot).forEach(b=>b.onclick=()=>{cat=b.dataset.pickcat;$$('[data-pickcat]',modalRoot).forEach(x=>x.classList.toggle('active',x===b));draw()}); draw(); }
-  function addDocItem(id,isSale){ const p=productById(id); if(!p)return; const doc=isSale?saleDraft:quote; const found=doc.items.find(x=>x.id===id); if(found)found.qty++; else doc.items.push({id:p.id,name:p.name,price:+p.price||0,cost:+p.cost||0,qty:1,image:productImage(p)}); refreshQuoteUI(isSale); toast('Producto agregado.'); }
-  function refreshQuoteUI(isSale){ const doc=isSale?saleDraft:quote; $('#cartList',modalRoot).innerHTML=doc.items.length?doc.items.map((it,i)=>`<div class="cart-row"><div><b>${escapeHtml(it.name)}</b><br><span>${money(it.price)} c/u</span></div><div class="qtybox"><button data-dec="${i}">−</button><input data-qty="${i}" type="number" value="${it.qty}"><button data-inc="${i}">+</button></div><button class="btn small danger" data-rem="${i}">×</button></div>`).join(''):'<div class="empty-state">Agrega productos para calcular.</div>'; const c=calc(doc); $('#totalsMini',modalRoot).innerHTML=`<div class="summary"><div class="summary-row"><b>Productos</b><b>${money(c.products)}</b></div><div class="summary-row"><b>Envío</b><b>${money(c.shipping)}</b></div><div class="summary-row"><b>Comisión</b><b>${money(c.commission)}</b></div><div class="summary-total"><b>Total</b><b>${money(c.total)}</b></div></div>`; $('#docPreview',modalRoot).innerHTML=docCard(doc,isSale); $$('[data-inc]',modalRoot).forEach(b=>b.onclick=()=>{doc.items[+b.dataset.inc].qty++;refreshQuoteUI(isSale)}); $$('[data-dec]',modalRoot).forEach(b=>b.onclick=()=>{const it=doc.items[+b.dataset.dec]; it.qty=Math.max(1,it.qty-1);refreshQuoteUI(isSale)}); $$('[data-rem]',modalRoot).forEach(b=>b.onclick=()=>{doc.items.splice(+b.dataset.rem,1);refreshQuoteUI(isSale)}); $$('[data-qty]',modalRoot).forEach(inp=>inp.oninput=()=>{doc.items[+inp.dataset.qty].qty=Math.max(1,+inp.value||1);refreshQuoteUI(isSale)}); }
-  function openQuote(id){currentView='quote'; if(!quote.items.length) quote=emptyQuote(); if(id)addDocItemTo(quote,id); openModal(quoteModalHTML(false),true); bindQuoteCommon(false); }
-  function openSale(id,fromDoc=null){saleDraft=fromDoc?SDCStore.clone(fromDoc):emptySale(); saleDraft.id='SDC-'+Date.now().toString().slice(-10); if(id)addDocItemTo(saleDraft,id); openModal(quoteModalHTML(true),true); bindQuoteCommon(true); }
-  function addDocItemTo(doc,id){const p=productById(id); if(!p)return; const found=doc.items.find(x=>x.id===id); if(found)found.qty++; else doc.items.push({id:p.id,name:p.name,price:+p.price||0,cost:+p.cost||0,qty:1,image:productImage(p)});}
-  function bindQuoteCommon(isSale){renderPicker(isSale); bindDocFields(isSale); refreshQuoteUI(isSale); $('#downloadDoc').onclick=()=>downloadDocImage(isSale?'recibo':'cotizacion'); $('#waText').onclick=()=>sendWhatsAppText(isSale); $('#waPhoto').onclick=()=>shareDocPhoto(isSale); $('#printDoc')&&($('#printDoc').onclick=()=>window.print()); $('#saveQuote')&&($('#saveQuote').onclick=()=>{quote.date=new Date().toISOString();quote.saved=true;state.quotes.unshift(SDCStore.clone(quote));save();toast('Cotización guardada.');}); $('#toSale')&&($('#toSale').onclick=()=>{if(!quote.items.length)return toast('Agrega productos antes de pasar a venta.'); closeModal(); openSale(null,quote)}); $('#finishSale')&&($('#finishSale').onclick=finishSale); }
-  function docCard(doc,isSale){ const c=calc(doc); const code=doc.id||'SDC'; const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'}); return `<div class="doc-wrap" id="printableDoc"><div class="doc-head"><div><span class="doc-pill">${isSale?'Factura gamer · WhatsApp':'Cotización · WhatsApp'}</span><h2>SD COMAYAGUA</h2><p>${isSale?'Recibo':'Cotización'} · ${date}</p><p><b>${escapeHtml(code)}</b></p></div><img class="doc-logo" src="assets/logo-sdc.png" alt="Logo"></div><div class="doc-fields"><div class="doc-field"><span>Cliente</span><b>${escapeHtml(doc.client||'Cliente')}</b></div><div class="doc-field"><span>Teléfono</span><b>${escapeHtml(doc.phone||'No registrado')}</b></div><div class="doc-field"><span>Departamento</span><b>${escapeHtml(doc.department||'No seleccionado')}</b></div><div class="doc-field"><span>Municipio</span><b>${escapeHtml(doc.municipality||'No seleccionado')}</b></div>${doc.reference?`<div class="doc-field wide"><span>Referencia / barrio / colonia</span><b>${escapeHtml(doc.reference)}</b></div>`:''}</div><table class="doc-table"><thead><tr><th>Producto</th><th class="num">Cant.</th><th class="num">Precio</th><th class="num">Total</th></tr></thead><tbody>${doc.items.map(it=>`<tr><td><div class="doc-product"><img src="${escapeHtml(it.image||SDC_PLACEHOLDERS.default)}" onerror="this.onerror=null;this.src='${SDC_PLACEHOLDERS.default}'"><div>${escapeHtml(it.name)}<br><span style="color:#718191">${escapeHtml(it.id)}</span></div></div></td><td class="num">${num(it.qty)}</td><td class="num">${money(it.price)}</td><td class="num">${money(itemTotal(it))}</td></tr>`).join('')||'<tr><td colspan="4">Sin productos agregados</td></tr>'}</tbody></table><div class="summary"><div class="summary-row"><b>Productos</b><b>${money(c.products)}</b></div><div class="summary-row"><b>Envío</b><b>${money(c.shipping)}</b></div><div class="summary-row"><b>Comisión por pagar al recibir</b><b>${money(c.commission)}</b></div><div class="summary-row"><b>Total envío</b><b>${money(c.delivery)}</b></div><div class="summary-row"><b>Descuento</b><b>${money(c.discount)}</b></div><div class="summary-total"><b>${isSale?'Total':'Total cotizado'}</b><b>${money(c.total)}</b></div></div><div class="delivery-box"><b>Empresa / entrega:</b> ${escapeHtml(doc.company||'No seleccionada')}${doc.cod?' · Pagar al recibir con comisión de empresa':''}</div><p class="doc-note">${isSale?'Gracias por comprar en SD Comayagua.':'Cotización informativa. La venta se registra únicamente al pasarla a factura real.'}<br>SD Comayagua · WhatsApp +504 3151-7755</p></div>` }
-  function whatsappText(doc,isSale){ const c=calc(doc); const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'}); return `🧾 *${isSale?'RECIBO':'COTIZACIÓN'} SD COMAYAGUA*\n\n📌 *Código:* ${doc.id}\n📅 *Fecha:* ${date}\n\n👤 *Cliente:* ${doc.client||'Cliente'}\n📞 *Teléfono:* ${doc.phone||'No registrado'}\n🏷️ *Departamento:* ${doc.department||'No seleccionado'}\n📍 *Municipio:* ${doc.municipality||'No seleccionado'}${doc.reference?`\n🏠 *Referencia:* ${doc.reference}`:''}\n\n🛒 *PRODUCTOS*\n${doc.items.map(it=>`• ${it.name}\n  Cantidad: ${it.qty}\n  Precio: ${money(it.price)}\n  Total: ${money(itemTotal(it))}`).join('\n')}\n\n🚚 *ENVÍO*\nEmpresa / entrega: ${doc.company||'No seleccionada'}\nEnvío: ${money(c.shipping)}\nComisión por pagar al recibir: ${money(c.commission)}\nTotal envío: ${money(c.delivery)}\n\n💰 *RESUMEN*\nProductos: ${money(c.products)}\nDescuento: ${money(c.discount)}\n*TOTAL A PAGAR: ${money(c.total)}*\n\nSD COMAYAGUA.\nWhatsApp: +504 3151-7755`; }
-  function waUrl(phone,text){const p=cleanPhone(phone); return p?`https://wa.me/${p.length===8?'504'+p:p}?text=${encodeURIComponent(text)}`:`https://wa.me/?text=${encodeURIComponent(text)}`}
-  function currentDoc(isSale){return isSale?saleDraft:quote}
-  function chooseWaPhone(doc){
-    const storeLast=cleanPhone(state.settings.whatsappNumber||'').slice(-8);
-    const current=cleanPhone(doc.phone||'').slice(-8);
-    if(!current || current===storeLast){
-      const typed=prompt('Número WhatsApp del cliente. Déjalo vacío para elegir el chat manualmente en WhatsApp:', current===storeLast?'':(doc.phone||''));
-      if(typed===null) return null;
-      doc.phone=typed.trim();
-      refreshQuoteUI(doc.kind==='receipt' || doc===saleDraft);
+
+  function openQuoteWithProduct(id){ state.quote = newQuote(); addProductToQuote(id, false); state.modal = { type:'quote' }; render(); }
+  function addProductToQuote(id, rerender = true){
+    const p = productById(id); if(!p) return;
+    const ex = state.quote.items.find(x => x.id === id);
+    if(ex) ex.qty += 1; else state.quote.items.push({ id:p.id, name:p.name, price:toNumber(p.price), qty:1 });
+    if(rerender) render();
+  }
+  function updateQuoteFromInput(el){
+    const key = el.dataset.quote; if(!key) return;
+    state.quote[key] = ['manualShipping','discount'].includes(key) ? toNumber(el.value) : el.value;
+    state.quote.date = state.quote.date || new Date().toISOString();
+  }
+  function saveSale(kind='sale'){
+    updateAllQuoteInputs();
+    const totals = calcQuote(state.quote);
+    if(!state.quote.items.length){ toast('Agrega producto antes de guardar.'); return null; }
+    const sale = { ...state.quote, id: state.quote.id || `SDC-${Date.now()}`, date: new Date().toISOString(), kind, totals, total: totals.total };
+    if(kind === 'sale'){
+      sale.items.forEach(it => { const p = productById(it.id); if(p) p.stock = Math.max(0, toNumber(p.stock) - toNumber(it.qty)); });
     }
-    return doc.phone||'';
+    state.data.sales.push(sale); persist();
+    return sale;
   }
-  function sendWhatsAppText(isSale){const doc=currentDoc(isSale); if(!doc.items.length)return toast('Agrega productos primero.'); const phone=chooseWaPhone(doc); if(phone===null)return; window.open(waUrl(phone,whatsappText(doc,isSale)),'_blank');}
-  async function docToBlob(){const el=$('#printableDoc',modalRoot); if(!window.html2canvas){window.print();return null} const canvas=await html2canvas(el,{backgroundColor:'#eaf5f9',scale:2,useCORS:true}); return new Promise(res=>canvas.toBlob(res,'image/png',.98));}
-  async function downloadDocImage(name='documento'){const blob=await docToBlob(); if(!blob)return; const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${name}-sd-comayagua.png`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Imagen descargada.');}
-  async function shareDocPhoto(isSale){const doc=currentDoc(isSale); const phone=chooseWaPhone(doc); if(phone===null)return; const blob=await docToBlob(); const text=whatsappText(doc,isSale); if(blob && navigator.canShare){const file=new File([blob],`${isSale?'recibo':'cotizacion'}-sd-comayagua.png`,{type:'image/png'}); if(navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text}); return}catch(e){}}} if(blob) await downloadDocImage(isSale?'recibo':'cotizacion'); window.open(waUrl(phone,text),'_blank'); toast('Se descargó la imagen y se abrió WhatsApp.');}
-  function finishSale(){ if(!saleDraft.items.length)return toast('Agrega productos primero.'); const c=calc(saleDraft); saleDraft.date=new Date().toISOString(); saleDraft.total=c.total; state.sales.unshift(SDCStore.clone(saleDraft)); saleDraft.items.forEach(it=>{const p=productById(it.id); if(p)p.stock=Math.max(0,(+p.stock||0)-(+it.qty||0));}); state.lastReceipt=SDCStore.clone(saleDraft); SDCStore.saveBackup(state,'Venta registrada'); save(); refreshQuoteUI(true); render(); toast('Venta finalizada y recibo guardado.'); }
+  function updateAllQuoteInputs(){ document.querySelectorAll('[data-quote]').forEach(updateQuoteFromInput); }
 
-  function openBackup(){openModal(`<div class="modal-head"><h3>Backup de datos</h3><button class="close">×</button></div><div class="modal-body"><div class="card-box"><h4>Exportar / importar</h4><p style="color:#b8c8d8">Guarda este archivo antes de borrar o subir una versión nueva.</p><div class="modal-actions" style="position:static"><button class="btn" id="exportBackup">Descargar backup JSON</button><label class="btn secondary">Importar backup<input id="importBackup" type="file" accept="application/json" hidden></label><button class="btn ghost" id="manualBackup">Guardar copia local</button></div></div><div class="card-box"><h4>Copias locales</h4><div id="backupList"></div></div></div>`,true); function draw(){const b=SDCStore.listBackups(); $('#backupList').innerHTML=b.map(x=>`<div class="cart-row"><div><b>${escapeHtml(x.label)}</b><br><span>${new Date(x.date).toLocaleString('es-HN')}</span></div><button class="btn small secondary" data-restore="${x.id}">Restaurar</button></div>`).join('')||'<div class="empty-state">Sin copias locales.</div>'; $$('[data-restore]',modalRoot).forEach(btn=>btn.onclick=()=>{state=SDCStore.restoreBackup(btn.dataset.restore)||state; closeModal(); render(); toast('Backup restaurado.')}); } draw(); $('#exportBackup').onclick=()=>{const blob=new Blob([SDCStore.exportData(state)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='backup-sd-comayagua.json'; a.click();}; $('#manualBackup').onclick=()=>{SDCStore.saveBackup(state,'Backup manual');draw();toast('Copia local guardada.')}; $('#importBackup').onchange=e=>{const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{try{state=SDCStore.importData(r.result);closeModal();render();toast('Backup importado.')}catch(err){toast('No se pudo importar.')}}; r.readAsText(f)}; }
-  function openProfit(){const rows=state.products.map(p=>({p,profit:(+p.price||0)-(+p.cost||0),total:((+p.price||0)-(+p.cost||0))*(+p.stock||0)})); openModal(`<div class="modal-head"><h3>Ganancias</h3><button class="close">×</button></div><div class="modal-body"><table class="profit-table"><thead><tr><th>Producto</th><th>C/U</th><th>Stock</th><th>Total</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${escapeHtml(r.p.name)}</td><td>${money(r.profit)}</td><td>${num(r.p.stock)}</td><td>${money(r.total)}</td></tr>`).join('')}</tbody></table></div>`,true)}
-  function openReceipts(){openModal(`<div class="modal-head"><h3>Caja / recibos</h3><button class="close">×</button></div><div class="modal-body"><div class="cart-list">${state.sales.map(s=>`<div class="cart-row"><div><b>${escapeHtml(s.client||'Cliente')}</b><br><span>${escapeHtml(s.id)} · ${money(s.total||calc(s).total)}</span></div><button class="btn small secondary" data-openreceipt="${s.id}">Ver</button></div>`).join('')||'<div class="empty-state">Todavía no hay ventas registradas.</div>'}</div></div>`,true); $$('[data-openreceipt]',modalRoot).forEach(b=>b.onclick=()=>{const s=state.sales.find(x=>x.id===b.dataset.openreceipt); if(s){saleDraft=SDCStore.clone(s); openModal(quoteModalHTML(true),true); bindQuoteCommon(true)}}); }
-  function openNoCost(){openModal(`<div class="modal-head"><h3>Productos sin costo</h3><button class="close">×</button></div><div class="modal-body"><div class="cart-list">${state.products.filter(p=>+p.cost<=0).map(p=>`<div class="cart-row"><div><b>${escapeHtml(p.name)}</b><br><span>${escapeHtml(p.id)}</span></div><button class="btn small secondary" data-editcost="${p.id}">Editar</button></div>`).join('')||'<div class="empty-state">Todo tiene costo registrado.</div>'}</div></div>`,true); $$('[data-editcost]',modalRoot).forEach(b=>b.onclick=()=>{closeModal();openProductEditor(b.dataset.editcost)})}
+  async function captureReceipt(filename='recibo-sdc.png'){
+    const node = document.getElementById('receiptCard');
+    if(!node) return null;
+    if(window.html2canvas){
+      const canvas = await html2canvas(node, { backgroundColor: '#eef8fb', scale: 2, useCORS: true });
+      return new Promise(resolve => canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); resolve(blob);
+      }, 'image/png'));
+    }
+    window.print(); return null;
+  }
+  async function shareReceiptImage(){
+    const node = document.getElementById('receiptCard'); if(!node || !window.html2canvas){ toast('Tu navegador descargará la imagen.'); await captureReceipt(); return; }
+    const canvas = await html2canvas(node, { backgroundColor:'#eef8fb', scale:2, useCORS:true });
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    const file = new File([blob], 'cotizacion-sdc.png', { type:'image/png' });
+    if(navigator.canShare && navigator.canShare({ files:[file] })) await navigator.share({ files:[file], text: quoteText(state.quote) });
+    else { await captureReceipt('cotizacion-sdc.png'); openWhatsApp(quoteText(state.quote), state.quote.phone); }
+  }
+  function openWhatsApp(text, phone){
+    const digits = String(phone || '').replace(/\D/g,'');
+    const normalized = digits ? (digits.startsWith('504') ? digits : `504${digits}`) : '';
+    const url = normalized ? `https://wa.me/${normalized}?text=${encodeURIComponent(text)}` : `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  }
 
-  $('#goTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
-  window.addEventListener('scroll',()=>$('#goTop').style.display=scrollY>320?'block':'none');
+  function handleAction(action, el){
+    if(action === 'login'){
+      const key = document.getElementById('loginKey')?.value || '';
+      if(key === state.data.settings.accessKey){ state.unlocked=true; localStorage.setItem('sdc-unlocked','1'); state.view='home'; render(); }
+      else toast('Clave incorrecta.');
+    }
+    if(action === 'logout'){ state.unlocked=false; localStorage.removeItem('sdc-unlocked'); render(); }
+    if(action === 'top') window.scrollTo({top:0, behavior:'smooth'});
+    if(action === 'home') { state.view='home'; render(); }
+    if(action === 'catalog') { state.view='catalog'; state.filter='Todos'; render(); }
+    if(action === 'quote') { state.quote = newQuote(); state.modal={type:'quote'}; render(); }
+    if(action === 'receipts') { state.view='receipts'; render(); }
+    if(action === 'backup') exportState(state.data);
+    if(action === 'profit') { state.view='catalog'; state.filter='Todos'; render(); toast('Revisa ganancia por producto en cada tarjeta.'); }
+    if(action === 'low-stock') { state.view='catalog'; state.filter='Bajo stock'; render(); }
+    if(action === 'no-cost') { state.view='catalog'; state.filter='Sin costo'; render(); }
+    if(action === 'new-product') { state.modal={type:'edit'}; render(); }
+    if(action === 'view-product') { state.modal={type:'product', id: el.dataset.id}; render(); }
+    if(action === 'edit-product') { state.modal={type:'edit', id: el.dataset.id}; render(); }
+    if(action === 'sell-product' || action === 'quote-product') openQuoteWithProduct(el.dataset.id);
+    if(action === 'close-modal') { state.modal=null; render(); }
+    if(action === 'add-quote') addProductToQuote(el.dataset.id);
+    if(action === 'qty-plus') { state.quote.items[el.dataset.index].qty += 1; render(); }
+    if(action === 'qty-minus') { const it=state.quote.items[el.dataset.index]; it.qty=Math.max(1,it.qty-1); render(); }
+    if(action === 'remove-quote') { state.quote.items.splice(el.dataset.index,1); render(); }
+    if(action === 'save-product') saveProductFromForm();
+    if(action === 'duplicate-product') duplicateProduct(el.dataset.id);
+    if(action === 'delete-product') deleteProduct(el.dataset.id);
+    if(action === 'download-quote-image' || action === 'download-receipt-image') captureReceipt('sdc-cotizacion.png');
+    if(action === 'share-quote-image') { updateAllQuoteInputs(); shareReceiptImage(); }
+    if(action === 'send-quote-text') { updateAllQuoteInputs(); openWhatsApp(quoteText(state.quote), state.quote.phone); }
+    if(action === 'save-quote') { const sale = saveSale('quote'); if(sale){ toast('Cotización guardada.'); state.modal=null; state.quote=newQuote(); render(); } }
+    if(action === 'quote-to-sale') { const sale = saveSale('sale'); if(sale){ state.modal={type:'receipt', id:sale.id}; state.quote=newQuote(); render(); } }
+    if(action === 'open-receipt') { state.modal={type:'receipt', id:el.dataset.id}; render(); }
+    if(action === 'print-receipt') window.print();
+    if(action === 'send-receipt-text') { const q = state.data.sales.find(x=>x.id===el.dataset.id); if(q) openWhatsApp(quoteText(q, q.totals || calcQuote(q)), q.phone); }
+  }
+
+  function saveProductFromForm(){
+    const form = document.querySelector('.edit-form'); if(!form) return;
+    const fd = new FormData(form);
+    const originalId = fd.get('originalId');
+    const image = cleanText(fd.get('image'));
+    const galleryText = cleanText(fd.get('gallery'));
+    const product = normalizeProduct({
+      id: fd.get('id') || `SDC-${String(state.data.products.length+1).padStart(3,'0')}`,
+      name: fd.get('name'), stock: fd.get('stock'), price: fd.get('price'), cost: fd.get('cost'),
+      categories: fd.get('categories'), image,
+      gallery: [image, ...String(galleryText || '').split(/\n+/)],
+      promos: fd.get('promos'), description: fd.get('description')
+    }, state.data.products.length);
+    const idx = state.data.products.findIndex(p => p.id === originalId);
+    if(idx >= 0) state.data.products[idx] = product; else state.data.products.push(product);
+    persist(); state.modal=null; state.view='catalog'; render(); toast('Producto guardado.');
+  }
+  function duplicateProduct(id){
+    const p = productById(id); if(!p) return;
+    const copy = normalizeProduct({ ...p, id:`SDC-${String(state.data.products.length+1).padStart(3,'0')}`, name:`${p.name} copia` }, state.data.products.length);
+    state.data.products.push(copy); persist(); state.modal={type:'edit', id:copy.id}; render();
+  }
+  function deleteProduct(id){
+    if(!confirm('¿Eliminar este producto?')) return;
+    state.data.products = state.data.products.filter(p => p.id !== id); persist(); state.modal=null; render(); toast('Producto eliminado.');
+  }
+
+  document.addEventListener('click', e => {
+    const actionEl = e.target.closest('[data-action]');
+    if(actionEl){ e.preventDefault(); handleAction(actionEl.dataset.action, actionEl); return; }
+    const filterEl = e.target.closest('[data-filter]');
+    if(filterEl){ state.filter = filterEl.dataset.filter; state.view='catalog'; render(); return; }
+    const qFilter = e.target.closest('[data-quote-filter]');
+    if(qFilter){ updateAllQuoteInputs(); state.quoteFilter = qFilter.dataset.quoteFilter; render(); }
+  });
+  document.addEventListener('input', e => {
+    if(e.target.matches('[data-input="search"]')){ state.search = e.target.value; renderKeepFocus('[data-input="search"]', state.search); }
+    if(e.target.matches('[data-input="quoteSearch"]')){ state.quoteSearch = e.target.value; renderKeepFocus('[data-input="quoteSearch"]', state.quoteSearch); }
+    if(e.target.matches('[data-quote]')) updateQuoteFromInput(e.target);
+  });
+  document.addEventListener('change', e => {
+    if(e.target.matches('[data-quote]')){ updateQuoteFromInput(e.target); render(); }
+  });
+
   render();
 })();

@@ -1,47 +1,142 @@
-(function(){
-  const KEY = 'sdc_control_ventas_v90';
-  const BACKUP_KEY = 'sdc_backups_v90';
-  function safeJSON(raw,fallback){try{return JSON.parse(raw)}catch(e){return fallback}}
-  function uid(prefix='SDC'){return `${prefix}-${Date.now().toString().slice(-7)}${Math.floor(Math.random()*90+10)}`}
-  function clone(x){return JSON.parse(JSON.stringify(x))}
-  function defaultState(){return {version:90,unlocked:false,products:clone(window.SDC_DEFAULT_PRODUCTS||[]),sales:[],quotes:[],lastReceipt:null,lastQuote:null,settings:clone(window.SDC_CONFIG||{})}}
-  function normalizeProduct(p,i=0){
-    const categories = p.categories || p.category || p.categoria || p.etiquetas || 'General';
-    const image = p.image || p.imagen || p.foto || (Array.isArray(p.images)&&p.images[0]) || '';
-    const gallery = p.gallery || p.galeria || p.images || '';
-    return {
-      id:String(p.id||p.codigo||`SDC-${String(i+1).padStart(3,'0')}`),
-      name:String(p.name||p.nombre||'Producto sin nombre'),
-      categories:String(categories||'General'),
-      price:Number(p.price??p.precio??p.precio_venta??0)||0,
-      cost:Number(p.cost??p.costo??p.costo_compra??0)||0,
-      stock:Number(p.stock??p.existencia??0)||0,
-      image:String(image||''),
-      gallery:Array.isArray(gallery)?gallery.join('\n'):String(gallery||''),
-      description:String(p.description||p.descripcion||''),
-      promos:String(p.promos||p.promociones||p.preciosCantidad||'')
+const STORAGE_KEY = 'sdc-caja-modular-v91';
+const LEGACY_KEYS = ['sdc-caja-modular-v90','sdc-products-v1','sdc-inventory'];
+
+function toNumber(value, fallback = 0){
+  if(value === null || value === undefined || value === '') return fallback;
+  const n = Number(String(value).replace(/[^0-9.-]/g,''));
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function cleanText(value, fallback = ''){
+  if(value === null || value === undefined) return fallback;
+  if(typeof value === 'object'){
+    return value.nombre || value.name || value.titulo || value.title || value.categoria || value.category || value.text || value.value || fallback;
+  }
+  const t = String(value).trim();
+  return t && t !== '[object Object]' ? t : fallback;
+}
+
+function unique(list){
+  const seen = new Set();
+  return list.map(v => cleanText(v)).filter(Boolean).filter(v => {
+    const k = v.toLowerCase();
+    if(seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
+function parseCategories(value){
+  if(Array.isArray(value)) return unique(value.flatMap(parseCategories));
+  if(value && typeof value === 'object') return unique([cleanText(value)]);
+  return unique(String(value || '').split(/[;,|]+/).map(s => s.trim()));
+}
+
+function parseGallery(product){
+  const raw = product.gallery ?? product.galeria ?? product.imagenes ?? '';
+  let list = [];
+  if(Array.isArray(raw)) list = raw.map(cleanText);
+  else list = String(raw || '').split(/\n|\s,\s/).map(s => s.trim());
+  const main = cleanText(product.image || product.imagen || product.foto || product.img || '');
+  return unique([main, ...list].filter(Boolean));
+}
+
+function parsePromos(value){
+  if(Array.isArray(value)){
+    return value.map(p => {
+      if(typeof p === 'object') return { qty: toNumber(p.qty ?? p.cantidad ?? p.cant, 0), price: toNumber(p.price ?? p.precio ?? p.total, 0) };
+      const [a,b] = String(p).split(/[,;|:-]+/);
+      return { qty: toNumber(a,0), price: toNumber(b,0) };
+    }).filter(p => p.qty > 0 && p.price > 0);
+  }
+  return String(value || '').split(/\n+/).map(line => {
+    const [a,b] = line.split(/[,;|:-]+/);
+    return { qty: toNumber(a,0), price: toNumber(b,0) };
+  }).filter(p => p.qty > 0 && p.price > 0);
+}
+
+function promosToText(promos){
+  return parsePromos(promos).map(p => `${p.qty}, ${p.price}`).join('\n');
+}
+
+function generateId(i){ return `SDC-${String(i + 1).padStart(3,'0')}`; }
+
+function normalizeProduct(product = {}, index = 0){
+  const categories = parseCategories(product.categories ?? product.category ?? product.categoria ?? product.etiquetas ?? product.tags);
+  const gallery = parseGallery(product);
+  let id = cleanText(product.id || product.codigo || product.code || '', '');
+  if(!id || id.length > 14 || /\[object object\]/i.test(id)) id = generateId(index);
+  const name = cleanText(product.name || product.nombre || product.title || product.titulo, `Producto ${index + 1}`);
+  return {
+    id,
+    name,
+    categories: categories.length ? categories : ['General'],
+    price: toNumber(product.price ?? product.precio ?? product.precio_venta, 0),
+    cost: toNumber(product.cost ?? product.costo ?? product.precio_costo, 0),
+    stock: Math.max(0, Math.round(toNumber(product.stock ?? product.existencia ?? product.cantidad, 0))),
+    image: gallery[0] || '',
+    gallery,
+    description: cleanText(product.description || product.descripcion || product.detalle || product.beneficios, ''),
+    promos: parsePromos(product.promos || product.promociones || product.preciosCantidad || product.precios_cantidad)
+  };
+}
+
+function normalizeState(raw){
+  const base = raw && typeof raw === 'object' ? raw : {};
+  const products = Array.isArray(base.products) ? base.products : (Array.isArray(base.productos) ? base.productos : []);
+  const sales = Array.isArray(base.sales) ? base.sales : (Array.isArray(base.ventas) ? base.ventas : []);
+  return {
+    products: products.map(normalizeProduct),
+    sales,
+    settings: {
+      logo: cleanText(base.settings?.logo || window.SDC_DEFAULT_DATA?.settings?.logo || 'assets/logo_sdc_comayagua_clean_512.png'),
+      whatsapp: cleanText(base.settings?.whatsapp || window.SDC_DEFAULT_DATA?.settings?.whatsapp || '+50431517755'),
+      accessKey: cleanText(base.settings?.accessKey || window.SDC_DEFAULT_DATA?.settings?.accessKey || '199311'),
+      storeName: cleanText(base.settings?.storeName || 'SD COMAYAGUA')
     }
+  };
+}
+
+function loadState(){
+  const keys = [STORAGE_KEY, ...LEGACY_KEYS];
+  for(const key of keys){
+    try{
+      const raw = localStorage.getItem(key);
+      if(!raw) continue;
+      const parsed = JSON.parse(raw);
+      const normalized = normalizeState(parsed);
+      if(normalized.products.length){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+        return normalized;
+      }
+    }catch(e){ console.warn('No se pudo leer backup', key, e); }
   }
-  function normalizeState(s){
-    const d = defaultState();
-    const out = Object.assign(d, s||{});
-    out.products = (out.products||[]).map(normalizeProduct);
-    out.sales = Array.isArray(out.sales)?out.sales:[];
-    out.quotes = Array.isArray(out.quotes)?out.quotes:[];
-    out.settings = Object.assign({}, window.SDC_CONFIG||{}, out.settings||{});
-    return out;
-  }
-  function load(){return normalizeState(safeJSON(localStorage.getItem(KEY), null) || defaultState())}
-  function save(state){localStorage.setItem(KEY, JSON.stringify(normalizeState(state)));return state}
-  function saveBackup(state,label='Backup manual'){
-    const backups = safeJSON(localStorage.getItem(BACKUP_KEY),'[]') || [];
-    backups.unshift({id:uid('BK'),label,date:new Date().toISOString(),state:normalizeState(state)});
-    localStorage.setItem(BACKUP_KEY, JSON.stringify(backups.slice(0,20)));
-    return backups[0];
-  }
-  function listBackups(){return safeJSON(localStorage.getItem(BACKUP_KEY),'[]') || []}
-  function restoreBackup(id){const b=listBackups().find(x=>x.id===id); if(!b) return null; save(b.state); return normalizeState(b.state)}
-  function exportData(state){return JSON.stringify(normalizeState(state),null,2)}
-  function importData(json){const s=normalizeState(safeJSON(json,null)); if(!s) throw new Error('Archivo no válido'); save(s); return s}
-  window.SDCStore={KEY,load,save,saveBackup,listBackups,restoreBackup,exportData,importData,uid,normalizeProduct,normalizeState,clone};
-})();
+  return normalizeState(window.SDC_DEFAULT_DATA || {});
+}
+
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeState(state)));
+}
+
+function exportState(state){
+  const blob = new Blob([JSON.stringify(normalizeState(state), null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `backup-sdc-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importState(file, cb){
+  const reader = new FileReader();
+  reader.onload = () => {
+    const parsed = JSON.parse(reader.result);
+    const normalized = normalizeState(parsed);
+    saveState(normalized);
+    cb(normalized);
+  };
+  reader.readAsText(file);
+}
+
+window.SDCStorage = { loadState, saveState, exportState, importState, normalizeState, normalizeProduct, parseCategories, parsePromos, promosToText, toNumber, cleanText };

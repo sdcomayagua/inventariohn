@@ -17,6 +17,10 @@
   function parseTags(str){return String(str||'General').split(/[;,|]+/).map(x=>x.trim()).filter(x=>x && x.toLowerCase()!=='[object object]')}
   function firstTag(p){return parseTags(p.categories)[0]||'General'}
   function allCategories(){return ['Todos',...Array.from(new Set(state.products.flatMap(parseTags).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'es'))]}
+  function catSlug(str){return String(str||'categoria').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'categoria'}
+  function categoryImage(cat){const c=String(cat||'General').toLowerCase(); if(c==='todos')return 'assets/categorias/todas.svg'; return `assets/categorias/${catSlug(cat)}.svg`}
+  function categoryCount(cat){if(cat==='Todos')return state.products.length; const t=String(cat).toLowerCase(); return state.products.filter(p=>parseTags(p.categories).some(x=>x.toLowerCase()===t)).length}
+
   function placeholderFor(p){const tags=parseTags(p.categories).join(' ').toLowerCase(); if(tags.includes('gamer')||tags.includes('dedal')||tags.includes('gatillo'))return SDC_PLACEHOLDERS.gamer; if(tags.includes('tec')||tags.includes('celular')||tags.includes('audio')||tags.includes('cable'))return SDC_PLACEHOLDERS.tecnologia; if(tags.includes('hogar')||tags.includes('cocina'))return SDC_PLACEHOLDERS.hogar; return SDC_PLACEHOLDERS.default}
   function galleryOf(p){const g=String(p.gallery||'').split(/[\n,]+/).map(x=>x.trim()).filter(Boolean); const list=[p.image,...g].filter(Boolean); return Array.from(new Set(list))}
   function productImage(p){return galleryOf(p)[0] || placeholderFor(p)}
@@ -48,7 +52,7 @@
   function render(){
     if(!state.unlocked){renderLogin();return}
     app.className='app';
-    app.innerHTML = `${topbar()}${hero()}${quickPanel()}${searchPanel()}${inventoryHTML()}${bottomNav()}`;
+    app.innerHTML = `${topbar()}${hero()}${quickPanel()}${searchPanel()}${categoryGallery()}${inventoryHTML()}${bottomNav()}`;
     bindMain();
   }
   function renderLogin(){
@@ -98,7 +102,28 @@
       <div class="alert-card"><div><b>Ganancia</b><span>${money(st.profit)} estimado.</span></div><button class="btn small secondary" data-action="profit">Detalle</button></div>
     </section>`
   }
-  function searchPanel(){return `<section class="search-panel no-print"><div class="searchbar"><span class="icon">⌕</span><input id="searchInput" placeholder="Buscar producto o código" value="${escapeHtml(filter.q)}"></div><div class="chips">${allCategories().map(c=>`<button class="chip ${filter.cat===c?'active':''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div></section>`}
+  function searchPanel(){return `<section class="search-panel no-print"><div class="searchbar"><span class="icon">⌕</span><input id="searchInput" placeholder="Buscar producto, código o categoría" value="${escapeHtml(filter.q)}" autocomplete="off"></div><div class="chips">${allCategories().map(c=>`<button class="chip ${filter.cat===c?'active':''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div></section>`}
+  function categoryGallery(){
+    const cats=allCategories();
+    return `<section class="category-gallery no-print" id="categoriesBlock"><div class="category-head"><div><h2>CATEGORÍAS</h2><p>Toca una categoría y el catálogo se filtra sin brincar la pantalla.</p></div><span>${cats.length-1} categorías</span></div><div class="category-grid">${cats.map(c=>`<button class="category-card ${filter.cat===c?'active':''}" data-catcard="${escapeHtml(c)}"><img src="${escapeHtml(categoryImage(c))}" alt="${escapeHtml(c)}" onerror="this.onerror=null;this.src='assets/categorias/categoria.svg'"><b>${escapeHtml(c)}</b><small>${categoryCount(c)} productos</small></button>`).join('')}</div></section>`
+  }
+  function refreshCategoryUI(){
+    $$('.chip').forEach(x=>x.classList.toggle('active',x.dataset.cat===filter.cat));
+    $$('.category-card').forEach(x=>x.classList.toggle('active',x.dataset.catcard===filter.cat));
+  }
+  function bindProductCards(){
+    document.querySelectorAll('#inventario [data-action]').forEach(btn=>{ if(btn.dataset.bound)return; btn.dataset.bound=1; btn.addEventListener('click',mainAction)});
+  }
+  function renderInventoryOnly(){
+    const inv=$('#inventario'); if(!inv){render();return}
+    const y=window.scrollY;
+    inv.outerHTML=inventoryHTML();
+    bindProductCards();
+    refreshCategoryUI();
+    requestAnimationFrame(()=>window.scrollTo(0,y));
+  }
+  function applyCategory(cat){filter.cat=cat||'Todos'; renderInventoryOnly();}
+
   function filteredProducts(){
     const q=filter.q.trim().toLowerCase();
     return state.products.filter(p=>{
@@ -121,8 +146,9 @@
 
   function bindMain(){
     $('[data-action="lock"]')?.addEventListener('click',()=>{state.unlocked=false;save();render()});
-    $('#searchInput')?.addEventListener('input',e=>{filter.q=e.target.value; render()});
-    $$('.chip').forEach(b=>b.onclick=()=>{filter.cat=b.dataset.cat;render()});
+    $('#searchInput')?.addEventListener('input',e=>{filter.q=e.target.value; renderInventoryOnly()});
+    $$('.chip').forEach(b=>b.onclick=()=>applyCategory(b.dataset.cat));
+    $$('.category-card').forEach(b=>b.onclick=()=>applyCategory(b.dataset.catcard));
     document.querySelectorAll('[data-action]').forEach(btn=>{ if(btn.dataset.bound)return; btn.dataset.bound=1; btn.addEventListener('click',mainAction)});
   }
   function mainAction(e){

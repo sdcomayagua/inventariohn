@@ -1,0 +1,1 @@
+V12: Se eliminaron las dos filas superiores de categorías debajo del buscador. Ahora solo queda la sección grande CATEGORÍAS para filtrar productos. El buscador se mantiene estable para escribir sin que suba la pantalla.

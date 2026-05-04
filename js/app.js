@@ -14,14 +14,43 @@
   function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),2600)}
   function save(){SDCStore.save(state);}
   function escapeHtml(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-  function parseTags(str){return String(str||'General').split(/[;,|]+/).map(x=>x.trim()).filter(x=>x && x.toLowerCase()!=='[object object]')}
-  function firstTag(p){return parseTags(p.categories)[0]||'General'}
-  function allCategories(){return ['Todos',...Array.from(new Set(state.products.flatMap(parseTags).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'es'))]}
+  function parseTags(str){
+    if(Array.isArray(str)) return str.flatMap(parseTags);
+    if(str && typeof str==='object') return parseTags(str.categories || str.category || str.categoria || str.etiquetas || str.tags || '');
+    return String(str||'').split(/[;,|/]+/).map(x=>x.trim()).filter(x=>x && x.toLowerCase()!=='[object object]');
+  }
+  function inferTagsFromProduct(p){
+    const hay=[p?.name,p?.nombre,p?.id,p?.codigo,p?.description,p?.descripcion].join(' ').toLowerCase();
+    const tags=[];
+    const add=(t)=>{if(!tags.some(x=>x.toLowerCase()===t.toLowerCase())) tags.push(t)};
+    if(/dedal/.test(hay)) add('Dedales');
+    if(/gatillo|trigger/.test(hay)) add('Gatillos');
+    if(/enfriador|cooler|radiador/.test(hay)) add('Enfriadores');
+    if(/guante/.test(hay)) add('Guantes');
+    if(/aud[ií]fono|qkz|auricular|audio/.test(hay)) add('Audio');
+    if(/tipo\s*c|usb\s*c/.test(hay)) add('Tipo C');
+    if(/micro\s*sd|microsd|memoria/.test(hay)) add('MicroSD');
+    if(/secador|zapato/.test(hay)) add('Hogar');
+    if(/termo|stanley/.test(hay)) add('Termos');
+    if(/gamer|juego|celular|m[óo]vil|memo/.test(hay)) add('Gamer Móvil');
+    return tags;
+  }
+  function productTags(p){
+    const direct=parseTags(p?.categories || p?.category || p?.categoria || p?.etiquetas || p?.tags);
+    const tags=direct.length?direct:inferTagsFromProduct(p);
+    return tags.length?tags:['General'];
+  }
+  function categoryText(p){return productTags(p).join(', ')}
+  function firstTag(p){return productTags(p)[0]||'General'}
+  function allCategories(){
+    const cats=Array.from(new Set(state.products.flatMap(p=>productTags(p)).filter(Boolean)));
+    return ['Todos',...cats.sort((a,b)=>a.localeCompare(b,'es'))];
+  }
   function catSlug(str){return String(str||'categoria').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'categoria'}
   function categoryImage(cat){const c=String(cat||'General').toLowerCase(); if(c==='todos')return 'assets/categorias/todas.svg'; return `assets/categorias/${catSlug(cat)}.svg`}
-  function categoryCount(cat){if(cat==='Todos')return state.products.length; const t=String(cat).toLowerCase(); return state.products.filter(p=>parseTags(p.categories).some(x=>x.toLowerCase()===t)).length}
+  function categoryCount(cat){if(cat==='Todos')return state.products.length; const t=String(cat).toLowerCase(); return state.products.filter(p=>productTags(p).some(x=>x.toLowerCase()===t)).length}
 
-  function placeholderFor(p){const tags=parseTags(p.categories).join(' ').toLowerCase(); if(tags.includes('gamer')||tags.includes('dedal')||tags.includes('gatillo'))return SDC_PLACEHOLDERS.gamer; if(tags.includes('tec')||tags.includes('celular')||tags.includes('audio')||tags.includes('cable'))return SDC_PLACEHOLDERS.tecnologia; if(tags.includes('hogar')||tags.includes('cocina'))return SDC_PLACEHOLDERS.hogar; return SDC_PLACEHOLDERS.default}
+  function placeholderFor(p){const tags=productTags(p).join(' ').toLowerCase(); if(tags.includes('gamer')||tags.includes('dedal')||tags.includes('gatillo'))return SDC_PLACEHOLDERS.gamer; if(tags.includes('tec')||tags.includes('celular')||tags.includes('audio')||tags.includes('cable'))return SDC_PLACEHOLDERS.tecnologia; if(tags.includes('hogar')||tags.includes('cocina'))return SDC_PLACEHOLDERS.hogar; return SDC_PLACEHOLDERS.default}
   function galleryOf(p){const g=String(p.gallery||'').split(/[\n,]+/).map(x=>x.trim()).filter(Boolean); const list=[p.image,...g].filter(Boolean); return Array.from(new Set(list))}
   function productImage(p){return galleryOf(p)[0] || placeholderFor(p)}
   function onImgError(img,p){img.onerror=null; img.src=placeholderFor(p||{});}
@@ -102,13 +131,15 @@
       <div class="alert-card"><div><b>Ganancia</b><span>${money(st.profit)} estimado.</span></div><button class="btn small secondary" data-action="profit">Detalle</button></div>
     </section>`
   }
-  function searchPanel(){return `<section class="search-panel no-print"><div class="searchbar"><span class="icon">⌕</span><input id="searchInput" placeholder="Buscar producto, código o categoría" value="${escapeHtml(filter.q)}" autocomplete="off"></div><div class="chips">${allCategories().map(c=>`<button class="chip ${filter.cat===c?'active':''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div></section>`}
+  function searchPanel(){
+    return `<section class="search-panel v10-search clean-search no-print" id="searchPanel"><div class="search-title"><b>Buscar producto</b><span>Escribe sin que se suba la pantalla</span></div><div class="searchbar"><span class="icon">⌕</span><input id="searchInput" placeholder="Buscar producto, código o categoría" value="${escapeHtml(filter.q)}" autocomplete="off" inputmode="search"></div></section>`}
   function categoryGallery(){
     const cats=allCategories();
-    return `<section class="category-gallery no-print" id="categoriesBlock"><div class="category-head"><div><h2>CATEGORÍAS</h2><p>Toca una categoría y el catálogo se filtra sin brincar la pantalla.</p></div><span>${cats.length-1} categorías</span></div><div class="category-grid">${cats.map(c=>`<button class="category-card ${filter.cat===c?'active':''}" data-catcard="${escapeHtml(c)}"><img src="${escapeHtml(categoryImage(c))}" alt="${escapeHtml(c)}" onerror="this.onerror=null;this.src='assets/categorias/categoria.svg'"><b>${escapeHtml(c)}</b><small>${categoryCount(c)} productos</small></button>`).join('')}</div></section>`
+    return `<section class="category-gallery no-print" id="categoriesBlock"><div class="category-head"><div><h2>CATEGORÍAS</h2><p>Toca una categoría para filtrar el catálogo sin mover el buscador.</p></div><span>${cats.length-1} categorías</span></div><div class="category-grid">${cats.map(c=>`<button class="category-card ${filter.cat===c?'active':''}" data-catcard="${escapeHtml(c)}"><img src="${escapeHtml(categoryImage(c))}" alt="${escapeHtml(c)}" onerror="this.onerror=null;this.src='assets/categorias/categoria.svg'"><b>${escapeHtml(c)}</b><small>${categoryCount(c)} productos</small></button>`).join('')}</div></section>`
   }
   function refreshCategoryUI(){
     $$('.chip').forEach(x=>x.classList.toggle('active',x.dataset.cat===filter.cat));
+    $$('.cat-mini').forEach(x=>x.classList.toggle('active',x.dataset.minicat===filter.cat));
     $$('.category-card').forEach(x=>x.classList.toggle('active',x.dataset.catcard===filter.cat));
   }
   function bindProductCards(){
@@ -116,26 +147,32 @@
   }
   function renderInventoryOnly(){
     const inv=$('#inventario'); if(!inv){render();return}
-    const y=window.scrollY;
-    inv.outerHTML=inventoryHTML();
+    const list=filteredProducts();
+    const count=inv.querySelector('.count-pill');
+    const content=inv.querySelector('.inventory-content');
+    if(count) count.textContent=`${list.length} resultados`;
+    if(content){
+      content.innerHTML=list.length?`<div class="grid">${list.map(productCard).join('')}</div>`:`<div class="empty-state">No encontré productos con esa búsqueda o etiqueta.</div>`;
+    }else{
+      inv.innerHTML=`<div class="section-head"><h2>INVENTARIO</h2><span class="count-pill">${list.length} resultados</span></div><div class="inventory-content">${list.length?`<div class="grid">${list.map(productCard).join('')}</div>`:`<div class="empty-state">No encontré productos con esa búsqueda o etiqueta.</div>`}</div>`;
+    }
     bindProductCards();
     refreshCategoryUI();
-    requestAnimationFrame(()=>window.scrollTo(0,y));
   }
-  function applyCategory(cat){filter.cat=cat||'Todos'; renderInventoryOnly();}
+  function applyCategory(cat){const y=window.scrollY; filter.cat=cat||'Todos'; renderInventoryOnly(); requestAnimationFrame(()=>window.scrollTo({top:y,left:0,behavior:'auto'}));}
 
   function filteredProducts(){
     const q=filter.q.trim().toLowerCase();
     return state.products.filter(p=>{
-      const tags=parseTags(p.categories);
+      const tags=productTags(p);
       const inCat=filter.cat==='Todos'||tags.some(t=>t.toLowerCase()===filter.cat.toLowerCase());
-      const hay=[p.name,p.id,p.categories,p.description].join(' ').toLowerCase();
+      const hay=[p.name,p.id,categoryText(p),p.description,p.category,p.categoria,p.etiquetas].join(' ').toLowerCase();
       return inCat && (!q || hay.includes(q));
     })
   }
-  function inventoryHTML(){const list=filteredProducts(); return `<section id="inventario"><div class="section-head"><h2>INVENTARIO</h2><span class="count-pill">${list.length} resultados</span></div>${list.length?`<div class="grid">${list.map(productCard).join('')}</div>`:`<div class="empty-state">No encontré productos con esa búsqueda o etiqueta.</div>`}</section>`}
+  function inventoryHTML(){const list=filteredProducts(); return `<section id="inventario"><div class="section-head"><h2>INVENTARIO</h2><span class="count-pill">${list.length} resultados</span></div><div class="inventory-content">${list.length?`<div class="grid">${list.map(productCard).join('')}</div>`:`<div class="empty-state">No encontré productos con esa búsqueda o etiqueta.</div>`}</div></section>`}
   function productCard(p){
-    const tags=parseTags(p.categories); const low=Number(p.stock)>0&&Number(p.stock)<=Number(state.settings.lowStockLimit||3); const sold=Number(p.stock)<=0;
+    const tags=productTags(p); const low=Number(p.stock)>0&&Number(p.stock)<=Number(state.settings.lowStockLimit||3); const sold=Number(p.stock)<=0;
     const percent=Math.max(5,Math.min(100,(Number(p.stock)||0)/20*100));
     return `<article class="product-card" data-id="${escapeHtml(p.id)}"><div class="product-top"><div class="tag-stack"><span class="tag-pill">${escapeHtml(tags[0]||'General')}</span>${tags.length>1?`<span class="tag-pill">+${tags.length-1}</span>`:''}</div><span class="code-pill">${escapeHtml(p.id)}</span></div>
       <div class="product-media"><img src="${escapeHtml(productImage(p))}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><span class="stock-badge ${low?'low':''}"><span class="dot" style="background:#031018;box-shadow:none"></span>${sold?'Agotado':low?'Bajo stock':'Disponible'}</span><b class="price-badge">${money(p.price)}</b></div>
@@ -146,8 +183,16 @@
 
   function bindMain(){
     $('[data-action="lock"]')?.addEventListener('click',()=>{state.unlocked=false;save();render()});
-    $('#searchInput')?.addEventListener('input',e=>{filter.q=e.target.value; renderInventoryOnly()});
+    const search=$('#searchInput');
+    if(search){
+      let raf=0;
+      const run=()=>{raf=0; const y=window.scrollY; renderInventoryOnly(); requestAnimationFrame(()=>{ if(document.activeElement===search){ search.focus({preventScroll:true}); window.scrollTo({top:y,left:0,behavior:'auto'}); } });};
+      search.addEventListener('focus',()=>document.body.classList.add('search-active'));
+      search.addEventListener('blur',()=>setTimeout(()=>document.body.classList.remove('search-active'),160));
+      search.addEventListener('input',e=>{filter.q=e.target.value; if(!raf) raf=requestAnimationFrame(run);});
+    }
     $$('.chip').forEach(b=>b.onclick=()=>applyCategory(b.dataset.cat));
+    $$('.cat-mini').forEach(b=>b.onclick=()=>applyCategory(b.dataset.minicat));
     $$('.category-card').forEach(b=>b.onclick=()=>applyCategory(b.dataset.catcard));
     document.querySelectorAll('[data-action]').forEach(btn=>{ if(btn.dataset.bound)return; btn.dataset.bound=1; btn.addEventListener('click',mainAction)});
   }
@@ -288,7 +333,7 @@
     $$('.bindDoc',modalRoot).forEach(el=>el.oninput=el.onchange=()=>{let v=el.value; if(el.dataset.k==='shipping'||el.dataset.k==='discount')v=+v||0; doc[el.dataset.k]=v; if(el.dataset.k==='department')fillMun(); if(el.dataset.k==='shippingType')applyShippingType(true); refreshQuoteUI(isSale);});
   }
 
-  function renderPicker(isSale){ const list=$('#pickerList',modalRoot); let q='',cat='Todos'; function draw(){const term=q.toLowerCase(); const items=state.products.filter(p=>(cat==='Todos'||parseTags(p.categories).some(t=>t.toLowerCase()===cat.toLowerCase())) && (!term||[p.name,p.id,p.categories].join(' ').toLowerCase().includes(term))); list.innerHTML=items.map(p=>`<div class="picker-item"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><div><b>${escapeHtml(p.name)}</b><span>${money(p.price)} · Stock ${num(p.stock)} · ${escapeHtml(firstTag(p))}</span></div><button class="btn small" data-additem="${escapeHtml(p.id)}">Agregar</button></div>`).join('')||'<div class="empty-state">Sin productos.</div>'; $$('[data-additem]',list).forEach(b=>b.onclick=()=>addDocItem(b.dataset.additem,isSale)); }
+  function renderPicker(isSale){ const list=$('#pickerList',modalRoot); let q='',cat='Todos'; function draw(){const term=q.toLowerCase(); const items=state.products.filter(p=>(cat==='Todos'||productTags(p).some(t=>t.toLowerCase()===cat.toLowerCase())) && (!term||[p.name,p.id,categoryText(p),p.category,p.categoria,p.etiquetas].join(' ').toLowerCase().includes(term))); list.innerHTML=items.map(p=>`<div class="picker-item"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><div><b>${escapeHtml(p.name)}</b><span>${money(p.price)} · Stock ${num(p.stock)} · ${escapeHtml(firstTag(p))}</span></div><button class="btn small" data-additem="${escapeHtml(p.id)}">Agregar</button></div>`).join('')||'<div class="empty-state">Sin productos.</div>'; $$('[data-additem]',list).forEach(b=>b.onclick=()=>addDocItem(b.dataset.additem,isSale)); }
     $('#pickSearch',modalRoot).oninput=e=>{q=e.target.value;draw()}; $$('[data-pickcat]',modalRoot).forEach(b=>b.onclick=()=>{cat=b.dataset.pickcat;$$('[data-pickcat]',modalRoot).forEach(x=>x.classList.toggle('active',x===b));draw()}); draw(); }
   function addDocItem(id,isSale){ const p=productById(id); if(!p)return; const doc=isSale?saleDraft:quote; const found=doc.items.find(x=>x.id===id); if(found)found.qty++; else doc.items.push({id:p.id,name:p.name,price:+p.price||0,cost:+p.cost||0,qty:1,image:productImage(p)}); refreshQuoteUI(isSale); toast('Producto agregado.'); }
   function refreshQuoteUI(isSale){ const doc=isSale?saleDraft:quote; $('#cartList',modalRoot).innerHTML=doc.items.length?doc.items.map((it,i)=>`<div class="cart-row"><div><b>${escapeHtml(it.name)}</b><br><span>${money(it.price)} c/u</span></div><div class="qtybox"><button data-dec="${i}">−</button><input data-qty="${i}" type="number" value="${it.qty}"><button data-inc="${i}">+</button></div><button class="btn small danger" data-rem="${i}">×</button></div>`).join(''):'<div class="empty-state">Agrega productos para calcular.</div>'; const c=calc(doc); $('#totalsMini',modalRoot).innerHTML=`<div class="summary"><div class="summary-row"><b>Productos</b><b>${money(c.products)}</b></div><div class="summary-row"><b>Envío</b><b>${money(c.shipping)}</b></div><div class="summary-row"><b>Comisión</b><b>${money(c.commission)}</b></div><div class="summary-total"><b>Total</b><b>${money(c.total)}</b></div></div>`; $('#docPreview',modalRoot).innerHTML=docCard(doc,isSale); $$('[data-inc]',modalRoot).forEach(b=>b.onclick=()=>{doc.items[+b.dataset.inc].qty++;refreshQuoteUI(isSale)}); $$('[data-dec]',modalRoot).forEach(b=>b.onclick=()=>{const it=doc.items[+b.dataset.dec]; it.qty=Math.max(1,it.qty-1);refreshQuoteUI(isSale)}); $$('[data-rem]',modalRoot).forEach(b=>b.onclick=()=>{doc.items.splice(+b.dataset.rem,1);refreshQuoteUI(isSale)}); $$('[data-qty]',modalRoot).forEach(inp=>inp.oninput=()=>{doc.items[+inp.dataset.qty].qty=Math.max(1,+inp.value||1);refreshQuoteUI(isSale)}); }

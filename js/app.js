@@ -27,8 +27,21 @@
   function emptySale(){return {...emptyQuote(), id:'SDC-'+Date.now().toString().slice(-10), kind:'receipt'}}
   function itemTotal(it){return Number(it.qty||0)*Number(it.price||0)}
   function calc(doc){const products=(doc.items||[]).reduce((a,it)=>a+itemTotal(it),0); const shipping=Number(doc.shipping||0); const discount=Number(doc.discount||0); const base=Math.max(0,products+shipping); const commission=doc.cod?Math.round(base*((state.settings.codPercent||6)/100)):0; const delivery=shipping+commission; const total=Math.max(0,products+delivery-discount); return {products,shipping,commission,delivery,discount,total}}
-  function productNormalTotal(p){return Number(p.price||0)+110}
-  function productCodTotal(p){const base=Number(p.price||0)+100; return Math.round(base*(1+((state.settings.codPercent||6)/100)))}
+  function promoTotalForQty(p,qty){
+    qty=Math.max(1,Number(qty)||1);
+    const rows=parsePromoRows(p.promos).map(r=>({qty:Number(r.qty)||0,price:Number(r.price)||0})).filter(r=>r.qty>0&&r.price>0);
+    const exact=rows.find(r=>r.qty===qty);
+    return exact?exact.price:null;
+  }
+  function productItemsTotal(p,qty=1){
+    qty=Math.max(1,Number(qty)||1);
+    const promo=promoTotalForQty(p,qty);
+    return promo!==null?promo:qty*Number(p.price||0);
+  }
+  function productNormalTotalQty(p,qty=1){return productItemsTotal(p,qty)+110}
+  function productCodTotalQty(p,qty=1){const base=productItemsTotal(p,qty)+100; return Math.round(base*(1+((state.settings.codPercent||6)/100)))}
+  function productNormalTotal(p){return productNormalTotalQty(p,1)}
+  function productCodTotal(p){return productCodTotalQty(p,1)}
   function setView(v){currentView=v; render(); window.scrollTo({top:0,behavior:'smooth'});}
   function syncLocal(){state=SDCStore.load(); state.unlocked=true; save(); render(); toast('Sincronizado con los datos guardados en este dispositivo.');}
 
@@ -187,16 +200,36 @@
   function openProductDetails(id){
     const p=productById(id); if(!p)return; const imgs=galleryOf(p); const safeImgs=imgs.length?imgs:[productImage(p)];
     const promos=String(p.promos||'').trim();
-    openModal(`<div class="modal-head"><h3>Producto</h3><button class="close">×</button></div><div class="modal-body"><div class="product-share-card" id="productShareCard"><div class="product-share-media"><img id="detailMainImage" src="${escapeHtml(safeImgs[0])}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><b class="price-badge">${money(p.price)}</b></div><h2>${escapeHtml(p.name)}</h2><p>${escapeHtml(p.description||'Sin descripción registrada.')}</p><div class="public-metrics"><div><span>Precio producto</span><b>${money(p.price)}</b></div><div><span>Envío normal</span><b>${money(productNormalTotal(p))}</b></div><div><span>Pagar al recibir +6%</span><b>${money(productCodTotal(p))}</b></div></div>${promos?`<div class="promo-public"><span>Promociones por cantidad</span><pre>${escapeHtml(promos)}</pre></div>`:''}<div class="share-footer">SD COMAYAGUA · WhatsApp +504 3151-7755</div></div><div class="thumb-row">${safeImgs.map((img,i)=>`<button class="thumb ${i===0?'active':''}" data-product-img="${escapeHtml(img)}"><img src="${escapeHtml(img)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"></button>`).join('')}</div><div class="modal-actions product-actions product-actions-grid no-print"><button class="btn secondary prod-action" id="downloadProductPhoto"><span class="ico">▣</span><b>Imagen</b><small>Descargar</small></button><button class="btn prod-action" id="shareProductPhoto"><span class="ico">↗</span><b>Foto</b><small>Compartir</small></button><button class="btn secondary prod-action" id="waProductText"><span class="ico">✎</span><b>Texto</b><small>WhatsApp</small></button><button class="btn prod-action" data-action="sellProduct" data-id="${escapeHtml(id)}"><span class="ico">🛒</span><b>Vender</b><small>Venta real</small></button><button class="btn secondary prod-action" data-action="quoteProduct" data-id="${escapeHtml(id)}"><span class="ico">🧾</span><b>Cotizar</b><small>Precio total</small></button><button class="btn ghost prod-action" data-action="editProduct" data-id="${escapeHtml(id)}"><span class="ico">✦</span><b>Editar</b><small>Producto</small></button></div></div>`);
+    let shareQty=1;
+    const unitsLabel=()=>`${num(shareQty)} ${shareQty===1?'unidad':'unidades'}`;
+    const promoUsed=()=>promoTotalForQty(p,shareQty)!==null;
+    function cardHTML(){
+      return `<div class="product-share-card" id="productShareCard"><div class="product-share-media"><img id="detailMainImage" src="${escapeHtml(safeImgs[0])}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><b class="price-badge">${money(p.price)}</b></div><h2>${escapeHtml(p.name)}</h2><p>${escapeHtml(p.description||'Producto disponible para entrega.')}</p><div class="share-qty-line"><span>Cantidad consultada</span><b id="shareQtyText">${unitsLabel()} · ${money(p.price)} c/u${promoUsed()?' · promo aplicada':''}</b></div><div class="public-metrics"><div><span>Solo producto</span><b id="metricProduct">${money(productItemsTotal(p,shareQty))}</b></div><div><span>Con envío normal</span><b id="metricNormal">${money(productNormalTotalQty(p,shareQty))}</b></div><div><span>Pagar al recibir +6%</span><b id="metricCod">${money(productCodTotalQty(p,shareQty))}</b></div></div>${promos?`<div class="promo-public"><span>Promociones por cantidad</span><pre>${escapeHtml(promos)}</pre></div>`:''}<div class="share-note">Si el cliente ya tiene otro producto en el pedido, usa “Solo producto” para no duplicar el envío.</div><div class="share-footer">SD COMAYAGUA · WhatsApp +504 3151-7755</div></div>`
+    }
+    openModal(`<div class="modal-head"><h3>Producto</h3><button class="close">×</button></div><div class="modal-body"><div id="shareCardMount">${cardHTML()}</div><div class="client-quote-panel no-print"><div><b>Precio rápido para cliente</b><span>Cambia la cantidad antes de descargar, compartir o enviar por WhatsApp.</span></div><div class="qty-presets"><button data-setqty="1">1</button><button data-setqty="2">2</button><button data-setqty="3">3</button><button data-setqty="5">5</button><button data-setqty="10">10</button><button data-setqty="12">12</button></div><div class="qty-control"><button id="detailQtyMinus">−</button><input id="detailQtyInput" type="number" min="1" value="1" inputmode="numeric"><button id="detailQtyPlus">+</button></div></div><div class="thumb-row">${safeImgs.map((img,i)=>`<button class="thumb ${i===0?'active':''}" data-product-img="${escapeHtml(img)}"><img src="${escapeHtml(img)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"></button>`).join('')}</div><div class="modal-actions product-actions product-actions-grid no-print"><button class="btn secondary prod-action" id="downloadProductPhoto"><span class="ico">▣</span><b>Imagen</b><small>Descargar</small></button><button class="btn prod-action" id="shareProductPhoto"><span class="ico">↗</span><b>Foto</b><small>Compartir</small></button><button class="btn secondary prod-action" id="waProductText"><span class="ico">✎</span><b>Texto</b><small>WhatsApp</small></button><button class="btn prod-action" data-action="sellProduct" data-id="${escapeHtml(id)}"><span class="ico">🛒</span><b>Vender</b><small>Venta real</small></button><button class="btn secondary prod-action" data-action="quoteProduct" data-id="${escapeHtml(id)}"><span class="ico">🧾</span><b>Cotizar</b><small>Precio total</small></button><button class="btn ghost prod-action" data-action="editProduct" data-id="${escapeHtml(id)}"><span class="ico">✦</span><b>Editar</b><small>Producto</small></button></div></div>`);
+    function refreshShareCard(){
+      const currentImg=$('#detailMainImage',modalRoot)?.src || safeImgs[0];
+      $('#shareCardMount',modalRoot).innerHTML=cardHTML();
+      const img=$('#detailMainImage',modalRoot); if(img) img.src=currentImg;
+      const input=$('#detailQtyInput',modalRoot); if(input) input.value=shareQty;
+    }
+    function setQty(v){shareQty=Math.max(1,Math.min(999,Number(v)||1)); refreshShareCard();}
+    $$('[data-setqty]',modalRoot).forEach(b=>b.onclick=()=>setQty(b.dataset.setqty));
+    $('#detailQtyMinus').onclick=()=>setQty(shareQty-1);
+    $('#detailQtyPlus').onclick=()=>setQty(shareQty+1);
+    $('#detailQtyInput').oninput=e=>setQty(e.target.value);
     $$('[data-product-img]',modalRoot).forEach(b=>b.onclick=()=>{ $('#detailMainImage',modalRoot).src=b.dataset.productImg; $$('[data-product-img]',modalRoot).forEach(x=>x.classList.toggle('active',x===b)); });
     $('#downloadProductPhoto').onclick=()=>downloadProductPhoto(p);
-    $('#shareProductPhoto').onclick=()=>shareProductPhoto(p);
-    $('#waProductText').onclick=()=>sendProductWhatsApp(p);
+    $('#shareProductPhoto').onclick=()=>shareProductPhoto(p,shareQty);
+    $('#waProductText').onclick=()=>sendProductWhatsApp(p,shareQty);
     $$('[data-action]',modalRoot).forEach(b=>b.onclick=()=>{closeModal();mainAction({currentTarget:b})});
   }
-  function productWhatsAppText(p){
+  function productWhatsAppText(p,qty=1){
+    qty=Math.max(1,Number(qty)||1);
     const promos=String(p.promos||'').trim();
-    return `🛍️ *PRODUCTO DISPONIBLE - SD COMAYAGUA*\n\n📌 *${p.name}*\n💰 *Precio del producto:* ${money(p.price)}\n🚚 *Con Envío Normal:* ${money(productNormalTotal(p))}\n📦 *Pagar al Recibir:* ${money(productCodTotal(p))}\n\n${p.description||'Producto disponible para entrega.'}${promos?`\n\n🎁 *Promociones por cantidad:*\n${promos}`:''}\n\nNota: Pagar al Recibir incluye Lps. 100 de envío + 6% de comisión.\nWhatsApp SD COMAYAGUA: +504 3151-7755`;
+    const productTotal=productItemsTotal(p,qty);
+    const promoNote=promoTotalForQty(p,qty)!==null?'\n🎁 *Promoción aplicada por cantidad.*':'';
+    return `🛍️ *PRODUCTO DISPONIBLE - SD COMAYAGUA*\n\n📌 *${p.name}*\n🔢 *Cantidad consultada:* ${num(qty)} ${qty===1?'unidad':'unidades'}\n💰 *Solo producto:* ${money(productTotal)}${qty>1?` (${money(p.price)} c/u)`:''}${promoNote}\n🚚 *Con Envío Normal:* ${money(productNormalTotalQty(p,qty))}\n📦 *Pagar al Recibir:* ${money(productCodTotalQty(p,qty))}\n\n${p.description||'Producto disponible para entrega.'}${promos?`\n\n🎁 *Promociones por cantidad:*\n${promos}`:''}\n\n✅ Si ya lleva otros productos, se toma “Solo producto” y se calcula un solo envío al final.\nNota: Envío Normal suma Lps. 110. Pagar al Recibir suma Lps. 100 + 6% de comisión.\n\nWhatsApp SD COMAYAGUA: +504 3151-7755`;
   }
   function askClientPhone(initial=''){
     const typed=prompt('Número WhatsApp del cliente. Déjalo vacío para elegir el chat manualmente en WhatsApp:', initial||'');
@@ -209,8 +242,8 @@
     return new Promise(res=>canvas.toBlob(res,'image/png',.98));
   }
   async function downloadProductPhoto(p){const blob=await productCardToBlob(); if(!blob)return; const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`producto-${String(p.name||'sd-comayagua').toLowerCase().replace(/[^a-z0-9]+/g,'-')}.png`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Imagen del producto descargada.');}
-  async function shareProductPhoto(p){const blob=await productCardToBlob(); const text=productWhatsAppText(p); if(blob && navigator.canShare){const file=new File([blob],`producto-${p.id||'sdc'}.png`,{type:'image/png'}); if(navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text}); return}catch(e){}}} if(blob) await downloadProductPhoto(p); toast('Se descargó la imagen para compartir.');}
-  function sendProductWhatsApp(p){const phone=askClientPhone(); if(phone===null)return; window.open(waUrl(phone,productWhatsAppText(p)),'_blank');}
+  async function shareProductPhoto(p,qty=1){const blob=await productCardToBlob(); const text=productWhatsAppText(p,qty); if(blob && navigator.canShare){const file=new File([blob],`producto-${p.id||'sdc'}.png`,{type:'image/png'}); if(navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text}); return}catch(e){}}} if(blob) await downloadProductPhoto(p); toast('Se descargó la imagen para compartir.');}
+  function sendProductWhatsApp(p,qty=1){const phone=askClientPhone(); if(phone===null)return; window.open(waUrl(phone,productWhatsAppText(p,qty)),'_blank');}
 
   function quoteModalHTML(isSale=false){
     const doc=isSale?saleDraft:quote; const title=isSale?'Venta / factura real':'Cotización previa';

@@ -4,22 +4,27 @@
   function safeJSON(raw,fallback){try{return JSON.parse(raw)}catch(e){return fallback}}
   function uid(prefix='SDC'){return `${prefix}-${Date.now().toString().slice(-7)}${Math.floor(Math.random()*90+10)}`}
   function clone(x){return JSON.parse(JSON.stringify(x))}
+  function textField(v,fallback=''){
+    if(Array.isArray(v)) return v.map(x=>String(x||'').trim()).filter(Boolean).join(', ') || fallback;
+    if(v && typeof v==='object') return Object.values(v).map(x=>String(x||'').trim()).filter(Boolean).join(', ') || fallback;
+    return String(v ?? fallback);
+  }
   function defaultState(){return {version:90,unlocked:false,products:clone(window.SDC_DEFAULT_PRODUCTS||[]),sales:[],quotes:[],lastReceipt:null,lastQuote:null,settings:clone(window.SDC_CONFIG||{})}}
   function normalizeProduct(p,i=0){
     const categories = p.categories || p.category || p.categoria || p.etiquetas || 'General';
     const image = p.image || p.imagen || p.foto || (Array.isArray(p.images)&&p.images[0]) || '';
     const gallery = p.gallery || p.galeria || p.images || '';
     return {
-      id:String(p.id||p.codigo||`SDC-${String(i+1).padStart(3,'0')}`),
-      name:String(p.name||p.nombre||'Producto sin nombre'),
-      categories:String(categories||'General'),
+      id:textField(p.id||p.codigo||`SDC-${String(i+1).padStart(3,'0')}`),
+      name:textField(p.name||p.nombre||'Producto sin nombre','Producto sin nombre'),
+      categories:textField(categories,'General').replace(/^\[object Object\]$/i,'General'),
       price:Number(p.price??p.precio??p.precio_venta??0)||0,
       cost:Number(p.cost??p.costo??p.costo_compra??0)||0,
       stock:Number(p.stock??p.existencia??0)||0,
-      image:String(image||''),
-      gallery:Array.isArray(gallery)?gallery.join('\n'):String(gallery||''),
-      description:String(p.description||p.descripcion||''),
-      promos:String(p.promos||p.promociones||p.preciosCantidad||'')
+      image:textField(image,''),
+      gallery:Array.isArray(gallery)?gallery.map(x=>textField(x,'')).filter(Boolean).join('\n'):textField(gallery,''),
+      description:textField(p.description||p.descripcion||''),
+      promos:textField(p.promos||p.promociones||p.preciosCantidad||'')
     }
   }
   function normalizeState(s){

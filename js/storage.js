@@ -9,7 +9,7 @@
     if(v && typeof v==='object') return Object.values(v).map(x=>String(x||'').trim()).filter(Boolean).join(', ') || fallback;
     return String(v ?? fallback);
   }
-  function defaultState(){return {version:90,unlocked:false,products:clone(window.SDC_DEFAULT_PRODUCTS||[]),sales:[],quotes:[],lastReceipt:null,lastQuote:null,settings:clone(window.SDC_CONFIG||{})}}
+  function defaultState(){return {version:92,unlocked:false,products:clone(window.SDC_DEFAULT_PRODUCTS||[]),sales:[],quotes:[],clients:[],closings:[],expenses:[],lastReceipt:null,lastQuote:null,settings:clone(window.SDC_CONFIG||{})}}
   function normalizeProduct(p,i=0){
     const categories = p.categories || p.category || p.categoria || p.etiquetas || 'General';
     const image = p.image || p.imagen || p.imagenes || p.foto || p.fotos || (Array.isArray(p.images)&&p.images[0]) || '';
@@ -33,6 +33,9 @@
     out.products = (out.products||[]).map(normalizeProduct);
     out.sales = Array.isArray(out.sales)?out.sales:[];
     out.quotes = Array.isArray(out.quotes)?out.quotes:[];
+    out.clients = Array.isArray(out.clients)?out.clients:[];
+    out.closings = Array.isArray(out.closings)?out.closings:[];
+    out.expenses = Array.isArray(out.expenses)?out.expenses:[];
     out.settings = Object.assign({}, window.SDC_CONFIG||{}, out.settings||{});
     return out;
   }

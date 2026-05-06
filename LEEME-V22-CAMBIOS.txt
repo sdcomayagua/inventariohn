@@ -1,0 +1,21 @@
+SD COMAYAGUA - V22 MOBILE VENTAS
+
+Base: V21. Se mantuvo el estilo, las fuentes originales y el uso pensado para celular.
+
+CAMBIOS PRINCIPALES:
+1. Botón CLIENTES: agenda automática de clientes guardados.
+2. Cotizaciones guardadas con estado: Cotizado, Esperando respuesta, Cliente interesado, Pendiente de pago, Vendido o Cancelado.
+3. Botón Recordar en cotizaciones: envía un mensaje de seguimiento por WhatsApp.
+4. Botón Enviar completa: comparte la cotización con imagen + texto cuando el navegador/Android lo permite.
+5. Respaldo único: una sola opción clara para exportar todo el sistema.
+6. Cierre del día: resumen de ventas, productos, envío/comisión, total vendido y ganancia estimada.
+7. Textos para vender: genera texto para Facebook Marketplace, Instagram y WhatsApp Catálogo.
+8. Alerta de ganancia baja: marca productos con margen menor a Lps. 10 por unidad.
+9. Control de stock más seguro al finalizar venta: evita vender más de lo disponible.
+10. Caja mejorada con vendido hoy, ganancia hoy, cantidad de ventas y pendiente.
+11. Botones de cotización más compactos para no desperdiciar espacio en celular.
+12. Modo Pro Gamer más diferenciado visualmente, sin cambiar las letras.
+
+NOTAS:
+- El botón FOTO + TEXTO usa el menú de compartir del teléfono. En Android/Chrome debe seleccionar WhatsApp para mandar imagen y texto juntos. Si el navegador no permite compartir archivos, descarga la imagen y abre WhatsApp con el texto.
+- Las cotizaciones y clientes se guardan localmente en el dispositivo/navegador. Use Respaldo completo para no perder datos.

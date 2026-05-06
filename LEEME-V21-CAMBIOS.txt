@@ -1,0 +1,27 @@
+SD COMAYAGUA - V21 CORRECCIÓN MOBILE
+
+Cambios aplicados:
+
+1. Vista Cliente del catálogo
+- La cantidad consultada ahora actualiza los totales al escribir, no solo al salir del campo.
+- Cambié los textos de las tarjetas para que el cliente entienda mejor: Total producto, Envío normal y Al recibir + 6%.
+- Quité el texto interno que decía que se ocultaban costos y ganancias, porque eso no era para el cliente.
+
+2. Cotización / factura para cliente
+- Rehice la tabla de productos para evitar que la columna de producto se aplaste o salga vertical.
+- Quité la imagen pequeña dentro de la tabla porque estaba dañando el diseño en celular.
+- Dejé el resumen de total más compacto y más limpio para que la imagen salga mejor en una sola página.
+
+3. Botón FOTO + TEXTO
+- El botón ahora intenta usar el compartidor del celular para mandar la foto y el texto juntos.
+- En Android/Chrome debe abrir el menú de compartir: selecciona WhatsApp y luego el chat del cliente.
+- Si el navegador no permite compartir archivo + texto, descarga la imagen y abre WhatsApp con el texto como respaldo.
+
+4. Botones de acciones rápidas
+- Compacté los botones para que no ocupen tanto espacio.
+- Cambié FOTO WHATSAPP por FOTO + TEXTO / COMPARTIR para que quede más claro.
+
+5. Estilos
+- Ajusté Modo Gamer normal para que se vea más limpio y con verde/cian.
+- Ajusté Pro Gamer para que sea más diferente, con cian, violeta y efecto más neón.
+- Se mantienen las fuentes originales: Chakra Petch para títulos/botones y Barlow para texto.

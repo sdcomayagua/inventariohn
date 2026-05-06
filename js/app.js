@@ -1,0 +1,646 @@
+(function(){
+  const $ = (s,root=document)=>root.querySelector(s);
+  const $$ = (s,root=document)=>Array.from(root.querySelectorAll(s));
+  let state = SDCStore.load();
+  const app = $('#app'), modalRoot = $('#modalRoot'), toastEl = $('#toast');
+  let currentView = 'catalog';
+  let filter = {q:'',cat:'Todos'};
+  let quote = emptyQuote();
+  let saleDraft = null;
+
+  function money(n){return `${state.settings.currency||'Lps.'} ${Number(n||0).toLocaleString('es-HN',{maximumFractionDigits:0})}`}
+  function num(n){return Number(n||0).toLocaleString('es-HN',{maximumFractionDigits:0})}
+  function cleanPhone(p){return String(p||'').replace(/\D/g,'').replace(/^5040?/,'504')}
+  function isMobileDevice(){return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'')}
+  function pad2(n){return String(n).padStart(2,'0')}
+  function fileStamp(){const d=new Date(); return `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}-${pad2(d.getHours())}${pad2(d.getMinutes())}`}
+  function slugFile(s,fallback='sd-comayagua'){return String(s||fallback).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,48)||fallback}
+  function clientLabel(doc){const phone=cleanPhone(doc?.phone||'').slice(-8); const client=String(doc?.client||'').trim(); return slugFile(phone||client||doc?.id||'cliente')}
+  function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),2600)}
+  function save(){SDCStore.save(state);}
+  function escapeHtml(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+  function parseTags(str){
+    if(Array.isArray(str)) return str.flatMap(parseTags);
+    if(str && typeof str==='object') return parseTags(str.categories || str.category || str.categoria || str.etiquetas || str.tags || '');
+    return String(str||'').split(/[;,|/]+/).map(x=>x.trim()).filter(x=>x && x.toLowerCase()!=='[object object]');
+  }
+  function inferTagsFromProduct(p){
+    const hay=[p?.name,p?.nombre,p?.id,p?.codigo,p?.description,p?.descripcion].join(' ').toLowerCase();
+    const tags=[];
+    const add=(t)=>{if(!tags.some(x=>x.toLowerCase()===t.toLowerCase())) tags.push(t)};
+    if(/dedal/.test(hay)) add('Dedales');
+    if(/gatillo|trigger/.test(hay)) add('Gatillos');
+    if(/enfriador|cooler|radiador/.test(hay)) add('Enfriadores');
+    if(/guante/.test(hay)) add('Guantes');
+    if(/aud[ií]fono|qkz|auricular|audio/.test(hay)) add('Audio');
+    if(/tipo\s*c|usb\s*c/.test(hay)) add('Tipo C');
+    if(/micro\s*sd|microsd|memoria/.test(hay)) add('MicroSD');
+    if(/secador|zapato/.test(hay)) add('Hogar');
+    if(/termo|stanley/.test(hay)) add('Termos');
+    if(/gamer|juego|celular|m[óo]vil|memo/.test(hay)) add('Gamer Móvil');
+    return tags;
+  }
+  function productTags(p){
+    const direct=parseTags(p?.categories || p?.category || p?.categoria || p?.etiquetas || p?.tags);
+    const tags=direct.length?direct:inferTagsFromProduct(p);
+    return tags.length?tags:['General'];
+  }
+  function categoryText(p){return productTags(p).join(', ')}
+  function firstTag(p){return productTags(p)[0]||'General'}
+  function allCategories(){
+    const cats=Array.from(new Set(state.products.flatMap(p=>productTags(p)).filter(Boolean)));
+    return ['Todos',...cats.sort((a,b)=>a.localeCompare(b,'es'))];
+  }
+  function catSlug(str){return String(str||'categoria').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'categoria'}
+  function categoryImage(cat){const c=String(cat||'General').toLowerCase(); if(c==='todos')return 'assets/categorias/todas.svg'; return `assets/categorias/${catSlug(cat)}.svg`}
+  function categoryCount(cat){if(cat==='Todos')return state.products.length; const t=String(cat).toLowerCase(); return state.products.filter(p=>productTags(p).some(x=>x.toLowerCase()===t)).length}
+
+  function placeholderFor(p){const tags=productTags(p).join(' ').toLowerCase(); if(tags.includes('gamer')||tags.includes('dedal')||tags.includes('gatillo'))return SDC_PLACEHOLDERS.gamer; if(tags.includes('tec')||tags.includes('celular')||tags.includes('audio')||tags.includes('cable'))return SDC_PLACEHOLDERS.tecnologia; if(tags.includes('hogar')||tags.includes('cocina'))return SDC_PLACEHOLDERS.hogar; return SDC_PLACEHOLDERS.default}
+  function galleryOf(p){const g=String(p.gallery||'').split(/[\n,]+/).map(x=>x.trim()).filter(Boolean); const list=[p.image,...g].filter(Boolean); return Array.from(new Set(list))}
+  function productImage(p){return galleryOf(p)[0] || placeholderFor(p)}
+  function onImgError(img,p){img.onerror=null; img.src=placeholderFor(p||{});}
+  function productById(id){return state.products.find(p=>p.id===id)}
+  function nextCode(){let max=0; state.products.forEach(p=>{const m=String(p.id).match(/(\d+)$/); if(m) max=Math.max(max,Number(m[1]))}); return `SDC-${String(max+1).padStart(3,'0')}`}
+  function emptyQuote(){return {id:'COT-'+Date.now(),items:[],client:'',phone:'',department:'Comayagua',municipality:'Comayagua',reference:'',shippingType:'Normal',company:'Forza',shipping:110,cod:false,discount:0,date:new Date().toISOString(),saved:false}}
+  function emptySale(){return {...emptyQuote(), id:'SDC-'+Date.now().toString().slice(-10), kind:'receipt'}}
+  function itemTotal(it){return Number(it.qty||0)*Number(it.price||0)}
+  function calc(doc){const products=(doc.items||[]).reduce((a,it)=>a+itemTotal(it),0); const shipping=Number(doc.shipping||0); const discount=Number(doc.discount||0); const base=Math.max(0,products+shipping); const commission=doc.cod?Math.round(base*((state.settings.codPercent||6)/100)):0; const delivery=shipping+commission; const total=Math.max(0,products+delivery-discount); return {products,shipping,commission,delivery,discount,total}}
+  function promoTotalForQty(p,qty){
+    qty=Math.max(1,Number(qty)||1);
+    const rows=parsePromoRows(p.promos).map(r=>({qty:Number(r.qty)||0,price:Number(r.price)||0})).filter(r=>r.qty>0&&r.price>0);
+    const exact=rows.find(r=>r.qty===qty);
+    return exact?exact.price:null;
+  }
+  function productItemsTotal(p,qty=1){
+    qty=Math.max(1,Number(qty)||1);
+    const promo=promoTotalForQty(p,qty);
+    return promo!==null?promo:qty*Number(p.price||0);
+  }
+  function productNormalTotalQty(p,qty=1){return productItemsTotal(p,qty)+110}
+  function productCodTotalQty(p,qty=1){const base=productItemsTotal(p,qty)+100; return Math.round(base*(1+((state.settings.codPercent||6)/100)))}
+  function productNormalTotal(p){return productNormalTotalQty(p,1)}
+  function productCodTotal(p){return productCodTotalQty(p,1)}
+  function setView(v){currentView=v; render(); window.scrollTo({top:0,behavior:'smooth'});}
+  function syncLocal(){state=SDCStore.load(); state.unlocked=true; save(); applyAppearance(); render(); toast('Sincronizado con los datos guardados en este dispositivo.');}
+  function currentAppearance(){return ['turbo','pro-gamer','pro'].includes(state.settings.appearance)?'turbo':'gamer'}
+  function applyAppearance(){const mode=currentAppearance(); document.body.classList.toggle('pro-mode',false); document.body.classList.toggle('turbo-mode',mode==='turbo'); document.body.classList.toggle('gamer-mode',mode==='gamer');}
+  function toggleAppearance(){state.settings.appearance=currentAppearance()==='gamer'?'turbo':'gamer'; save(); applyAppearance(); render(); toast(currentAppearance()==='turbo'?'Pro Gamer activado.':'Gamer normal activado.');}
+
+  function render(){
+    applyAppearance();
+    if(!state.unlocked){renderLogin();return}
+    app.className='app';
+    app.innerHTML = `${topbar()}${hero()}${quickPanel()}${searchPanel()}${categoryGallery()}${inventoryHTML()}${bottomNav()}`;
+    bindMain();
+  }
+  function renderLogin(){
+    app.className='login-wrap';
+    app.innerHTML=`<section class="login-card">
+      <img class="login-logo" src="assets/logo-sdc.png" alt="Logo SD Comayagua">
+      <h1 class="login-title">CAJA SDC</h1>
+      <div class="pill login-pill"><span class="dot"></span> Panel privado de ventas</div>
+      <div class="form-box">
+        <label class="label" for="keyInput">Clave de acceso</label>
+        <input id="keyInput" class="input" type="password" inputmode="numeric" placeholder="Ingresa tu clave" autocomplete="current-password">
+        <button id="loginBtn" class="btn full" style="margin-top:14px">Entrar al panel</button>
+      </div>
+    </section>`;
+    $('#loginBtn').onclick=unlock; $('#keyInput').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
+  }
+  function unlock(){ if($('#keyInput').value.trim()===(state.settings.accessKey||'199311')){state.unlocked=true;save();render();toast('Panel desbloqueado.')} else toast('Clave incorrecta.'); }
+  function topbar(){const turbo=currentAppearance()==='turbo'; return `<header class="topbar"><img class="top-logo" src="assets/logo-sdc.png" alt="SD"><div class="top-title"><h1>SD COMAYAGUA</h1><p>${turbo?'Modo Pro Gamer':'Modo Gamer normal'}</p></div><div class="spacer"></div><button class="btn small ghost aspect-btn" data-action="theme">${turbo?'Normal':'Pro Gamer'}</button><button class="btn small ghost sync-btn" data-action="sync">Sync</button><button class="btn small secondary" data-action="lock">Salir</button></header>`}
+  function hero(){
+    const st=stats();
+    return `<section class="hero" id="inicio">
+      <div class="pill login-pill"><span class="dot"></span> SD Comayagua · Sistema privado</div>
+      <h2>CONTROL DE VENTAS</h2><p>Inventario, cotizaciones, ventas, recibos editables, envíos y respaldo para trabajar rápido desde celular.</p>
+      <div class="stats">
+        <div class="stat"><b>${num(st.count)}</b><span>Productos</span></div><div class="stat"><b>${num(st.stock)}</b><span>Stock total</span></div>
+        <div class="stat"><b>${money(st.value)}</b><span>Valor venta</span></div><div class="stat"><b>${money(st.invested)}</b><span>Invertido</span></div>
+        <div class="stat"><b>${money(st.profit)}</b><span>Ganancia</span></div>
+      </div>
+    </section>`
+  }
+  function stats(){let count=state.products.length,stock=0,value=0,invested=0; state.products.forEach(p=>{stock+=+p.stock||0; value+=(+p.stock||0)*(+p.price||0); invested+=(+p.stock||0)*(+p.cost||0)}); return {count,stock,value,invested,profit:value-invested}}
+  function quickPanel(){
+    const low=state.products.filter(p=>Number(p.stock)>0 && Number(p.stock)<=Number(state.settings.lowStockLimit||3)).length;
+    const nocost=state.products.filter(p=>Number(p.cost)<=0).length;
+    const st=stats();
+    return `<section class="quick no-print">
+      <button data-action="catalog"><b>Catálogo</b><span>Ver productos</span></button>
+      <button data-action="sell"><b>Vender</b><span>Seleccionar producto</span></button>
+      <button data-action="newProduct"><b>Producto</b><span>Agregar nuevo</span></button>
+      <button data-action="profit"><b>Ganancias</b><span>Por producto</span></button>
+      <button data-action="quotes"><b>Cotizaciones</b><span>Guardadas</span></button>
+      <button data-action="receipts"><b>Recibos</b><span>Caja del día</span></button>
+      <button data-action="backup"><b>Backup</b><span>Exportar datos</span></button>
+    </section>
+    <section class="alert-row no-print">
+      <div class="alert-card"><div><b>${low} bajo stock</b><span>Revisa reposición.</span></div><button class="btn small secondary" data-action="lowStock">Ver</button></div>
+      <div class="alert-card"><div><b>${nocost} sin costo</b><span>Agrega costo para ganancia real.</span></div><button class="btn small secondary" data-action="noCost">Revisar</button></div>
+      <div class="alert-card"><div><b>Ganancia</b><span>${money(st.profit)} estimado.</span></div><button class="btn small secondary" data-action="profit">Detalle</button></div>
+    </section>`
+  }
+  function searchPanel(){
+    return `<section class="search-panel v10-search clean-search no-print" id="searchPanel"><div class="search-title"><b>Buscar producto</b><span>Escribe sin que se suba la pantalla</span></div><div class="searchbar"><span class="icon">⌕</span><input id="searchInput" placeholder="Buscar producto, código o categoría" value="${escapeHtml(filter.q)}" autocomplete="off" inputmode="search"></div></section>`}
+  function categoryGallery(){
+    const cats=allCategories();
+    return `<section class="category-gallery no-print" id="categoriesBlock"><div class="category-head"><div><h2>CATEGORÍAS</h2><p>Toca una categoría para filtrar el catálogo sin mover el buscador.</p></div><span>${cats.length-1} categorías</span></div><div class="category-grid">${cats.map(c=>`<button class="category-card ${filter.cat===c?'active':''}" data-catcard="${escapeHtml(c)}"><img src="${escapeHtml(categoryImage(c))}" alt="${escapeHtml(c)}" onerror="this.onerror=null;this.src='assets/categorias/categoria.svg'"><b>${escapeHtml(c)}</b><small>${categoryCount(c)} productos</small></button>`).join('')}</div></section>`
+  }
+  function refreshCategoryUI(){
+    $$('.chip').forEach(x=>x.classList.toggle('active',x.dataset.cat===filter.cat));
+    $$('.cat-mini').forEach(x=>x.classList.toggle('active',x.dataset.minicat===filter.cat));
+    $$('.category-card').forEach(x=>x.classList.toggle('active',x.dataset.catcard===filter.cat));
+  }
+  function bindProductCards(){
+    document.querySelectorAll('#inventario [data-action]').forEach(btn=>{ if(btn.dataset.bound)return; btn.dataset.bound=1; btn.addEventListener('click',mainAction)});
+  }
+  function renderInventoryOnly(){
+    const inv=$('#inventario'); if(!inv){render();return}
+    const list=filteredProducts();
+    const count=inv.querySelector('.count-pill');
+    const content=inv.querySelector('.inventory-content');
+    if(count) count.textContent=`${list.length} resultados`;
+    if(content){
+      content.innerHTML=list.length?`<div class="grid">${list.map(productCard).join('')}</div>`:`<div class="empty-state">No encontré productos con esa búsqueda o etiqueta.</div>`;
+    }else{
+      inv.innerHTML=`<div class="section-head"><h2>INVENTARIO</h2><span class="count-pill">${list.length} resultados</span></div><div class="inventory-content">${list.length?`<div class="grid">${list.map(productCard).join('')}</div>`:`<div class="empty-state">No encontré productos con esa búsqueda o etiqueta.</div>`}</div>`;
+    }
+    bindProductCards();
+    refreshCategoryUI();
+  }
+  function applyCategory(cat){const y=window.scrollY; filter.cat=cat||'Todos'; renderInventoryOnly(); requestAnimationFrame(()=>window.scrollTo({top:y,left:0,behavior:'auto'}));}
+
+  function filteredProducts(){
+    const q=filter.q.trim().toLowerCase();
+    return state.products.filter(p=>{
+      const tags=productTags(p);
+      const inCat=filter.cat==='Todos'||tags.some(t=>t.toLowerCase()===filter.cat.toLowerCase());
+      const hay=[p.name,p.id,categoryText(p),p.description,p.category,p.categoria,p.etiquetas].join(' ').toLowerCase();
+      return inCat && (!q || hay.includes(q));
+    })
+  }
+  function inventoryHTML(){const list=filteredProducts(); return `<section id="inventario"><div class="section-head"><h2>INVENTARIO</h2><span class="count-pill">${list.length} resultados</span></div><div class="inventory-content">${list.length?`<div class="grid">${list.map(productCard).join('')}</div>`:`<div class="empty-state">No encontré productos con esa búsqueda o etiqueta.</div>`}</div></section>`}
+  function productCard(p){
+    const tags=productTags(p); const low=Number(p.stock)>0&&Number(p.stock)<=Number(state.settings.lowStockLimit||3); const sold=Number(p.stock)<=0;
+    const percent=Math.max(5,Math.min(100,(Number(p.stock)||0)/20*100));
+    return `<article class="product-card" data-id="${escapeHtml(p.id)}"><div class="product-top"><div class="tag-stack"><span class="tag-pill">${escapeHtml(tags[0]||'General')}</span>${tags.length>1?`<span class="tag-pill">+${tags.length-1}</span>`:''}</div><span class="code-pill">${escapeHtml(p.id)}</span></div>
+      <div class="product-media"><img src="${escapeHtml(productImage(p))}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><span class="stock-badge ${low?'low':''}"><span class="dot" style="background:#031018;box-shadow:none"></span>${sold?'Agotado':low?'Bajo stock':'Disponible'}</span><b class="price-badge">${money(p.price)}</b></div>
+      <h3 class="product-title">${escapeHtml(p.name)}</h3><div class="metrics"><div class="metric"><span>Stock</span><b>${num(p.stock)} disponibles</b></div><div class="metric"><span>Ganancia C/U</span><b>${money((+p.price||0)-(+p.cost||0))}</b></div><div class="metric"><span>Costo</span><b>${(+p.cost||0)>0?money(p.cost):'Sin costo'}</b></div><div class="metric"><span>Valor stock</span><b>${money((+p.stock||0)*(+p.price||0))}</b></div></div><div class="stock-line"><i style="width:${percent}%"></i></div>
+      <div class="card-actions"><button class="btn secondary quote" data-action="quoteProduct" data-id="${escapeHtml(p.id)}">Cotizar</button><button class="btn" data-action="sellProduct" data-id="${escapeHtml(p.id)}">Vender</button><button class="btn secondary" data-action="viewProduct" data-id="${escapeHtml(p.id)}">Ver</button><button class="btn ghost" data-action="editProduct" data-id="${escapeHtml(p.id)}">Editar</button></div></article>`
+  }
+  function bottomNav(){return `<nav class="bottom-nav no-print"><button class="nav-btn ${currentView==='catalog'?'active':''}" data-action="catalog"><i>⌂</i><span>Catálogo</span></button><button class="nav-btn" data-action="sell"><i>🛒</i><span>Vender</span></button><button class="nav-btn" data-action="receipts"><i>▤</i><span>Caja</span></button><button class="nav-btn" data-action="newProduct"><i>＋</i><span>Producto</span></button><button class="nav-btn ${currentView==='quote'?'active':''}" data-action="quote"><i>▧</i><span>Cotizar</span></button></nav>`}
+
+  function bindMain(){
+    $('[data-action="lock"]')?.addEventListener('click',()=>{state.unlocked=false;save();render()});
+    const search=$('#searchInput');
+    if(search){
+      let raf=0;
+      const run=()=>{raf=0; const y=window.scrollY; renderInventoryOnly(); requestAnimationFrame(()=>{ if(document.activeElement===search){ search.focus({preventScroll:true}); window.scrollTo({top:y,left:0,behavior:'auto'}); } });};
+      search.addEventListener('focus',()=>document.body.classList.add('search-active'));
+      search.addEventListener('blur',()=>setTimeout(()=>document.body.classList.remove('search-active'),160));
+      search.addEventListener('input',e=>{filter.q=e.target.value; if(!raf) raf=requestAnimationFrame(run);});
+    }
+    $$('.chip').forEach(b=>b.onclick=()=>applyCategory(b.dataset.cat));
+    $$('.cat-mini').forEach(b=>b.onclick=()=>applyCategory(b.dataset.minicat));
+    $$('.category-card').forEach(b=>b.onclick=()=>applyCategory(b.dataset.catcard));
+    document.querySelectorAll('[data-action]').forEach(btn=>{ if(btn.dataset.bound)return; btn.dataset.bound=1; btn.addEventListener('click',mainAction)});
+  }
+  function mainAction(e){
+    const a=e.currentTarget.dataset.action, id=e.currentTarget.dataset.id;
+    if(a==='catalog') return setView('catalog');
+    if(a==='sell') return openSale();
+    if(a==='quote') return openQuote();
+    if(a==='newProduct') return openProductEditor();
+    if(a==='editProduct') return openProductEditor(id);
+    if(a==='viewProduct') return openProductDetails(id);
+    if(a==='sellProduct') return openSale(id);
+    if(a==='quoteProduct') return openQuote(id);
+    if(a==='backup') return openBackup();
+    if(a==='sync') return syncLocal();
+    if(a==='theme') return toggleAppearance();
+    if(a==='profit') return openProfit();
+    if(a==='receipts') return openReceipts();
+    if(a==='quotes') return openSavedQuotes();
+    if(a==='lowStock'){filter.cat='Todos'; filter.q=''; render(); setTimeout(()=>{state.products.filter(p=>+p.stock>0&&+p.stock<=3).length?toast('Productos de bajo stock marcados con etiqueta amarilla.'):toast('No hay productos en bajo stock.')},50)}
+    if(a==='noCost'){filter.cat='Todos'; filter.q='Sin costo'; render(); openNoCost();}
+  }
+
+  function openModal(html,wide=false){
+    document.body.classList.add('modal-open');
+    document.documentElement.scrollLeft=0; document.body.scrollLeft=0;
+    modalRoot.innerHTML=`<div class="modal-backdrop"><section class="modal ${wide?'wide':''}">${html}</section></div>`;
+    const m=$('.modal',modalRoot); if(m){m.scrollLeft=0; m.scrollTop=0;}
+    $('.close',modalRoot)?.addEventListener('click',closeModal);
+    modalRoot.querySelector('.modal-backdrop').addEventListener('click',e=>{if(e.target.classList.contains('modal-backdrop'))closeModal()});
+  }
+  function closeModal(){document.body.classList.remove('modal-open'); modalRoot.innerHTML=''}
+
+  function splitGallery(prod){
+    const p=SDCStore.normalizeProduct(prod||{},state.products.length);
+    const urls=[p.image,...String(p.gallery||'').split(/\n+/)].map(x=>String(x||'').trim()).filter(Boolean);
+    return urls.length?urls:[''];
+  }
+  function parsePromoRows(text){
+    const rows=String(text||'').split(/[\n|;]+/).map(line=>line.trim()).filter(Boolean).map(line=>{
+      const m=line.match(/^(\d+)\s*[=:xX-]\s*(\d+(?:\.\d+)?)$/);
+      return m?{qty:m[1],price:m[2]}:{qty:'',price:''};
+    }).filter(r=>r.qty||r.price);
+    return rows.length?rows:[{qty:'',price:''}];
+  }
+  function productForm(p={}){
+    const prod=SDCStore.normalizeProduct(p,state.products.length); if(!p.id) prod.id=nextCode();
+    return `<div class="modal-head"><h3>${p.id?'Editar':'Nuevo'} producto</h3><button class="close">×</button></div><div class="modal-body product-editor"><div class="card-box"><h4>Información básica</h4><div class="modal-grid"><label><span class="label">Nombre del producto</span><input id="pName" class="input" value="${escapeHtml(prod.name)}"></label><label><span class="label">Código</span><input id="pId" class="input" value="${escapeHtml(prod.id)}"></label><label class="span2"><span class="label">Categorías / etiquetas</span><input id="pCats" class="input" value="${escapeHtml(prod.categories)}" placeholder="Ejemplo: Dedales, Gamer Móvil"></label><label><span class="label">Costo compra</span><input id="pCost" class="input" type="number" value="${prod.cost}"></label><label><span class="label">Precio venta</span><input id="pPrice" class="input" type="number" value="${prod.price}"></label><label><span class="label">Stock</span><input id="pStock" class="input" type="number" value="${prod.stock}"></label><div class="span2"><span class="label">Imágenes del producto</span><div id="imageRows" class="image-rows"></div><button class="btn secondary full add-line" id="addImageRow" type="button">+ Añadir imagen</button><small class="hint">La primera imagen será la principal. Puedes agregar imagen 2, imagen 3, imagen 4 y las que necesites.</small></div><div class="span2"><span class="label">Promociones por cantidad</span><div id="promoRows" class="promo-rows"></div><button class="btn secondary full add-line" id="addPromoRow" type="button">+ Añadir promoción</button><small class="hint">Ejemplo: cantidad 3 y precio 72. Cada promoción queda separada y editable.</small></div><label class="span2"><span class="label">Descripción / beneficios / incluye</span><textarea id="pDesc" class="textarea">${escapeHtml(prod.description)}</textarea></label></div><div class="chips">${['Gamer Móvil','Dedales','Gatillos','Tecnología','Celulares','Audio','Cables','Hogar','Cocina'].map(c=>`<button class="chip" data-addcat="${c}">${c}</button>`).join('')}</div></div><div class="modal-actions product-form-actions"><button class="btn" id="saveProduct">Guardar producto</button>${p.id?`<button class="btn secondary" id="duplicateProduct">Duplicar</button><button class="btn danger" id="deleteProduct">Eliminar</button>`:''}</div></div>`
+  }
+  function openProductEditor(id){
+    const p=id?productById(id):{}; const prod=SDCStore.normalizeProduct(p||{},state.products.length);
+    let imageRows=splitGallery(prod); let promoRows=parsePromoRows(prod.promos);
+    openModal(productForm(p),true);
+    function drawImages(){
+      $('#imageRows',modalRoot).innerHTML=imageRows.map((url,i)=>`<div class="mini-row image-row"><span class="row-index">Imagen ${i+1}</span><input class="input pImageUrl" value="${escapeHtml(url)}" placeholder="https://..."><button class="btn small ghost" data-delimage="${i}" type="button">×</button></div>`).join('');
+      $$('.pImageUrl',modalRoot).forEach((inp,i)=>inp.oninput=()=>{imageRows[i]=inp.value});
+      $$('[data-delimage]',modalRoot).forEach(b=>b.onclick=()=>{if(imageRows.length>1)imageRows.splice(+b.dataset.delimage,1);else imageRows[0]='';drawImages()});
+    }
+    function drawPromos(){
+      $('#promoRows',modalRoot).innerHTML=promoRows.map((r,i)=>`<div class="mini-row promo-row"><span class="row-index">Promo ${i+1}</span><input class="input pPromoQty" inputmode="numeric" type="number" value="${escapeHtml(r.qty)}" placeholder="Cantidad"><input class="input pPromoPrice" inputmode="numeric" type="number" value="${escapeHtml(r.price)}" placeholder="Precio total"><button class="btn small ghost" data-delpromo="${i}" type="button">×</button></div>`).join('');
+      $$('.promo-row',modalRoot).forEach((row,i)=>{ $('.pPromoQty',row).oninput=e=>promoRows[i].qty=e.target.value; $('.pPromoPrice',row).oninput=e=>promoRows[i].price=e.target.value; });
+      $$('[data-delpromo]',modalRoot).forEach(b=>b.onclick=()=>{if(promoRows.length>1)promoRows.splice(+b.dataset.delpromo,1);else promoRows[0]={qty:'',price:''};drawPromos()});
+    }
+    drawImages(); drawPromos();
+    $('#addImageRow').onclick=()=>{imageRows.push('');drawImages(); setTimeout(()=>$$('.pImageUrl',modalRoot).at(-1)?.focus(),30)};
+    $('#addPromoRow').onclick=()=>{promoRows.push({qty:'',price:''});drawPromos(); setTimeout(()=>$$('.pPromoQty',modalRoot).at(-1)?.focus(),30)};
+    $$('[data-addcat]',modalRoot).forEach(b=>b.onclick=()=>{const inp=$('#pCats'); const tags=parseTags(inp.value); if(!tags.some(t=>t.toLowerCase()===b.dataset.addcat.toLowerCase())) tags.push(b.dataset.addcat); inp.value=tags.join(', ')});
+    $('#saveProduct').onclick=()=>{
+      const images=$$('.pImageUrl',modalRoot).map(inp=>inp.value.trim()).filter(Boolean);
+      const promos=$$('.promo-row',modalRoot).map(row=>{const q=$('.pPromoQty',row).value.trim(); const pr=$('.pPromoPrice',row).value.trim(); return q&&pr?`${q}=${pr}`:''}).filter(Boolean).join('\n');
+      const np={id:$('#pId').value.trim()||nextCode(),name:$('#pName').value.trim()||'Producto sin nombre',categories:$('#pCats').value.trim()||'General',cost:+$('#pCost').value||0,price:+$('#pPrice').value||0,stock:+$('#pStock').value||0,image:images[0]||'',gallery:images.slice(1).join('\n'),promos,description:$('#pDesc').value.trim()};
+      const ix=state.products.findIndex(x=>x.id===id); if(ix>=0)state.products[ix]=np; else state.products.push(np); save(); SDCStore.saveBackup(state,'Producto guardado'); closeModal(); render(); toast('Producto guardado.');
+    };
+    $('#duplicateProduct')&&( $('#duplicateProduct').onclick=()=>{const cp={...prod,id:nextCode(),name:(prod.name||'Producto')+' copia'}; state.products.push(cp); save(); closeModal(); render(); toast('Producto duplicado.');});
+    $('#deleteProduct')&&( $('#deleteProduct').onclick=()=>{if(confirm('¿Eliminar este producto?')){state.products=state.products.filter(x=>x.id!==id);save();closeModal();render();toast('Producto eliminado.')}})
+  }
+
+  function openProductDetails(id){
+    const p=productById(id); if(!p)return; const imgs=galleryOf(p); const safeImgs=imgs.length?imgs:[productImage(p)];
+    const promos=String(p.promos||'').trim();
+    let shareQty=1;
+    const unitsLabel=()=>`${num(shareQty)} ${shareQty===1?'unidad':'unidades'}`;
+    const promoUsed=()=>promoTotalForQty(p,shareQty)!==null;
+    function cardHTML(){
+      const productTotal=productItemsTotal(p,shareQty);
+      const normalTotal=productNormalTotalQty(p,shareQty);
+      const codTotal=productCodTotalQty(p,shareQty);
+      return `<div class="product-share-card product-share-card-v15" id="productShareCard"><div class="share-brand"><span>SD COMAYAGUA</span><b>Disponible</b></div><div class="product-share-media"><img id="detailMainImage" src="${escapeHtml(safeImgs[0])}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><b class="price-badge share-main-price">${money(p.price)}</b></div><h2>${escapeHtml(p.name)}</h2><p class="share-description">${escapeHtml(p.description||'Producto disponible para entrega. Consulta disponibilidad antes de confirmar tu pedido.')}</p><div class="share-qty-line"><span>Cantidad consultada</span><b id="shareQtyText">${unitsLabel()} · ${money(productTotal)}${promoUsed()?' · promo aplicada':''}</b></div><div class="public-metrics public-metrics-v15"><div><span>Solo producto</span><b id="metricProduct">${money(productTotal)}</b></div><div><span>Depósito/Tigo + envío</span><b id="metricNormal">${money(normalTotal)}</b></div><div><span>Pagar al Recibir</span><b id="metricCod">${money(codTotal)}</b></div></div><div class="process-row"><div class="process-card"><b>Envío Normal</b><span>Deposita o paga por Tigo Money: producto + Lps. 110 de envío.</span></div><div class="process-card"><b>Pagar al Recibir</b><span>Producto + Lps. 100 de envío + comisión del 6%. Total redondeado en lempiras.</span></div></div>${promos?`<div class="promo-public"><span>Promociones por cantidad</span><pre>${escapeHtml(promos)}</pre></div>`:''}<div class="share-note">Si el cliente ya lleva más productos, se calcula un solo envío al final para evitar duplicarlo.</div><div class="share-footer">SD COMAYAGUA · WhatsApp +504 3151-7755</div></div>`
+    }
+    openModal(`<div class="modal-head"><h3>Producto</h3><button class="close">×</button></div><div class="modal-body"><div id="shareCardMount">${cardHTML()}</div><div class="client-quote-panel no-print"><div><b>Precio rápido para cliente</b><span>Cambia la cantidad antes de descargar, compartir o enviar por WhatsApp.</span></div><div class="qty-presets"><button data-setqty="1">1</button><button data-setqty="2">2</button><button data-setqty="3">3</button><button data-setqty="5">5</button><button data-setqty="10">10</button><button data-setqty="12">12</button></div><div class="qty-control"><button id="detailQtyMinus">−</button><input id="detailQtyInput" type="number" min="1" value="1" inputmode="numeric"><button id="detailQtyPlus">+</button></div></div><div class="thumb-row">${safeImgs.map((img,i)=>`<button class="thumb ${i===0?'active':''}" data-product-img="${escapeHtml(img)}"><img src="${escapeHtml(img)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"></button>`).join('')}</div><div class="modal-actions product-actions product-actions-grid no-print"><button class="btn secondary prod-action" id="downloadProductPhoto"><span class="ico">▣</span><b>Imagen</b><small>Descargar</small></button><button class="btn prod-action" id="shareProductPhoto"><span class="ico">↗</span><b>Foto</b><small>Compartir</small></button><button class="btn secondary prod-action" id="waProductText"><span class="ico">✎</span><b>Texto</b><small>WhatsApp</small></button><button class="btn prod-action" data-action="sellProduct" data-id="${escapeHtml(id)}"><span class="ico">🛒</span><b>Vender</b><small>Venta real</small></button><button class="btn secondary prod-action" data-action="quoteProduct" data-id="${escapeHtml(id)}"><span class="ico">🧾</span><b>Cotizar</b><small>Precio total</small></button><button class="btn ghost prod-action" data-action="editProduct" data-id="${escapeHtml(id)}"><span class="ico">✦</span><b>Editar</b><small>Producto</small></button></div></div>`);
+    function refreshShareCard(){
+      const currentImg=$('#detailMainImage',modalRoot)?.src || safeImgs[0];
+      $('#shareCardMount',modalRoot).innerHTML=cardHTML();
+      const img=$('#detailMainImage',modalRoot); if(img) img.src=currentImg;
+      const input=$('#detailQtyInput',modalRoot); if(input) input.value=shareQty;
+    }
+    function setQty(v){shareQty=Math.max(1,Math.min(999,Number(v)||1)); refreshShareCard();}
+    $$('[data-setqty]',modalRoot).forEach(b=>b.onclick=()=>setQty(b.dataset.setqty));
+    $('#detailQtyMinus').onclick=()=>setQty(shareQty-1);
+    $('#detailQtyPlus').onclick=()=>setQty(shareQty+1);
+    $('#detailQtyInput').oninput=e=>setQty(e.target.value);
+    $$('[data-product-img]',modalRoot).forEach(b=>b.onclick=()=>{ $('#detailMainImage',modalRoot).src=b.dataset.productImg; $$('[data-product-img]',modalRoot).forEach(x=>x.classList.toggle('active',x===b)); });
+    $('#downloadProductPhoto').onclick=()=>downloadProductPhoto(p);
+    $('#shareProductPhoto').onclick=()=>shareProductPhoto(p,shareQty);
+    $('#waProductText').onclick=()=>sendProductWhatsApp(p,shareQty);
+    $$('[data-action]',modalRoot).forEach(b=>b.onclick=()=>{closeModal();mainAction({currentTarget:b})});
+  }
+  function productWhatsAppText(p,qty=1){
+    qty=Math.max(1,Number(qty)||1);
+    const promos=String(p.promos||'').trim();
+    const productTotal=productItemsTotal(p,qty);
+    const promoNote=promoTotalForQty(p,qty)!==null?'\n🎁 *Promoción aplicada por cantidad.*':'';
+    return `🛍️ *PRODUCTO DISPONIBLE - SD COMAYAGUA*\n\n📌 *Producto:* ${p.name}\n🔢 *Cantidad consultada:* ${num(qty)} ${qty===1?'unidad':'unidades'}\n💰 *Solo producto:* ${money(productTotal)}${qty>1?` (${money(p.price)} c/u)`:''}${promoNote}\n\n🚚 *Envío Normal:* ${money(productNormalTotalQty(p,qty))}\nIncluye producto + Lps. 110 de envío. El cliente paga por depósito, transferencia o Tigo Money.\n\n📦 *Pagar al Recibir:* ${money(productCodTotalQty(p,qty))}\nIncluye producto + Lps. 100 de envío + comisión del 6%.\n\n📝 *Descripción:*\n${p.description||'Producto disponible para entrega.'}${promos?`\n\n🎁 *Promociones por cantidad:*\n${promos}`:''}\n\n✅ Si ya lleva otros productos, se toma “Solo producto” y se calcula un solo envío al final.\n\nWhatsApp SD COMAYAGUA: +504 3151-7755`;
+  }
+
+  function askClientPhone(initial=''){
+    const typed=prompt('Número WhatsApp del cliente. Déjalo vacío para elegir el chat manualmente en WhatsApp:', initial||'');
+    if(typed===null) return null;
+    return typed.trim();
+  }
+  async function productCardToBlob(){
+    const el=$('#productShareCard',modalRoot); if(!window.html2canvas){window.print();return null}
+    try{
+      const canvas=await html2canvas(el,{backgroundColor:'#07111f',scale:3,useCORS:true,imageTimeout:12000});
+      return await new Promise(res=>canvas.toBlob(res,'image/png',.98));
+    }catch(err){console.error(err); toast('No se pudo generar la imagen. Revisa si alguna foto externa bloquea la descarga.'); return null;}
+  }
+  async function downloadProductPhoto(p){const blob=await productCardToBlob(); if(!blob)return; const ref=prompt('Nombre o número del cliente para guardar esta imagen. Puedes dejarlo vacío:', state.settings.lastClientFileRef||''); if(ref===null)return; state.settings.lastClientFileRef=ref.trim(); save(); const label=slugFile(ref||p.name||p.id||'producto'); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`producto-${label}-${fileStamp()}-${slugFile(p.id||'sdc')}.png`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Imagen del producto descargada con nombre único.');}
+  async function shareProductPhoto(p,qty=1){const blob=await productCardToBlob(); const text=productWhatsAppText(p,qty); const ref=prompt('Número o nombre del cliente para nombrar la imagen. Déjalo vacío si solo quieres compartir:', state.settings.lastClientFileRef||''); if(ref===null)return; state.settings.lastClientFileRef=ref.trim(); save(); const filename=`producto-${slugFile(ref||p.name||p.id||'producto')}-${fileStamp()}-${slugFile(p.id||'sdc')}.png`; if(blob && navigator.canShare){const file=new File([blob],filename,{type:'image/png'}); if(navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text}); return}catch(e){}}} if(blob){const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);} toast('Se descargó la imagen para compartir.');}
+  function sendProductWhatsApp(p,qty=1){const phone=askClientPhone(); if(phone===null)return; openWhatsApp(phone,productWhatsAppText(p,qty));}
+
+  function quoteModalHTML(isSale=false){
+    const doc=isSale?saleDraft:quote; const editingSale=isSale && !!doc.editingId; const title=isSale?(editingSale?'Editar factura':'Venta / factura real'):'Cotización previa';
+    return `<div class="modal-head quote-head"><h3>${title}</h3><button class="close">×</button></div><div class="modal-body quote-body"><div class="pill quote-status"><span class="dot"></span>${isSale?(editingSale?'Editando factura guardada':'Factura y registro'):'Preventa / información'}</div><div class="modal-grid quote-grid" style="margin-top:14px"><div class="card-box span2 picker-card"><div class="section-head quote-section-head" style="margin:0 0 12px"><h4>Seleccionar producto</h4><span class="found-pill">${state.products.length} encontrados</span></div><div class="searchbar"><span class="icon">⌕</span><input id="pickSearch" placeholder="Buscar por nombre, categoría o código..."></div><div class="chips" id="pickChips">${allCategories().map(c=>`<button class="chip ${c==='Todos'?'active':''}" data-pickcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="pickerList" class="picker-list"></div></div><div class="card-box calc-card"><h4>Datos para calcular</h4>${fieldsHTML(doc)}</div><div class="card-box current-card"><h4>${isSale?'Factura':'Cotización'} actual</h4><div id="cartList" class="cart-list"></div><div id="totalsMini"></div></div><div class="span2 preview-card"><div id="docPreview">${docCard(doc,isSale)}</div></div></div><div class="modal-actions quote-actions premium-actions"><button class="btn secondary" id="downloadDoc"><b>Imagen</b><small>Descargar</small></button><button class="btn secondary" id="waText"><b>Texto</b><small>WhatsApp</small></button><button class="btn" id="waPhoto"><b>Foto</b><small>WhatsApp</small></button>${!isSale?'<button class="btn ghost" id="saveQuote"><b>Guardar</b><small>Cotización</small></button><button class="btn secondary" id="openQuotes"><b>Guardadas</b><small>Ver lista</small></button><button class="btn" id="toSale"><b>Pasar a factura</b><small>Venta real</small></button>':`<button class="btn" id="finishSale"><b>${editingSale?'Guardar':'Finalizar'}</b><small>${editingSale?'Cambios':'Venta'}</small></button><button class="btn secondary" id="printDoc"><b>PDF</b><small>Imprimir</small></button>`}</div></div>`
+  }
+  function fieldsHTML(doc){
+    const type=doc.shippingType || (doc.cod?'COD':'Normal');
+    return `<div class="modal-grid"><label><span class="label">Cliente opcional</span><input class="input bindDoc" data-k="client" value="${escapeHtml(doc.client)}"></label><label><span class="label">Teléfono cliente / WhatsApp</span><input class="input bindDoc" data-k="phone" inputmode="tel" value="${escapeHtml(doc.phone)}" placeholder="Sin +504 también funciona"></label><label><span class="label">Departamento</span><select class="select bindDoc" data-k="department">${SDC_DEPARTMENTS.map(d=>`<option ${doc.department===d?'selected':''}>${d}</option>`).join('')}</select></label><label><span class="label">Municipio</span><select class="select bindDoc" data-k="municipality"></select></label><label class="span2"><span class="label">Referencia / barrio / colonia</span><input class="input bindDoc" data-k="reference" value="${escapeHtml(doc.reference)}"></label><label><span class="label">Tipo de cobro / envío</span><select class="select bindDoc" data-k="shippingType"><option value="Normal" ${type!=='COD'?'selected':''}>Envío Normal: depósito o Tigo Money</option><option value="COD" ${type==='COD'?'selected':''}>Pagar al Recibir: Lps.100 + comisión</option></select></label><label><span class="label">Empresa / entrega</span><select class="select bindDoc" data-k="company"><option>Domicilio</option><option>Forza</option><option>C807</option><option>Cargo Expreso</option><option>Bus local</option></select></label><label><span class="label">Envío Lps.</span><input class="input bindDoc" data-k="shipping" type="number" value="${doc.shipping}"></label><label><span class="label">Descuento Lps.</span><input class="input bindDoc" data-k="discount" type="number" value="${doc.discount}"></label></div>`
+  }
+  function bindDocFields(isSale){
+    const doc=isSale?saleDraft:quote; if(!doc.shippingType) doc.shippingType=doc.cod?'COD':'Normal';
+    const mun=$('[data-k="municipality"]',modalRoot);
+    function fillMun(){const dep=$('[data-k="department"]',modalRoot).value; const list=SDC_MUNICIPALITIES[dep]||[]; mun.innerHTML=list.map(m=>`<option ${doc.municipality===m?'selected':''}>${m}</option>`).join('')+'<option>Otro municipio</option>'; if(!list.includes(doc.municipality)) mun.value=list[0]||'Otro municipio'; doc.department=dep; doc.municipality=mun.value}
+    function applyShippingType(force=false){const sel=$('[data-k="shippingType"]',modalRoot); if(!sel)return; doc.shippingType=sel.value; if(doc.shippingType==='COD'){doc.cod=true; if(force || !doc.shipping || Number(doc.shipping)===110) doc.shipping=100;} else {doc.cod=false; if(force || !doc.shipping || Number(doc.shipping)===100) doc.shipping=110;} const ship=$('[data-k="shipping"]',modalRoot); if(ship) ship.value=doc.shipping;}
+    fillMun(); $('[data-k="company"]',modalRoot).value=doc.company||'Forza'; $('[data-k="shippingType"]',modalRoot).value=doc.shippingType; applyShippingType(false);
+    $$('.bindDoc',modalRoot).forEach(el=>el.oninput=el.onchange=()=>{let v=el.value; if(el.dataset.k==='shipping'||el.dataset.k==='discount')v=+v||0; doc[el.dataset.k]=v; if(el.dataset.k==='department')fillMun(); if(el.dataset.k==='shippingType')applyShippingType(true); refreshQuoteUI(isSale);});
+  }
+
+  function renderPicker(isSale){ const list=$('#pickerList',modalRoot); let q='',cat='Todos'; function draw(){const term=q.toLowerCase(); const items=state.products.filter(p=>(cat==='Todos'||productTags(p).some(t=>t.toLowerCase()===cat.toLowerCase())) && (!term||[p.name,p.id,categoryText(p),p.category,p.categoria,p.etiquetas].join(' ').toLowerCase().includes(term))); list.innerHTML=items.map(p=>`<div class="picker-item"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><div><b>${escapeHtml(p.name)}</b><span>${money(p.price)} · Stock ${num(p.stock)} · ${escapeHtml(firstTag(p))}</span></div><button class="btn small" data-additem="${escapeHtml(p.id)}">Agregar</button></div>`).join('')||'<div class="empty-state">Sin productos.</div>'; $$('[data-additem]',list).forEach(b=>b.onclick=()=>addDocItem(b.dataset.additem,isSale)); }
+    $('#pickSearch',modalRoot).oninput=e=>{q=e.target.value;draw()}; $$('[data-pickcat]',modalRoot).forEach(b=>b.onclick=()=>{cat=b.dataset.pickcat;$$('[data-pickcat]',modalRoot).forEach(x=>x.classList.toggle('active',x===b));draw()}); draw(); }
+  function addDocItem(id,isSale){ const p=productById(id); if(!p)return; const doc=isSale?saleDraft:quote; const found=doc.items.find(x=>x.id===id); if(found)found.qty++; else doc.items.push({id:p.id,name:p.name,price:+p.price||0,cost:+p.cost||0,qty:1,image:productImage(p)}); refreshQuoteUI(isSale); toast('Producto agregado.'); }
+  function refreshQuoteUI(isSale){ const doc=isSale?saleDraft:quote; $('#cartList',modalRoot).innerHTML=doc.items.length?doc.items.map((it,i)=>`<div class="cart-row"><div><b>${escapeHtml(it.name)}</b><br><span>${money(it.price)} c/u</span></div><div class="qtybox"><button data-dec="${i}">−</button><input data-qty="${i}" type="number" value="${it.qty}"><button data-inc="${i}">+</button></div><button class="btn small danger" data-rem="${i}">×</button></div>`).join(''):'<div class="empty-state">Agrega productos para calcular.</div>'; const c=calc(doc); $('#totalsMini',modalRoot).innerHTML=`<div class="summary"><div class="summary-row"><b>Productos</b><b>${money(c.products)}</b></div><div class="summary-row"><b>Envío</b><b>${money(c.shipping)}</b></div><div class="summary-row"><b>Comisión</b><b>${money(c.commission)}</b></div><div class="summary-total"><b>Total</b><b>${money(c.total)}</b></div></div>`; $('#docPreview',modalRoot).innerHTML=docCard(doc,isSale); $$('[data-inc]',modalRoot).forEach(b=>b.onclick=()=>{doc.items[+b.dataset.inc].qty++;refreshQuoteUI(isSale)}); $$('[data-dec]',modalRoot).forEach(b=>b.onclick=()=>{const it=doc.items[+b.dataset.dec]; it.qty=Math.max(1,it.qty-1);refreshQuoteUI(isSale)}); $$('[data-rem]',modalRoot).forEach(b=>b.onclick=()=>{doc.items.splice(+b.dataset.rem,1);refreshQuoteUI(isSale)}); $$('[data-qty]',modalRoot).forEach(inp=>inp.oninput=()=>{doc.items[+inp.dataset.qty].qty=Math.max(1,+inp.value||1);refreshQuoteUI(isSale)}); }
+  function openQuote(id){currentView='quote'; if(!quote.items.length) quote=emptyQuote(); if(id)addDocItemTo(quote,id); openModal(quoteModalHTML(false),true); bindQuoteCommon(false); }
+  function openSale(id,fromDoc=null){saleDraft=fromDoc?SDCStore.clone(fromDoc):emptySale(); saleDraft.id='SDC-'+Date.now().toString().slice(-10); saleDraft.kind='receipt'; delete saleDraft.saved; delete saleDraft.editingId; if(id)addDocItemTo(saleDraft,id); openModal(quoteModalHTML(true),true); bindQuoteCommon(true); }
+  function addDocItemTo(doc,id){const p=productById(id); if(!p)return; const found=doc.items.find(x=>x.id===id); if(found)found.qty++; else doc.items.push({id:p.id,name:p.name,price:+p.price||0,cost:+p.cost||0,qty:1,image:productImage(p)});}
+  function bindQuoteCommon(isSale){
+    renderPicker(isSale); bindDocFields(isSale); refreshQuoteUI(isSale);
+    $('#downloadDoc').onclick=()=>downloadDocImage(isSale?'recibo':'cotizacion');
+    $('#waText').onclick=()=>sendWhatsAppText(isSale);
+    $('#waPhoto').onclick=()=>shareDocPhoto(isSale);
+    $('#printDoc')&&($('#printDoc').onclick=()=>window.print());
+    $('#saveQuote')&&($('#saveQuote').onclick=saveCurrentQuote);
+    $('#openQuotes')&&($('#openQuotes').onclick=openSavedQuotes);
+    $('#toSale')&&($('#toSale').onclick=()=>{if(!quote.items.length)return toast('Agrega productos antes de pasar a venta.'); closeModal(); openSale(null,quote)});
+    $('#finishSale')&&($('#finishSale').onclick=finishSale);
+  }
+  function saveCurrentQuote(){
+    if(!quote.items.length)return toast('Agrega productos antes de guardar.');
+    quote.date=new Date().toISOString(); quote.saved=true;
+    const clean=SDCStore.clone(quote); delete clean.editingId; clean.kind='quote'; clean.total=calc(clean).total;
+    const key=quote.editingId||quote.id;
+    const ix=state.quotes.findIndex(q=>q.id===key || q.id===clean.id);
+    if(ix>=0) state.quotes[ix]=clean; else state.quotes.unshift(clean);
+    quote=SDCStore.clone(clean); quote.editingId=clean.id; state.lastQuote=SDCStore.clone(clean);
+    save(); SDCStore.saveBackup(state,'Cotización guardada');
+    toast(ix>=0?'Cotización actualizada.':'Cotización guardada.');
+  }
+  function docCard(doc,isSale){
+    const c=calc(doc);
+    const code=doc.id||'SDC';
+    const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
+    const process=doc.cod?'Pagar al Recibir: productos + Lps. 100 de envío + comisión del 6%.':'Envío Normal: productos + Lps. 110 de envío, pagado por depósito, transferencia o Tigo Money.';
+    const rows=(doc.items||[]).map((it,i)=>`<tr><td class="doc-idx">${i+1}</td><td><div class="doc-product compact-product"><img src="${escapeHtml(it.image||SDC_PLACEHOLDERS.default)}" onerror="this.onerror=null;this.src='${SDC_PLACEHOLDERS.default}'"><div><b>${escapeHtml(it.name)}</b><span>${escapeHtml(it.id||'')}</span></div></div></td><td class="num">${num(it.qty)}</td><td class="num">${money(it.price)}</td><td class="num">${money(itemTotal(it))}</td></tr>`).join('')||'<tr><td colspan="5">Sin productos agregados</td></tr>';
+    return `<div class="doc-wrap compact-doc" id="printableDoc"><div class="doc-topline">${isSale?'RECIBO / FACTURA DE COMPRA':'COTIZACIÓN PARA CLIENTE'}</div><div class="doc-head compact-head"><div><span class="doc-pill">${isSale?'Venta registrada':'Preventa informativa'}</span><h2>SD COMAYAGUA</h2><p>${date} · <b>${escapeHtml(code)}</b></p></div><img class="doc-logo" src="assets/logo-sdc.png" alt="Logo"></div><div class="doc-fields compact-fields"><div class="doc-field"><span>Cliente</span><b>${escapeHtml(doc.client||'Cliente')}</b></div><div class="doc-field"><span>Teléfono</span><b>${escapeHtml(doc.phone||'No registrado')}</b></div><div class="doc-field"><span>Ubicación</span><b>${escapeHtml([doc.department,doc.municipality].filter(Boolean).join(' / ')||'No seleccionada')}</b></div><div class="doc-field"><span>Entrega</span><b>${escapeHtml(doc.company||'No seleccionada')}</b></div>${doc.reference?`<div class="doc-field wide"><span>Referencia</span><b>${escapeHtml(doc.reference)}</b></div>`:''}</div><div class="doc-process"><b>Proceso de pago:</b> ${process}</div><table class="doc-table compact-table"><thead><tr><th>#</th><th>Producto</th><th class="num">Cant.</th><th class="num">Precio</th><th class="num">Total</th></tr></thead><tbody>${rows}</tbody></table><div class="doc-total-grid"><div class="doc-total-note"><b>Resumen claro para el cliente</b><span>Revise producto, cantidad, envío y total antes de confirmar.</span></div><div class="doc-mini-summary"><div><span>Productos</span><b>${money(c.products)}</b></div><div><span>Envío</span><b>${money(c.shipping)}</b></div><div><span>Comisión</span><b>${money(c.commission)}</b></div><div><span>Descuento</span><b>${money(c.discount)}</b></div><div class="grand"><span>Total a pagar</span><b>${money(c.total)}</b></div></div></div><p class="doc-note compact-note">${isSale?'Gracias por comprar en SD Comayagua.':'Cotización informativa. La venta se registra únicamente al pasarla a factura real.'} WhatsApp: +504 3151-7755</p></div>`
+  }
+
+  function whatsappText(doc,isSale){
+    const c=calc(doc); const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
+    const shippingProcess=doc.cod?'Pagar al Recibir: productos + Lps. 100 de envío + comisión del 6%.':'Envío Normal: productos + Lps. 110 de envío. El cliente paga por depósito, transferencia o Tigo Money.';
+    return `🧾 *${isSale?'RECIBO':'COTIZACIÓN'} SD COMAYAGUA*\n\n📌 *Código:* ${doc.id}\n📅 *Fecha:* ${date}\n\n👤 *Cliente:* ${doc.client||'Cliente'}\n📞 *Teléfono:* ${doc.phone||'No registrado'}\n🏷️ *Departamento:* ${doc.department||'No seleccionado'}\n📍 *Municipio:* ${doc.municipality||'No seleccionado'}${doc.reference?`\n🏠 *Referencia:* ${doc.reference}`:''}\n\n🛒 *PRODUCTOS*\n${doc.items.length?doc.items.map((it,i)=>`${i+1}. ${it.name}\n   Cantidad: ${it.qty}\n   Precio: ${money(it.price)}\n   Total: ${money(itemTotal(it))}`).join('\n'):'Sin productos agregados'}\n\n🚚 *ENVÍO Y PAGO*\n${shippingProcess}\nEmpresa / entrega: ${doc.company||'No seleccionada'}\nEnvío: ${money(c.shipping)}\nComisión por Pagar al Recibir: ${money(c.commission)}\nTotal envío: ${money(c.delivery)}\n\n💰 *RESUMEN*\nProductos: ${money(c.products)}\nDescuento: ${money(c.discount)}\n*TOTAL A PAGAR: ${money(c.total)}*\n\nSD COMAYAGUA.\nWhatsApp: +504 3151-7755`;
+  }
+
+  function waPhone(phone){const p=cleanPhone(phone); return p? (p.length===8?'504'+p:p) : ''}
+  function waWebUrl(phone,text){const p=waPhone(phone); return p?`https://wa.me/${p}?text=${encodeURIComponent(text)}`:`https://wa.me/?text=${encodeURIComponent(text)}`}
+  function waAppUrl(phone,text){const p=waPhone(phone); return `whatsapp://send?${p?`phone=${p}&`:''}text=${encodeURIComponent(text)}`}
+  function openWhatsApp(phone,text){
+    if(isMobileDevice()){
+      window.location.href=waAppUrl(phone,text);
+    }else{
+      window.open(waWebUrl(phone,text),'_blank');
+    }
+  }
+  function currentDoc(isSale){return isSale?saleDraft:quote}
+  function chooseWaPhone(doc){
+    const storeLast=cleanPhone(state.settings.whatsappNumber||'').slice(-8);
+    const current=cleanPhone(doc.phone||'').slice(-8);
+    if(!current || current===storeLast){
+      const typed=prompt('Número WhatsApp del cliente. Déjalo vacío para elegir el chat manualmente en WhatsApp:', current===storeLast?'':(doc.phone||''));
+      if(typed===null) return null;
+      doc.phone=typed.trim();
+      refreshQuoteUI(doc.kind==='receipt' || doc===saleDraft);
+    }
+    return doc.phone||'';
+  }
+  function sendWhatsAppText(isSale){const doc=currentDoc(isSale); if(!doc.items.length)return toast('Agrega productos primero.'); const c=calc(doc); if(c.products<=0||c.total<=0)return toast('El total está en cero. Revisa producto, precio y envío antes de enviar.'); const phone=chooseWaPhone(doc); if(phone===null)return; save(); openWhatsApp(phone,whatsappText(doc,isSale));}
+  async function docToBlob(){const el=$('#printableDoc',modalRoot); if(!window.html2canvas){window.print();return null} try{const canvas=await html2canvas(el,{backgroundColor:'#eaf5f9',scale:3,useCORS:true,imageTimeout:12000}); return await new Promise(res=>canvas.toBlob(res,'image/png',.98));}catch(err){console.error(err); toast('No se pudo generar la imagen del documento. Puedes usar el botón PDF.'); return null;}}
+  async function downloadDocImage(name='documento'){const doc=name==='recibo'?saleDraft:quote; const blob=await docToBlob(); if(!blob)return; const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${name}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc?.id||'sdc')}.png`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Imagen descargada con nombre único.');}
+  async function shareDocPhoto(isSale){const doc=currentDoc(isSale); if(!doc.items.length)return toast('Agrega productos primero.'); const c=calc(doc); if(c.products<=0||c.total<=0)return toast('El total está en cero. Revisa producto, precio y envío antes de enviar.'); const phone=chooseWaPhone(doc); if(phone===null)return; save(); const blob=await docToBlob(); const text=whatsappText(doc,isSale); if(blob){const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${isSale?'recibo':'cotizacion'}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc.id||'sdc')}.png`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);} openWhatsApp(phone,text); toast('Imagen descargada y WhatsApp abierto al cliente.');}
+  function finishSale(){
+    if(!saleDraft.items.length)return toast('Agrega productos primero.');
+    const c=calc(saleDraft);
+    const editingId=saleDraft.editingId||'';
+    const previous=editingId?state.sales.find(x=>x.id===editingId):null;
+    saleDraft.date=new Date().toISOString();
+    saleDraft.total=c.total;
+    const prevQty=new Map();
+    (previous?.items||[]).forEach(it=>prevQty.set(it.id,(prevQty.get(it.id)||0)+(+it.qty||0)));
+    const newQty=new Map();
+    (saleDraft.items||[]).forEach(it=>newQty.set(it.id,(newQty.get(it.id)||0)+(+it.qty||0)));
+    const ids=new Set([...prevQty.keys(),...newQty.keys()]);
+    ids.forEach(id=>{
+      const p=productById(id); if(!p)return;
+      const diff=(newQty.get(id)||0)-(prevQty.get(id)||0);
+      p.stock=Math.max(0,(+p.stock||0)-diff);
+    });
+    saleDraft.date=new Date().toISOString(); saleDraft.kind='receipt'; saleDraft.total=c.total; const clean=SDCStore.clone(saleDraft); delete clean.editingId;
+    if(previous){
+      const ix=state.sales.findIndex(x=>x.id===editingId);
+      if(ix>=0) state.sales[ix]=clean;
+    }else{
+      state.sales.unshift(clean);
+    }
+    state.lastReceipt=SDCStore.clone(clean);
+    SDCStore.saveBackup(state,previous?'Factura editada':'Venta registrada');
+    save(); refreshQuoteUI(true); render(); toast(previous?'Factura actualizada sin duplicarla.':'Venta finalizada y recibo guardado.');
+  }
+
+  function normalizeImportHeader(h){
+    return String(h||'').replace(/^\uFEFF/,'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+  }
+  function importCleanValue(v){
+    if(v===undefined||v===null) return '';
+    return String(v).replace(/^\uFEFF/,'').trim();
+  }
+  function parseImportNumber(v){
+    let s=importCleanValue(v).replace(/lps\.?|hnl|lempiras?/ig,'').replace(/\s+/g,'');
+    if(!s) return 0;
+    s=s.replace(/[^0-9,.-]/g,'');
+    if(s.includes(',') && s.includes('.')) s=s.replace(/,/g,'');
+    else if(s.includes(',') && !s.includes('.')){
+      const parts=s.split(',');
+      s=(parts.length===2 && parts[1].length===3)?parts.join(''):s.replace(',', '.');
+    }
+    const n=Number(s);
+    return Number.isFinite(n)?n:0;
+  }
+  function csvEscape(v){
+    const s=String(v??'');
+    return /[",\n\r]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;
+  }
+  function detectDelimiter(text){
+    const sample=String(text||'').split(/\r?\n/).find(x=>x.trim())||'';
+    const count=(ch)=>{let c=0,q=false; for(let i=0;i<sample.length;i++){const a=sample[i]; if(a==='"'){ if(q&&sample[i+1]==='"')i++; else q=!q;} else if(!q && a===ch)c++; } return c;};
+    const opts=[',',';','\t'].map(ch=>({ch,n:count(ch)})).sort((a,b)=>b.n-a.n);
+    return opts[0].n?opts[0].ch:',';
+  }
+  function parseCSVText(text){
+    text=String(text||'').replace(/^\uFEFF/,'');
+    const delim=detectDelimiter(text);
+    const rows=[]; let row=[], cell='', q=false;
+    for(let i=0;i<text.length;i++){
+      const ch=text[i];
+      if(ch==='"'){
+        if(q && text[i+1]==='"'){cell+='"'; i++;}
+        else q=!q;
+      } else if(ch===delim && !q){row.push(cell); cell='';}
+      else if((ch==='\n'||ch==='\r') && !q){
+        if(ch==='\r' && text[i+1]==='\n') i++;
+        row.push(cell); cell='';
+        if(row.some(x=>String(x).trim()!=='')) rows.push(row);
+        row=[];
+      } else cell+=ch;
+    }
+    row.push(cell);
+    if(row.some(x=>String(x).trim()!=='')) rows.push(row);
+    if(!rows.length) return [];
+    const headers=rows.shift().map(h=>importCleanValue(h));
+    return rows.map(r=>{const o={}; headers.forEach((h,i)=>o[h]=r[i]??''); return o;});
+  }
+  function splitImportImages(v){
+    const raw=importCleanValue(v);
+    if(!raw) return [];
+    return raw.split(/\s*(?:\r?\n|\||;)\s*/).map(x=>x.trim()).filter(Boolean);
+  }
+  function normalizeImportPromos(v){
+    const raw=importCleanValue(v);
+    if(!raw) return '';
+    return raw.split(/\s*(?:\r?\n|\||;|,)\s*/).map(part=>{
+      const m=part.match(/(\d+)\s*(?:=|:|x|X|-|a|por|par|pares|unidad|unidades)?\s*[^0-9]*([0-9]+(?:[.,][0-9]+)?)/i);
+      if(!m) return '';
+      return `${Number(m[1])}=${parseImportNumber(m[2])}`;
+    }).filter(Boolean).join('\n');
+  }
+  function importRowToProduct(row,i){
+    const n={}; Object.keys(row||{}).forEach(k=>n[normalizeImportHeader(k)]=row[k]);
+    const val=(keys)=>{for(const k of keys){const nk=normalizeImportHeader(k); if(n[nk]!==undefined && importCleanValue(n[nk])!=='') return importCleanValue(n[nk]);} return '';};
+    const images=splitImportImages(val(['imagenes','imagen','foto','fotos','image','images','galeria','gallery','urlimagen','linkimagen']));
+    const p={
+      id:val(['codigo','cod','id','sku','code']) || `SDC-${String(i+1).padStart(3,'0')}`,
+      name:val(['nombre','producto','name','title','articulo','item']) || 'Producto sin nombre',
+      categories:val(['categoria','categorias','category','categories','etiquetas','tags']) || 'General',
+      price:parseImportNumber(val(['precio','precioventa','precioactual','venta','price'])),
+      cost:parseImportNumber(val(['costo','cost','costocompra','preciocompra','compra'])),
+      stock:parseImportNumber(val(['stock','existencia','cantidad','inventario','disponible'])),
+      image:images[0]||'',
+      gallery:images.slice(1).join('\n'),
+      promos:normalizeImportPromos(val(['promos','promociones','precioscantidad','preciosporcantidad','mayoreo','ofertas','promo'])),
+      description:val(['descripcion','description','beneficios','detalle','incluye','info'])
+    };
+    return SDCStore.normalizeProduct(p,i);
+  }
+  async function readRowsFromProductFile(file){
+    const name=(file.name||'').toLowerCase();
+    if(name.endsWith('.csv') || file.type.includes('csv') || file.type.startsWith('text/')){
+      const txt=await file.text();
+      return parseCSVText(txt);
+    }
+    if(name.endsWith('.xlsx') || name.endsWith('.xls')){
+      if(!window.XLSX) throw new Error('La librería XLSX no cargó. Revisa internet o usa CSV.');
+      const buf=await file.arrayBuffer();
+      const wb=XLSX.read(buf,{type:'array'});
+      const first=wb.SheetNames[0];
+      if(!first) return [];
+      return XLSX.utils.sheet_to_json(wb.Sheets[first],{defval:'',raw:false});
+    }
+    throw new Error('Formato no soportado. Usa .csv o .xlsx');
+  }
+  function importProducts(products,mode){
+    if(!products.length) throw new Error('No encontré productos válidos.');
+    SDCStore.saveBackup(state,'Antes de importar productos');
+    if(mode==='replace'){
+      state.products=products;
+    }else{
+      const byId=new Map(state.products.map((p,i)=>[String(p.id).trim().toLowerCase(),i]));
+      products.forEach(p=>{
+        const key=String(p.id||'').trim().toLowerCase();
+        if(key && byId.has(key)) state.products[byId.get(key)]={...state.products[byId.get(key)],...p};
+        else state.products.push(p);
+      });
+    }
+    state.products=state.products.map(SDCStore.normalizeProduct);
+    save(); SDCStore.saveBackup(state,`Importados ${products.length} productos`);
+  }
+  async function handleProductImportFile(file){
+    try{
+      $('#importProductsStatus',modalRoot).innerHTML='Leyendo archivo...';
+      const rows=await readRowsFromProductFile(file);
+      const products=rows.map(importRowToProduct).filter(p=>p.name && p.name!=='Producto sin nombre');
+      if(!products.length) throw new Error('El archivo no tiene filas de productos.');
+      const mode=$('#importProductsMode',modalRoot)?.value||'merge';
+      const msg=`Encontré ${products.length} productos en ${file.name}.\n\n${mode==='replace'?'REEMPLAZARÁ todo el catálogo actual.':'Actualizará por código y agregará los nuevos.'}\n\n¿Importar ahora?`;
+      if(!confirm(msg)){ $('#importProductsStatus',modalRoot).innerHTML='Importación cancelada.'; return; }
+      importProducts(products,mode);
+      closeModal(); render(); toast(`${products.length} productos importados correctamente.`);
+    }catch(err){
+      console.error(err);
+      $('#importProductsStatus',modalRoot).innerHTML=`No se pudo importar: ${escapeHtml(err.message||err)}`;
+      toast('No se pudo importar el archivo.');
+    }
+  }
+  function exportProductsCSV(){
+    const headers=['codigo','nombre','categoria','precio','costo','stock','imagenes','promos','descripcion'];
+    const rows=state.products.map(p=>{
+      const imgs=[p.image,...String(p.gallery||'').split(/\n+/).filter(Boolean)].join(' | ');
+      return [p.id,p.name,p.categories,p.price,p.cost,p.stock,imgs,String(p.promos||'').replace(/\n+/g,' | '),p.description].map(csvEscape).join(',');
+    });
+    const blob=new Blob([[headers.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='productos-sd-comayagua.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  function downloadProductTemplateCSV(){
+    const csv='codigo,nombre,categoria,precio,costo,stock,imagenes,promos,descripcion\nSDC-001,Producto ejemplo,Gamer Móvil,350,110,5,https://link-imagen.jpg,"1:350 | 2:690",Descripción del producto';
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='plantilla-productos-sdc.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+
+  function openBackup(){
+    openModal(`<div class="modal-head"><h3>Backup e importación</h3><button class="close">×</button></div><div class="modal-body"><div class="card-box import-box"><h4>Importar productos CSV / XLSX</h4><p style="color:#b8c8d8">Puedes subir el archivo de Excel o CSV con columnas: código, nombre, categoría, precio, costo, stock, imágenes, promos y descripción.</p><label><span class="label">Modo de importación</span><select class="select" id="importProductsMode"><option value="merge">Actualizar por código y agregar nuevos</option><option value="replace">Reemplazar todo el catálogo</option></select></label><div class="modal-actions import-actions" style="position:static"><label class="btn full">Importar .CSV o .XLSX<input id="importProductsFile" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden></label><button class="btn secondary" id="exportProductsCsv">Exportar productos CSV</button><button class="btn ghost" id="downloadTemplateCsv">Plantilla CSV</button></div><div id="importProductsStatus" class="import-status">Tu archivo enviado sí trae las columnas correctas. Si usas Excel, guarda como .xlsx o .csv UTF-8.</div></div><div class="card-box"><h4>Backup completo JSON</h4><p style="color:#b8c8d8">Este respaldo guarda productos, ventas, cotizaciones y configuración.</p><div class="modal-actions" style="position:static"><button class="btn" id="exportBackup">Descargar backup JSON</button><label class="btn secondary">Importar backup<input id="importBackup" type="file" accept="application/json" hidden></label><button class="btn ghost" id="manualBackup">Guardar copia local</button></div></div><div class="card-box"><h4>Copias locales</h4><div id="backupList"></div></div></div>`,true);
+    function draw(){const b=SDCStore.listBackups(); $('#backupList').innerHTML=b.map(x=>`<div class="cart-row"><div><b>${escapeHtml(x.label)}</b><br><span>${new Date(x.date).toLocaleString('es-HN')}</span></div><button class="btn small secondary" data-restore="${x.id}">Restaurar</button></div>`).join('')||'<div class="empty-state">Sin copias locales.</div>'; $$('[data-restore]',modalRoot).forEach(btn=>btn.onclick=()=>{state=SDCStore.restoreBackup(btn.dataset.restore)||state; closeModal(); render(); toast('Backup restaurado.')}); }
+    draw();
+    $('#exportProductsCsv').onclick=exportProductsCSV;
+    $('#downloadTemplateCsv').onclick=downloadProductTemplateCSV;
+    $('#importProductsFile').onchange=e=>{const f=e.target.files[0]; if(f) handleProductImportFile(f); e.target.value='';};
+    $('#exportBackup').onclick=()=>{const blob=new Blob([SDCStore.exportData(state)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='backup-sd-comayagua.json'; a.click();};
+    $('#manualBackup').onclick=()=>{SDCStore.saveBackup(state,'Backup manual');draw();toast('Copia local guardada.')};
+    $('#importBackup').onchange=e=>{const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{try{state=SDCStore.importData(r.result);closeModal();render();toast('Backup importado.')}catch(err){toast('No se pudo importar.')}}; r.readAsText(f)};
+  }
+
+  function quoteSummaryText(q){
+    const date=new Date(q.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',hour:'numeric',minute:'2-digit'});
+    const products=(q.items||[]).map(x=>x.name).slice(0,2).join(', ')||'Sin productos';
+    const more=(q.items||[]).length>2?` +${(q.items||[]).length-2}`:'';
+    return `${date} · ${products}${more}`;
+  }
+  function openSavedQuotes(){
+    let q='';
+    openModal(`<div class="modal-head"><h3>Cotizaciones guardadas</h3><button class="close">×</button></div><div class="modal-body saved-quotes-body"><div class="card-box saved-quotes-head"><b>Buscar cotización</b><span>Busca por cliente, teléfono, código o producto. Luego puedes abrirla, mandarla por WhatsApp o pasarla a venta.</span><div class="searchbar"><span class="icon">⌕</span><input id="quoteSearch" placeholder="Nombre, teléfono, código o producto..."></div></div><div id="savedQuotesList" class="saved-quotes-list"></div></div>`,true);
+    function draw(){
+      const term=q.toLowerCase().trim();
+      const list=(state.quotes||[]).filter(x=>{
+        const hay=[x.id,x.client,x.phone,x.department,x.municipality,x.company,(x.items||[]).map(i=>i.name).join(' ')].join(' ').toLowerCase();
+        return !term || hay.includes(term);
+      });
+      $('#savedQuotesList',modalRoot).innerHTML=list.map(x=>{const c=calc(x); return `<div class="saved-quote-card"><div class="saved-quote-main"><b>${escapeHtml(x.client||'Cliente sin nombre')}</b><span>${escapeHtml(x.phone||'Sin teléfono')} · ${escapeHtml(x.id||'COT')}</span><small>${escapeHtml(quoteSummaryText(x))}</small></div><div class="saved-quote-total"><span>Total</span><b>${money(c.total)}</b></div><div class="saved-quote-actions"><button class="btn small secondary" data-openquote="${escapeHtml(x.id)}">Abrir</button><button class="btn small" data-salequote="${escapeHtml(x.id)}">Pasar a venta</button><button class="btn small ghost" data-waquote="${escapeHtml(x.id)}">WhatsApp</button><button class="btn small danger" data-delquote="${escapeHtml(x.id)}">Borrar</button></div></div>`}).join('')||'<div class="empty-state">Todavía no hay cotizaciones guardadas.</div>';
+      $$('[data-openquote]',modalRoot).forEach(b=>b.onclick=()=>{const x=state.quotes.find(y=>y.id===b.dataset.openquote); if(!x)return; quote=SDCStore.clone(x); quote.editingId=x.id; openModal(quoteModalHTML(false),true); bindQuoteCommon(false); toast('Cotización abierta para modificar.');});
+      $$('[data-salequote]',modalRoot).forEach(b=>b.onclick=()=>{const x=state.quotes.find(y=>y.id===b.dataset.salequote); if(!x)return; closeModal(); openSale(null,x); toast('Cotización pasada a venta.');});
+      $$('[data-waquote]',modalRoot).forEach(b=>b.onclick=()=>{const x=state.quotes.find(y=>y.id===b.dataset.waquote); if(!x)return; quote=SDCStore.clone(x); openModal(quoteModalHTML(false),true); bindQuoteCommon(false); sendWhatsAppText(false);});
+      $$('[data-delquote]',modalRoot).forEach(b=>b.onclick=()=>{if(!confirm('¿Borrar esta cotización guardada?'))return; state.quotes=state.quotes.filter(x=>x.id!==b.dataset.delquote); save(); draw(); toast('Cotización borrada.');});
+    }
+    $('#quoteSearch',modalRoot).oninput=e=>{q=e.target.value;draw()}; draw();
+  }
+
+  function openProfit(){const rows=state.products.map(p=>({p,profit:(+p.price||0)-(+p.cost||0),total:((+p.price||0)-(+p.cost||0))*(+p.stock||0)})); openModal(`<div class="modal-head"><h3>Ganancias</h3><button class="close">×</button></div><div class="modal-body"><table class="profit-table"><thead><tr><th>Producto</th><th>C/U</th><th>Stock</th><th>Total</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${escapeHtml(r.p.name)}</td><td>${money(r.profit)}</td><td>${num(r.p.stock)}</td><td>${money(r.total)}</td></tr>`).join('')}</tbody></table></div>`,true)}
+  function openReceipts(){openModal(`<div class="modal-head"><h3>Caja / recibos</h3><button class="close">×</button></div><div class="modal-body"><div class="cart-list">${state.sales.map(s=>`<div class="cart-row"><div><b>${escapeHtml(s.client||'Cliente')}</b><br><span>${escapeHtml(s.id)} · ${money(s.total||calc(s).total)}</span></div><button class="btn small secondary" data-openreceipt="${s.id}">Editar</button></div>`).join('')||'<div class="empty-state">Todavía no hay ventas registradas.</div>'}</div></div>`,true); $$('[data-openreceipt]',modalRoot).forEach(b=>b.onclick=()=>{const s=state.sales.find(x=>x.id===b.dataset.openreceipt); if(s){saleDraft=SDCStore.clone(s); saleDraft.editingId=s.id; openModal(quoteModalHTML(true),true); bindQuoteCommon(true); toast('Puedes editar esta factura y guardar cambios.')}}); }
+  function openNoCost(){openModal(`<div class="modal-head"><h3>Productos sin costo</h3><button class="close">×</button></div><div class="modal-body"><div class="cart-list">${state.products.filter(p=>+p.cost<=0).map(p=>`<div class="cart-row"><div><b>${escapeHtml(p.name)}</b><br><span>${escapeHtml(p.id)}</span></div><button class="btn small secondary" data-editcost="${p.id}">Editar</button></div>`).join('')||'<div class="empty-state">Todo tiene costo registrado.</div>'}</div></div>`,true); $$('[data-editcost]',modalRoot).forEach(b=>b.onclick=()=>{closeModal();openProductEditor(b.dataset.editcost)})}
+
+  window.addEventListener('storage',e=>{if(e.key===SDCStore.KEY){state=SDCStore.load(); render(); toast('Datos actualizados.')}});
+  $('#goTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+  window.addEventListener('scroll',()=>$('#goTop').style.display=scrollY>320?'block':'none');
+  applyAppearance();
+  render();
+})();

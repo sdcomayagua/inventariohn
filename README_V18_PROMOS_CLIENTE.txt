@@ -1,1 +1,0 @@
-V18: promociones del producto para cliente ahora salen en tabla clara con Solo producto, Envío Normal y Pagar al Recibir + comisión. También se mejora el texto de WhatsApp con precios con envío incluido.

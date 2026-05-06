@@ -1,0 +1,5 @@
+
+V25 - Corrección cantidad cliente
+- Se corrigieron los botones + y - en las tarjetas del catálogo/vista cliente.
+- Las cantidades actualizan total producto, envío normal y pagar al recibir desde la primera carga.
+- Las promociones por cantidad se siguen aplicando automáticamente.

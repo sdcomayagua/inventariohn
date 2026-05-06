@@ -1,0 +1,1 @@
+V19: Se quitó la tabla grande de promociones de la vista/foto para cliente. Ahora aparece una sección compacta con envíos, formas de pago, confirmación y nota de precio por cantidad sin mostrar tabla. El texto de WhatsApp ya no envía la lista completa de promociones; solo avisa que puede cotizar varias unidades con un solo envío.

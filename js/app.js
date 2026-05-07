@@ -205,7 +205,7 @@
     if(inp && document.activeElement!==inp) inp.value=qty;
     const productTotal=productItemsTotal(p,qty), normalTotal=productNormalTotalQty(p,qty), codTotal=productCodTotalQty(p,qty);
     const set=(key,value)=>{const el=card.querySelector(`[data-client-total="${key}"]`); if(el) el.textContent=value;};
-    set('qty', promoTotalForQty(p,qty)!==null?`Total producto · ${num(qty)} · oferta`: `Total producto · ${num(qty)}`);
+    set('qty', promoTotalForQty(p,qty)!==null?`Total · ${num(qty)} · oferta`: `Total · ${num(qty)}`);
     set('product', money(productTotal));
     set('normal', money(normalTotal));
     set('cod', money(codTotal));
@@ -294,7 +294,7 @@
     const promoBadge=promoTiers(p).length?`<div class="offer-mini-badge">🎁 Ofertas configuradas por cantidad</div>`:'';
     const appliedOffer=promoLabelForQty(p,qty);
     const adminView=`${promoBadge}<div class="metrics admin-metrics"><div class="metric"><span>Stock</span><b>${num(stock)} disponibles</b></div><div class="metric"><span>Invertido</span><b>${cost>0?moneyPrivate(invested):'Sin costo'}</b></div><div class="metric"><span>Ganancia C/U</span><b>${moneyPrivate(profitUnit)}</b></div><div class="metric profit-total ${lowProfit?'low-profit':''}"><span>Ganancia Total</span><b>${moneyPrivate(profitTotal)}</b></div></div>${lowProfit?'<div class="profit-warning">⚠ Ganancia baja por unidad. Revisá precio o costo.</div>':''}<div class="admin-total-line"><span>Si vendes todo el stock</span><b>${moneyPrivate(saleValue)}</b></div><div class="stock-line"><i style="width:${percent}%"></i></div><div class="card-actions"><button class="btn secondary quote" data-action="quoteProduct" data-id="${escapeHtml(p.id)}">Cotizar</button><button class="btn" data-action="sellProduct" data-id="${escapeHtml(p.id)}">Vender</button><button class="btn secondary" data-action="viewProduct" data-id="${escapeHtml(p.id)}">Ver</button><button class="btn secondary" data-action="marketingProduct" data-id="${escapeHtml(p.id)}">Textos</button><button class="btn ghost" data-action="editProduct" data-id="${escapeHtml(p.id)}">Editar</button></div>`;
-    const clientView=`<div class="client-card-panel"><p class="client-description">${escapeHtml(p.description||'Producto disponible para entrega. Consulta disponibilidad antes de confirmar tu pedido.')}</p><div class="client-qty-card"><span>Cantidad consultada</span><div class="inline-qty"><button data-cqty-minus="${escapeHtml(p.id)}">−</button><input data-cqty-input="${escapeHtml(p.id)}" type="number" min="1" inputmode="numeric" value="${qty}"><button data-cqty-plus="${escapeHtml(p.id)}">+</button></div></div><div class="client-totals-card"><div><span data-client-total="qty">${promoTotalForQty(p,qty)!==null?`Total producto · ${num(qty)} · oferta`:`Total producto · ${num(qty)}`}</span><b data-client-total="product">${money(productTotal)}</b></div><div><span>Envío normal</span><b data-client-total="normal">${money(normalTotal)}</b><small>Producto + Lps. 110</small></div><div><span>Al recibir + 6%</span><b data-client-total="cod">${money(codTotal)}</b><small>Producto + Lps. 100 + comisión</small></div></div>${appliedOffer?`<div class="client-offer-line" data-client-total="offer">🎁 ${escapeHtml(appliedOffer)}</div>`:''}</div><div class="card-actions client-actions client-actions-v23"><button class="btn secondary quote" data-action="quoteProduct" data-id="${escapeHtml(p.id)}">Cotizar</button><button class="btn" data-action="waProduct" data-id="${escapeHtml(p.id)}">WhatsApp</button><button class="btn secondary" data-action="viewProduct" data-id="${escapeHtml(p.id)}">Foto</button></div>`;
+    const clientView=`<div class="client-card-panel"><p class="client-description">${escapeHtml(p.description||'Producto disponible para entrega. Consulta disponibilidad antes de confirmar tu pedido.')}</p><div class="client-qty-card"><span>Cantidad consultada</span><div class="inline-qty"><button data-cqty-minus="${escapeHtml(p.id)}">−</button><input data-cqty-input="${escapeHtml(p.id)}" type="number" min="1" inputmode="numeric" value="${qty}"><button data-cqty-plus="${escapeHtml(p.id)}">+</button></div></div><div class="client-totals-card"><div><span data-client-total="qty">${promoTotalForQty(p,qty)!==null?`Total · ${num(qty)} · oferta`:`Total · ${num(qty)}`}</span><b data-client-total="product">${money(productTotal)}</b></div><div><span>Normal</span><b data-client-total="normal">${money(normalTotal)}</b><small>Prod. + 110</small></div><div><span>Recibir + 6%</span><b data-client-total="cod">${money(codTotal)}</b><small>Prod. + 100 + com.</small></div></div>${appliedOffer?`<div class="client-offer-line" data-client-total="offer">🎁 ${escapeHtml(appliedOffer)}</div>`:''}</div><div class="card-actions client-actions client-actions-v23"><button class="btn secondary quote" data-action="quoteProduct" data-id="${escapeHtml(p.id)}">Cotizar</button><button class="btn" data-action="waProduct" data-id="${escapeHtml(p.id)}">WhatsApp</button><button class="btn secondary" data-action="viewProduct" data-id="${escapeHtml(p.id)}">Foto</button></div>`;
     return `<article class="product-card ${mode==='client'?'client-view':'admin-view'}" data-id="${escapeHtml(p.id)}"><div class="product-top"><div class="tag-stack"><span class="tag-pill">${escapeHtml(tags[0]||'General')}</span>${tags.length>1?`<span class="tag-pill">+${tags.length-1}</span>`:''}</div><span class="code-pill">${escapeHtml(p.id)}</span></div>
       <div class="product-media"><img src="${escapeHtml(productImage(p))}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><span class="stock-badge ${low?'low':''}"><span class="dot" style="background:#031018;box-shadow:none"></span>${sold?'Agotado':low?'Bajo stock':'Disponible'}</span><b class="price-badge">${money(price)}</b></div>
       <h3 class="product-title">${escapeHtml(p.name)}</h3>${mode==='client'?clientView:adminView}</article>`
@@ -436,29 +436,10 @@
   function productWhatsAppText(p,qty=1){
     qty=Math.max(1,Number(qty)||1);
     const productTotal=productItemsTotal(p,qty);
-    const promoNote=promoTotalForQty(p,qty)!==null?`\n🎁 *${promoLabelForQty(p,qty)||'Promoción aplicada por cantidad.'}*`:'';
-    const moreQtyNote=String(p.promos||'').trim()?`
-
-🎁 *¿Desea varias unidades?*
-Se le puede cotizar el paquete exacto por WhatsApp con un solo envío.`:'';
-    return `🛍️ *PRODUCTO DISPONIBLE - SD COMAYAGUA*
-
-📌 *Producto:* ${p.name}
-🔢 *Cantidad consultada:* ${num(qty)} ${qty===1?'unidad':'unidades'}
-💰 *Solo producto:* ${money(productTotal)}${qty>1?` (${money(productTotal/qty)} c/u)`:''}${promoNote}
-
-🚚 *Envío Normal:* ${money(productNormalTotalQty(p,qty))}
-Incluye producto + Lps. 110 de envío. El cliente paga por depósito, transferencia o Tigo Money.
-
-📦 *Pagar al Recibir:* ${money(productCodTotalQty(p,qty))}
-Incluye producto + Lps. 100 de envío + comisión del 6%.
-
-📝 *Descripción:*
-${p.description||'Producto disponible para entrega.'}${moreQtyNote}
-
-✅ Si desea agregar más productos, preparamos una sola cotización con un solo envío para que pague claro.
-
-WhatsApp SD COMAYAGUA: +504 3151-7755`;
+    const unit=productTotal/qty;
+    const promoNote=promoTotalForQty(p,qty)!==null?`\n\u{1F381} *${promoLabelForQty(p,qty)||'Promoción aplicada por cantidad.'}*`:'';
+    const moreQtyNote=String(p.promos||'').trim()?`\n\n\u{1F381} *¿Desea varias unidades?*\nPodemos preparar una cotización completa con el paquete exacto y un solo envío.`:'';
+    return `\u{1F6CD}\uFE0F *PRODUCTO DISPONIBLE - SD COMAYAGUA*\n\n\u{1F4CC} *Producto:* ${p.name}\n\u{1F522} *Cantidad consultada:* ${num(qty)} ${qty===1?'unidad':'unidades'}\n\u{1F4B0} *Solo producto:* ${money(productTotal)}${qty>1?` (${money(unit)} c/u)`:''}${promoNote}\n\n\u{1F69A} *Envío Normal:* ${money(productNormalTotalQty(p,qty))}\nIncluye producto + *Lps. 110* de envío. Pago por depósito, transferencia o Tigo Money.\n\n\u{1F4E6} *Pagar al Recibir:* ${money(productCodTotalQty(p,qty))}\nIncluye producto + *Lps. 100* de envío + comisión del *6%*.\n\n\u{1F4DD} *Descripción:*\n${p.description||'Producto disponible para entrega.'}${moreQtyNote}\n\n\u{2705} Podemos agregar más productos y preparar una sola cotización para que pague claro.\n\n\u{1F4F2} *WhatsApp SD COMAYAGUA:* +504 3151-7755`;
   }
 
   function askClientPhone(initial=''){
@@ -566,8 +547,10 @@ WhatsApp SD COMAYAGUA: +504 3151-7755`;
       const unit=total/qty;
       const p=itemProductRef(it);
       const promo=promoTotalForQty(p,qty)!==null;
-      return `<div class="receipt-item-pro">
+      const img=it.image || productImage(p) || placeholderFor(p||{name:it.name});
+      return `<div class="receipt-item-pro has-thumb">
         <div class="receipt-item-index">${i+1}</div>
+        <img class="receipt-item-thumb" src="${escapeHtml(img)}" alt="${escapeHtml(it.name)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p||{name:it.name}))}'">
         <div class="receipt-item-info">
           <b>${escapeHtml(it.name)}</b>
           <span>${num(qty)} ${qty===1?'unidad':'unidades'} · ${money(unit)} c/u${promo?' · Oferta aplicada':''}</span>
@@ -634,22 +617,23 @@ WhatsApp SD COMAYAGUA: +504 3151-7755`;
   function whatsappText(doc,isSale){
     const c=calc(doc);
     const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
-    const shippingProcess=doc.cod?'Pagar al Recibir: productos + Lps. 100 de envío + comisión del 6%.':'Envío Normal: productos + Lps. 110 de envío. Pago por depósito, transferencia o Tigo Money.';
+    const shippingTitle=doc.cod?'Pagar al Recibir':'Envío Normal';
+    const shippingProcess=doc.cod?'Productos + *Lps. 100* de envío + comisión del *6%*.':'Productos + *Lps. 110* de envío. Pago por depósito, transferencia o Tigo Money.';
     const productLines=doc.items.length?doc.items.map((it,i)=>{
       const qty=Math.max(1,Number(it.qty)||1);
       const total=itemTotal(it);
       const unit=total/qty;
       const p=itemProductRef(it);
-      const promo=promoTotalForQty(p,qty)!==null?'\nOferta aplicada por cantidad.':'';
-      return `${i+1}. ${it.name}\nCantidad: ${qty}\nPrecio C/U: ${money(unit)}\nTotal: ${money(total)}${promo}`;
+      const promo=promoTotalForQty(p,qty)!==null?`\n   \u{1F381} Oferta aplicada por cantidad.`:'';
+      return `${i+1}. *${it.name}*\n   \u{1F522} Cantidad: ${qty}\n   \u{1F4B0} Precio C/U: ${money(unit)}\n   \u{2705} Total: *${money(total)}*${promo}`;
     }).join('\n\n'):'Sin productos agregados';
-    const commissionLine=(doc.cod||c.commission>0)?`Comisión por Pagar al Recibir: ${money(c.commission)}\n`:'';
-    const discountLine=c.discount>0?`Descuento: ${money(c.discount)}\n`:'';
-    const referenceLine=doc.reference?`Referencia: ${doc.reference}\n`:'';
+    const commissionLine=(doc.cod||c.commission>0)?`\n• *Comisión:* ${money(c.commission)}`:'';
+    const discountLine=c.discount>0?`\n• *Descuento:* -${money(c.discount)}`:'';
+    const referenceLine=doc.reference?`\n• *Referencia:* ${doc.reference}`:'';
     const title=isSale?'RECIBO SD COMAYAGUA':'COTIZACIÓN SD COMAYAGUA';
     const client=String(doc.client||'').trim()||'Cliente no registrado';
     const phone=String(doc.phone||'').trim()||'No registrado';
-    return `*${title}*\n\nCódigo: ${doc.id}\nFecha: ${date}\n\nCliente: ${client}\nTeléfono: ${phone}\nDepartamento: ${doc.department||'No seleccionado'}\nMunicipio: ${doc.municipality||'No seleccionado'}\n${referenceLine}\n*PRODUCTOS*\n${productLines}\n\n*ENVÍO Y PAGO*\n${shippingProcess}\nEmpresa / entrega: ${doc.company||'No seleccionada'}\nEnvío: ${money(c.shipping)}\n${commissionLine}Total envío: ${money(c.delivery)}\n\n*RESUMEN*\nProductos: ${money(c.products)}\n${discountLine}*TOTAL A PAGAR: ${money(c.total)}*\n\nSD COMAYAGUA\nWhatsApp: +504 3151-7755`;
+    return `\u{1F9FE} *${title}*\n\n\u{1F516} *Código:* ${doc.id}\n\u{1F4C5} *Fecha:* ${date}\n\n\u{1F464} *DATOS DEL CLIENTE*\n• *Cliente:* ${client}\n• *Teléfono:* ${phone}\n• *Departamento:* ${doc.department||'No seleccionado'}\n• *Municipio:* ${doc.municipality||'No seleccionado'}${referenceLine}\n\n\u{1F6D2} *PRODUCTOS*\n${productLines}\n\n\u{1F69A} *ENVÍO Y PAGO*\n• *Modalidad:* ${shippingTitle}\n• *Empresa / entrega:* ${doc.company||'No seleccionada'}\n• *Envío:* ${money(c.shipping)}${commissionLine}\n• *Total envío:* ${money(c.delivery)}\n${shippingProcess}\n\n\u{1F4CA} *RESUMEN*\n• *Productos:* ${money(c.products)}${discountLine}\n\u{2705} *TOTAL A PAGAR: ${money(c.total)}*\n\n\u{26A0}\uFE0F Cotización informativa. Confirme disponibilidad, entrega y total antes de pagar.\n\n\u{1F3EC} *SD COMAYAGUA*\n\u{1F4F2} WhatsApp: +504 3151-7755`;
   }
 
   function waPhone(phone){const p=cleanPhone(phone); return p? (p.length===8?'504'+p:p) : ''}
@@ -675,9 +659,76 @@ WhatsApp SD COMAYAGUA: +504 3151-7755`;
     return doc.phone||'';
   }
   function sendWhatsAppText(isSale){const doc=currentDoc(isSale); if(!doc.items.length)return toast('Agrega productos primero.'); const c=calc(doc); if(c.products<=0||c.total<=0)return toast('El total está en cero. Revisa producto, precio y envío antes de enviar.'); const phone=chooseWaPhone(doc); if(phone===null)return; save(); openWhatsApp(phone,whatsappText(doc,isSale));}
-  async function docToBlob(){const el=$('#printableDoc',modalRoot); if(!window.html2canvas){window.print();return null} try{const canvas=await html2canvas(el,{backgroundColor:'#eaf5f9',scale:3,useCORS:true,imageTimeout:12000}); return await new Promise(res=>canvas.toBlob(res,'image/png',.98));}catch(err){console.error(err); toast('No se pudo generar la imagen del documento. Puedes usar el botón PDF.'); return null;}}
-  async function downloadDocImage(name='documento'){const doc=name==='recibo'?saleDraft:quote; const blob=await docToBlob(); if(!blob)return; const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${name}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc?.id||'sdc')}.png`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Imagen descargada con nombre único.');}
-  async function shareDocPhoto(isSale){const doc=currentDoc(isSale); if(!doc.items.length)return toast('Agrega productos primero.'); const c=calc(doc); if(c.products<=0||c.total<=0)return toast('El total está en cero. Revisa producto, precio y envío antes de enviar.'); save(); const blob=await docToBlob(); const text=whatsappText(doc,isSale); const filename=`${isSale?'recibo':'cotizacion'}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc.id||'sdc')}.png`; if(blob && navigator.canShare){const file=new File([blob],filename,{type:'image/png'}); if(navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text,title:isSale?'Recibo SD Comayagua':'Cotización SD Comayagua'}); toast('Elegí WhatsApp y luego el chat del cliente. Foto y texto van juntos.'); return;}catch(e){if(e && e.name==='AbortError')return;}}} if(blob){const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);} const phone=chooseWaPhone(doc); if(phone!==null) openWhatsApp(phone,text); toast('Tu navegador no permitió foto + texto juntos. Se descargó la imagen y se abrió WhatsApp con el texto.');}
+  async function docToBlob(){
+    const el=$('#printableDoc',modalRoot);
+    if(!window.html2canvas){window.print();return null}
+    try{
+      const canvas=await html2canvas(el,{backgroundColor:'#eaf5f9',scale:3,useCORS:true,imageTimeout:12000});
+      return await new Promise(res=>canvas.toBlob(res,'image/png',.98));
+    }catch(err){
+      console.error(err);
+      toast('No se pudo generar la imagen del documento. Puedes usar el botón PDF.');
+      return null;
+    }
+  }
+  async function downloadDocImage(name='documento'){
+    const doc=name==='recibo'?saleDraft:quote;
+    const blob=await docToBlob();
+    if(!blob)return;
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`${name}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc?.id||'sdc')}.png`;
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    toast('Imagen descargada con nombre único.');
+  }
+  async function copyTextSafe(text){
+    try{await navigator.clipboard?.writeText(text); return true;}catch(e){return false;}
+  }
+  async function copyImageSafe(blob){
+    try{
+      if(navigator.clipboard && window.ClipboardItem && blob){
+        await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+        return true;
+      }
+    }catch(e){}
+    return false;
+  }
+  async function shareDocPhoto(isSale){
+    const doc=currentDoc(isSale);
+    if(!doc.items.length)return toast('Agrega productos primero.');
+    const c=calc(doc);
+    if(c.products<=0||c.total<=0)return toast('El total está en cero. Revisa producto, precio y envío antes de enviar.');
+    save();
+    const blob=await docToBlob();
+    const text=whatsappText(doc,isSale);
+    const filename=`${isSale?'recibo':'cotizacion'}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc.id||'sdc')}.png`;
+    if(blob && navigator.canShare){
+      const file=new File([blob],filename,{type:'image/png'});
+      if(navigator.canShare({files:[file]})){
+        try{
+          await navigator.share({files:[file],text,title:isSale?'Recibo SD Comayagua':'Cotización SD Comayagua'});
+          toast('Selecciona WhatsApp. Se compartió la imagen con el mensaje.');
+          return;
+        }catch(e){
+          if(e && e.name==='AbortError')return;
+        }
+      }
+    }
+    const copiedImage=blob?await copyImageSafe(blob):false;
+    await copyTextSafe(text);
+    if(!copiedImage && blob){
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=filename;
+      a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }
+    const phone=chooseWaPhone(doc);
+    if(phone!==null) openWhatsApp(phone,text);
+    toast(copiedImage?'WhatsApp se abrió con el texto. La imagen quedó copiada; pégala en el chat si no aparece automáticamente.':'Se descargó la imagen y se abrió WhatsApp con el texto. Adjunta la imagen descargada si el navegador no la envía solo.');
+  }
+
   function finishSale(){
     if(!saleDraft.items.length)return toast('Agrega productos primero.');
     const editingId=saleDraft.editingId||'';

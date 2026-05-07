@@ -550,23 +550,106 @@ WhatsApp SD COMAYAGUA: +504 3151-7755`;
     const c=calc(doc);
     const code=doc.id||'SDC';
     const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
-    const process=doc.cod?'Pagar al Recibir: productos + Lps. 100 de envío + comisión del 6%.':'Envío Normal: productos + Lps. 110 de envío, pagado por depósito, transferencia o Tigo Money.';
-    const rows=(doc.items||[]).map((it,i)=>{const qty=Math.max(1,Number(it.qty)||1); const total=itemTotal(it); const unit=total/qty; const p=itemProductRef(it); const promo=promoTotalForQty(p,qty)!==null; return `<div class="doc-item-card-v23"><div class="doc-prod-line"><span>#${i+1}</span><b>${escapeHtml(it.name)}${promo?`<small class="doc-promo-note">Oferta aplicada</small>`:''}</b></div><div class="doc-prod-metrics"><div><small>Cant.</small><b>${num(qty)}</b></div><div><small>Precio C/U</small><b>${money(unit)}</b></div><div><small>Total</small><b>${money(total)}</b></div></div></div>`}).join('')||'<div class="doc-item-empty">Sin productos agregados</div>';
-    return `<div class="doc-wrap compact-doc doc-v21 doc-v23" id="printableDoc"><div class="doc-topline">${isSale?'RECIBO / FACTURA DE COMPRA':'COTIZACIÓN PARA CLIENTE'}</div><div class="doc-head compact-head"><div><span class="doc-pill">${isSale?'Venta registrada':'Preventa informativa'}</span><h2>SD COMAYAGUA</h2><p>${date} · <b>${escapeHtml(code)}</b></p></div><img class="doc-logo" src="${LOGO_SRC}" alt="Logo"></div><div class="doc-fields compact-fields"><div class="doc-field"><span>Cliente</span><b>${escapeHtml(doc.client||'Cliente')}</b></div><div class="doc-field"><span>Teléfono</span><b>${escapeHtml(doc.phone||'No registrado')}</b></div><div class="doc-field"><span>Ubicación</span><b>${escapeHtml([doc.department,doc.municipality].filter(Boolean).join(' / ')||'No seleccionada')}</b></div><div class="doc-field"><span>Entrega</span><b>${escapeHtml(doc.company||'No seleccionada')}</b></div>${doc.reference?`<div class="doc-field wide"><span>Referencia</span><b>${escapeHtml(doc.reference)}</b></div>`:''}</div><div class="doc-process"><b>Proceso de pago:</b> ${process}</div><div class="doc-items-v23"><div class="doc-items-title-v23">Productos cotizados</div>${rows}</div><div class="doc-mini-summary doc-summary-v21"><div><span>Productos</span><b>${money(c.products)}</b></div><div><span>Envío</span><b>${money(c.shipping)}</b></div><div><span>Comisión</span><b>${money(c.commission)}</b></div><div><span>Descuento</span><b>${money(c.discount)}</b></div><div class="grand"><span>Total a pagar</span><b>${money(c.total)}</b></div></div><p class="doc-note compact-note">${isSale?'Gracias por comprar en SD Comayagua.':'Cotización informativa. Revise producto, cantidad, envío y total antes de confirmar.'} WhatsApp: +504 3151-7755</p></div>`
+    const itemCount=(doc.items||[]).reduce((a,it)=>a+Math.max(1,Number(it.qty)||1),0);
+    const titleText=isSale?'RECIBO DE COMPRA':'COTIZACIÓN PARA CLIENTE';
+    const statusText=isSale?'Venta registrada':'Cotización vigente';
+    const productTitle=isSale?'Productos vendidos':'Productos cotizados';
+    const paymentTitle=doc.cod?'Pagar al recibir':'Envío normal';
+    const process=doc.cod?'Productos + Lps. 100 de envío + comisión del 6%. Total redondeado en lempiras.':'Productos + Lps. 110 de envío. Pago por depósito, transferencia o Tigo Money.';
+    const clientName=String(doc.client||'').trim()||'Cliente no registrado';
+    const phone=String(doc.phone||'').trim()||'No registrado';
+    const location=[doc.department,doc.municipality].filter(Boolean).join(' / ')||'No seleccionada';
+    const delivery=String(doc.company||'').trim()||'No seleccionada';
+    const rows=(doc.items||[]).map((it,i)=>{
+      const qty=Math.max(1,Number(it.qty)||1);
+      const total=itemTotal(it);
+      const unit=total/qty;
+      const p=itemProductRef(it);
+      const promo=promoTotalForQty(p,qty)!==null;
+      return `<div class="receipt-item-pro">
+        <div class="receipt-item-index">${i+1}</div>
+        <div class="receipt-item-info">
+          <b>${escapeHtml(it.name)}</b>
+          <span>${num(qty)} ${qty===1?'unidad':'unidades'} · ${money(unit)} c/u${promo?' · Oferta aplicada':''}</span>
+        </div>
+        <strong>${money(total)}</strong>
+      </div>`;
+    }).join('')||'<div class="receipt-empty-pro">Sin productos agregados</div>';
+    const commissionRow=(doc.cod||c.commission>0)?`<div><span>Comisión pagar al recibir</span><b>${money(c.commission)}</b></div>`:'';
+    const discountRow=c.discount>0?`<div><span>Descuento</span><b>- ${money(c.discount)}</b></div>`:'';
+    const note=isSale?'Gracias por comprar en SD Comayagua.':'Cotización informativa. Confirme disponibilidad, entrega y total antes de pagar.';
+    return `<div class="doc-wrap compact-doc doc-v21 doc-v23 receipt-pro-v4" id="printableDoc">
+      <div class="receipt-band-pro"><span>${titleText}</span><b>${statusText}</b></div>
+      <div class="receipt-inner-pro">
+        <header class="receipt-header-pro">
+          <div class="receipt-brand-pro">
+            <img class="doc-logo" src="${LOGO_SRC}" alt="Logo SD Comayagua">
+            <div>
+              <small>SD COMAYAGUA</small>
+              <h2>${isSale?'Recibo de compra':'Cotización'}</h2>
+              <p>${date}</p>
+              <em>${escapeHtml(code)}</em>
+            </div>
+          </div>
+          <div class="receipt-total-pro">
+            <span>Total a pagar</span>
+            <b>${money(c.total)}</b>
+          </div>
+        </header>
+
+        <section class="receipt-client-pro">
+          <article><span>Cliente</span><b>${escapeHtml(clientName)}</b></article>
+          <article><span>Teléfono</span><b>${escapeHtml(phone)}</b></article>
+          <article><span>Ubicación</span><b>${escapeHtml(location)}</b></article>
+          <article><span>Entrega</span><b>${escapeHtml(delivery)}</b></article>
+          ${doc.reference?`<article class="wide"><span>Referencia</span><b>${escapeHtml(doc.reference)}</b></article>`:''}
+        </section>
+
+        <section class="receipt-process-pro">
+          <div><span>Proceso de pago</span><b>${paymentTitle}</b></div>
+          <p>${process}</p>
+        </section>
+
+        <section class="receipt-products-pro">
+          <div class="receipt-title-pro"><span>${productTitle}</span><b>${itemCount} ${itemCount===1?'artículo':'artículos'}</b></div>
+          ${rows}
+        </section>
+
+        <section class="receipt-summary-pro">
+          <div><span>Subtotal productos</span><b>${money(c.products)}</b></div>
+          <div><span>Envío</span><b>${money(c.shipping)}</b></div>
+          ${commissionRow}
+          ${discountRow}
+          <div class="grand"><span>Total a pagar</span><b>${money(c.total)}</b></div>
+        </section>
+
+        <footer class="receipt-footer-pro">
+          <b>${note}</b>
+          <span>WhatsApp: +504 3151-7755</span>
+        </footer>
+      </div>
+    </div>`
   }
 
   function whatsappText(doc,isSale){
-    const c=calc(doc); const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
-    const shippingProcess=doc.cod?'Pagar al Recibir: productos + Lps. 100 de envío + comisión del 6%.':'Envío Normal: productos + Lps. 110 de envío. El cliente paga por depósito, transferencia o Tigo Money.';
+    const c=calc(doc);
+    const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
+    const shippingProcess=doc.cod?'Pagar al Recibir: productos + Lps. 100 de envío + comisión del 6%.':'Envío Normal: productos + Lps. 110 de envío. Pago por depósito, transferencia o Tigo Money.';
     const productLines=doc.items.length?doc.items.map((it,i)=>{
       const qty=Math.max(1,Number(it.qty)||1);
       const total=itemTotal(it);
       const unit=total/qty;
       const p=itemProductRef(it);
-      const promo=promoTotalForQty(p,qty)!==null?'\n   🎁 Oferta aplicada por cantidad.':'';
-      return `${i+1}. ${it.name}\n   Cantidad: ${qty}\n   Precio C/U: ${money(unit)}\n   Total: ${money(total)}${promo}`;
-    }).join('\n'):'Sin productos agregados';
-    return `🧾 *${isSale?'RECIBO':'COTIZACIÓN'} SD COMAYAGUA*\n\n📌 *Código:* ${doc.id}\n📅 *Fecha:* ${date}\n\n👤 *Cliente:* ${doc.client||'Cliente'}\n📞 *Teléfono:* ${doc.phone||'No registrado'}\n🏷️ *Departamento:* ${doc.department||'No seleccionado'}\n📍 *Municipio:* ${doc.municipality||'No seleccionado'}${doc.reference?`\n🏠 *Referencia:* ${doc.reference}`:''}\n\n🛒 *PRODUCTOS*\n${productLines}\n\n🚚 *ENVÍO Y PAGO*\n${shippingProcess}\nEmpresa / entrega: ${doc.company||'No seleccionada'}\nEnvío: ${money(c.shipping)}\nComisión por Pagar al Recibir: ${money(c.commission)}\nTotal envío: ${money(c.delivery)}\n\n💰 *RESUMEN*\nProductos: ${money(c.products)}\nDescuento: ${money(c.discount)}\n*TOTAL A PAGAR: ${money(c.total)}*\n\nSD COMAYAGUA.\nWhatsApp: +504 3151-7755`;
+      const promo=promoTotalForQty(p,qty)!==null?'\nOferta aplicada por cantidad.':'';
+      return `${i+1}. ${it.name}\nCantidad: ${qty}\nPrecio C/U: ${money(unit)}\nTotal: ${money(total)}${promo}`;
+    }).join('\n\n'):'Sin productos agregados';
+    const commissionLine=(doc.cod||c.commission>0)?`Comisión por Pagar al Recibir: ${money(c.commission)}\n`:'';
+    const discountLine=c.discount>0?`Descuento: ${money(c.discount)}\n`:'';
+    const referenceLine=doc.reference?`Referencia: ${doc.reference}\n`:'';
+    const title=isSale?'RECIBO SD COMAYAGUA':'COTIZACIÓN SD COMAYAGUA';
+    const client=String(doc.client||'').trim()||'Cliente no registrado';
+    const phone=String(doc.phone||'').trim()||'No registrado';
+    return `*${title}*\n\nCódigo: ${doc.id}\nFecha: ${date}\n\nCliente: ${client}\nTeléfono: ${phone}\nDepartamento: ${doc.department||'No seleccionado'}\nMunicipio: ${doc.municipality||'No seleccionado'}\n${referenceLine}\n*PRODUCTOS*\n${productLines}\n\n*ENVÍO Y PAGO*\n${shippingProcess}\nEmpresa / entrega: ${doc.company||'No seleccionada'}\nEnvío: ${money(c.shipping)}\n${commissionLine}Total envío: ${money(c.delivery)}\n\n*RESUMEN*\nProductos: ${money(c.products)}\n${discountLine}*TOTAL A PAGAR: ${money(c.total)}*\n\nSD COMAYAGUA\nWhatsApp: +504 3151-7755`;
   }
 
   function waPhone(phone){const p=cleanPhone(phone); return p? (p.length===8?'504'+p:p) : ''}

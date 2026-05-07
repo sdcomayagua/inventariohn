@@ -1,0 +1,35 @@
+:root{
+  --bg:#020812;
+  --panel:#071523;
+  --panel2:#0b2133;
+  --text:#eff8ff;
+  --muted:#9bb1c3;
+  --cyan:#18e7ff;
+  --blue:#0d62ff;
+  --mint:#28f6a1;
+  --silver:#d9e8f5;
+  --danger:#ff5478;
+  --warning:#ffd166;
+  --line:rgba(211,236,255,.15);
+  --glass:linear-gradient(145deg,rgba(11,33,51,.92),rgba(3,12,23,.98));
+  --font-pro:"Barlow","Segoe UI",Roboto,Arial,sans-serif;
+  --font-gamer:"Chakra Petch","Barlow","Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:
+  radial-gradient(circle at 12% 0%,rgba(24,231,255,.16),transparent 30%),
+  radial-gradient(circle at 92% 6%,rgba(40,246,161,.12),transparent 34%),
+  linear-gradient(180deg,#061827 0%,#020812 50%,#01040a 100%);
+  color:var(--text);font-family:var(--font-pro);font-weight:650;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+img{max-width:100%;display:block}
+.hidden{display:none!important}
+.justified{text-align:justify;text-justify:inter-word;line-height:1.5;color:#c6d8e7}
+.wide{grid-column:1/-1}
+.stack{display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-family:var(--font-gamer);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);font-weight:800}
+.app-shell{min-height:100vh;padding-bottom:88px}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:rgba(2,8,18,.76);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand-mini{display:flex;align-items:center;gap:10px;min-width:0}.brand-mini img{width:44px;height:44px;border-radius:50%;object-fit:contain;filter:drop-shadow(0 0 13px rgba(24,231,255,.22))}.brand-mini strong{display:block;font-family:var(--font-gamer);font-size:16px;line-height:1;letter-spacing:.06em}.brand-mini span{display:block;color:var(--muted);font-size:12px;margin-top:3px}.page-wrap{width:min(1120px,100%);margin:0 auto;padding:14px}.icon-btn{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);border-radius:16px;min-width:42px;height:42px;font-size:20px}.primary-btn,.soft-btn,.danger-btn,.upload-btn{border:0;border-radius:18px;padding:13px 16px;font-weight:900;min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}.primary-btn{background:linear-gradient(135deg,var(--mint),var(--cyan));color:#031018;box-shadow:0 12px 28px rgba(24,231,255,.18)}.soft-btn,.upload-btn{background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--text)}.danger-btn{background:rgba(255,84,120,.12);border:1px solid rgba(255,84,120,.28);color:#ffd5de}.button-row{display:flex;flex-wrap:wrap;gap:10px}.field{width:100%;border:1px solid rgba(202,232,255,.16);background:#04101d;color:var(--text);border-radius:17px;padding:13px 14px;outline:none;min-height:48px}.field:focus{border-color:rgba(24,231,255,.55);box-shadow:0 0 0 3px rgba(24,231,255,.10)}label{display:flex;flex-direction:column;gap:7px;color:#cfe0ec;font-size:13px;font-weight:800}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.form-card,.search-card,.private-note{background:var(--glass);border:1px solid var(--line);border-radius:28px;padding:14px;box-shadow:0 18px 44px rgba(0,0,0,.22)}.private-note{color:#c7d8e8;line-height:1.45;margin:14px 0;text-align:justify}.private-note b{color:#fff}.info-box{border:1px solid rgba(24,231,255,.22);background:rgba(24,231,255,.08);border-radius:18px;padding:12px;color:#d8f6ff;line-height:1.35}.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);z-index:100;background:#eff8ff;color:#061522;border-radius:999px;padding:12px 16px;font-weight:900;box-shadow:0 18px 50px rgba(0,0,0,.35);max-width:calc(100% - 30px);text-align:center}.tabs{position:sticky;bottom:10px;z-index:15;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:16px;padding:8px;border:1px solid var(--line);background:rgba(2,8,18,.82);backdrop-filter:blur(12px);border-radius:24px;box-shadow:0 18px 50px rgba(0,0,0,.32)}.tab{border:0;border-radius:17px;background:transparent;color:#a8bccb;padding:10px 6px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}.tab.active{background:linear-gradient(135deg,rgba(40,246,161,.18),rgba(24,231,255,.12));color:#fff;border:1px solid rgba(24,231,255,.18)}

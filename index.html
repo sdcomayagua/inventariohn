@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#061522" />
+  <title>SD COMAYAGUA | Panel Privado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700;800;900&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+</head>
+<body>
+  <div id="appShell" class="app-shell">
+    <header class="topbar private-only">
+      <div class="brand-mini">
+        <img src="assets/img/logo-sdc.png" alt="Logo SD COMAYAGUA" />
+        <div>
+          <strong>SD COMAYAGUA</strong>
+          <span>Panel privado · No compartir</span>
+        </div>
+      </div>
+      <button id="btnOpenConfig" class="icon-btn" type="button" aria-label="Configuración privada">⚙</button>
+    </header>
+
+    <main class="page-wrap">
+      <section class="hero-card">
+        <img class="hero-watermark" src="assets/img/logo-sdc.png" alt="" aria-hidden="true" />
+        <div class="hero-text">
+          <span class="eyebrow">Centro de mando privado</span>
+          <h1>Inventario, ventas y nube en un solo lugar.</h1>
+          <p>Diseñado para trabajar desde celular o computadora. Todo se guarda localmente y puede sincronizarse con Google Sheets mediante Apps Script.</p>
+        </div>
+        <div class="status-grid">
+          <div><span>Hoy</span><b id="statToday">Lps. 0</b></div>
+          <div><span>Inventario</span><b id="statInventory">0</b></div>
+          <div><span>Utilidad</span><b id="statProfit">Lps. 0</b></div>
+          <div><span>Nube</span><b id="statCloud">Local</b></div>
+        </div>
+      </section>
+
+      <section class="action-strip private-only">
+        <button data-tab="venta" class="quick-action primary"><b>Venta rápida</b><span>Generar factura</span></button>
+        <button data-tab="cotizacion" class="quick-action"><b>Cotizar</b><span>Imagen para cliente</span></button>
+        <button data-tab="productos" class="quick-action"><b>Inventario</b><span>Productos y stock</span></button>
+        <button id="btnCloudNow" class="quick-action"><b>Sincronizar</b><span>Guardar en nube</span></button>
+      </section>
+
+      <section class="private-note private-only">
+        <b>Importante:</b> Esta página es para vos. Las instrucciones, nube, PIN y configuración no aparecen en la vista de cliente ni en las tarjetas preparadas para WhatsApp.
+      </section>
+
+      <nav class="tabs private-only" aria-label="Secciones">
+        <button class="tab active" data-tab="inicio">Inicio</button>
+        <button class="tab" data-tab="productos">Productos</button>
+        <button class="tab" data-tab="venta">Vender</button>
+        <button class="tab" data-tab="cotizacion">Cotizar</button>
+        <button class="tab" data-tab="respaldos">Respaldos</button>
+      </nav>
+
+      <section id="tab-inicio" class="tab-panel active">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Resumen operativo</span>
+            <h2>Estado de tu negocio</h2>
+          </div>
+          <button id="btnRefresh" class="soft-btn" type="button">Actualizar</button>
+        </div>
+        <div class="cards-grid">
+          <article class="metric-card"><span>Ventas registradas</span><b id="mSales">0</b><small>Total de facturas guardadas.</small></article>
+          <article class="metric-card"><span>Cotizaciones</span><b id="mQuotes">0</b><small>Propuestas listas para cliente.</small></article>
+          <article class="metric-card warning"><span>Bajo stock</span><b id="mLowStock">0</b><small>Productos con 3 unidades o menos.</small></article>
+          <article class="metric-card"><span>Último respaldo</span><b id="mBackup">Pendiente</b><small>Guardar todo evita perder avances.</small></article>
+        </div>
+      </section>
+
+      <section id="tab-productos" class="tab-panel">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Inventario</span>
+            <h2>Productos</h2>
+          </div>
+          <button id="btnNewProduct" class="primary-btn" type="button">+ Producto</button>
+        </div>
+        <div class="search-card">
+          <input id="searchInput" type="search" placeholder="Buscar producto, categoría o descripción..." autocomplete="off" />
+        </div>
+        <div id="productList" class="product-grid"></div>
+      </section>
+
+      <section id="tab-venta" class="tab-panel">
+        <div class="section-head"><div><span class="eyebrow">Factura</span><h2>Venta rápida</h2></div></div>
+        <div class="form-card">
+          <div class="form-grid">
+            <label>Cliente<input id="saleClient" class="field" placeholder="Nombre del cliente" /></label>
+            <label>Teléfono<input id="salePhone" class="field" placeholder="Número del cliente" inputmode="tel" /></label>
+            <label>Producto<select id="saleProduct" class="field"></select></label>
+            <label>Cantidad<input id="saleQty" class="field" type="number" min="1" value="1" /></label>
+            <label>Tipo de envío<select id="saleShipType" class="field"><option value="normal">Envío Normal</option><option value="recibir">Pagar al Recibir</option><option value="local">Entrega local / sin envío</option></select></label>
+            <label>Dirección / referencia<textarea id="saleAddress" class="field" rows="3" placeholder="Departamento, municipio y referencia"></textarea></label>
+          </div>
+          <div id="salePreview" class="total-box">Total: Lps. 0</div>
+          <div class="button-row">
+            <button id="btnMakeSale" class="primary-btn" type="button">Guardar venta</button>
+            <button id="btnSaleCard" class="soft-btn" type="button">Preparar foto</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-cotizacion" class="tab-panel">
+        <div class="section-head"><div><span class="eyebrow">Cliente</span><h2>Cotización / ficha para WhatsApp</h2></div></div>
+        <div class="form-card">
+          <div class="form-grid">
+            <label>Cliente<input id="quoteClient" class="field" placeholder="Nombre opcional" /></label>
+            <label>Producto<select id="quoteProduct" class="field"></select></label>
+            <label>Cantidad<input id="quoteQty" class="field" type="number" min="1" value="1" /></label>
+            <label>Tipo de envío<select id="quoteShipType" class="field"><option value="normal">Envío Normal</option><option value="recibir">Pagar al Recibir</option><option value="local">Entrega local / sin envío</option></select></label>
+          </div>
+          <div id="quotePreview" class="total-box">Total estimado: Lps. 0</div>
+          <div class="button-row">
+            <button id="btnMakeQuote" class="primary-btn" type="button">Guardar cotización</button>
+            <button id="btnQuoteCard" class="soft-btn" type="button">Preparar foto para cliente</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-respaldos" class="tab-panel">
+        <div class="section-head"><div><span class="eyebrow">Seguridad</span><h2>Respaldos</h2></div></div>
+        <div class="form-card stack">
+          <p class="justified">Usá estos botones para no perder inventario, ventas, cotizaciones, clientes, gastos y configuración. El respaldo local se descarga como JSON. El respaldo en nube se guarda en Google Sheets si ya configuraste Apps Script.</p>
+          <div class="button-row">
+            <button id="btnExport" class="primary-btn" type="button">Descargar respaldo JSON</button>
+            <label class="upload-btn">Restaurar JSON<input id="restoreInput" type="file" accept="application/json" hidden /></label>
+            <button id="btnBackupCloud" class="soft-btn" type="button">Respaldar todo en nube</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="configPanel" class="modal hidden" role="dialog" aria-modal="true" aria-label="Configuración privada">
+      <div class="modal-card small">
+        <div class="modal-head">
+          <div><span class="eyebrow">Privado</span><h3>Configuración de nube</h3></div>
+          <button class="icon-btn" data-close-modal type="button">×</button>
+        </div>
+        <div class="stack">
+          <label>URL de Apps Script<input id="cfgUrl" class="field" /></label>
+          <label>PIN privado<input id="cfgPin" class="field" type="password" placeholder="Tu PIN de nube" /></label>
+          <div id="cfgStatus" class="info-box">La URL ya viene precargada. Solo poné tu PIN y probá conexión.</div>
+          <div class="button-row">
+            <button id="btnSaveConfig" class="primary-btn" type="button">Guardar y probar conexión</button>
+            <button id="btnLoadCloud" class="soft-btn" type="button">Cargar desde nube</button>
+            <button id="btnClearCache" class="danger-btn" type="button">Limpiar caché local</button>
+          </div>
+          <details class="private-instructions">
+            <summary>Instrucciones privadas</summary>
+            <ol>
+              <li>Creá un Google Sheet.</li>
+              <li>Entrá en Extensiones &gt; Apps Script.</li>
+              <li>Pegá el archivo <b>apps-script/Code.gs</b>.</li>
+              <li>Ejecutá <b>setup()</b>.</li>
+              <li>Publicá como aplicación web y pegá la URL /exec aquí.</li>
+              <li>Guardá y probá conexión.</li>
+            </ol>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div id="productModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Editar producto">
+      <div class="modal-card">
+        <div class="modal-head"><div><span class="eyebrow">Inventario</span><h3 id="productModalTitle">Producto</h3></div><button class="icon-btn" data-close-modal type="button">×</button></div>
+        <form id="productForm" class="stack">
+          <input id="prodId" type="hidden" />
+          <div class="form-grid">
+            <label>Nombre<input id="prodName" class="field" required /></label>
+            <label>Categoría<input id="prodCategory" class="field" placeholder="Ej. Gamer, Audio, Hogar" /></label>
+            <label>Precio venta<input id="prodPrice" class="field" type="number" min="0" step="1" required /></label>
+            <label>Costo<input id="prodCost" class="field" type="number" min="0" step="1" /></label>
+            <label>Stock<input id="prodStock" class="field" type="number" min="0" step="1" /></label>
+            <label>Imagen URL<input id="prodImage" class="field" placeholder="https://..." /></label>
+            <label class="wide">Promos<input id="prodPromos" class="field" placeholder="Ej. 1:25 | 3:69 | 10:200 | 20:400" /></label>
+            <label class="wide">Descripción<textarea id="prodDesc" class="field" rows="5" placeholder="Descripción clara para el cliente"></textarea></label>
+          </div>
+          <div class="button-row">
+            <button class="primary-btn" type="submit">Guardar producto</button>
+            <button id="btnDeleteProduct" class="danger-btn" type="button">Eliminar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="clientModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Foto para cliente">
+      <div class="modal-card capture-modal">
+        <div class="modal-head no-capture"><div><span class="eyebrow">WhatsApp</span><h3>Foto / ficha para cliente</h3></div><button class="icon-btn" data-close-modal type="button">×</button></div>
+        <div id="clientCard" class="client-card"></div>
+        <div class="button-row no-capture">
+          <button id="btnCopyClientText" class="primary-btn" type="button">Copiar texto WhatsApp</button>
+          <button id="btnOpenWhatsApp" class="soft-btn" type="button">Abrir WhatsApp</button>
+          <button id="btnPrintCard" class="soft-btn" type="button">Guardar como PDF / imprimir</button>
+        </div>
+        <p class="hint no-capture">Para enviarlo como foto: tomá captura de pantalla de esta tarjeta. Los botones e instrucciones no salen en impresión.</p>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/cloud.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1159,3 +1159,144 @@ body.capture-clean .product-title{font-size:clamp(22px,6vw,28px)!important;text-
 @media(max-width:360px){
   .top-title p{display:none!important}.topbar .aspect-btn{display:none!important}.quick-private{grid-template-columns:repeat(2,minmax(0,1fr))!important}.quick-private button{min-height:62px!important}.alert-row{grid-template-columns:1fr!important}.stats{grid-template-columns:1fr 1fr!important}.category-card{flex-basis:70px!important}.login-logo{width:126px!important;height:126px!important}
 }
+
+/* =========================================================
+   SDC V29: retoque visual privado/móvil
+   Archivo editado: css/styles.css
+   Nota: no cambia la fuente; solo mejora distribución y limpieza.
+   ========================================================= */
+body{
+  background:
+    radial-gradient(circle at 12% 0%,rgba(49,217,255,.16),transparent 26%),
+    radial-gradient(circle at 92% 9%,rgba(29,118,255,.14),transparent 27%),
+    linear-gradient(180deg,#041522 0%,#03101d 45%,#020711 100%)!important;
+}
+.app{max-width:1180px!important;}
+.topbar{
+  margin:-12px -10px 12px!important;
+  padding:10px 18px!important;
+  border-radius:0 0 24px 24px!important;
+  box-shadow:0 14px 30px rgba(0,0,0,.20)!important;
+}
+.top-logo{width:54px!important;height:54px!important;}
+.top-title h1{font-size:clamp(20px,2.4vw,28px)!important;letter-spacing:.065em!important;}
+.top-title p{font-size:13px!important;color:#8ff6ff!important;}
+.topbar .btn.small{
+  min-height:44px!important;
+  padding:10px 18px!important;
+  border-radius:20px!important;
+  background:rgba(49,217,255,.08)!important;
+  border-color:rgba(49,217,255,.22)!important;
+}
+.topbar .btn.secondary{background:rgba(29,118,255,.14)!important;}
+.hero{
+  padding:20px!important;
+  margin-bottom:14px!important;
+  border-radius:30px!important;
+  background:
+    linear-gradient(135deg,rgba(9,41,62,.92),rgba(5,14,29,.97))!important;
+  box-shadow:0 18px 42px rgba(0,0,0,.28)!important;
+}
+.hero:before{display:none!important;}
+.private-hero-head{margin:0 auto 14px!important;}
+.hero .pill{padding:7px 13px!important;font-size:10.5px!important;}
+.hero h2{
+  font-size:clamp(32px,5.5vw,54px)!important;
+  letter-spacing:.075em!important;
+  line-height:.98!important;
+  text-wrap:balance;
+}
+.hero p{
+  max-width:680px!important;
+  margin-top:9px!important;
+  margin-bottom:0!important;
+  color:#dcefff!important;
+  font-size:14.5px!important;
+}
+.stats{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:10px!important;
+  align-items:stretch!important;
+}
+.stat{
+  padding:14px 13px!important;
+  border-radius:20px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035))!important;
+  border-color:rgba(195,235,255,.14)!important;
+  min-height:92px!important;
+}
+.stat b{font-size:clamp(23px,2.8vw,34px)!important;line-height:1!important;}
+.stat span{font-size:10.5px!important;color:#9ac7ed!important;}
+.quick-private{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin:12px 0 14px!important;
+}
+.quick-private button{
+  min-height:78px!important;
+  border-radius:22px!important;
+  padding:13px 14px!important;
+  background:linear-gradient(160deg,rgba(49,217,255,.10),rgba(255,255,255,.04))!important;
+  border-color:rgba(195,235,255,.15)!important;
+}
+.quick-private button:nth-child(1),
+.quick-private button:nth-child(2),
+.quick-private button:nth-child(3){
+  background:linear-gradient(135deg,rgba(223,247,255,.18),rgba(49,217,255,.14),rgba(29,118,255,.12))!important;
+  border-color:rgba(49,217,255,.28)!important;
+}
+.quick-private button b{font-size:18px!important;}
+.quick-private button span{font-size:10.2px!important;line-height:1.25!important;}
+.search-panel.v10-search,.category-gallery,.view-mode-panel{
+  border-radius:24px!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.18)!important;
+}
+.section-head h2{font-size:clamp(28px,4vw,38px)!important;}
+.product-card{
+  border-radius:26px!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.22)!important;
+}
+.product-media{border-radius:22px!important;}
+.client-safe-note{color:#d5e9f8!important;}
+
+@media(min-width:721px) and (max-width:980px){
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+  .quick-private{grid-template-columns:repeat(4,minmax(0,1fr))!important;}
+}
+@media(max-width:720px){
+  .app{padding:8px 8px calc(var(--navH) + 14px)!important;}
+  .topbar{
+    margin:-8px -8px 8px!important;
+    padding:7px 8px!important;
+    border-radius:0 0 18px 18px!important;
+    gap:7px!important;
+  }
+  .top-logo{width:43px!important;height:43px!important;}
+  .top-title h1{font-size:clamp(16px,5vw,19px)!important;}
+  .top-title p{font-size:10px!important;max-width:43vw!important;}
+  .topbar .btn.small{min-height:34px!important;padding:7px 8px!important;border-radius:13px!important;font-size:9px!important;}
+  .hero{
+    padding:11px!important;
+    border-radius:20px!important;
+    margin-bottom:8px!important;
+  }
+  .hero .pill{font-size:8.8px!important;padding:5px 8px!important;}
+  .hero h2{font-size:clamp(22px,7.3vw,30px)!important;letter-spacing:.04em!important;margin:5px 0 3px!important;}
+  .hero p{font-size:11.5px!important;line-height:1.22!important;max-width:92%!important;}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;}
+  .stat{min-height:64px!important;padding:8px!important;border-radius:15px!important;}
+  .stat b{font-size:clamp(17px,5.4vw,22px)!important;}
+  .stat span{font-size:7.8px!important;letter-spacing:.07em!important;}
+  .quick-private{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;}
+  .quick-private button{min-height:58px!important;border-radius:15px!important;padding:8px 6px!important;}
+  .quick-private button b{font-size:clamp(12px,4.2vw,16px)!important;}
+  .quick-private button span{font-size:7.6px!important;}
+  .search-panel.v10-search,.category-gallery,.view-mode-panel{border-radius:17px!important;}
+  .product-card{border-radius:20px!important;padding:10px!important;}
+  .product-media{border-radius:16px!important;}
+}
+@media(max-width:360px){
+  .top-logo{width:40px!important;height:40px!important;}
+  .topbar .btn.secondary{display:none!important;}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+}

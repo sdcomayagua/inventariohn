@@ -1,0 +1,11 @@
+{
+  "name": "SD Comayagua Ventas",
+  "short_name": "SDC Ventas",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#061322",
+  "theme_color": "#061322",
+  "icons": [
+    {"src":"assets/logo-sdc.png","sizes":"512x512","type":"image/png"}
+  ]
+}

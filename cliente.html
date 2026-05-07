@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#061322">
+  <title>SD COMAYAGUA · Vista cliente</title>
+  <meta name="description" content="Vista limpia de productos de SD COMAYAGUA, sin herramientas privadas de administración.">
+  <link rel="icon" href="assets/logo-sdc.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700;800&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/client-view.css">
+</head>
+<body>
+  <header class="client-hero">
+    <img src="assets/logo-sdc.png" alt="SD COMAYAGUA">
+    <div>
+      <small>Catálogo limpio para revisar productos</small>
+      <h1>SD COMAYAGUA</h1>
+      <p>Precios en Lps., disponibilidad sujeta a confirmación por WhatsApp.</p>
+    </div>
+  </header>
+  <main class="client-shell">
+    <section class="client-toolbar">
+      <label>
+        <span>Buscar producto</span>
+        <input id="clientSearch" type="search" placeholder="Dedales, audífonos, enfriador...">
+      </label>
+      <a class="whatsapp-main" id="clientWhatsApp" target="_blank" rel="noopener">WhatsApp</a>
+    </section>
+    <section id="clientGrid" class="client-grid" aria-live="polite"></section>
+  </main>
+  <script defer src="js/config.js"></script>
+  <script defer src="js/client-view.js"></script>
+</body>
+</html>

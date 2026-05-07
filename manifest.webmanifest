@@ -1,0 +1,15 @@
+{
+  "name": "SD Comayagua Control de Ventas",
+  "short_name": "SDC Ventas",
+  "description": "Panel privado premium de inventario, ventas, cotizaciones, recibos, nube y respaldos.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#030912",
+  "theme_color": "#061322",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "assets/logo-sdc.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/logo-sdc.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

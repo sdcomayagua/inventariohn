@@ -1509,3 +1509,215 @@ body.capture-clean .product-card{
     min-height:52px!important;
   }
 }
+
+/* =========================================================
+   SDC V31: retoque seguro para uso con una mano en celular
+   Archivo editado: css/styles.css
+   No cambia fuente, no toca JavaScript, no toca datos.
+   Mejora: modales, botones, formularios, categorías y capturas.
+   ========================================================= */
+
+/* Inputs más cómodos en teléfono y sin zoom raro en iPhone/Android */
+.input,.select,.textarea,.searchbar input{
+  font-size:16px!important;
+}
+.input,.select{
+  min-height:46px!important;
+}
+.textarea{
+  min-height:92px!important;
+  resize:vertical!important;
+}
+
+/* Barra inferior más estable para uso privado desde celular */
+.bottom-nav{
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+  border-top-color:rgba(143,246,255,.16)!important;
+  box-shadow:0 -14px 34px rgba(0,0,0,.32)!important;
+}
+.bottom-nav .nav-btn{
+  min-height:52px!important;
+}
+.bottom-nav .nav-btn.active{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1px rgba(143,246,255,.22)!important;
+}
+
+/* Categorías más cómodas: desplazamiento suave tipo app */
+.category-gallery,.chips,.qty-presets{
+  scroll-behavior:smooth!important;
+  -webkit-overflow-scrolling:touch!important;
+  scrollbar-width:none!important;
+}
+.category-gallery::-webkit-scrollbar,.chips::-webkit-scrollbar,.qty-presets::-webkit-scrollbar{
+  display:none!important;
+}
+.category-card,.chip,.qty-presets .btn{
+  scroll-snap-align:start!important;
+}
+
+/* Modal más seguro: botones siempre alcanzables y menos riesgo de corte */
+.modal{
+  max-height:calc(100dvh - 18px)!important;
+}
+.modal-head{
+  position:sticky!important;
+  top:0!important;
+  z-index:5!important;
+  background:linear-gradient(180deg,rgba(5,18,32,.98),rgba(5,18,32,.90))!important;
+  backdrop-filter:blur(14px)!important;
+  -webkit-backdrop-filter:blur(14px)!important;
+}
+.modal-actions{
+  position:sticky!important;
+  bottom:0!important;
+  z-index:5!important;
+  padding-top:12px!important;
+  background:linear-gradient(0deg,rgba(5,18,32,.98),rgba(5,18,32,.86),transparent)!important;
+}
+.modal-actions .btn{
+  min-height:48px!important;
+}
+
+/* Tarjetas de producto: menos errores al tocar botones */
+.product-actions,.product-actions-grid,.compact-actions,.client-actions,.client-actions-v22,.client-actions-v23{
+  gap:8px!important;
+}
+.product-actions .btn,.product-actions-grid .btn,.compact-actions .btn,.client-actions .btn,.client-actions-v22 .btn,.client-actions-v23 .btn{
+  min-height:44px!important;
+}
+
+/* Mejor lectura para nombres largos y precios en captura */
+.product-title,.share-description,.client-description,.doc-prod-line{
+  overflow-wrap:anywhere!important;
+}
+.price-badge,.share-main-price,.summary-total,.client-totals-card strong{
+  text-shadow:0 0 18px rgba(49,217,255,.18)!important;
+}
+
+/* Estados visuales menos agresivos */
+.stock-badge,.tag-pill,.code-pill,.found-pill,.count-pill{
+  border-color:rgba(143,246,255,.18)!important;
+}
+.stock-badge.low{
+  background:rgba(255,199,89,.10)!important;
+  color:#ffe0a6!important;
+  border-color:rgba(255,199,89,.24)!important;
+}
+
+/* Captura limpia: que salga más centrada y con margen bonito */
+body.capture-clean{
+  background:#061322!important;
+}
+body.capture-clean .grid,
+body.capture-clean .quote-grid,
+body.capture-clean .client-card-panel{
+  max-width:680px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+body.capture-clean .product-actions,
+body.capture-clean .product-actions-grid,
+body.capture-clean .compact-actions,
+body.capture-clean .client-actions,
+body.capture-clean .client-actions-v22,
+body.capture-clean .client-actions-v23,
+body.capture-clean .modal-actions,
+body.capture-clean .no-print{
+  display:none!important;
+}
+body.capture-clean .product-card,
+body.capture-clean .client-card-v22,
+body.capture-clean .doc-v21,
+body.capture-clean .doc-v23{
+  page-break-inside:avoid!important;
+}
+
+@media(max-width:720px){
+  /* Menos scroll y más control con una mano */
+  body:not(.capture-clean) .app{
+    padding-bottom:calc(86px + var(--safe-bottom))!important;
+  }
+  .topbar{
+    position:sticky!important;
+    top:0!important;
+    z-index:20!important;
+    backdrop-filter:blur(16px)!important;
+    -webkit-backdrop-filter:blur(16px)!important;
+  }
+  .top-title p{
+    max-width:210px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .topbar .btn{
+    min-height:44px!important;
+  }
+
+  /* Panel principal más compacto sin quitar información */
+  .hero{
+    padding-top:22px!important;
+    padding-bottom:22px!important;
+  }
+  .hero h2{
+    line-height:.94!important;
+  }
+  .hero p{
+    font-size:15px!important;
+    line-height:1.35!important;
+  }
+
+  /* Botones rápidos más parejos */
+  .quick-private{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .quick-private .wide{
+    grid-column:1 / -1!important;
+  }
+
+  /* Productos: tarjetas más limpias y menos apretadas */
+  .product-card{
+    min-width:0!important;
+  }
+  .product-actions-grid{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .product-actions-grid .btn.full,
+  .product-actions-grid .btn.wide{
+    grid-column:1 / -1!important;
+  }
+
+  /* Formularios y ventas: campos sin cortes */
+  .modal-grid,.compact-fields,.doc-fields{
+    grid-template-columns:1fr!important;
+  }
+  .span2{
+    grid-column:auto!important;
+  }
+  .quote-actions,.saved-quote-actions,.product-form-actions,.import-actions{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media(max-width:420px){
+  .top-title h1{
+    font-size:20px!important;
+  }
+  .hero h2{
+    font-size:clamp(42px,15vw,58px)!important;
+  }
+  .stats .stat{
+    padding:13px 12px!important;
+  }
+  .stats .stat b{
+    font-size:22px!important;
+  }
+  .bottom-nav{
+    padding-inline:7px!important;
+  }
+  .bottom-nav .nav-btn{
+    font-size:10px!important;
+    padding-inline:6px!important;
+  }
+}

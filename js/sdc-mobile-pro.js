@@ -1,4 +1,4 @@
-/* SDC Mobile Pro: mejoras progresivas para usar el panel desde celular. */
+/* SDC Mobile Pro: mejoras progresivas para usar el panel desde celular sin romper la lógica base. */
 (function(){
   'use strict';
 
@@ -9,12 +9,20 @@
     {action:'receipts', icon:'▤', label:'Caja'}
   ];
 
+  let raf = 0;
+
   function setViewportUnit(){
     document.documentElement.style.setProperty('--sdc-vh', `${window.innerHeight * 0.01}px`);
   }
 
   function addBodyClass(){
-    document.body.classList.add('sdc-mobile-pro');
+    if(document.body) document.body.classList.add('sdc-mobile-pro');
+  }
+
+  function shell(){
+    const root = document.getElementById('app');
+    if(!root) return null;
+    return root.classList.contains('app') ? root : (root.querySelector('.app') || root);
   }
 
   function findOriginalAction(action){
@@ -30,8 +38,8 @@
 
   function enhanceLayout(){
     addBodyClass();
-    const app = document.getElementById('app');
-    if(!app || !app.classList.contains('app')) return;
+    const app = shell();
+    if(!app) return;
 
     const topbar = app.querySelector('.topbar');
     if(topbar && !app.querySelector('.sdc-mobile-control')){
@@ -39,13 +47,21 @@
     }
 
     const categoryGrid = app.querySelector('.category-grid');
-    const activeCategory = categoryGrid?.querySelector('.category-card.active');
+    const activeCategory = categoryGrid && categoryGrid.querySelector('.category-card.active');
     if(activeCategory && !activeCategory.dataset.sdcCentered){
       activeCategory.dataset.sdcCentered = '1';
       requestAnimationFrame(() => {
         try{ activeCategory.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }catch(e){}
       });
     }
+  }
+
+  function scheduleEnhance(){
+    if(raf) return;
+    raf = requestAnimationFrame(function(){
+      raf = 0;
+      enhanceLayout();
+    });
   }
 
   document.addEventListener('click', function(ev){
@@ -62,9 +78,7 @@
     document.body.classList.toggle('sdc-scrolled', window.scrollY > 24);
   }, {passive:true});
 
-  const observer = new MutationObserver(function(){
-    window.requestAnimationFrame(enhanceLayout);
-  });
+  const observer = new MutationObserver(scheduleEnhance);
 
   setViewportUnit();
   addBodyClass();

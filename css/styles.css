@@ -1721,3 +1721,73 @@ body.capture-clean .doc-v23{
     padding-inline:6px!important;
   }
 }
+
+/* ==========================================================================
+   MODIFICACIONES PROFESIONALES PARA MÓVIL (APP-LIKE EXPERIENCE)
+   ========================================================================== */
+
+@media (max-width: 600px) {
+  /* Grillas a 1 columna para mejor lectura rápida de inventario */
+  .grid, .stats, .quick {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  /* Tarjetas de producto más limpias en vertical */
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    padding: 18px 14px !important;
+  }
+  
+  /* Zonas táctiles optimizadas para el pulgar */
+  .btn, button, .chip, .searchbar input {
+    min-height: 54px !important;
+    font-size: 15px;
+  }
+  
+  /* Prevenir auto-zoom en iPhone/Android al enfocar inputs */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* Espaciado extra al final para que el contenido no quede oculto bajo el botón flotante */
+  .app {
+    padding-bottom: 110px !important; 
+  }
+}
+
+/* --- ESTILOS DEL BOTÓN FLOTANTE (FAB) --- */
+.btn-flotante {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--cyan));
+  color: #031018;
+  font-size: 32px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px rgba(24, 231, 255, 0.35);
+  z-index: 9999;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: none; /* Se oculta por defecto en PC */
+}
+
+.btn-flotante:active {
+  transform: scale(0.92);
+  box-shadow: 0 6px 15px rgba(24, 231, 255, 0.2);
+}
+
+/* Solo se muestra en pantallas de celular */
+@media (max-width: 600px) {
+  .btn-flotante {
+    display: flex;
+  }
+}

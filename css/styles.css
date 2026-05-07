@@ -1757,37 +1757,31 @@ body.capture-clean .doc-v23{
   }
 }
 
-/* --- ESTILOS DEL BOTÓN FLOTANTE (FAB) --- */
-.btn-flotante {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--green), var(--cyan));
-  color: #031018;
-  font-size: 32px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 12px 28px rgba(24, 231, 255, 0.35);
-  z-index: 9999;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: none; /* Se oculta por defecto en PC */
-}
+/* ==========================================================================
+   MEJORAS MÓVILES SDC (VERSIÓN SEGURA Y LIMPIA)
+   ========================================================================== */
 
-.btn-flotante:active {
-  transform: scale(0.92);
-  box-shadow: 0 6px 15px rgba(24, 231, 255, 0.2);
-}
-
-/* Solo se muestra en pantallas de celular */
 @media (max-width: 600px) {
-  .btn-flotante {
+  /* 1. Grillas a 1 columna para que la info de la venta no se amontone */
+  .grid, .stats, .quick, .quick-private {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  /* 2. Tarjetas de producto ajustadas a la pantalla del celular */
+  .product-card {
     display: flex;
+    flex-direction: column;
+    padding: 16px !important;
+  }
+  
+  /* 3. Zonas táctiles más cómodas para trabajar rápido */
+  .btn, button, .chip, .searchbar input {
+    min-height: 50px !important;
+  }
+  
+  /* 4. Evita el zoom automático de la cámara/teclado al buscar productos */
+  input, select, textarea {
+    font-size: 16px !important;
   }
 }

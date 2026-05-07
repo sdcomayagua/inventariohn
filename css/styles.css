@@ -1300,3 +1300,212 @@ body{
   .topbar .btn.secondary{display:none!important;}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
 }
+
+/* =========================================================
+   SDC V30: mejoras seguras sin tocar fuente ni lógica
+   Archivo editado: css/styles.css
+   Objetivo: limpiar panel privado, evitar 'Oculto' repetido feo,
+   mejorar lectura/tap en celular y preparar mejor capturas para cliente.
+   ========================================================= */
+
+/* Se siente más privado/admin, menos tienda pública */
+.topbar{
+  border-bottom-color:rgba(120,220,255,.18)!important;
+}
+.hero{
+  border-color:rgba(120,220,255,.18)!important;
+}
+.hero .pill{
+  background:rgba(49,217,255,.10)!important;
+  border-color:rgba(49,217,255,.28)!important;
+  color:#dff7ff!important;
+}
+.hero .dot{
+  background:#8ff6ff!important;
+  box-shadow:0 0 16px rgba(143,246,255,.65)!important;
+}
+
+/* Cuando las ganancias están ocultas, que no se vea “Oculto, Oculto, Oculto” */
+body.money-locked .stats .stat:nth-child(n+3) b{
+  font-size:0!important;
+  line-height:1!important;
+}
+body.money-locked .stats .stat:nth-child(n+3) b::after{
+  content:"Privado";
+  display:block;
+  font-size:clamp(20px,2.5vw,29px)!important;
+  color:#dff7ff!important;
+  letter-spacing:.01em!important;
+}
+body.money-locked .stats .stat:nth-child(n+3){
+  background:linear-gradient(160deg,rgba(49,217,255,.075),rgba(255,255,255,.028))!important;
+  border-color:rgba(143,246,255,.14)!important;
+}
+body.money-locked .stats .stat:nth-child(3) span,
+body.money-locked .stats .stat:nth-child(4) span,
+body.money-locked .stats .stat:nth-child(5) span{
+  color:#89a9c5!important;
+}
+
+/* Tarjetas de métricas más finas */
+.stat{
+  position:relative!important;
+  overflow:hidden!important;
+}
+.stat::after{
+  content:"";
+  position:absolute;
+  inset:auto -18px -34px auto;
+  width:90px;
+  height:90px;
+  border-radius:999px;
+  background:rgba(49,217,255,.06);
+  pointer-events:none;
+}
+.stat b,.stat span{position:relative;z-index:1;}
+
+/* Botones táctiles: más claros al presionar, sin cambiar funciones */
+.btn,.quick-private button,.category-card,.chip,.nav-btn,.product-card button{
+  -webkit-tap-highlight-color:transparent!important;
+  touch-action:manipulation!important;
+}
+.btn:active,.quick-private button:active,.category-card:active,.chip:active,.nav-btn:active{
+  transform:translateY(1px) scale(.99)!important;
+  filter:brightness(1.08)!important;
+}
+
+/* Buscador más usable en celular */
+.searchbar{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+.searchbar input::placeholder{
+  color:rgba(210,232,247,.52)!important;
+}
+
+/* Categorías: más limpias, menos saturadas */
+.category-card{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 10px 20px rgba(0,0,0,.16)!important;
+}
+.category-card.active{
+  outline:2px solid rgba(143,246,255,.22)!important;
+  outline-offset:2px!important;
+}
+
+/* Producto: lectura más premium para enviar captura al cliente */
+.product-card{
+  background:
+    radial-gradient(circle at 90% 0%,rgba(49,217,255,.11),transparent 30%),
+    linear-gradient(155deg,rgba(10,38,57,.86),rgba(5,14,27,.98))!important;
+}
+.product-title{
+  text-wrap:balance;
+}
+.client-description{
+  color:#d7e8f5!important;
+}
+.client-totals-card div:last-child{
+  border-color:rgba(143,246,255,.22)!important;
+  background:linear-gradient(135deg,rgba(49,217,255,.10),rgba(40,246,161,.055))!important;
+}
+
+/* Captura limpia: aún más lista para screenshot/foto */
+body.capture-clean .topbar,
+body.capture-clean .hero,
+body.capture-clean .alert-row,
+body.capture-clean .category-gallery,
+body.capture-clean .search-panel,
+body.capture-clean .bottom-nav,
+body.capture-clean #goTop{
+  display:none!important;
+}
+body.capture-clean .app{
+  padding:8px!important;
+  max-width:760px!important;
+}
+body.capture-clean .view-mode-panel{
+  box-shadow:none!important;
+  border-color:rgba(143,246,255,.18)!important;
+}
+body.capture-clean .section-head{
+  justify-content:center!important;
+}
+body.capture-clean .section-head h2{
+  font-size:clamp(22px,7vw,30px)!important;
+  text-align:center!important;
+}
+body.capture-clean .count-pill{
+  display:none!important;
+}
+body.capture-clean .product-card{
+  box-shadow:0 12px 32px rgba(0,0,0,.24)!important;
+  border-color:rgba(143,246,255,.18)!important;
+}
+
+@media(max-width:720px){
+  /* En móvil y ganancias ocultas: solo 3 tarjetas útiles, sin repetir privado */
+  body.money-locked .stats{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  body.money-locked .stats .stat:nth-child(4),
+  body.money-locked .stats .stat:nth-child(5){
+    display:none!important;
+  }
+  body.money-locked .stats .stat:nth-child(3) span{
+    font-size:0!important;
+  }
+  body.money-locked .stats .stat:nth-child(3) span::after{
+    content:"Finanzas";
+    font-size:7.8px!important;
+    letter-spacing:.07em!important;
+  }
+
+  /* Header más respirado y menos pesado */
+  .topbar{
+    box-shadow:0 8px 22px rgba(0,0,0,.18)!important;
+  }
+  .top-title h1{
+    letter-spacing:.05em!important;
+  }
+
+  /* Vista principal más compacta */
+  .hero p{
+    max-width:100%!important;
+  }
+  .quick-private{
+    margin-top:8px!important;
+  }
+
+  /* Productos más legibles al compartir desde teléfono */
+  .grid{
+    gap:10px!important;
+  }
+  .product-title{
+    line-height:1.04!important;
+  }
+  .client-description{
+    line-height:1.30!important;
+  }
+
+  /* Modal: menos riesgo de que botones queden fuera de pantalla */
+  .modal-backdrop{
+    padding-bottom:calc(8px + var(--safe-bottom))!important;
+  }
+  .modal-body{
+    overscroll-behavior:contain!important;
+  }
+}
+
+@media(max-width:390px){
+  body.money-locked .stats .stat:nth-child(3) b::after{
+    font-size:15px!important;
+  }
+  .topbar .btn.small{
+    padding-inline:7px!important;
+  }
+  .quick-private button span{
+    display:none!important;
+  }
+  .quick-private button{
+    min-height:52px!important;
+  }
+}

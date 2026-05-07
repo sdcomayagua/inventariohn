@@ -7,6 +7,7 @@
   let filter = {q:'',cat:'Todos'};
   let quote = emptyQuote();
   let saleDraft = null;
+  const LOGO_SRC = 'assets/logo-sdc-2026.png';
 
   function hydrateState(){
     state.clients = Array.isArray(state.clients)?state.clients:[];
@@ -160,7 +161,7 @@
   function renderLogin(){
     app.className='login-wrap';
     app.innerHTML=`<section class="login-card">
-      <img class="login-logo" src="assets/logo-sdc.png" alt="Logo SD Comayagua">
+      <img class="login-logo" src="${LOGO_SRC}" alt="Logo SD Comayagua">
       <h1 class="login-title">CAJA SDC</h1>
       <div class="pill login-pill"><span class="dot"></span> Panel privado de ventas</div>
       <div class="form-box">
@@ -172,12 +173,11 @@
     $('#loginBtn').onclick=unlock; $('#keyInput').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
   }
   function unlock(){ if($('#keyInput').value.trim()===(state.settings.accessKey||'199311')){state.unlocked=true;save();render();toast('Panel desbloqueado.')} else toast('Clave incorrecta.'); }
-  function topbar(){const turbo=currentAppearance()==='turbo'; return `<header class="topbar"><img class="top-logo" src="assets/logo-sdc.png" alt="SD"><div class="top-title"><h1>SD COMAYAGUA</h1><p>${turbo?'Modo Pro Gamer':'Modo Gamer normal'}</p></div><div class="spacer"></div><button class="btn small ghost aspect-btn" data-action="theme">${turbo?'Normal':'Pro Gamer'}</button><button class="btn small ghost sync-btn" data-action="sync">Sync</button><button class="btn small secondary" data-action="lock">Salir</button></header>`}
+  function topbar(){const turbo=currentAppearance()==='turbo'; return `<header class="topbar"><img class="top-logo" src="${LOGO_SRC}" alt="SD"><div class="top-title"><h1>SD COMAYAGUA</h1><p>${turbo?'Panel privado · cliente solo recibe foto/texto':'Panel privado · foto/texto para cliente'}</p></div><div class="spacer"></div><button class="btn small ghost aspect-btn" data-action="theme">${turbo?'Normal':'Pro'}</button><button class="btn small ghost sync-btn" data-action="sync">Sync</button><button class="btn small secondary" data-action="lock">Salir</button></header>`}
   function hero(){
     const st=stats();
     return `<section class="hero" id="inicio">
-      <div class="pill login-pill"><span class="dot"></span> SD Comayagua · Sistema privado</div>
-      <h2>CONTROL DE VENTAS</h2><p>Inventario, cotizaciones, ventas, recibos editables, envíos y respaldo para trabajar rápido desde celular.</p>
+      <div class="private-hero-head"><img class="private-hero-logo" src="${LOGO_SRC}" alt="Logo SD"><div><div class="pill"><span class="dot"></span> Panel privado</div><h2>CONTROL SDC</h2><p>Solo tú entras aquí. El cliente únicamente recibe la foto, cotización o texto que le compartes por WhatsApp.</p></div></div>
       <div class="stats">
         <div class="stat"><b>${num(st.count)}</b><span>Productos</span></div><div class="stat"><b>${num(st.stock)}</b><span>Stock total</span></div>
         <div class="stat"><b>${moneyPrivate(st.value)}</b><span>Valor venta</span></div><div class="stat"><b>${moneyPrivate(st.invested)}</b><span>Invertido</span></div>
@@ -217,17 +217,19 @@
     const nocost=state.products.filter(p=>Number(p.cost)<=0).length;
     const st=stats();
     const lowMargin=state.products.filter(p=>Number(p.price||0)>0 && (Number(p.price||0)-Number(p.cost||0))>0 && (Number(p.price||0)-Number(p.cost||0))<10).length;
-    return `<section class="quick no-print quick-v22">
+    return `<section class="quick no-print quick-v22 quick-private">
+      <button data-action="cardClient"><b>Cliente</b><span>Foto/texto limpio</span></button>
+      <button data-action="captureClean"><b>Captura</b><span>Solo lo necesario</span></button>
+      <button data-action="quote"><b>Cotizar</b><span>Foto + texto</span></button>
+      <button data-action="sell"><b>Vender</b><span>Venta real</span></button>
       <button data-action="catalog"><b>Catálogo</b><span>Ver productos</span></button>
-      <button data-action="sell"><b>Vender</b><span>Seleccionar producto</span></button>
-      <button data-action="quickSale"><b>Venta rápida</b><span>Sin tantos pasos</span></button>
       <button data-action="newProduct"><b>Producto</b><span>Agregar nuevo</span></button>
-      <button data-action="profit"><b>Ganancias</b><span>Por producto</span></button>
-      <button data-action="quotes"><b>Cotizaciones</b><span>Guardadas</span></button>
-      <button data-action="clients"><b>Clientes</b><span>Agenda rápida</span></button>
-      <button data-action="receipts"><b>Caja</b><span>Ventas y cierre</span></button>
-      <button data-action="expenses"><b>Gastos</b><span>Ganancia neta</span></button>
-      <button data-action="backup"><b>Respaldo</b><span>Una sola opción</span></button>
+      <button data-action="quickSale"><b>Rápida</b><span>Sin tantos pasos</span></button>
+      <button data-action="quotes"><b>Guardadas</b><span>Cotizaciones</span></button>
+      <button data-action="clients"><b>Clientes</b><span>Agenda</span></button>
+      <button data-action="receipts"><b>Caja</b><span>Ventas</span></button>
+      <button data-action="profit"><b>Ganancias</b><span>Control privado</span></button>
+      <button data-action="backup"><b>Respaldo</b><span>Copia segura</span></button>
     </section>
     <section class="alert-row no-print">
       <div class="alert-card"><div><b>${low} bajo stock</b><span>Revisa reposición.</span></div><button class="btn small secondary" data-action="lowStock">Ver</button></div>
@@ -239,13 +241,13 @@
   }
   function cardModePanel(){
     const mode=cardView();
-    return `<section class="view-mode-panel no-print"><div class="view-mode-copy"><b>Vista de productos</b><span>${mode==='admin'?'Admin: ves inversión y ganancia real.':'Cliente: solo mira precio, descripción y totales de compra.'}</span></div><div class="view-mode-buttons"><button class="${mode==='admin'?'active':''}" data-action="cardAdmin">VER ADMIN</button><button class="${mode==='client'?'active':''}" data-action="cardClient">VER CLIENTE</button><button class="${state.settings.captureClean?'active':''}" data-action="captureClean">CAPTURA LIMPIA</button></div></section>`
+    return `<section class="view-mode-panel no-print"><div class="view-mode-copy"><b>Vista privada / cliente</b><span>${mode==='admin'?'Admin: costos, inversión y ganancia solo para ti.':'Cliente: precio, descripción y totales listos para enviar.'}</span></div><div class="view-mode-buttons"><button class="${mode==='admin'?'active':''}" data-action="cardAdmin">ADMIN</button><button class="${mode==='client'?'active':''}" data-action="cardClient">CLIENTE</button><button class="${state.settings.captureClean?'active':''}" data-action="captureClean">CAPTURA</button></div></section>`
   }
   function searchPanel(){
-    return `<section class="search-panel v10-search clean-search no-print" id="searchPanel"><div class="search-title"><b>Buscar producto</b><span>Escribe sin que se suba la pantalla</span></div><div class="searchbar"><span class="icon">⌕</span><input id="searchInput" placeholder="Buscar producto, código, precio, categoría, cliente o teléfono" value="${escapeHtml(filter.q)}" autocomplete="off" inputmode="search"></div></section>`}
+    return `<section class="search-panel v10-search clean-search no-print" id="searchPanel"><div class="search-title"><b>Buscar rápido</b><span>Para preparar foto, texto o venta</span></div><div class="searchbar"><span class="icon">⌕</span><input id="searchInput" placeholder="Producto, código, categoría o detalle" value="${escapeHtml(filter.q)}" autocomplete="off" inputmode="search"></div></section>`}
   function categoryGallery(){
     const cats=allCategories();
-    return `<section class="category-gallery no-print" id="categoriesBlock"><div class="category-head"><div><h2>CATEGORÍAS</h2><p>Toca una categoría para filtrar el catálogo sin mover el buscador.</p></div><span>${cats.length-1} categorías</span></div><div class="category-grid">${cats.map(c=>`<button class="category-card ${filter.cat===c?'active':''}" data-catcard="${escapeHtml(c)}"><img src="${escapeHtml(categoryImage(c))}" alt="${escapeHtml(c)}" onerror="this.onerror=null;this.src='assets/categorias/categoria.svg'"><b>${escapeHtml(c)}</b><small>${categoryCount(c)} productos</small></button>`).join('')}</div></section>`
+    return `<section class="category-gallery no-print" id="categoriesBlock"><div class="category-head"><div><h2>CATEGORÍAS</h2><p>Filtro privado para encontrar el producto antes de compartirlo.</p></div><span>${cats.length-1} categorías</span></div><div class="category-grid">${cats.map(c=>`<button class="category-card ${filter.cat===c?'active':''}" data-catcard="${escapeHtml(c)}"><img src="${escapeHtml(categoryImage(c))}" alt="${escapeHtml(c)}" onerror="this.onerror=null;this.src='assets/categorias/categoria.svg'"><b>${escapeHtml(c)}</b><small>${categoryCount(c)} productos</small></button>`).join('')}</div></section>`
   }
   function refreshCategoryUI(){
     $$('.chip').forEach(x=>x.classList.toggle('active',x.dataset.cat===filter.cat));
@@ -411,7 +413,7 @@
       const productTotal=productItemsTotal(p,shareQty);
       const normalTotal=productNormalTotalQty(p,shareQty);
       const codTotal=productCodTotalQty(p,shareQty);
-      return `<div class="product-share-card product-share-card-v15" id="productShareCard"><div class="share-brand"><span>SD COMAYAGUA</span><b>Disponible</b></div><div class="product-share-media"><img id="detailMainImage" src="${escapeHtml(safeImgs[0])}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><b class="price-badge share-main-price">${money(p.price)}</b></div><h2>${escapeHtml(p.name)}</h2><p class="share-description">${escapeHtml(p.description||'Producto disponible para entrega. Consulta disponibilidad antes de confirmar tu pedido.')}</p><div class="share-qty-line"><span>Cantidad consultada</span><b id="shareQtyText">${unitsLabel()} · ${money(productTotal)}${promoUsed()?' · promo aplicada':''}</b></div><div class="public-metrics public-metrics-v15"><div><span>Producto</span><b id="metricProduct">${money(productTotal)}</b></div><div><span>Envío normal</span><b id="metricNormal">${money(normalTotal)}</b></div><div><span>Al recibir + 6%</span><b id="metricCod">${money(codTotal)}</b></div></div><div class="process-row"><div class="process-card"><b>Envío Normal</b><span>Deposita, transfiere o paga por Tigo Money: producto + Lps. 110.</span></div><div class="process-card"><b>Pagar al Recibir</b><span>Producto + Lps. 100 de envío + 6% de comisión. Total redondeado en lempiras.</span></div></div><div class="share-footer">SD COMAYAGUA · WhatsApp +504 3151-7755</div></div>`
+      return `<div class="product-share-card product-share-card-v15" id="productShareCard"><div class="share-brand"><span class="share-brand-left"><img class="share-brand-logo" src="${LOGO_SRC}" alt="SD"><span>SD COMAYAGUA</span></span><b>Disponible</b></div><div class="product-share-media"><img id="detailMainImage" src="${escapeHtml(safeImgs[0])}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><b class="price-badge share-main-price">${money(p.price)}</b></div><h2>${escapeHtml(p.name)}</h2><p class="share-description">${escapeHtml(p.description||'Producto disponible para entrega. Consulta disponibilidad antes de confirmar tu pedido.')}</p><div class="share-qty-line"><span>Cantidad consultada</span><b id="shareQtyText">${unitsLabel()} · ${money(productTotal)}${promoUsed()?' · promo aplicada':''}</b></div><div class="public-metrics public-metrics-v15"><div><span>Producto</span><b id="metricProduct">${money(productTotal)}</b></div><div><span>Envío normal</span><b id="metricNormal">${money(normalTotal)}</b></div><div><span>Al recibir + 6%</span><b id="metricCod">${money(codTotal)}</b></div></div><div class="process-row"><div class="process-card"><b>Envío Normal</b><span>Deposita, transfiere o paga por Tigo Money: producto + Lps. 110.</span></div><div class="process-card"><b>Pagar al Recibir</b><span>Producto + Lps. 100 de envío + 6% de comisión. Total redondeado en lempiras.</span></div></div><div class="share-footer">SD COMAYAGUA · WhatsApp +504 3151-7755</div></div>`
     }
     openModal(`<div class="modal-head"><h3>Producto</h3><button class="close">×</button></div><div class="modal-body"><div id="shareCardMount">${cardHTML()}</div><div class="client-quote-panel no-print"><div><b>Precio rápido para cliente</b><span>Cambia la cantidad antes de descargar, compartir o enviar por WhatsApp.</span></div><div class="qty-presets"><button data-setqty="1">1</button><button data-setqty="2">2</button><button data-setqty="3">3</button><button data-setqty="5">5</button><button data-setqty="10">10</button><button data-setqty="12">12</button></div><div class="qty-control"><button id="detailQtyMinus">−</button><input id="detailQtyInput" type="number" min="1" value="1" inputmode="numeric"><button id="detailQtyPlus">+</button></div></div><div class="thumb-row">${safeImgs.map((img,i)=>`<button class="thumb ${i===0?'active':''}" data-product-img="${escapeHtml(img)}"><img src="${escapeHtml(img)}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"></button>`).join('')}</div><div class="modal-actions product-actions product-actions-grid no-print"><button class="btn secondary prod-action" id="downloadProductPhoto"><span class="ico">▣</span><b>Imagen</b><small>Descargar</small></button><button class="btn prod-action" id="shareProductPhoto"><span class="ico">↗</span><b>Foto</b><small>Compartir</small></button><button class="btn secondary prod-action" id="waProductText"><span class="ico">✎</span><b>Texto</b><small>WhatsApp</small></button><button class="btn prod-action" data-action="sellProduct" data-id="${escapeHtml(id)}"><span class="ico">🛒</span><b>Vender</b><small>Venta real</small></button><button class="btn secondary prod-action" data-action="quoteProduct" data-id="${escapeHtml(id)}"><span class="ico">🧾</span><b>Cotizar</b><small>Precio total</small></button><button class="btn secondary prod-action" data-action="marketingProduct" data-id="${escapeHtml(id)}"><span class="ico">#</span><b>Textos</b><small>Marketplace</small></button><button class="btn ghost prod-action" data-action="editProduct" data-id="${escapeHtml(id)}"><span class="ico">✦</span><b>Editar</b><small>Producto</small></button></div></div>`);
     function refreshShareCard(){
@@ -550,7 +552,7 @@ WhatsApp SD COMAYAGUA: +504 3151-7755`;
     const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
     const process=doc.cod?'Pagar al Recibir: productos + Lps. 100 de envío + comisión del 6%.':'Envío Normal: productos + Lps. 110 de envío, pagado por depósito, transferencia o Tigo Money.';
     const rows=(doc.items||[]).map((it,i)=>{const qty=Math.max(1,Number(it.qty)||1); const total=itemTotal(it); const unit=total/qty; const p=itemProductRef(it); const promo=promoTotalForQty(p,qty)!==null; return `<div class="doc-item-card-v23"><div class="doc-prod-line"><span>#${i+1}</span><b>${escapeHtml(it.name)}${promo?`<small class="doc-promo-note">Oferta aplicada</small>`:''}</b></div><div class="doc-prod-metrics"><div><small>Cant.</small><b>${num(qty)}</b></div><div><small>Precio C/U</small><b>${money(unit)}</b></div><div><small>Total</small><b>${money(total)}</b></div></div></div>`}).join('')||'<div class="doc-item-empty">Sin productos agregados</div>';
-    return `<div class="doc-wrap compact-doc doc-v21 doc-v23" id="printableDoc"><div class="doc-topline">${isSale?'RECIBO / FACTURA DE COMPRA':'COTIZACIÓN PARA CLIENTE'}</div><div class="doc-head compact-head"><div><span class="doc-pill">${isSale?'Venta registrada':'Preventa informativa'}</span><h2>SD COMAYAGUA</h2><p>${date} · <b>${escapeHtml(code)}</b></p></div><img class="doc-logo" src="assets/logo-sdc.png" alt="Logo"></div><div class="doc-fields compact-fields"><div class="doc-field"><span>Cliente</span><b>${escapeHtml(doc.client||'Cliente')}</b></div><div class="doc-field"><span>Teléfono</span><b>${escapeHtml(doc.phone||'No registrado')}</b></div><div class="doc-field"><span>Ubicación</span><b>${escapeHtml([doc.department,doc.municipality].filter(Boolean).join(' / ')||'No seleccionada')}</b></div><div class="doc-field"><span>Entrega</span><b>${escapeHtml(doc.company||'No seleccionada')}</b></div>${doc.reference?`<div class="doc-field wide"><span>Referencia</span><b>${escapeHtml(doc.reference)}</b></div>`:''}</div><div class="doc-process"><b>Proceso de pago:</b> ${process}</div><div class="doc-items-v23"><div class="doc-items-title-v23">Productos cotizados</div>${rows}</div><div class="doc-mini-summary doc-summary-v21"><div><span>Productos</span><b>${money(c.products)}</b></div><div><span>Envío</span><b>${money(c.shipping)}</b></div><div><span>Comisión</span><b>${money(c.commission)}</b></div><div><span>Descuento</span><b>${money(c.discount)}</b></div><div class="grand"><span>Total a pagar</span><b>${money(c.total)}</b></div></div><p class="doc-note compact-note">${isSale?'Gracias por comprar en SD Comayagua.':'Cotización informativa. Revise producto, cantidad, envío y total antes de confirmar.'} WhatsApp: +504 3151-7755</p></div>`
+    return `<div class="doc-wrap compact-doc doc-v21 doc-v23" id="printableDoc"><div class="doc-topline">${isSale?'RECIBO / FACTURA DE COMPRA':'COTIZACIÓN PARA CLIENTE'}</div><div class="doc-head compact-head"><div><span class="doc-pill">${isSale?'Venta registrada':'Preventa informativa'}</span><h2>SD COMAYAGUA</h2><p>${date} · <b>${escapeHtml(code)}</b></p></div><img class="doc-logo" src="${LOGO_SRC}" alt="Logo"></div><div class="doc-fields compact-fields"><div class="doc-field"><span>Cliente</span><b>${escapeHtml(doc.client||'Cliente')}</b></div><div class="doc-field"><span>Teléfono</span><b>${escapeHtml(doc.phone||'No registrado')}</b></div><div class="doc-field"><span>Ubicación</span><b>${escapeHtml([doc.department,doc.municipality].filter(Boolean).join(' / ')||'No seleccionada')}</b></div><div class="doc-field"><span>Entrega</span><b>${escapeHtml(doc.company||'No seleccionada')}</b></div>${doc.reference?`<div class="doc-field wide"><span>Referencia</span><b>${escapeHtml(doc.reference)}</b></div>`:''}</div><div class="doc-process"><b>Proceso de pago:</b> ${process}</div><div class="doc-items-v23"><div class="doc-items-title-v23">Productos cotizados</div>${rows}</div><div class="doc-mini-summary doc-summary-v21"><div><span>Productos</span><b>${money(c.products)}</b></div><div><span>Envío</span><b>${money(c.shipping)}</b></div><div><span>Comisión</span><b>${money(c.commission)}</b></div><div><span>Descuento</span><b>${money(c.discount)}</b></div><div class="grand"><span>Total a pagar</span><b>${money(c.total)}</b></div></div><p class="doc-note compact-note">${isSale?'Gracias por comprar en SD Comayagua.':'Cotización informativa. Revise producto, cantidad, envío y total antes de confirmar.'} WhatsApp: +504 3151-7755</p></div>`
   }
 
   function whatsappText(doc,isSale){

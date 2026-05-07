@@ -966,29 +966,3 @@ WhatsApp SD COMAYAGUA: +504 3151-7755`;
   applyAppearance();
   render();
 })();
-
-/* ==========================================================================
-   MODIFICACIONES JS - BOTÓN FLOTANTE PARA MÓVIL
-   ========================================================================== */
-(function iniciarMejorasMoviles() {
-  // Evitar que se duplique si la página recarga componentes
-  if(document.getElementById('fab-nuevo')) return;
-
-  const fab = document.createElement('button');
-  fab.id = 'fab-nuevo';
-  fab.className = 'btn-flotante';
-  fab.innerHTML = '🔍'; // Icono de lupa para buscar rápido
-  fab.setAttribute('aria-label', 'Buscar Producto Rápido');
-  
-  // Acción al presionar el botón
-  fab.onclick = () => {
-    const searchInput = document.querySelector('.searchbar input');
-    if (searchInput) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Pequeño retraso para permitir el scroll antes de abrir el teclado
-      setTimeout(() => searchInput.focus(), 300); 
-    }
-  };
-  
-  document.body.appendChild(fab);
-})();

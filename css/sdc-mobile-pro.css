@@ -791,3 +791,34 @@ body.sdc-mobile-pro .doc-v23{
   body.sdc-mobile-pro .metrics.admin-metrics{grid-template-columns:1fr !important;}
   body.sdc-mobile-pro .bottom-nav .nav-btn span{font-size:9px !important;}
 }
+
+/* Arranque seguro SDC */
+.boot-loading{
+  min-height:100dvh;
+  display:grid;
+  place-items:center;
+  padding:24px 14px;
+  color:#effbff;
+  background:linear-gradient(135deg,#061528,#062f34);
+}
+.boot-loading-card,
+.sdc-safe-error-card{
+  width:min(560px,100%);
+  border:1px solid rgba(37,223,255,.28);
+  background:linear-gradient(145deg,rgba(8,26,44,.96),rgba(3,12,24,.96));
+  border-radius:28px;
+  padding:22px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+  font-family:Arial,sans-serif;
+}
+.boot-loading-card img{width:96px;height:96px;object-fit:contain;border-radius:999px;display:block;margin:0 auto 14px;background:#020711;}
+.boot-loading-card h1,.sdc-safe-error-card h1{font-size:24px;margin:0 0 8px;letter-spacing:.04em;}
+.boot-loading-card p,.sdc-safe-error-card p{margin:0;color:#bcd4e8;line-height:1.45;}
+.sdc-safe-error-wrap{min-height:100dvh;display:grid;place-items:center;padding:24px 14px;background:linear-gradient(135deg,#061528,#062f34);color:#effbff;}
+.sdc-safe-pill{display:inline-flex;border:1px solid rgba(37,223,255,.35);color:#9ff3ff;border-radius:999px;padding:7px 11px;font-size:12px;text-transform:uppercase;letter-spacing:.10em;margin-bottom:12px;}
+.sdc-safe-box,.sdc-safe-warn,.sdc-safe-details{margin-top:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.055);border-radius:18px;padding:13px;}
+.sdc-safe-box ol{margin:8px 0 0;padding-left:21px;line-height:1.65;color:#dcefff;}
+.sdc-safe-warn{border-color:rgba(255,209,102,.34);color:#ffe2a5;}
+.sdc-safe-details summary{cursor:pointer;font-weight:700;}
+.sdc-safe-details ul{margin:8px 0 0;padding-left:18px;color:#dcefff;line-height:1.5;}
+.sdc-safe-btn{margin-top:14px;width:100%;border:0;border-radius:18px;min-height:52px;background:linear-gradient(135deg,#25dfff,#28f6a1);color:#031018;font-weight:900;text-transform:uppercase;letter-spacing:.06em;}

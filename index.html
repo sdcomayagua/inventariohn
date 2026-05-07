@@ -7,26 +7,39 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="SDC Caja">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="manifest" href="manifest.webmanifest?v=2">
   <title>SD Comayagua</title>
-  <link rel="icon" href="assets/logo-sdc-2026.png">
+  <link rel="icon" href="assets/logo-sdc-2026.png?v=2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700;800&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/sdc-mobile-pro.css">
+  <link rel="stylesheet" href="css/styles.css?v=2">
+  <link rel="stylesheet" href="css/sdc-mobile-pro.css?v=2">
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <section class="boot-loading" data-sdc-loading="1">
+      <div class="boot-loading-card">
+        <img src="assets/logo-sdc-2026.png" alt="SD Comayagua">
+        <h1>Cargando SDC...</h1>
+        <p>Preparando inventario, ventas, cotizaciones y caja.</p>
+      </div>
+    </section>
+  </div>
   <div id="modalRoot"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <button id="goTop" class="go-top" aria-label="Subir">↑</button>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script defer src="js/data.js"></script>
-  <script defer src="js/storage.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script defer src="js/app.js"></script>
-  <script defer src="js/sdc-mobile-pro.js"></script>
-  <script defer src="js/sdc-boot-check.js"></script>
+
+  <!-- Primero cargan los archivos locales críticos. Así el panel no depende de CDN para iniciar. -->
+  <script defer src="js/sdc-error-guard.js?v=2"></script>
+  <script defer src="js/data.js?v=2"></script>
+  <script defer src="js/storage.js?v=2"></script>
+  <script defer src="js/app.js?v=2"></script>
+  <script defer src="js/sdc-mobile-pro.js?v=2"></script>
+  <script defer src="js/sdc-boot-check.js?v=2"></script>
+
+  <!-- Librerías no críticas: se cargan después. Si fallan, el inventario igual abre. -->
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </body>
 </html>

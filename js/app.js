@@ -177,7 +177,7 @@
   function hero(){
     const st=stats();
     return `<section class="hero" id="inicio">
-      <div class="private-hero-head"><img class="private-hero-logo" src="${LOGO_SRC}" alt="Logo SD"><div><div class="pill"><span class="dot"></span> Panel privado</div><h2>CONTROL SDC</h2><p>Solo tú entras aquí. El cliente únicamente recibe la foto, cotización o texto que le compartes por WhatsApp.</p></div></div>
+      <div class="private-hero-head private-hero-head--no-logo"><div><div class="pill"><span class="dot"></span> Panel privado</div><h2>CONTROL SDC</h2><p>Solo tú entras aquí. El cliente únicamente recibe la foto, cotización o texto que le compartes por WhatsApp.</p></div></div>
       <div class="stats">
         <div class="stat"><b>${num(st.count)}</b><span>Productos</span></div><div class="stat"><b>${num(st.stock)}</b><span>Stock total</span></div>
         <div class="stat"><b>${moneyPrivate(st.value)}</b><span>Valor venta</span></div><div class="stat"><b>${moneyPrivate(st.invested)}</b><span>Invertido</span></div>

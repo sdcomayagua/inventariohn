@@ -118,35 +118,33 @@
     return JSON.stringify({products:st.products,stock:st.stock,saleValue:st.saleValue,invested:st.invested,profit:st.profit,noCost:st.noCost,noImage:st.noImage,soldOut:st.soldOut,lowStock:st.lowStock,soldToday:st.soldToday,expensesToday:st.expensesToday,netToday:st.netToday,pending:st.pending,quoteOpen:st.quoteOpen,clients:st.clients});
   }
   function commandHTML(){
-    const st = stats();
-    const riskClass = st.soldOut || st.noCost ? 'danger' : (st.lowStock ? 'warn' : 'good');
+    const s = window.SDC_APP_STATE || {};
+    const products = Array.isArray(s.products) ? s.products : [];
+    const stock = products.reduce((a,p)=>a+(+p.stock||0),0);
+    const venta = products.reduce((a,p)=>a+((+p.price||0)*(+p.stock||0)),0);
+    const inv = products.reduce((a,p)=>a+((+p.cost||0)*(+p.stock||0)),0);
+    const low = products.filter(p => (+p.stock||0) > 0 && (+p.stock||0) <= 3).length;
+    const noImg = products.filter(p => !(p.image || p.img || p.imagen || p.foto || p.galeria_1)).length;
     return `
-      <section class="sdc-v3-command no-print" data-sdc-v3="command">
-        <div class="sdc-v3-glass">
-          <div class="sdc-v3-row">
-            <div class="sdc-v3-title">
-              <div class="sdc-v3-orb">SD</div>
-              <div><b>Centro de control V7 PRO</b><span>Resumen rápido para vender, cotizar y revisar inventario desde celular.</span></div>
-            </div>
+      <section class="sdc-command sdc-control-clean" aria-label="Centro de control">
+        <div class="sdc-v3-badge"><i></i><span>Panel privado</span></div>
+        <div class="sdc-command-title clean-title">
+          <div>
+            <h2>Centro de control</h2>
+            <p>Resumen rápido para vender, cotizar y revisar inventario desde celular.</p>
           </div>
-          <div class="sdc-v3-health">
-            <button class="sdc-v3-health-card good" data-v3-action="receipts" type="button"><small>Vendido hoy</small><b>${money(st.soldToday)}</b><span>Neto ${money(st.netToday)}</span></button>
-            <button class="sdc-v3-health-card ${riskClass}" data-v3-action="lowStock" type="button"><small>Alertas</small><b>${num(st.lowStock + st.soldOut + st.noCost)}</b><span>${num(st.lowStock)} bajo · ${num(st.soldOut)} agot.</span></button>
-            <button class="sdc-v3-health-card" data-v3-action="profit" type="button"><small>Ganancia estimada</small><b>${money(st.profit)}</b><span>Venta ${money(st.saleValue)}</span></button>
-            <button class="sdc-v3-health-card ${st.noImage?'warn':''}" data-v3-action="noImage" type="button"><small>Sin imagen</small><b>${num(st.noImage)}</b><span>Mejora catálogo</span></button>
-          </div>
-          <div class="sdc-v3-actions">
-            <button class="sdc-v3-action primary" data-v3-action="quote" type="button"><i>▧</i><b>Cotizar</b><span>Pedido para cliente</span></button>
-            <button class="sdc-v3-action" data-v3-action="quickSale" type="button"><i>⚡</i><b>Venta rápida</b><span>Producto + total</span></button>
-            <button class="sdc-v3-action" data-v3-action="newProduct" type="button"><i>＋</i><b>Producto</b><span>Agregar stock</span></button>
-            <button class="sdc-v3-action" data-v3-action="receipts" type="button"><i>▤</i><b>Caja</b><span>Ventas del día</span></button>
-            <button class="sdc-v3-action" data-v3-action="clients" type="button"><i>◉</i><b>Clientes</b><span>Agenda</span></button>
-            <button class="sdc-v3-action" data-v3-action="backup" type="button"><i>⤓</i><b>Respaldo</b><span>Guardar copia</span></button>
-          </div>
-          <div class="sdc-v3-note">
-            <p><b>Consejo:</b> use Cliente o Captura antes de enviar la foto para ocultar inversión y ganancia.</p>
-            <button class="sdc-v3-copy" data-v3-action="copySummary" type="button">Copiar resumen</button>
-          </div>
+        </div>
+        <div class="sdc-v3-stats">
+          <button class="sdc-v3-stat" type="button" data-sdc-scroll="inventario"><span>Productos</span><b>${num(products.length)}</b></button>
+          <button class="sdc-v3-stat" type="button" data-sdc-scroll="inventario"><span>Stock total</span><b>${num(stock)}</b></button>
+          <button class="sdc-v3-stat money" type="button"><span>Valor venta</span><b>${money(venta)}</b></button>
+          <button class="sdc-v3-stat money" type="button"><span>Invertido</span><b>${money(inv)}</b></button>
+          <button class="sdc-v3-stat money wide" type="button"><span>Ganancia estimada</span><b>${money(venta-inv)}</b></button>
+          <button class="sdc-v3-stat warn" type="button" data-sdc-scroll="alerts"><span>Alertas</span><b>${num(low + noImg)}</b><em>${num(low)} bajo · ${num(noImg)} sin imagen</em></button>
+        </div>
+        <div class="sdc-v3-note clean-note">
+          <b>Consejo:</b> use Cliente o Captura antes de enviar una foto para ocultar inversión y ganancia.
+          <button type="button" id="sdcCopySummary">Copiar resumen</button>
         </div>
       </section>`;
   }

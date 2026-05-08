@@ -1,0 +1,13 @@
+SDC - Cambios aplicados
+
+1. El Centro de control ya no muestra versión ni logo SD duplicado.
+2. El menú Cliente / Captura / Cotizar / Vender / Catálogo / Producto / Rápida / Guardar / Clientes / Caja / Ganancia / Respaldo ahora queda en una sola fila movible de izquierda a derecha.
+3. Las alertas como Bajo stock, Sin costo, Ganancia baja y Ganancias visibles ahora quedan como tarjetas movibles horizontales.
+4. La cotización / preventa fue corregida en celular: categorías con scroll horizontal, productos sin montarse, imágenes pequeñas alineadas y botones legibles.
+5. El botón Copiar resumen ya no debe salirse del cuadro.
+
+Archivos editados:
+- css/styles.css
+- js/sdc-v3-app.js
+
+Para aplicar solo el parche, suba esos dos archivos reemplazando los actuales.

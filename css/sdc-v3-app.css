@@ -905,3 +905,42 @@ body.sdc-mobile-pro .client-actions-v23 .btn:nth-child(2){
 .sdc-v3-note p{min-width:0!important;flex:1 1 240px!important;text-wrap:pretty!important;}
 .sdc-v3-copy{max-width:100%!important;overflow:hidden;text-overflow:ellipsis;}
 @media(max-width:720px){.sdc-v3-note{flex-direction:column!important;align-items:stretch!important}.sdc-v3-copy{width:100%!important}}
+
+
+/* =========================================================
+   SDC V7 PRO ESTABLE · prioridad final de app móvil
+   ========================================================= */
+body.sdc-v3-app{overflow-x:hidden!important;}
+body.sdc-v3-app .app{max-width:100%!important;}
+body.sdc-v3-app .product-media{height:auto!important;aspect-ratio:1/1!important;}
+body.sdc-v3-app .product-media img{object-fit:contain!important;padding:0!important;background:transparent!important;}
+@media(max-width:720px){
+  body.sdc-v3-app .quick-v22{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;overflow:visible!important;}
+  body.sdc-v3-app .quick-v22 button{min-width:0!important;width:100%!important;}
+  body.sdc-v3-app .alert-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;overflow:visible!important;}
+  .sdc-v3-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;overflow:visible!important;}
+  .sdc-v3-action{min-width:0!important;width:100%!important;}
+  .sdc-v3-action span{font-size:.64rem!important;}
+  .sdc-v3-note{display:grid!important;grid-template-columns:1fr!important;overflow:hidden!important;}
+  .sdc-v3-note p{font-size:.78rem!important;overflow-wrap:anywhere!important;}
+  .sdc-v3-copy{width:100%!important;white-space:normal!important;}
+  body.sdc-v3-app .modal{max-height:96dvh!important;}
+  body.sdc-v3-app .modal-body{padding-bottom:74px!important;}
+}
+@media(max-width:390px){.sdc-v3-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;}}
+
+/* V7 final sobreescribe cotizador después de los estilos V3 */
+.quote-body{padding-top:10px!important;}
+.picker-card{padding:12px!important;display:block!important;align-content:start!important;min-height:0!important;}
+.picker-head-compact{margin:0 0 8px!important;padding:0!important;align-items:center!important;}
+.picker-head-compact small{display:none!important;}
+.quote-body .searchbar{margin:0 0 8px!important;min-height:54px!important;}
+.quote-body .chips{padding:4px 0 6px!important;margin:0!important;}
+.picker-list{display:grid!important;gap:10px!important;max-height:48dvh!important;overflow:auto!important;padding-right:1px!important;}
+.quote-actions.compact-actions{position:static!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;margin:12px 0 0!important;padding:8px!important;}
+.quote-actions.compact-actions .btn{min-width:0!important;min-height:44px!important;border-radius:15px!important;padding:7px 4px!important;}
+.quote-actions.compact-actions .btn b{font-size:9px!important;line-height:1.05!important;}
+.quote-actions.compact-actions .btn small{font-size:6.8px!important;line-height:1!important;}
+.quote-actions.compact-actions .main-wide{grid-column:1/-1!important;min-height:50px!important;}
+@media(max-width:720px){.picker-head-compact{display:grid!important;grid-template-columns:1fr auto!important}.picker-list{max-height:46dvh!important}.modal{width:100vw!important;max-width:100vw!important;max-height:96dvh!important;border-radius:26px 26px 0 0!important;margin:0!important}}
+@media(max-width:390px){.quote-actions.compact-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}.quote-actions.compact-actions #waPhoto,.quote-actions.compact-actions #sendCompleteQuote,.quote-actions.compact-actions .main-wide{grid-column:1/-1!important}}

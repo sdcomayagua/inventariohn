@@ -1,4 +1,4 @@
-/* SDC Inventario V3: mejoras progresivas para convertir el panel en app móvil privada. */
+/* SDC Inventario V7 PRO ESTABLE: mejoras progresivas para convertir el panel en app móvil privada. */
 (function(){
   'use strict';
 
@@ -126,7 +126,7 @@
           <div class="sdc-v3-row">
             <div class="sdc-v3-title">
               <div class="sdc-v3-orb">SD</div>
-              <div><b>Centro de control V3</b><span>Resumen rápido para vender, cotizar y revisar inventario desde celular.</span></div>
+              <div><b>Centro de control V7 PRO</b><span>Resumen rápido para vender, cotizar y revisar inventario desde celular.</span></div>
             </div>
           </div>
           <div class="sdc-v3-health">
@@ -151,7 +151,7 @@
       </section>`;
   }
   function bottomHTML(){
-    return `<nav class="sdc-v3-bottom no-print" data-sdc-v3="bottom" aria-label="Navegación rápida V3">
+    return `<nav class="sdc-v3-bottom no-print" data-sdc-v3="bottom" aria-label="Navegación rápida V7 PRO">
       <button type="button" data-v3-action="home"><i>⌂</i><span>Inicio</span></button>
       <button type="button" data-v3-action="focusSearch"><i>⌕</i><span>Buscar</span></button>
       <button type="button" class="primary" data-v3-action="quote"><i>▧</i><span>Cotizar</span></button>

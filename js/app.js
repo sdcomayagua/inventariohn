@@ -8,6 +8,7 @@
   let quote = emptyQuote();
   let saleDraft = null;
   const LOGO_SRC = 'assets/logo-sdc-2026.png';
+  const SDC_VERSION_LABEL = 'V7 PRO ESTABLE';
 
   function hydrateState(){
     state.clients = Array.isArray(state.clients)?state.clients:[];
@@ -72,6 +73,7 @@
   function categoryCount(cat){if(cat==='Todos')return state.products.length; const t=String(cat).toLowerCase(); return state.products.filter(p=>productTags(p).some(x=>x.toLowerCase()===t)).length}
 
   function placeholderFor(p){const tags=productTags(p).join(' ').toLowerCase(); if(tags.includes('gamer')||tags.includes('dedal')||tags.includes('gatillo'))return SDC_PLACEHOLDERS.gamer; if(tags.includes('tec')||tags.includes('celular')||tags.includes('audio')||tags.includes('cable'))return SDC_PLACEHOLDERS.tecnologia; if(tags.includes('hogar')||tags.includes('cocina'))return SDC_PLACEHOLDERS.hogar; return SDC_PLACEHOLDERS.default}
+  function captureFallbackImage(){return (window.SDC_PLACEHOLDERS && (SDC_PLACEHOLDERS.gamer||SDC_PLACEHOLDERS.default)) || LOGO_SRC}
   function galleryOf(p){const g=String(p.gallery||'').split(/[\n,]+/).map(x=>x.trim()).filter(Boolean); const list=[p.image,...g].filter(Boolean); return Array.from(new Set(list))}
   function productImage(p){return galleryOf(p)[0] || placeholderFor(p)}
   function onImgError(img,p){img.onerror=null; img.src=placeholderFor(p||{});}
@@ -711,7 +713,23 @@
     if(!window.html2canvas){window.print();return null}
     await waitForImages(el);
     try{
-      const canvas=await html2canvas(el,{backgroundColor,scale:3,useCORS:true,allowTaint:false,imageTimeout:15000,scrollX:0,scrollY:0,windowWidth:document.documentElement.clientWidth,onclone:(doc)=>{doc.body.classList.add('capture-exporting');doc.querySelectorAll('img').forEach(img=>{try{img.setAttribute('crossorigin','anonymous');img.style.background='transparent';}catch(e){}});}});
+      const exportScale=isMobileDevice()?2:2.35;
+      const canvas=await html2canvas(el,{backgroundColor,scale:exportScale,useCORS:true,allowTaint:false,imageTimeout:15000,removeContainer:true,scrollX:0,scrollY:0,windowWidth:document.documentElement.clientWidth,onclone:(doc)=>{
+        doc.body.classList.add('capture-exporting','capture-v7-stable');
+        doc.querySelectorAll('img').forEach(img=>{
+          try{
+            img.setAttribute('crossorigin','anonymous');
+            img.setAttribute('referrerpolicy','no-referrer');
+            img.loading='eager';
+            img.decoding='sync';
+            img.style.background='transparent';
+            const src=(img.getAttribute('src')||'').trim();
+            if(!src || src==='undefined' || src==='null'){
+              img.setAttribute('src', img.classList.contains('share-brand-logo') ? LOGO_SRC : captureFallbackImage());
+            }
+          }catch(e){}
+        });
+      }});
       return await new Promise(res=>canvas.toBlob(res,'image/png',.98));
     }catch(err){
       console.error(err);
@@ -1056,7 +1074,7 @@
   function toggleCaptureClean(){
     state.settings.captureClean=!state.settings.captureClean;
     if(state.settings.captureClean) state.settings.cardView='client';
-    save(); applyAppearance(); render(); toast(state.settings.captureClean?'Captura activada. Para volver, toque SALIR en la misma barra.':'Captura desactivada. Ya volvió a la vista normal.');
+    save(); applyAppearance(); render(); toast(state.settings.captureClean?'Modo captura activado. Toque SALIR o CAPTURA para volver a la vista normal.':'Captura desactivada. Ya volvió a la vista normal.');
   }
 
   function toggleMoneyLock(){

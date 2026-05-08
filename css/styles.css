@@ -2617,3 +2617,170 @@ body.capture-exporting .share-description,body.capture-v7-stable .share-descript
     gap: 10px !important;
   }
 }
+
+/* =========================================================
+   FIX FINAL MÓVIL - TARJETAS CORTADAS / CLIENTE / BAJO STOCK
+   ========================================================= */
+
+@media (max-width: 1100px){
+
+  html,
+  body{
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  *,
+  *::before,
+  *::after{
+    box-sizing: border-box !important;
+  }
+
+  main,
+  .app,
+  .page,
+  .container,
+  .wrap,
+  .dashboard,
+  .admin-dashboard,
+  .panel,
+  .content,
+  .main-content,
+  .control-center{
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Corrige grids que quedaron con medidas de escritorio */
+  .dashboard-grid,
+  .stats-grid,
+  .kpi-grid,
+  .metric-grid,
+  .cards-grid,
+  .summary-grid,
+  .quick-actions,
+  .shortcut-grid,
+  .action-grid{
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 12px !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    overflow: visible !important;
+  }
+
+  .dashboard-grid > *,
+  .stats-grid > *,
+  .kpi-grid > *,
+  .metric-grid > *,
+  .cards-grid > *,
+  .summary-grid > *,
+  .quick-actions > *,
+  .shortcut-grid > *,
+  .action-grid > *{
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Tarjetas tipo Cliente, Caja, Captura */
+  .card,
+  .dashboard-card,
+  .stat-card,
+  .metric-card,
+  .kpi-card,
+  .summary-card,
+  .quick-card,
+  .shortcut-card,
+  .action-card{
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .card h1,
+  .card h2,
+  .card h3,
+  .dashboard-card h1,
+  .dashboard-card h2,
+  .dashboard-card h3,
+  .stat-card h1,
+  .stat-card h2,
+  .stat-card h3,
+  .metric-card h1,
+  .metric-card h2,
+  .metric-card h3,
+  .kpi-card h1,
+  .kpi-card h2,
+  .kpi-card h3,
+  .quick-card h1,
+  .quick-card h2,
+  .quick-card h3,
+  .shortcut-card h1,
+  .shortcut-card h2,
+  .shortcut-card h3,
+  .action-card h1,
+  .action-card h2,
+  .action-card h3{
+    font-size: clamp(22px, 5vw, 34px) !important;
+    line-height: 1.05 !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  /* Evita que Cliente se parta como Clien / te */
+  button,
+  .btn,
+  .tab,
+  .chip,
+  .pill,
+  .card-title,
+  .title{
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  /* Bajo stock completo */
+  .low-stock,
+  .stock-low,
+  .bajo-stock,
+  .alert-stock,
+  .inventory-alert,
+  .stock-card,
+  .stock-warning,
+  .low-stock-card{
+    grid-column: 1 / -1 !important;
+    width: calc(100% - 28px) !important;
+    max-width: calc(100% - 28px) !important;
+    min-width: 0 !important;
+    margin-left: 14px !important;
+    margin-right: 14px !important;
+    overflow: hidden !important;
+  }
+
+  .low-stock button,
+  .stock-low button,
+  .bajo-stock button,
+  .alert-stock button,
+  .inventory-alert button,
+  .stock-card button,
+  .stock-warning button,
+  .low-stock-card button{
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+}

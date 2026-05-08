@@ -1,0 +1,17 @@
+{
+  "name": "SD COMAYAGUA - Inventario V3",
+  "short_name": "SDC V3",
+  "description": "App privada V3 de inventario, cotizaciones, ventas, caja y respaldo de SD COMAYAGUA.",
+  "start_url": "./index.html?v=3",
+  "display": "standalone",
+  "background_color": "#06101b",
+  "theme_color": "#061322",
+  "icons": [
+    {
+      "src": "assets/logo-sdc-2026.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -2474,3 +2474,146 @@ body.capture-exporting .share-description,body.capture-v7-stable .share-descript
     overflow: hidden !important;
   }
 }
+
+/* =========================================================
+   FIX TARJETAS DASHBOARD / CAJA / BAJO STOCK - MÓVIL
+   ========================================================= */
+
+@media (max-width: 700px){
+
+  /* El contenedor principal debe usar todo el ancho disponible */
+  body,
+  main,
+  .app,
+  .page,
+  .dashboard,
+  .dashboard-wrap,
+  .admin-dashboard,
+  .control-center,
+  .panel-admin,
+  .main-content{
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Grid de tarjetas superiores: que NO deje tarjetas chiquitas pegadas a la izquierda */
+  .quick-actions,
+  .action-grid,
+  .shortcut-grid,
+  .dashboard-grid,
+  .stats-grid,
+  .metric-grid,
+  .kpi-grid,
+  .cards-grid,
+  .summary-grid{
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Cada tarjeta debe adaptarse al espacio, no tener ancho fijo */
+  .quick-actions > *,
+  .action-grid > *,
+  .shortcut-grid > *,
+  .dashboard-grid > *,
+  .stats-grid > *,
+  .metric-grid > *,
+  .kpi-grid > *,
+  .cards-grid > *,
+  .summary-grid > *{
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Tarjetas tipo Caja / Cliente / Captura */
+  .quick-card,
+  .shortcut-card,
+  .action-card,
+  .dashboard-card,
+  .stat-card,
+  .metric-card,
+  .kpi-card,
+  .summary-card{
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 112px !important;
+    padding: 18px 14px !important;
+    border-radius: 24px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .quick-card h3,
+  .shortcut-card h3,
+  .action-card h3,
+  .dashboard-card h3,
+  .stat-card h3,
+  .metric-card h3,
+  .kpi-card h3,
+  .summary-card h3{
+    font-size: clamp(1.05rem, 5vw, 1.45rem) !important;
+    line-height: 1.05 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+  }
+
+  /* BAJO STOCK: debe ocupar todo el ancho */
+  .low-stock,
+  .stock-low,
+  .bajo-stock,
+  .alert-stock,
+  .inventory-alert,
+  .stock-card,
+  .stock-warning,
+  .low-stock-card{
+    display: block !important;
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    border-radius: 24px !important;
+  }
+
+  .low-stock button,
+  .stock-low button,
+  .bajo-stock button,
+  .alert-stock button,
+  .inventory-alert button,
+  .stock-card button,
+  .stock-warning button,
+  .low-stock-card button{
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Si la tarjeta de bajo stock tiene una fila interna, también la corrige */
+  .low-stock .row,
+  .stock-low .row,
+  .bajo-stock .row,
+  .alert-stock .row,
+  .inventory-alert .row,
+  .stock-card .row{
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+}

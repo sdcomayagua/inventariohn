@@ -2318,3 +2318,159 @@ body.capture-exporting .share-description,body.capture-v7-stable .share-descript
   .quick-panel .quick-btn b{font-size:clamp(17px,5.6vw,20px)!important;}
   .quick-panel .quick-btn small{font-size:11px!important;letter-spacing:.09em!important;}
 }
+
+/* =========================================================
+   PARCHE MÓVIL - BOTONES MODO DE TRABAJO + TARJETAS CORTADAS
+   SD COMAYAGUA
+   ========================================================= */
+
+@media (max-width: 700px){
+
+  /* Evita que cualquier tarjeta se corte hacia la derecha */
+  html, body{
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden !important;
+  }
+
+  main,
+  .app,
+  .page,
+  .container,
+  .dashboard,
+  .panel,
+  .card,
+  .box,
+  .section{
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* MODO DE TRABAJO: que no se parta CLIENTE / CAPTURA */
+  .mode-tabs,
+  .work-tabs,
+  .modo-tabs,
+  .modo-trabajo-tabs,
+  .view-tabs,
+  .tabs-mode{
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 10px !important;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mode-tabs > *,
+  .work-tabs > *,
+  .modo-tabs > *,
+  .modo-trabajo-tabs > *,
+  .view-tabs > *,
+  .tabs-mode > *{
+    flex: 0 0 auto !important;
+    min-width: 118px !important;
+    max-width: none !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    text-align: center !important;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  /* Por si los botones no tienen clase específica */
+  button{
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  /* Evita que "Cliente" se vea en dos líneas */
+  button,
+  .btn,
+  .tab,
+  .chip,
+  .pill{
+    white-space: nowrap !important;
+  }
+
+  /* Tarjeta de bajo stock: evita que se corte */
+  .low-stock,
+  .stock-low,
+  .bajo-stock,
+  .alert-stock,
+  .inventory-alert,
+  .stock-card{
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .low-stock *,
+  .stock-low *,
+  .bajo-stock *,
+  .alert-stock *,
+  .inventory-alert *,
+  .stock-card *{
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Si hay botón VER dentro de bajo stock */
+  .low-stock button,
+  .stock-low button,
+  .bajo-stock button,
+  .alert-stock button,
+  .inventory-alert button,
+  .stock-card button{
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Buscador: evita que el botón flotante lo tape */
+  .search-box,
+  .search-panel,
+  .search-wrapper,
+  .search-container{
+    position: relative !important;
+    z-index: 2 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Botón de subir: que no tape el buscador */
+  .scroll-top,
+  .btn-scroll-top,
+  .back-to-top,
+  #scrollTop,
+  #btnScrollTop{
+    width: 56px !important;
+    height: 56px !important;
+    right: 14px !important;
+    bottom: 98px !important;
+    border-radius: 22px !important;
+    z-index: 30 !important;
+  }
+
+  /* Barra inferior: que no tape contenido */
+  body{
+    padding-bottom: 115px !important;
+  }
+
+  .bottom-nav,
+  .nav-bottom,
+  .mobile-nav,
+  .tabbar,
+  .footer-nav{
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 14px !important;
+    width: auto !important;
+    max-width: calc(100% - 24px) !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+}

@@ -2784,179 +2784,166 @@ body.capture-exporting .share-description,body.capture-v7-stable .share-descript
     min-width: 0 !important;
   }
 }
+
 /* =========================================================
-   SDC FIX REAL FINAL 2026-05-08
-   Corrige lo que se ve en captura:
-   - "Cliente" ya no queda pequeño ni partido como Clien / te.
-   - "1 BAJO STOCK" ya no queda en tarjeta cortada.
-   - Se eliminan anchos fijos del parche anterior.
+   SD COMAYAGUA · V32 FIX REAL CELULAR / ZOOM 300%
+   Problema corregido: el menú rápido y las alertas tenían
+   carrusel con anchos fijos; en celular/zoom 300% se cortaban.
+   Este bloque DEBE quedar al final de styles.css.
    ========================================================= */
 
-@media (max-width: 1100px){
-
-  html,
-  body{
-    width:100% !important;
-    max-width:100% !important;
-    overflow-x:hidden !important;
+@media (max-width: 700px){
+  html, body{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
   }
 
-  *,*::before,*::after{
-    box-sizing:border-box !important;
+  body, main, .app, #app, .page, .container, .wrap,
+  .dashboard, .admin-dashboard, .control-center, .panel,
+  .content, .main-content, .sdc-v3-app{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow-x:hidden!important;
+    box-sizing:border-box!important;
   }
 
-  main,
-  .app,
-  .page,
-  .container,
-  .wrap,
-  .dashboard,
-  .dashboard-wrap,
-  .admin-dashboard,
-  .control-center,
-  .panel,
-  .panel-admin,
-  .main-content,
-  .content{
-    width:100% !important;
-    max-width:100% !important;
-    min-width:0 !important;
-    overflow-x:hidden !important;
+  *, *::before, *::after{
+    box-sizing:border-box!important;
   }
 
-  /* ===== ACCESOS RÁPIDOS / CLIENTE / CAPTURA / COTIZAR =====
-     Anula el carrusel de 126px/132px que estaba dejando la tarjeta pequeña. */
+  /* MENÚ RÁPIDO: ya no queda como carrusel fijo que corta Cliente/Captura */
+  .quick,
   .quick-v22,
+  .quick-private,
+  .quick-panel .quick-grid,
+  .quick-grid,
+  .action-panel .quick-grid,
+  .action-panel,
+  .quick-panel{
+    display:grid!important;
+    grid-template-columns:repeat(2, minmax(0,1fr))!important;
+    gap:10px!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+    overflow-x:hidden!important;
+    padding:0!important;
+    margin:10px 0 12px!important;
+  }
+
   .quick-panel,
   .action-panel{
-    width:100% !important;
-    max-width:100% !important;
-    min-width:0 !important;
-    overflow:visible !important;
-    padding-left:0 !important;
-    padding-right:0 !important;
-    margin-left:0 !important;
-    margin-right:0 !important;
+    display:block!important;
   }
 
-  .quick-grid,
   .quick-panel .quick-grid,
-  .quick-v22 .quick-grid,
   .action-panel .quick-grid,
-  .quick-actions,
-  .action-grid,
-  .shortcut-grid{
-    display:grid !important;
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:12px !important;
-    width:100% !important;
-    max-width:100% !important;
-    min-width:0 !important;
-    overflow:visible !important;
-    overflow-x:visible !important;
-    overflow-y:visible !important;
-    padding:6px 0 14px !important;
-    margin:0 !important;
-    scroll-snap-type:none !important;
+  .quick-grid{
+    display:grid!important;
   }
 
+  .quick button,
+  .quick-v22 button,
+  .quick-private button,
+  .quick-grid > *,
   .quick-grid .quick-btn,
-  .quick-panel .quick-btn,
-  .quick-v22 .quick-btn,
-  .action-panel .quick-btn,
   .quick-btn,
-  .quick-actions > *,
-  .action-grid > *,
-  .shortcut-grid > *{
-    flex:unset !important;
-    flex-basis:auto !important;
-    display:flex !important;
-    flex-direction:column !important;
-    justify-content:center !important;
-    align-items:flex-start !important;
-    width:100% !important;
-    min-width:0 !important;
-    max-width:100% !important;
-    min-height:112px !important;
-    height:auto !important;
-    padding:16px 14px !important;
-    overflow:hidden !important;
-    scroll-snap-align:unset !important;
-    word-break:normal !important;
-    overflow-wrap:normal !important;
-    hyphens:none !important;
+  .action-panel .quick-btn,
+  .quick-panel .quick-btn{
+    flex:none!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:92px!important;
+    height:auto!important;
+    padding:14px 12px!important;
+    border-radius:22px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    gap:7px!important;
+    overflow:hidden!important;
+    scroll-snap-align:none!important;
   }
 
-  .quick-btn b,
-  .quick-panel .quick-btn b,
+  .quick button b,
+  .quick-v22 button b,
+  .quick-private button b,
   .quick-grid .quick-btn b,
+  .quick-btn b,
   .quick-btn span:first-child,
-  .quick-panel .quick-btn span:first-child,
-  .quick-grid .quick-btn span:first-child,
-  .quick-card h1,
-  .quick-card h2,
   .quick-card h3,
-  .shortcut-card h1,
-  .shortcut-card h2,
   .shortcut-card h3,
-  .action-card h1,
-  .action-card h2,
   .action-card h3{
-    display:block !important;
-    max-width:100% !important;
-    font-size:clamp(18px,5vw,24px) !important;
-    line-height:1.05 !important;
-    white-space:nowrap !important;
-    overflow:hidden !important;
-    text-overflow:ellipsis !important;
-    word-break:normal !important;
-    overflow-wrap:normal !important;
-    hyphens:none !important;
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    font-size:clamp(17px, 5.2vw, 22px)!important;
+    line-height:1.02!important;
+    white-space:nowrap!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    hyphens:none!important;
+    letter-spacing:.02em!important;
   }
 
-  .quick-btn small,
-  .quick-panel .quick-btn small,
+  .quick button span,
+  .quick button small,
+  .quick-v22 button span,
+  .quick-v22 button small,
+  .quick-private button span,
+  .quick-private button small,
   .quick-grid .quick-btn small,
+  .quick-btn small,
   .quick-btn .muted{
-    display:-webkit-box !important;
-    max-width:100% !important;
-    -webkit-line-clamp:2 !important;
-    -webkit-box-orient:vertical !important;
-    white-space:normal !important;
-    overflow:hidden !important;
-    text-overflow:ellipsis !important;
-    line-height:1.15 !important;
-    word-break:normal !important;
-    overflow-wrap:normal !important;
-    hyphens:none !important;
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    font-size:clamp(9px, 3.1vw, 12px)!important;
+    line-height:1.12!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    hyphens:none!important;
+    letter-spacing:.09em!important;
   }
 
-  /* ===== BAJO STOCK / ALERTAS =====
-     Anula el carrusel de 232px/255px que dejaba el botón VER cortado. */
+  /* Si existe un quinto botón, ocupa toda la fila y no queda cortado al lado */
+  .quick-grid > :nth-child(5),
+  .quick-v22 > :nth-child(5),
+  .quick-private > :nth-child(5){
+    grid-column:1 / -1!important;
+  }
+
+  /* ALERTAS: bajo stock / sin costo / ganancia baja ya no van en carrusel cortado */
   .alert-row,
   .alert-grid,
   .notifications-row,
-  .stock-row,
-  .stock-alert-row{
-    display:grid !important;
-    grid-template-columns:1fr !important;
-    gap:12px !important;
-    width:100% !important;
-    max-width:100% !important;
-    min-width:0 !important;
-    overflow:visible !important;
-    overflow-x:visible !important;
-    overflow-y:visible !important;
-    padding:8px 0 14px !important;
-    margin-left:0 !important;
-    margin-right:0 !important;
-    scroll-snap-type:none !important;
+  .alerts-row{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+    overflow-x:hidden!important;
+    padding:0!important;
+    margin:12px 0!important;
   }
 
   .alert-card,
   .alert-grid > *,
-  .alert-row > *,
   .notifications-row > *,
+  .alerts-row > *,
   .low-stock,
   .stock-low,
   .bajo-stock,
@@ -2965,44 +2952,46 @@ body.capture-exporting .share-description,body.capture-v7-stable .share-descript
   .stock-card,
   .stock-warning,
   .low-stock-card{
-    grid-column:1 / -1 !important;
-    flex:unset !important;
-    flex-basis:auto !important;
-    width:100% !important;
-    min-width:0 !important;
-    max-width:100% !important;
-    margin-left:0 !important;
-    margin-right:0 !important;
-    overflow:hidden !important;
-    scroll-snap-align:unset !important;
+    flex:none!important;
+    grid-column:1 / -1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    overflow:hidden!important;
+    border-radius:22px!important;
+  }
+
+  .alert-card{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    padding:16px!important;
   }
 
   .alert-card b,
-  .alert-card h3,
   .alert-card h4,
-  .alert-card strong,
-  .low-stock b,
-  .stock-low b,
-  .bajo-stock b,
-  .alert-stock b,
-  .inventory-alert b,
-  .stock-card b,
-  .stock-warning b,
-  .low-stock-card b{
-    max-width:100% !important;
-    line-height:1.08 !important;
-    white-space:normal !important;
-    overflow:visible !important;
-    text-overflow:unset !important;
-    word-break:normal !important;
-    overflow-wrap:normal !important;
-    hyphens:none !important;
+  .alert-card strong{
+    font-size:clamp(20px, 6vw, 28px)!important;
+    line-height:1.05!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    hyphens:none!important;
   }
 
-  .alert-card button,
+  .alert-card span,
+  .alert-card p,
+  .alert-card small{
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    hyphens:none!important;
+  }
+
   .alert-card .btn,
-  .alert-grid button,
-  .alert-row button,
+  .alert-card button,
   .low-stock button,
   .stock-low button,
   .bajo-stock button,
@@ -3011,116 +3000,554 @@ body.capture-exporting .share-description,body.capture-v7-stable .share-descript
   .stock-card button,
   .stock-warning button,
   .low-stock-card button{
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    width:100% !important;
-    min-width:0 !important;
-    max-width:100% !important;
-    min-height:52px !important;
-    margin-top:10px !important;
-    white-space:nowrap !important;
-    overflow:hidden !important;
-    text-overflow:ellipsis !important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-height:52px!important;
   }
 
-  /* ===== MODO CLIENTE / FOTO LIMPIO / CAPTURA =====
-     Estos sí quedan en fila movible, pero sin partir palabras. */
-  .mode-tabs,
-  .work-tabs,
-  .modo-tabs,
-  .modo-trabajo-tabs,
-  .view-tabs,
-  .tabs-mode,
-  .view-mode-panel .segmented,
-  .card-mode-panel .segmented{
-    display:flex !important;
-    flex-wrap:nowrap !important;
-    gap:10px !important;
-    width:100% !important;
-    max-width:100% !important;
-    overflow-x:auto !important;
-    overflow-y:hidden !important;
-    -webkit-overflow-scrolling:touch !important;
-    padding:8px 0 12px !important;
+  /* Evita que el botón subir tape Detalle/Ver o el buscador */
+  #goTop,
+  .go-top,
+  .scroll-top,
+  .btn-scroll-top,
+  .back-to-top,
+  #scrollTop,
+  #btnScrollTop{
+    width:52px!important;
+    height:52px!important;
+    right:12px!important;
+    bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;
+    border-radius:18px!important;
+    z-index:35!important;
+    opacity:.92!important;
   }
 
-  .mode-tabs > *,
-  .work-tabs > *,
-  .modo-tabs > *,
-  .modo-trabajo-tabs > *,
-  .view-tabs > *,
-  .tabs-mode > *,
-  .view-mode-panel .segmented button,
-  .card-mode-panel .segmented button{
-    flex:0 0 auto !important;
-    width:auto !important;
-    min-width:118px !important;
-    max-width:210px !important;
-    padding-left:16px !important;
-    padding-right:16px !important;
-    white-space:nowrap !important;
-    word-break:normal !important;
-    overflow-wrap:normal !important;
-    hyphens:none !important;
-    overflow:hidden !important;
-    text-overflow:ellipsis !important;
-    text-align:center !important;
-  }
-
-  .quick-grid::-webkit-scrollbar,
-  .alert-grid::-webkit-scrollbar,
-  .mode-tabs::-webkit-scrollbar,
-  .work-tabs::-webkit-scrollbar,
-  .modo-tabs::-webkit-scrollbar,
-  .modo-trabajo-tabs::-webkit-scrollbar,
-  .view-tabs::-webkit-scrollbar,
-  .tabs-mode::-webkit-scrollbar{
-    display:none !important;
-    width:0 !important;
-    height:0 !important;
+  .bottom-nav,
+  .nav-bottom,
+  .mobile-nav,
+  .tabbar,
+  .footer-nav{
+    left:8px!important;
+    right:8px!important;
+    width:auto!important;
+    max-width:calc(100% - 16px)!important;
   }
 }
 
-@media (max-width:430px){
-  .quick-grid,
+@media (max-width: 380px){
+  .quick,
+  .quick-v22,
+  .quick-private,
   .quick-panel .quick-grid,
-  .quick-v22 .quick-grid,
-  .action-panel .quick-grid,
-  .quick-actions,
-  .action-grid,
-  .shortcut-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:10px !important;
+  .quick-grid,
+  .action-panel .quick-grid{
+    gap:8px!important;
   }
 
+  .quick button,
+  .quick-v22 button,
+  .quick-private button,
+  .quick-grid > *,
   .quick-grid .quick-btn,
-  .quick-panel .quick-btn,
-  .quick-v22 .quick-btn,
-  .action-panel .quick-btn,
   .quick-btn{
-    flex-basis:auto !important;
-    width:100% !important;
-    min-width:0 !important;
-    max-width:100% !important;
-    min-height:104px !important;
-    padding:15px 12px !important;
+    min-height:84px!important;
+    padding:12px 10px!important;
+    border-radius:19px!important;
   }
 
-  .quick-btn b,
-  .quick-panel .quick-btn b,
+  .quick button b,
+  .quick-v22 button b,
+  .quick-private button b,
   .quick-grid .quick-btn b,
-  .quick-btn span:first-child,
-  .quick-panel .quick-btn span:first-child,
-  .quick-grid .quick-btn span:first-child{
-    font-size:clamp(16px,4.8vw,20px) !important;
-    letter-spacing:.01em !important;
+  .quick-btn b,
+  .quick-btn span:first-child{
+    font-size:clamp(15px, 5vw, 18px)!important;
   }
 
+  .quick button span,
+  .quick button small,
+  .quick-v22 button span,
+  .quick-v22 button small,
+  .quick-private button span,
+  .quick-private button small,
+  .quick-grid .quick-btn small,
   .quick-btn small,
-  .quick-panel .quick-btn small,
-  .quick-grid .quick-btn small{
-    font-size:10.5px !important;
-    letter-spacing:.07em !important;
+  .quick-btn .muted{
+    font-size:8.5px!important;
+    letter-spacing:.07em!important;
+  }
+}
+
+/* =========================================================
+   SDC FIX REAL CELULAR - NO CORTADO / NO TARJETAS ANGOSTAS
+   Pegar SIEMPRE al final de styles.css.
+   Este bloque fuerza en celulares:
+   1) Menú Cliente/Captura/Cotizar/Vender en una sola fila deslizable.
+   2) Alertas en una columna completa.
+   3) Barra inferior fija sin cortar contenido.
+   ========================================================= */
+*,*::before,*::after{box-sizing:border-box!important}
+html,body{max-width:100%!important;overflow-x:hidden!important}
+
+@media (max-width: 900px), (pointer: coarse){
+  :root{--sdc-bottom-nav-h:88px!important}
+
+  html,body{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    overflow-x:hidden!important;
+  }
+
+  body{
+    padding-left:0!important;
+    padding-right:0!important;
+    padding-bottom:calc(var(--sdc-bottom-nav-h) + 28px)!important;
+    background:#08314a!important;
+  }
+
+  main,
+  .app,
+  .shell,
+  .page,
+  .page-wrap,
+  .dashboard,
+  .dashboard-page,
+  .private-dashboard,
+  .admin-shell,
+  .admin-main,
+  .content,
+  .workspace,
+  .container,
+  .wrap,
+  .panel,
+  .section,
+  .section-body{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    overflow-x:hidden!important;
+  }
+
+  main,
+  .app,
+  .shell,
+  .page,
+  .dashboard,
+  .private-dashboard,
+  .admin-main,
+  .content,
+  .workspace{
+    padding-left:12px!important;
+    padding-right:12px!important;
+    padding-bottom:calc(var(--sdc-bottom-nav-h) + 42px)!important;
+  }
+
+  /* ===== MENÚ SUPERIOR: NO SE VUELVE ANGOSTO ===== */
+  .quick-private,
+  .quick-actions,
+  .quick-grid,
+  .quick,
+  .mode-grid,
+  .control-grid,
+  .private-actions,
+  .dashboard-actions,
+  .admin-actions,
+  .action-strip,
+  .shortcut-grid,
+  .shortcuts,
+  .tools-grid{
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+    width:100vw!important;
+    max-width:100vw!important;
+    min-width:100vw!important;
+    margin-left:calc(50% - 50vw)!important;
+    margin-right:calc(50% - 50vw)!important;
+    padding:14px 14px 16px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    scroll-snap-type:x proximity!important;
+    scrollbar-width:none!important;
+    grid-template-columns:none!important;
+  }
+
+  .quick-private::-webkit-scrollbar,
+  .quick-actions::-webkit-scrollbar,
+  .quick-grid::-webkit-scrollbar,
+  .quick::-webkit-scrollbar,
+  .mode-grid::-webkit-scrollbar,
+  .control-grid::-webkit-scrollbar,
+  .private-actions::-webkit-scrollbar,
+  .dashboard-actions::-webkit-scrollbar,
+  .admin-actions::-webkit-scrollbar,
+  .action-strip::-webkit-scrollbar,
+  .shortcut-grid::-webkit-scrollbar,
+  .shortcuts::-webkit-scrollbar,
+  .tools-grid::-webkit-scrollbar{display:none!important}
+
+  .quick-private > *,
+  .quick-actions > *,
+  .quick-grid > *,
+  .quick > *,
+  .mode-grid > *,
+  .control-grid > *,
+  .private-actions > *,
+  .dashboard-actions > *,
+  .admin-actions > *,
+  .action-strip > *,
+  .shortcut-grid > *,
+  .shortcuts > *,
+  .tools-grid > *,
+  .quick-private button,
+  .quick-actions button,
+  .quick-grid button,
+  .quick button,
+  .mode-grid button,
+  .control-grid button,
+  .private-actions button,
+  .dashboard-actions button,
+  .admin-actions button,
+  .action-strip button,
+  .shortcut-grid button,
+  .shortcuts button,
+  .tools-grid button{
+    flex:0 0 clamp(148px,44vw,188px)!important;
+    width:clamp(148px,44vw,188px)!important;
+    min-width:148px!important;
+    max-width:188px!important;
+    min-height:96px!important;
+    height:auto!important;
+    max-height:none!important;
+    padding:16px 14px!important;
+    border-radius:26px!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    gap:8px!important;
+    scroll-snap-align:start!important;
+    white-space:normal!important;
+    text-align:left!important;
+  }
+
+  .quick-private b,
+  .quick-actions b,
+  .quick-grid b,
+  .quick b,
+  .mode-grid b,
+  .control-grid b,
+  .private-actions b,
+  .dashboard-actions b,
+  .admin-actions b,
+  .action-strip b,
+  .shortcut-grid b,
+  .shortcuts b,
+  .tools-grid b,
+  .quick-private strong,
+  .quick-actions strong,
+  .quick-grid strong,
+  .quick strong,
+  .mode-grid strong,
+  .control-grid strong,
+  .private-actions strong,
+  .dashboard-actions strong,
+  .admin-actions strong,
+  .action-strip strong,
+  .shortcut-grid strong,
+  .shortcuts strong,
+  .tools-grid strong{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    font-size:clamp(22px,5.7vw,28px)!important;
+    line-height:1.05!important;
+    letter-spacing:-.03em!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+  }
+
+  .quick-private span,
+  .quick-actions span,
+  .quick-grid span,
+  .quick span,
+  .mode-grid span,
+  .control-grid span,
+  .private-actions span,
+  .dashboard-actions span,
+  .admin-actions span,
+  .action-strip span,
+  .shortcut-grid span,
+  .shortcuts span,
+  .tools-grid span,
+  .quick-private small,
+  .quick-actions small,
+  .quick-grid small,
+  .quick small,
+  .mode-grid small,
+  .control-grid small,
+  .private-actions small,
+  .dashboard-actions small,
+  .admin-actions small,
+  .action-strip small,
+  .shortcut-grid small,
+  .shortcuts small,
+  .tools-grid small{
+    display:-webkit-box!important;
+    width:100%!important;
+    max-width:100%!important;
+    font-size:clamp(12px,3.2vw,14px)!important;
+    line-height:1.25!important;
+    letter-spacing:.14em!important;
+    text-transform:uppercase!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    -webkit-line-clamp:2!important;
+    -webkit-box-orient:vertical!important;
+  }
+
+  .quick-private svg,
+  .quick-actions svg,
+  .quick-grid svg,
+  .quick svg,
+  .mode-grid svg,
+  .control-grid svg,
+  .private-actions svg,
+  .dashboard-actions svg,
+  .admin-actions svg,
+  .action-strip svg,
+  .shortcut-grid svg,
+  .shortcuts svg,
+  .tools-grid svg{
+    position:absolute!important;
+    top:14px!important;
+    right:14px!important;
+    width:26px!important;
+    height:26px!important;
+    opacity:.34!important;
+  }
+
+  /* ===== ALERTAS: UNA COLUMNA COMPLETA ===== */
+  .alert-row,
+  .alerts-row,
+  .alerts-grid,
+  .health-grid,
+  .warning-grid,
+  .warnings-grid,
+  .risk-grid,
+  .smart-alerts,
+  .insights-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:12px!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    overflow:visible!important;
+  }
+
+  .alert-row > *,
+  .alerts-row > *,
+  .alerts-grid > *,
+  .health-grid > *,
+  .warning-grid > *,
+  .warnings-grid > *,
+  .risk-grid > *,
+  .smart-alerts > *,
+  .insights-grid > *,
+  .alert-card,
+  .insight-card,
+  .risk-card,
+  .warning-card{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-height:128px!important;
+    height:auto!important;
+    padding:18px 18px!important;
+    border-radius:28px!important;
+    overflow:hidden!important;
+  }
+
+  .alert-card b,
+  .alert-card strong,
+  .insight-card b,
+  .insight-card strong,
+  .risk-card b,
+  .risk-card strong,
+  .warning-card b,
+  .warning-card strong{
+    display:block!important;
+    font-size:clamp(22px,6vw,27px)!important;
+    line-height:1.08!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+  }
+
+  .alert-card span,
+  .alert-card p,
+  .insight-card span,
+  .insight-card p,
+  .risk-card span,
+  .risk-card p,
+  .warning-card span,
+  .warning-card p{
+    display:block!important;
+    font-size:clamp(16px,4.5vw,20px)!important;
+    line-height:1.2!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+  }
+
+  .alert-card button,
+  .insight-card button,
+  .risk-card button,
+  .warning-card button,
+  .alert-card .btn,
+  .insight-card .btn,
+  .risk-card .btn,
+  .warning-card .btn{
+    width:100%!important;
+    min-height:54px!important;
+    height:auto!important;
+    margin-top:14px!important;
+    border-radius:18px!important;
+    font-size:15px!important;
+    letter-spacing:.08em!important;
+  }
+
+  /* ===== BARRA INFERIOR: QUE NO TAPE NI CORTE ===== */
+  .bottom-nav,
+  .tabbar,
+  .bottom-bar,
+  .mobile-nav{
+    position:fixed!important;
+    left:10px!important;
+    right:10px!important;
+    bottom:10px!important;
+    width:auto!important;
+    max-width:none!important;
+    height:74px!important;
+    min-height:74px!important;
+    padding:8px 8px!important;
+    border-radius:28px!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:4px!important;
+    transform:none!important;
+    z-index:9999!important;
+    overflow:hidden!important;
+  }
+
+  .bottom-nav a,
+  .bottom-nav button,
+  .tabbar a,
+  .tabbar button,
+  .bottom-bar a,
+  .bottom-bar button,
+  .mobile-nav a,
+  .mobile-nav button{
+    min-width:0!important;
+    width:100%!important;
+    height:58px!important;
+    min-height:58px!important;
+    padding:5px 3px!important;
+    border-radius:20px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:3px!important;
+    font-size:12px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .bottom-nav .active,
+  .bottom-nav [aria-current="page"],
+  .tabbar .active,
+  .bottom-bar .active,
+  .mobile-nav .active{
+    min-width:0!important;
+    width:100%!important;
+    transform:none!important;
+  }
+
+  .bottom-nav svg,
+  .tabbar svg,
+  .bottom-bar svg,
+  .mobile-nav svg{
+    width:20px!important;
+    height:20px!important;
+    flex:0 0 auto!important;
+  }
+
+  .fab-top,
+  .scroll-top,
+  .back-top,
+  [data-scroll-top]{
+    right:14px!important;
+    bottom:calc(var(--sdc-bottom-nav-h) + 24px)!important;
+    width:56px!important;
+    height:56px!important;
+    border-radius:20px!important;
+    z-index:9998!important;
+  }
+}
+
+@media (max-width: 380px), (pointer: coarse) and (max-width: 380px){
+  .quick-private > *,
+  .quick-actions > *,
+  .quick-grid > *,
+  .quick > *,
+  .mode-grid > *,
+  .control-grid > *,
+  .private-actions > *,
+  .dashboard-actions > *,
+  .admin-actions > *,
+  .action-strip > *,
+  .shortcut-grid > *,
+  .shortcuts > *,
+  .tools-grid > *,
+  .quick-private button,
+  .quick-actions button,
+  .quick-grid button,
+  .quick button,
+  .mode-grid button,
+  .control-grid button,
+  .private-actions button,
+  .dashboard-actions button,
+  .admin-actions button,
+  .action-strip button,
+  .shortcut-grid button,
+  .shortcuts button,
+  .tools-grid button{
+    flex-basis:142px!important;
+    width:142px!important;
+    min-width:142px!important;
   }
 }

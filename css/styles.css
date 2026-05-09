@@ -2784,3 +2784,364 @@ body.capture-exporting .share-description,body.capture-v7-stable .share-descript
     min-width: 0 !important;
   }
 }
+
+/* =========================================================
+   SD COMAYAGUA · FIX FINAL REAL MÓVIL V32
+   Problema corregido: tarjetas Cliente/Caja/Captura muy angostas,
+   texto partido y tarjeta Bajo Stock cortada.
+   Este bloque DEBE quedar al final de styles.css.
+   ========================================================= */
+
+@media (max-width: 900px){
+  html,body{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+  }
+
+  .app,
+  #app,
+  main,
+  .page,
+  .container,
+  .dashboard,
+  .admin-dashboard,
+  .control-center,
+  .main-content,
+  .panel{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow-x:hidden!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+    box-sizing:border-box!important;
+  }
+
+  /* MENÚ / BOTONES GRANDES: una sola fila desplazable, sin cortar palabras */
+  .quick,
+  .quick-private,
+  .quick-v22,
+  .quick-grid,
+  .quick-panel .quick-grid,
+  .quick-actions,
+  .shortcut-grid,
+  .action-grid,
+  .dashboard-actions,
+  .control-actions{
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    grid-template-columns:none!important;
+    gap:10px!important;
+    width:calc(100% + 20px)!important;
+    max-width:calc(100% + 20px)!important;
+    margin-left:-10px!important;
+    margin-right:-10px!important;
+    padding:6px 10px 14px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    scroll-snap-type:x proximity!important;
+    scrollbar-width:none!important;
+  }
+
+  .quick::-webkit-scrollbar,
+  .quick-private::-webkit-scrollbar,
+  .quick-v22::-webkit-scrollbar,
+  .quick-grid::-webkit-scrollbar,
+  .quick-actions::-webkit-scrollbar,
+  .shortcut-grid::-webkit-scrollbar,
+  .action-grid::-webkit-scrollbar{
+    display:none!important;
+  }
+
+  .quick > button,
+  .quick-private > button,
+  .quick-v22 > button,
+  .quick-grid > button,
+  .quick-panel .quick-btn,
+  .quick-btn,
+  .quick-card,
+  .shortcut-card,
+  .action-card,
+  .dashboard-card.action-card,
+  .control-action-card{
+    flex:0 0 174px!important;
+    width:174px!important;
+    min-width:174px!important;
+    max-width:174px!important;
+    min-height:102px!important;
+    padding:14px 14px!important;
+    border-radius:24px!important;
+    box-sizing:border-box!important;
+    scroll-snap-align:start!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    gap:6px!important;
+  }
+
+  .quick > button b,
+  .quick-private > button b,
+  .quick-v22 > button b,
+  .quick-grid > button b,
+  .quick-btn b,
+  .quick-btn span:first-child,
+  .quick-card h3,
+  .shortcut-card h3,
+  .action-card h3,
+  .dashboard-card.action-card h3,
+  .control-action-card h3,
+  .quick-card b,
+  .shortcut-card b,
+  .action-card b{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    font-size:clamp(18px,5.4vw,23px)!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    hyphens:none!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    letter-spacing:.01em!important;
+  }
+
+  .quick > button span,
+  .quick-private > button span,
+  .quick-v22 > button span,
+  .quick-grid > button span,
+  .quick-btn small,
+  .quick-btn .muted,
+  .quick-card small,
+  .shortcut-card small,
+  .action-card small,
+  .dashboard-card.action-card small,
+  .control-action-card small{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    font-size:10.5px!important;
+    line-height:1.14!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    hyphens:none!important;
+    overflow:hidden!important;
+    display:-webkit-box!important;
+    -webkit-line-clamp:2!important;
+    -webkit-box-orient:vertical!important;
+  }
+
+  /* Si son botones de modo de trabajo: ADMIN / CLIENTE / CAPTURA en una línea */
+  .view-mode-buttons,
+  .mode-tabs,
+  .work-tabs,
+  .modo-tabs,
+  .modo-trabajo-tabs,
+  .view-tabs,
+  .tabs-mode,
+  .segmented{
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    gap:7px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    scrollbar-width:none!important;
+  }
+
+  .view-mode-buttons::-webkit-scrollbar,
+  .mode-tabs::-webkit-scrollbar,
+  .work-tabs::-webkit-scrollbar,
+  .modo-tabs::-webkit-scrollbar,
+  .modo-trabajo-tabs::-webkit-scrollbar,
+  .view-tabs::-webkit-scrollbar,
+  .tabs-mode::-webkit-scrollbar,
+  .segmented::-webkit-scrollbar{
+    display:none!important;
+  }
+
+  .view-mode-buttons button,
+  .mode-tabs > *,
+  .work-tabs > *,
+  .modo-tabs > *,
+  .modo-trabajo-tabs > *,
+  .view-tabs > *,
+  .tabs-mode > *,
+  .segmented > *{
+    flex:0 0 auto!important;
+    min-width:108px!important;
+    max-width:150px!important;
+    white-space:nowrap!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    hyphens:none!important;
+    text-align:center!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  /* BAJO STOCK / ALERTAS: tarjeta completa, no cortada ni pegada a la izquierda */
+  .alert-row,
+  .alert-grid,
+  .notifications-row,
+  .stock-alerts,
+  .alerts-panel{
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    grid-template-columns:none!important;
+    gap:10px!important;
+    width:calc(100% + 20px)!important;
+    max-width:calc(100% + 20px)!important;
+    margin-left:-10px!important;
+    margin-right:-10px!important;
+    padding:6px 10px 16px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    scroll-snap-type:x proximity!important;
+    scrollbar-width:none!important;
+    box-sizing:border-box!important;
+  }
+
+  .alert-row::-webkit-scrollbar,
+  .alert-grid::-webkit-scrollbar,
+  .notifications-row::-webkit-scrollbar,
+  .stock-alerts::-webkit-scrollbar,
+  .alerts-panel::-webkit-scrollbar{
+    display:none!important;
+  }
+
+  .alert-card,
+  .alert-grid > *,
+  .notification-card,
+  .low-stock,
+  .stock-low,
+  .bajo-stock,
+  .alert-stock,
+  .inventory-alert,
+  .stock-card,
+  .stock-warning,
+  .low-stock-card{
+    flex:0 0 calc(100vw - 40px)!important;
+    width:calc(100vw - 40px)!important;
+    min-width:calc(100vw - 40px)!important;
+    max-width:calc(100vw - 40px)!important;
+    margin:0!important;
+    scroll-snap-align:start!important;
+    box-sizing:border-box!important;
+    border-radius:24px!important;
+    overflow:hidden!important;
+  }
+
+  .alert-card,
+  .low-stock,
+  .stock-low,
+  .bajo-stock,
+  .alert-stock,
+  .inventory-alert,
+  .stock-card,
+  .stock-warning,
+  .low-stock-card{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:10px!important;
+    padding:14px!important;
+  }
+
+  .alert-card b,
+  .alert-card h4,
+  .alert-card strong,
+  .low-stock b,
+  .stock-low b,
+  .bajo-stock b,
+  .alert-stock b,
+  .inventory-alert b,
+  .stock-card b,
+  .stock-warning b,
+  .low-stock-card b{
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    hyphens:none!important;
+    line-height:1.08!important;
+  }
+
+  .alert-card button,
+  .alert-card .btn,
+  .low-stock button,
+  .stock-low button,
+  .bajo-stock button,
+  .alert-stock button,
+  .inventory-alert button,
+  .stock-card button,
+  .stock-warning button,
+  .low-stock-card button{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-height:52px!important;
+    box-sizing:border-box!important;
+    justify-content:center!important;
+    text-align:center!important;
+  }
+
+  /* Evita que otros parches genéricos vuelvan a encoger tarjetas */
+  .dashboard-grid,
+  .stats-grid,
+  .kpi-grid,
+  .metric-grid,
+  .cards-grid,
+  .summary-grid{
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+}
+
+@media (max-width: 380px){
+  .quick > button,
+  .quick-private > button,
+  .quick-v22 > button,
+  .quick-grid > button,
+  .quick-panel .quick-btn,
+  .quick-btn,
+  .quick-card,
+  .shortcut-card,
+  .action-card,
+  .dashboard-card.action-card,
+  .control-action-card{
+    flex-basis:160px!important;
+    width:160px!important;
+    min-width:160px!important;
+    max-width:160px!important;
+  }
+
+  .quick > button b,
+  .quick-private > button b,
+  .quick-v22 > button b,
+  .quick-grid > button b,
+  .quick-btn b,
+  .quick-card h3,
+  .shortcut-card h3,
+  .action-card h3{
+    font-size:19px!important;
+  }
+
+  .view-mode-buttons button,
+  .mode-tabs > *,
+  .work-tabs > *,
+  .modo-tabs > *,
+  .modo-trabajo-tabs > *,
+  .view-tabs > *,
+  .tabs-mode > *,
+  .segmented > *{
+    min-width:98px!important;
+    font-size:10px!important;
+  }
+}

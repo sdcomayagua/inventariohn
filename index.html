@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#061a3d" />
+  <title>SD COMAYAGUA | Ventas privadas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <aside class="sidebar" aria-label="Menú principal">
+      <div class="brand-block">
+        <img class="brand-logo" src="assets/img/logo.png" alt="SD Comayagua" />
+        <div><strong>Soluciones Digitales</strong><span>Comayagua</span></div>
+      </div>
+      <nav class="side-nav">
+        <button class="nav-item is-active" data-view="dashboard">Dashboard</button>
+        <button class="nav-item" data-view="productos">Catálogo</button>
+        <button class="nav-item" data-view="cotizacion">Cotización</button>
+        <button class="nav-item" data-view="ventas">Ventas</button>
+        <button class="nav-item" data-view="admin">Productos / Admin</button>
+      </nav>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button id="btnMenu" class="icon-btn mobile-only" aria-label="Abrir menú">☰</button>
+        <div class="top-brand">
+          <img src="assets/img/logo.png" alt="SD Comayagua" />
+          <div><strong>Soluciones Digitales</strong><span>Comayagua</span></div>
+        </div>
+        <div class="top-actions">
+          <button id="btnCartTop" class="cart-pill" data-view-shortcut="cotizacion">🛒 <span id="cartCountTop">0</span></button>
+          <div id="syncStatus" class="sync-pill">Cargando...</div>
+          <button id="btnRefresh" class="icon-btn" title="Actualizar datos">↻</button>
+        </div>
+      </header>
+
+      <section class="hero-panel">
+        <div>
+          <p class="eyebrow">Panel privado SDC</p>
+          <h1>Inventario, carrito, cotizaciones y ventas en una sola página.</h1>
+        </div>
+        <div class="hero-actions">
+          <button id="btnQuickProduct" class="secondary-btn">+ Producto</button>
+          <button id="btnNewQuote" class="primary-btn">+ Nueva cotización</button>
+        </div>
+      </section>
+
+      <section id="view-dashboard" class="view is-visible">
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="content-grid">
+          <article class="panel-card">
+            <div class="panel-title"><h2>Inventario reciente</h2><button class="ghost-btn" data-view-shortcut="productos">Ver catálogo</button></div>
+            <div class="table-wrap"><table class="data-table" id="recentProductsTable"></table></div>
+          </article>
+          <article class="panel-card">
+            <div class="panel-title"><h2>Cotizaciones recientes</h2><button class="ghost-btn" data-view-shortcut="cotizacion">Abrir carrito</button></div>
+            <div class="table-wrap"><table class="data-table" id="recentQuotesTable"></table></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-productos" class="view">
+        <div class="toolbar-card">
+          <div class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar producto, código, marca..." autocomplete="off" /></div>
+          <select id="categoryFilter" class="select-control" aria-label="Categoría"></select>
+          <div class="layout-toggle" aria-label="Vista de catálogo">
+            <button id="layoutOne" class="is-active">1 por fila</button>
+            <button id="layoutTwo">2 por fila</button>
+            <button id="btnClientMode">Vista cliente</button>
+          </div>
+        </div>
+        <div id="categoryChips" class="category-chips"></div>
+        <div id="catalogModeNote" class="mode-note">Modo interno: puede ver stock, editar y añadir productos al carrito.</div>
+        <div id="productsGrid" class="products-grid layout-one"></div>
+      </section>
+
+      <section id="view-cotizacion" class="view">
+        <div class="quote-layout">
+          <article class="panel-card quote-editor">
+            <div class="panel-title"><h2>Carrito / cotización editable</h2><span id="quoteStateBadge" class="status-badge active">Borrador</span></div>
+            <div class="form-grid">
+              <label>Cliente<input id="customerName" placeholder="Nombre del cliente" /></label>
+              <label>Teléfono<input id="customerPhone" placeholder="Número del cliente" /></label>
+              <label>Departamento<input id="customerDept" placeholder="Ej. Comayagua" /></label>
+              <label>Municipio<input id="customerCity" placeholder="Ej. Comayagua" /></label>
+              <label class="full">Dirección / referencia<input id="customerAddress" placeholder="Barrio, colonia, punto de referencia..." /></label>
+            </div>
+            <div class="quote-items-head"><strong>Productos en carrito</strong><button id="btnClearQuote" class="danger-ghost">Vaciar carrito</button></div>
+            <div id="quoteItems" class="quote-items"></div>
+            <div class="shipping-box">
+              <strong>Tipo de envío</strong>
+              <label class="radio-card"><input type="radio" name="shippingType" value="local" checked> <span><b>Envío local</b><small>Entrega personal. Costo editable.</small></span></label>
+              <label class="radio-card"><input type="radio" name="shippingType" value="normal"> <span><b>Envío normal</b><small>Depósito completo + Lps.110.</small></span></label>
+              <label class="radio-card"><input type="radio" name="shippingType" value="cod"> <span><b>Pagar al recibir</b><small>Subtotal + Lps.100 + comisión 6%.</small></span></label>
+              <div class="form-grid compact"><label>Empresa<select id="shippingCompany"></select></label><label>Costo envío<input id="shippingCost" type="number" min="0" step="1" value="100" /></label></div>
+            </div>
+          </article>
+
+          <article class="invoice-card" id="invoiceCapture">
+            <div class="invoice-head"><img src="assets/img/logo.png" alt="SD Comayagua" /><div><strong>Soluciones Digitales Comayagua</strong><span>Cotización para cliente</span></div></div>
+            <div class="invoice-meta"><div><small>Código</small><b id="quoteCode">COT-0001</b></div><div><small>Fecha</small><b id="quoteDate">--/--/----</b></div><div><small>Estado</small><b id="quoteStatusText">Borrador</b></div></div>
+            <div class="invoice-client" id="invoiceClientBox">Cliente pendiente de agregar.</div>
+            <div class="invoice-products" id="invoiceProducts"></div>
+            <div class="invoice-totals" id="invoiceTotals"></div>
+            <div class="invoice-note">Cotizar no aparta producto. El stock se descuenta hasta convertir en venta.</div>
+          </article>
+        </div>
+        <div class="sticky-actions">
+          <button id="btnSaveQuote" class="secondary-btn">Guardar cotización</button>
+          <button id="btnDownloadPdf" class="pdf-btn">Descargar PDF</button>
+          <button id="btnDownloadImage" class="image-btn">Descargar imagen</button>
+          <button id="btnWhatsApp" class="whatsapp-btn">Enviar WhatsApp</button>
+          <button id="btnConvertSale" class="primary-btn">Convertir en venta</button>
+        </div>
+      </section>
+
+      <section id="view-ventas" class="view">
+        <article class="panel-card">
+          <div class="panel-title"><h2>Ventas registradas</h2><span class="muted">Al vender, se descuenta el stock. Al cancelar, regresa.</span></div>
+          <div id="salesList" class="sales-list"></div>
+        </article>
+      </section>
+
+      <section id="view-admin" class="view">
+        <article class="panel-card admin-panel">
+          <div class="panel-title"><h2 id="productFormTitle">Agregar / editar producto</h2><button id="btnProductNew" class="ghost-btn">Limpiar formulario</button></div>
+          <form id="productForm" class="product-form">
+            <input type="hidden" id="prodId" />
+            <div class="form-grid">
+              <label>Código<input id="prodCodigo" placeholder="Ej. SDC-042" /></label>
+              <label>Nombre<input id="prodNombre" required placeholder="Nombre del producto" /></label>
+              <label>Categoría<input id="prodCategoria" placeholder="Dedales, Audio, Cargadores..." /></label>
+              <label>Marca<input id="prodMarca" placeholder="Marca opcional" /></label>
+              <label>Precio venta<input id="prodPrecio" type="number" min="0" step="1" /></label>
+              <label>Costo / invertido<input id="prodCosto" type="number" min="0" step="1" /></label>
+              <label>Stock<input id="prodStock" type="number" min="0" step="1" /></label>
+              <label>Orden<input id="prodOrden" type="number" min="0" step="1" /></label>
+              <label class="full">Foto / URL imagen<input id="prodImagen" placeholder="Pegue aquí el enlace de la imagen" /></label>
+              <label class="full">Descripción<textarea id="prodDescripcion" rows="4" placeholder="Descripción del producto"></textarea></label>
+            </div>
+            <div class="promo-editor">
+              <div class="promo-head"><strong>Promociones por cantidad</strong><button type="button" id="btnAddPromo" class="ghost-btn">+ Agregar promo</button></div>
+              <p>Ejemplo: 2 unidades = Lps.50, 3 unidades = Lps.69. El sistema calcula el total correcto en la cotización.</p>
+              <div id="promoRows" class="promo-rows"></div>
+            </div>
+            <div class="form-actions"><button type="submit" class="primary-btn">Guardar producto</button><button type="button" id="btnDeactivateProduct" class="danger-ghost">Desactivar</button></div>
+          </form>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div id="cartBar" class="cart-bar"><div><b id="cartBarCount">0 productos</b><span id="cartBarTotal">Lps. 0</span></div><button data-view-shortcut="cotizacion">Ver cotización</button></div>
+  <div id="toast" class="toast"></div>
+
+  <nav class="bottom-nav mobile-only">
+    <button class="bottom-item is-active" data-view="dashboard">Inicio</button>
+    <button class="bottom-item" data-view="productos">Catálogo</button>
+    <button class="bottom-item plus" data-view="cotizacion">🛒</button>
+    <button class="bottom-item" data-view="ventas">Ventas</button>
+    <button class="bottom-item" data-view="admin">Admin</button>
+  </nav>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

@@ -11,12 +11,25 @@
   const DEPARTMENTS = Object.keys(HN_LOCATIONS);
   const DEFAULT_DEPARTMENT = DEPARTMENTS.includes('Comayagua') ? 'Comayagua' : (DEPARTMENTS[0] || '');
   const DEFAULT_MUNICIPALITY = (HN_LOCATIONS[DEFAULT_DEPARTMENT] || [DEFAULT_DEPARTMENT])[0] || '';
+  const OFFICIAL_CONFIG = {
+    storeName: 'SD COMAYAGUA',
+    storeFullName: 'Soluciones Digitales Comayagua',
+    whatsappNumber: '50431517755',
+    currency: 'Lps.',
+    appsScriptUrl: 'https://script.google.com/macros/s/AKfycbzJB4A9WhU96M_luuUY_xYEDAnNCuU6dkHRCluszxbjaiPQyiDnF4VZqM6MhghiKsV0/exec',
+    apiKey: 'SDC_POS_2026',
+    normalShipping: 110,
+    cashOnDeliveryShipping: 100,
+    cashOnDeliveryCommission: 0.06,
+    localShipping: 0,
+    lowStockLimit: 5
+  };
   const emptyProductDraft = () => ({ id:'', codigo:'', nombre:'', categoria:'', marca:'', precio:'', costo:'', stock:'', descripcion:'', imagen:'', activo:true, promos:'', notas:'' });
 
   const defaultState = () => ({
     view:'dashboard',
     mode:'gamer',
-    config:{ ...window.SDC_CONFIG },
+    config:mergeConfigLayers(window.SDC_CONFIG),
     products:(window.SDC_DEMO_PRODUCTS || []).map(normalizeProduct),
     invoices:[],
     clients:[],
@@ -35,7 +48,8 @@
 
   let state = load();
   let bootSyncDone = false;
-  window.SDC_CONFIG = { ...window.SDC_CONFIG, ...state.config };
+  window.SDC_CONFIG = { ...(window.SDC_CONFIG || {}), ...state.config };
+  persistConfig();
   ensureCustomerLocation();
   applyMode();
   render();
@@ -46,7 +60,7 @@
       const saved = JSON.parse(localStorage.getItem(LS) || 'null');
       const base = defaultState();
       const out = saved ? { ...base, ...saved } : base;
-      out.config = { ...window.SDC_CONFIG, ...(saved?.config || {}), ...readStoredConfig() };
+      out.config = mergeConfigLayers(window.SDC_CONFIG, saved?.config || {}, readStoredConfig());
       out.products = Array.isArray(out.products) && out.products.length ? out.products.map(normalizeProduct) : base.products;
       out.invoices = Array.isArray(out.invoices) ? out.invoices : [];
       out.clients = Array.isArray(out.clients) ? out.clients : [];
@@ -66,6 +80,33 @@
   }
   function readStoredConfig(){
     try{ return JSON.parse(localStorage.getItem(CONFIG_LS) || '{}') || {}; }catch(e){ return {}; }
+  }
+  function configHasValue(v){ return v !== undefined && v !== null && String(v).trim() !== ''; }
+  function mergeConfigLayers(...layers){
+    const out = { ...OFFICIAL_CONFIG };
+    layers.filter(Boolean).forEach(layer => {
+      ['storeName','storeFullName','whatsappNumber','currency','appsScriptUrl','apiKey'].forEach(key => {
+        if (configHasValue(layer[key])) out[key] = layer[key];
+      });
+      ['normalShipping','cashOnDeliveryShipping','cashOnDeliveryCommission','localShipping','lowStockLimit'].forEach(key => {
+        if (configHasValue(layer[key]) && Number.isFinite(Number(layer[key]))) out[key] = Number(layer[key]);
+      });
+    });
+    out.appsScriptUrl = normalizeAppsScriptUrl(out.appsScriptUrl);
+    out.whatsappNumber = cleanPhone(out.whatsappNumber);
+    out.currency = out.currency || 'Lps.';
+    out.storeName = out.storeName || 'SD COMAYAGUA';
+    out.storeFullName = out.storeFullName || 'Soluciones Digitales Comayagua';
+    out.lowStockLimit = n(out.lowStockLimit) || 5;
+    return out;
+  }
+  function restoreOfficialConfig(){
+    state.config = mergeConfigLayers(OFFICIAL_CONFIG);
+    window.SDC_CONFIG = { ...(window.SDC_CONFIG || {}), ...state.config };
+    persistConfig();
+    save();
+    render();
+    toast('Datos oficiales de SD COMAYAGUA restaurados.');
   }
   function persistConfig(){
     try{
@@ -623,7 +664,7 @@
     const url = String(state.config.appsScriptUrl || '').trim();
     const isReady = /^https:\/\/script\.google\.com\/macros\/s\//.test(url);
     const clean = url ? url.replace(/^https?:\/\//,'').replace(/\?.*$/,'') : 'No hay URL guardada';
-    const msg = isReady ? 'URL guardado localmente. Puede recargar la página y seguirá aquí.' : 'Pegue el enlace /exec de Apps Script y se guardará automáticamente en este dispositivo.';
+    const msg = isReady ? 'Configuración oficial cargada y guardada en este dispositivo.' : 'La app debe traer los datos oficiales llenos. Use Restaurar datos SD si ve campos vacíos.';
     return `<div class="config-status ${isReady ? 'ok' : 'pending'}">
       <div><span>${isReady ? '✓ Conexión configurada' : '• Configuración pendiente'}</span><b>${esc(clean)}</b><small>${esc(msg)}</small></div>
       <strong>${isReady ? 'Guardado' : 'Falta URL'}</strong>
@@ -752,6 +793,7 @@
         <div class="button-row" style="margin-top:14px">
           <button class="btn" data-action="save-config">Guardar configuración</button>
           <button class="btn secondary" data-action="sync">Probar y sincronizar</button>
+          <button class="btn ghost" data-action="restore-official-config">Restaurar datos SD</button>
           <button class="btn ghost" data-action="export-json">Exportar respaldo JSON</button>
           <button class="btn danger" data-action="reset-demo">Reiniciar datos locales</button>
         </div>
@@ -823,6 +865,7 @@
   function bindActions(){
     const action = (name, fn) => $$(`[data-action="${name}"]`).forEach(b => b.onclick = fn);
     action('save-config', saveConfig);
+    action('restore-official-config', restoreOfficialConfig);
     action('save-quote', () => saveDocument('Cotización'));
     action('finish-invoice', () => saveDocument('Venta'));
     action('copy-wa', async () => { await navigator.clipboard?.writeText(whatsappText()); toast('Mensaje copiado para WhatsApp.'); });
@@ -840,7 +883,7 @@
     $$('[data-open-img]').forEach(b => b.onclick = () => openProductImage(b.dataset.openImg));
     $$('[data-edit-product]').forEach(b => b.onclick = () => editProduct(b.dataset.editProduct));
     action('export-json', exportJSON);
-    action('reset-demo', () => { if(confirm('¿Reiniciar datos locales de esta app?')){ const savedCfg = readStoredConfig(); localStorage.removeItem(LS); state=defaultState(); state.config = { ...state.config, ...savedCfg }; state.products = demoProducts(); setProductLoad('demo','Datos reiniciados. Productos demo/locales listos.'); window.SDC_CONFIG = { ...window.SDC_CONFIG, ...state.config }; save(); render(); toast('Datos locales reiniciados. La configuración se conservó.'); }});
+    action('reset-demo', () => { if(confirm('¿Reiniciar datos locales de esta app?')){ const savedCfg = readStoredConfig(); localStorage.removeItem(LS); state=defaultState(); state.config = mergeConfigLayers(savedCfg); state.products = demoProducts(); setProductLoad('demo','Datos reiniciados. Productos demo/locales listos.'); window.SDC_CONFIG = { ...(window.SDC_CONFIG || {}), ...state.config }; save(); render(); toast('Datos locales reiniciados. La configuración oficial se conservó.'); }});
     $$('[data-edit-invoice]').forEach(b => b.onclick = () => editInvoice(b.dataset.editInvoice));
     $$('[data-delete-invoice]').forEach(b => b.onclick = () => deleteInvoice(b.dataset.deleteInvoice));
     $$('[data-convert-sale]').forEach(b => b.onclick = () => convertToSale(b.dataset.convertSale));

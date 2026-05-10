@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef6ff"/>
+      <stop offset="1" stop-color="#dbeafe"/>
+    </linearGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b5cff"/>
+      <stop offset="1" stop-color="#092a63"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" rx="60" fill="url(#g)"/>
+  <circle cx="300" cy="245" r="92" fill="url(#b)" opacity=".95"/>
+  <path d="M244 242h112M300 186v112" stroke="#fff" stroke-width="30" stroke-linecap="round"/>
+  <rect x="130" y="386" width="340" height="24" rx="12" fill="#0b5cff" opacity=".16"/>
+  <rect x="180" y="430" width="240" height="18" rx="9" fill="#092a63" opacity=".18"/>
+  <text x="300" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#092a63">SDC PRODUCTO</text>
+</svg>

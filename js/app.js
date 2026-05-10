@@ -410,8 +410,7 @@
     const editingDoc = state.invoices.find(x => x.id === state.editingInvoiceId);
     const isSaleDoc = editingDoc ? isSaleStatus(editingDoc.status) : false;
     const title = isSaleDoc ? 'FACTURA DE VENTA' : 'COTIZACIÓN COMERCIAL';
-    const docCode = safeCode(editingDoc && editingDoc.code, isSaleDoc ? 'FV-PREVIEW' : 'COT-PREVIEW');
-    const productRows = state.cart.length ? state.cart.map(it => {
+   const productRows = state.cart.length ? state.cart.map(it => {
       const img = it.imagen || NO_IMG;
       return `<tr>
         <td><div class="receipt-product"><img crossorigin="anonymous" src="${esc(img)}" onerror="this.src='${NO_IMG}'" alt=""><div><b>${esc(it.nombre)}</b><small>${esc(it.codigo)}</small></div></div></td>

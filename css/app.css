@@ -162,3 +162,307 @@ body.mode-gamer .order-readiness.is-ready{background:linear-gradient(135deg,rgba
 
 @media (min-width:521px) and (max-width:900px){.app{max-width:820px}.pos-layout{grid-template-columns:1fr 1fr}.receipt-side{grid-column:1/-1}.product-grid{grid-template-columns:1fr 1fr}.mobile-command-center{grid-template-columns:repeat(3,1fr)}}
 @media (min-width:1024px){.mobile-command-center{grid-template-columns:repeat(3,minmax(0,1fr))}.command-card{min-height:112px}.pos-mobile-dock{display:none!important}}
+
+/* =========================================================
+   SDC POS V9 · AJUSTE REAL A PANTALLA CELULAR
+   Corrección anti-desborde para Samsung S24 Ultra y móviles.
+   Objetivo: la página se adapta al teléfono, no el teléfono a la página.
+   ========================================================= */
+html,
+body{
+  width:100%;
+  max-width:100%;
+  overflow-x:clip;
+}
+body{
+  overscroll-behavior-x:none;
+}
+.app,
+.section,
+.panel,
+.subpanel,
+.topbar,
+.brand-card,
+.hero,
+.product-editor,
+.product-grid,
+.product-card-v5,
+.product-info-v5,
+.pos-layout,
+.receipt-side,
+.invoice-preview,
+.receipt-theme,
+.summary,
+.cart-item,
+.quick-product,
+.list-card,
+.nav{
+  min-width:0;
+  max-width:100%;
+}
+.brand-title,
+.panel-head,
+.panel-head>div,
+.product-topline,
+.product-title-v5,
+.product-spec-grid-v5,
+.product-spec-grid-v5>div,
+.product-actions-v5,
+.quick-product span,
+.cart-item>div,
+.summary-row,
+.summary-total,
+.receipt-client,
+.receipt-client>div,
+.receipt-product,
+.receipt-product>div,
+.receipt-total,
+.list-main,
+.list-main>div{
+  min-width:0;
+}
+.btn,
+.chip,
+.input,
+.select,
+.textarea,
+.product-code-pill,
+.stock-pill,
+.status-badge{
+  max-width:100%;
+}
+.btn,
+.chip{
+  white-space:normal;
+  line-height:1.12;
+}
+.product-title-v5,
+.cart-item b,
+.list-main b,
+.receipt-client b,
+.receipt-product b,
+.receipt-note,
+.summary-row b,
+.summary-total b{
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+.summary-row,
+.summary-total,
+.receipt-total>div{
+  flex-wrap:wrap;
+}
+.summary-row b:first-child,
+.receipt-total span{
+  max-width:62%;
+}
+.summary-row b:last-child,
+.receipt-total b{
+  text-align:right;
+  margin-left:auto;
+}
+
+@media (max-width:520px){
+  html,
+  body{
+    overflow-x:hidden;
+  }
+  .app{
+    width:100%;
+    max-width:none;
+    padding-left:max(10px, env(safe-area-inset-left));
+    padding-right:max(10px, env(safe-area-inset-right));
+  }
+  .topbar{
+    width:auto;
+    max-width:none;
+    grid-template-columns:minmax(0,1fr) auto;
+  }
+  .brand-card{
+    overflow:hidden;
+  }
+  .top-actions{
+    flex:0 0 auto;
+  }
+
+  /* Antes estos bloques podían sentirse como pantalla “estirada”.
+     Ahora se acomodan dentro del ancho real del teléfono. */
+  .mobile-command-center{
+    display:grid;
+    grid-template-columns:1fr;
+    overflow:visible;
+    scroll-snap-type:none;
+    margin:10px 0 4px;
+    padding:0;
+  }
+  .command-card{
+    width:100%;
+    min-width:0;
+    min-height:auto;
+  }
+  .kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    overflow:visible;
+    scroll-snap-type:none;
+    margin:10px 0 12px;
+    padding:0;
+  }
+  .kpi{
+    min-width:0;
+    width:100%;
+  }
+
+  .hero-actions,
+  .button-row{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+  .hero-actions .btn,
+  .button-row .btn,
+  .button-row.compact .btn{
+    width:100%;
+    min-width:0;
+    flex:initial;
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .search-line,
+  .row.two,
+  .row.three,
+  .editor-grid,
+  .pos-layout{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .product-card-v5{
+    grid-template-columns:96px minmax(0,1fr)!important;
+  }
+  .product-topline{
+    align-items:flex-start;
+  }
+  .product-code-pill,
+  .stock-pill{
+    white-space:normal;
+    line-height:1.05;
+  }
+  .product-actions-v5{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .product-actions-v5 .ghost{
+    grid-column:1/-1!important;
+  }
+  .quick-product{
+    grid-template-columns:52px minmax(0,1fr) 38px!important;
+  }
+  .quick-product img{
+    width:52px!important;
+    height:52px!important;
+  }
+  .cart-item{
+    overflow:hidden;
+  }
+  .qty{
+    grid-template-columns:38px minmax(0,1fr) 38px 38px!important;
+    gap:6px;
+  }
+  .qty button,
+  .qty input{
+    min-width:0;
+  }
+
+  .receipt-theme{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .receipt-theme>div{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    overflow:visible;
+  }
+  .receipt-client{
+    grid-template-columns:1fr!important;
+  }
+  .receipt-client .wide{
+    grid-column:auto!important;
+  }
+  .receipt-table,
+  .receipt-table tbody,
+  .receipt-table tr,
+  .receipt-table td{
+    max-width:100%;
+  }
+  .receipt-table tr{
+    overflow:hidden;
+  }
+  .receipt-table td:not(:first-child){
+    min-width:0;
+  }
+  .receipt-table td:not(:first-child)::before{
+    min-width:82px;
+    flex:0 0 auto;
+  }
+  .receipt-product{
+    grid-template-columns:42px minmax(0,1fr)!important;
+  }
+  .receipt-product img{
+    width:42px!important;
+    height:42px!important;
+  }
+  .receipt-total .grand{
+    align-items:flex-start;
+  }
+  .receipt-total .grand span{
+    max-width:45%;
+  }
+  .receipt-total .grand b{
+    max-width:55%;
+    font-size:1.2rem!important;
+  }
+
+  .list-main{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .list-main .status-badge{
+    justify-self:start;
+  }
+  .nav{
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    width:calc(100dvw - 14px)!important;
+    max-width:calc(100dvw - 14px)!important;
+    left:50%;
+  }
+  .nav button{
+    min-width:0;
+    padding-left:2px;
+    padding-right:2px;
+  }
+}
+
+@media (max-width:390px){
+  .product-card-v5{
+    grid-template-columns:86px minmax(0,1fr)!important;
+  }
+  .product-info-v5{
+    padding:10px!important;
+  }
+  .product-spec-grid-v5{
+    grid-template-columns:1fr!important;
+  }
+  .product-actions-v5,
+  .hero-actions,
+  .button-row,
+  .receipt-theme>div{
+    grid-template-columns:1fr!important;
+  }
+  .kpi-grid{
+    grid-template-columns:1fr 1fr;
+  }
+  .summary-row b:first-child,
+  .receipt-total span{
+    max-width:100%;
+  }
+}

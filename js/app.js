@@ -60,6 +60,11 @@
   }
   function save(){ localStorage.setItem(LS, JSON.stringify(state)); }
   function toast(msg){ toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastEl._t); toastEl._t = setTimeout(() => toastEl.classList.remove('show'), 2600); }
+  function reportError(err, context='runtime'){
+    const message = err && err.message ? err.message : String(err || 'Error desconocido');
+    console.error(`[${context}]`, err);
+    return `${context}: ${message}`;
+  }
   function n(v){ const x = Number(v || 0); return Number.isFinite(x) ? x : 0; }
   function money(v){ return `${state.config.currency || 'Lps.'} ${Math.round(n(v)).toLocaleString('es-HN')}`; }
   function cleanPhone(v){ return String(v || '').replace(/\D/g,'').replace(/^5040?/,'504'); }
@@ -67,6 +72,7 @@
   function esc(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
   function today(){ return new Date().toLocaleString('es-HN', { day:'2-digit', month:'short', year:'numeric', hour:'numeric', minute:'2-digit' }); }
   function iso(){ return new Date().toISOString(); }
+  function safeCode(v, fallback='---'){ const t = String(v || '').trim(); return t || fallback; }
   function applyMode(){ document.body.classList.toggle('mode-gamer', state.mode !== 'pro'); document.body.classList.toggle('mode-pro', state.mode === 'pro'); }
 
   function normalizeProduct(p, i = 0){
@@ -178,10 +184,22 @@
   }
 
   function render(){
-    applyMode();
-    app.className = 'app';
-    app.innerHTML = `${topbar()}${nav()}${sectionDashboard()}${sectionProducts()}${sectionPos()}${sectionInvoices()}${sectionClients()}${sectionConfig()}`;
-    bind();
+    try{
+      applyMode();
+      app.className = 'app';
+      app.innerHTML = `${topbar()}${nav()}${sectionDashboard()}${sectionProducts()}${sectionPos()}${sectionInvoices()}${sectionClients()}${sectionConfig()}`;
+      bind();
+    }catch(err){
+      const details = reportError(err, 'render');
+      app.className = 'app';
+      app.innerHTML = `<section class="section active"><div class="panel"><div class="panel-head"><div><h2>Error de visualización</h2><p>Ocurrió un problema al renderizar la app. Recarga la página. Si persiste, limpia caché (Ctrl+F5).</p></div></div><pre class="small-note" id="renderErrorText">${esc(details)}</pre><div class="button-row"><button class="btn" onclick="location.reload()">Recargar</button><button class="btn secondary" id="copyRenderError">Copiar error</button></div></div></section>`;
+      const copyBtn = document.getElementById('copyRenderError');
+      copyBtn && (copyBtn.onclick = async () => {
+        const text = document.getElementById('renderErrorText')?.textContent || details;
+        try{ await navigator.clipboard.writeText(text); toast('Error copiado.'); }
+        catch(e){ toast('No pude copiar automático.'); }
+      });
+    }
   }
 
   function topbar(){
@@ -401,7 +419,9 @@
     const c = calcCart();
     const isGamer = state.invoiceTheme === 'gamer';
     const editingDoc = state.invoices.find(x => x.id === state.editingInvoiceId);
-    const title = editingDoc ? (isSaleStatus(editingDoc.status) ? 'FACTURA EDITABLE' : 'COTIZACIÓN EDITABLE') : 'COTIZACIÓN';
+    const isSaleDoc = editingDoc ? isSaleStatus(editingDoc.status) : false;
+    const title = isSaleDoc ? 'FACTURA DE VENTA' : 'COTIZACIÓN COMERCIAL';
+    const docCode = safeCode(editingDoc && editingDoc.code, isSaleDoc ? 'FV-PREVIEW' : 'COT-PREVIEW');
     const productRows = state.cart.length ? state.cart.map(it => {
       const img = it.imagen || NO_IMG;
       return `<tr>
@@ -412,14 +432,14 @@
       </tr>`;
     }).join('') : '<tr><td colspan="4">Sin productos agregados.</td></tr>';
     return `<div class="invoice-preview ${isGamer ? 'invoice-gamer' : 'invoice-pro'}" id="receiptCard">
-      <div class="receipt-watermark">SD</div>
-      <div class="receipt-head"><img src="${LOGO}" alt="SD"><div><h3>${title}</h3><p>${esc(state.config.storeFullName)} · ${today()}</p></div></div>
+      <div class="receipt-watermark">SDC</div>
+      <div class="receipt-head"><img src="${LOGO}" alt="SD"><div><div class="receipt-head-meta"><span class="doc-pill ${isSaleDoc ? 'sale' : 'quote'}">${isSaleDoc ? 'Venta' : 'Cotización'}</span><span class="doc-code">${esc(docCode)}</span></div><h3>${title}</h3><p>${esc(state.config.storeFullName)} · ${today()}</p></div></div>
       <div class="receipt-client">
         <div><span>Cliente</span><b>${esc(state.customer.nombre || 'Cliente')}</b></div>
         <div><span>Teléfono</span><b>${esc(state.customer.telefono || 'Pendiente')}</b></div>
         <div class="wide"><span>Destino</span><b>${esc([state.customer.municipio,state.customer.departamento].filter(Boolean).join(', ') || 'Pendiente')}</b></div>
       </div>
-      <table class="receipt-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>${productRows}</tbody></table>
+      <table class="receipt-table" aria-label="Detalle de productos"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>${productRows}</tbody></table>
       <div class="receipt-total">
         <div><span>Total productos</span><b>${money(c.subtotal)}</b></div>
         <div><span>Envío</span><b>${money(c.envio)}</b></div>

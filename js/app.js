@@ -294,32 +294,34 @@
   function draftField(label,id,value,type='text'){ return `<label class="field"><span>${esc(label)}</span><input class="input" id="${id}" type="${type}" value="${esc(value)}"></label>`; }
   function productCard(p){
     const img = p.imagen || NO_IMG;
+    const stock = n(p.stock);
     const profit = n(p.precio) - n(p.costo);
-    const stockLabel = n(p.stock) <= 0 ? 'Agotado' : n(p.stock) <= n(state.config.lowStockLimit) ? `Bajo stock · ${n(p.stock)}` : `Disponible · ${n(p.stock)}`;
-    const stockClass = n(p.stock) <= 0 ? 'out' : n(p.stock) <= n(state.config.lowStockLimit) ? 'low' : 'ok';
-    const version = p.version || p.variante || p.marca || '—';
-    return `<article class="product-card product-card-v4">
+    const stockLabel = stock <= 0 ? 'Agotado' : stock <= n(state.config.lowStockLimit) ? `Bajo stock · ${stock}` : `Disponible · ${stock}`;
+    const stockClass = stock <= 0 ? 'out' : stock <= n(state.config.lowStockLimit) ? 'low' : 'ok';
+    const version = p.version || p.variante || p.marca || 'Sin versión';
+    return `<article class="product-card product-card-v5 ${stock<=0?'is-out':''}">
       <button class="product-img-btn product-photo-square" data-open-img="${esc(img)}" title="Ver foto completa">
         <img crossorigin="anonymous" src="${esc(img)}" alt="${esc(p.nombre)}" onerror="this.src='${NO_IMG}'">
       </button>
-      <div class="product-info-v4">
+      <div class="product-info-v5">
         <div class="product-topline"><span class="product-code-pill">${esc(p.codigo)}</span><span class="stock-pill ${stockClass}">${esc(stockLabel)}</span></div>
-        <h3 class="product-title-v4">${esc(p.nombre)}</h3>
-        <div class="product-spec-grid">
+        <h3 class="product-title-v5">${esc(p.nombre)}</h3>
+        <div class="product-spec-grid product-spec-grid-v5">
           <div><small>Categoría</small><b>${esc(p.categoria || 'General')}</b></div>
           <div><small>Versión / Marca</small><b>${esc(version)}</b></div>
           <div><small>Precio</small><b class="price-cyan">${money(p.precio)}</b></div>
-          <div><small>Costo</small><b>${money(p.costo)}</b></div>
+          <div><small>Costo</small><b>${n(p.costo) ? money(p.costo) : 'Pendiente'}</b></div>
           <div class="wide"><small>Ganancia por unidad</small><b class="profit-green">${money(profit)}</b></div>
         </div>
-        <div class="product-actions-v4">
-          <button class="btn small" data-add="${esc(p.id)}" ${n(p.stock)<=0?'disabled':''}>Agregar a carrito</button>
-          <button class="btn small secondary" data-add="${esc(p.id)}" ${n(p.stock)<=0?'disabled':''}>POS</button>
+        <div class="product-actions-v5">
+          <button class="btn small" data-add="${esc(p.id)}" ${stock<=0?'disabled':''}>Agregar a carrito</button>
+          <button class="btn small secondary" data-add="${esc(p.id)}" ${stock<=0?'disabled':''}>POS</button>
           <button class="btn small ghost" data-edit-product="${esc(p.id)}">Editar</button>
         </div>
       </div>
     </article>`;
   }
+
 
   function sectionPos(){
     const c = calcCart();
@@ -328,9 +330,9 @@
         <div class="panel-head"><div><h2>Cotización / POS</h2><p>Carrito, cliente, envío, comisión y mensaje de WhatsApp.</p></div></div>
         <div class="pos-layout">
           <div class="panel" style="margin:0">
-            <div class="panel-head"><div><h2>Carrito</h2><p>Busque y toque el producto. Ya no se abre el selector feo del navegador.</p></div></div>
+            <div class="panel-head"><div><h2>Agregar rápido</h2><p>Busque el producto y toque + para agregarlo al carrito, sin ventanas raras del navegador.</p></div></div>
             <div class="quick-picker">
-              <input class="input" id="quickProductSearch" placeholder="Buscar producto para agregar..." value="${esc(state.productPickQ || '')}" autocomplete="off">
+              <input class="input" id="quickProductSearch" placeholder="Buscar producto para agregar…" value="${esc(state.productPickQ || '')}" autocomplete="off">
               <div class="quick-product-results" id="quickProductResults">${quickProductResults()}</div>
             </div>
             <div class="cart-list" style="margin-top:12px">${state.cart.length ? state.cart.map(cartItem).join('') : '<div class="empty">El carrito está vacío.</div>'}</div>
@@ -347,7 +349,7 @@
             </div>
             <div class="button-row" style="margin-top:14px">
               <button class="btn secondary" data-action="save-quote">Guardar cotización</button>
-              <button class="btn" data-action="finish-invoice">Guardar venta / descontar stock</button>
+              <button class="btn" data-action="finish-invoice">Guardar venta y descontar stock</button>
             </div>
             <div class="button-row" style="margin-top:9px">
               <button class="btn ghost" data-action="copy-wa">Copiar WhatsApp</button>
@@ -358,7 +360,7 @@
         </div>
         <div class="button-row no-print" style="margin-top:12px">
           <button class="btn secondary" data-action="print-receipt">Imprimir / PDF</button>
-          <button class="btn secondary" data-action="download-image">Descargar imagen</button>
+          <button class="btn secondary" data-action="download-image">Descargar alta calidad</button>
           <button class="btn secondary" data-action="share-image">Enviar imagen WhatsApp</button>
           <button class="btn danger" data-action="clear-cart">Limpiar carrito</button>
         </div>
@@ -439,7 +441,7 @@
   function invoiceCard(x){
     const canConvert = !isSaleStatus(x.status);
     const statusClass = isSaleStatus(x.status) ? 'sale' : 'quote';
-    return `<div class="list-card invoice-list-card"><div class="list-main"><div><b>${esc(x.code)} · ${esc(x.customer?.nombre || 'Cliente')}</b><span><em class="status-badge ${statusClass}">${esc(x.status)}</em> · ${new Date(x.createdAt).toLocaleString('es-HN')}</span><br><small>${(x.items||[]).map(i=>`${i.nombre} x${i.qty}`).join(' · ')}</small></div><div class="right"><b>${money(x.totals?.total)}</b><small>${esc(x.customer?.telefono || '')}</small></div></div><div class="button-row invoice-actions" style="margin-top:10px"><button class="btn small secondary" data-edit-invoice="${esc(x.id)}">Editar / imagen</button><button class="btn small ghost" data-wa-invoice="${esc(x.id)}">WhatsApp</button>${canConvert ? `<button class="btn small" data-convert-sale="${esc(x.id)}">Pasar a venta</button>` : ''}<button class="btn small danger" data-delete-invoice="${esc(x.id)}">Borrar</button></div></div>`;
+    return `<div class="list-card invoice-list-card"><div class="list-main"><div><b>${esc(x.code)} · ${esc(x.customer?.nombre || 'Cliente')}</b><span><em class="status-badge ${statusClass}">${esc(x.status)}</em> · ${new Date(x.createdAt).toLocaleString('es-HN')}</span><br><small>${(x.items||[]).map(i=>`${i.nombre} x${i.qty}`).join(' · ')}</small></div><div class="right"><b>${money(x.totals?.total)}</b><small>${esc(x.customer?.telefono || '')}</small></div></div><div class="button-row invoice-actions" style="margin-top:10px"><button class="btn small secondary" data-edit-invoice="${esc(x.id)}">Editar / imagen</button><button class="btn small ghost" data-wa-invoice="${esc(x.id)}">WhatsApp</button>${canConvert ? `<button class="btn small" data-convert-sale="${esc(x.id)}">Convertir a venta</button>` : ''}<button class="btn small danger" data-delete-invoice="${esc(x.id)}">Borrar</button></div></div>`;
   }
 
   function sectionClients(){
@@ -787,20 +789,22 @@
     const bg = state.invoiceTheme === 'gamer' ? '#061325' : '#ffffff';
     const host = document.createElement('div');
     host.id = 'receiptExportHost';
-    host.style.cssText = 'position:fixed;left:-12000px;top:0;width:980px;padding:40px;background:'+bg+';z-index:-1;';
+    host.style.cssText = 'position:fixed;left:-12000px;top:0;width:1180px;padding:0;background:'+bg+';z-index:-1;';
     const clone = source.cloneNode(true);
     clone.classList.add('export-capture');
-    clone.style.width = '900px';
-    clone.style.maxWidth = '900px';
+    clone.style.width = '1080px';
+    clone.style.maxWidth = '1080px';
+    clone.style.margin = '24px auto';
     host.appendChild(clone);
     document.body.appendChild(host);
     try{
       if (document.fonts && document.fonts.ready) await document.fonts.ready;
-      await new Promise(resolve => setTimeout(resolve, 80));
-      const canvas = await html2canvas(clone, { scale:2, backgroundColor:bg, useCORS:true, allowTaint:false, logging:false });
+      await new Promise(resolve => setTimeout(resolve, 120));
+      const canvas = await html2canvas(clone, { scale:3, backgroundColor:bg, useCORS:true, allowTaint:false, logging:false, windowWidth:1180 });
       return await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1));
     } finally { host.remove(); }
   }
+
   async function downloadReceiptImage(){
     try{
       const blob = await receiptBlob();

@@ -541,3 +541,47 @@ body.mode-pro .bottom-nav button.active{background:linear-gradient(180deg,#14b7f
 @media (max-width:460px){
   .app-topbar{gap:10px}.brand-card{min-width:0}.product-card-v5{border-radius:28px}.product-card-v5 .product-photo-square{padding:14px}.product-info-v5{padding:16px}.product-spec-grid-v5{gap:9px}.product-spec-grid-v5>div{padding:12px}.product-actions-v5 .btn{min-height:56px}.invoice-preview{border-radius:28px;padding:16px}.receipt-head{grid-template-columns:64px 1fr;gap:14px}.receipt-head img{width:64px;height:64px}.receipt-product{grid-template-columns:50px 1fr;gap:10px}.receipt-product img{width:50px;height:50px}.receipt-table td{font-size:.88rem;padding:12px 4px}.receipt-table th{padding-inline:4px}.receipt-table th:nth-child(1){width:50%}.receipt-table th:nth-child(2){width:13%}.receipt-table th:nth-child(3),.receipt-table th:nth-child(4){width:18.5%}.receipt-product b{font-size:.92rem}.receipt-total .grand b{font-size:1.28rem}
 }
+
+/* ==========================
+   V5 PROFESSIONAL REFRESH
+   ========================== */
+:root{
+  --bg:#0b1220;
+  --surface:#111b2e;
+  --surface-2:#16243d;
+  --line:rgba(148,163,184,.24);
+  --text:#e6edf8;
+  --muted:#9fb0c7;
+  --primary:#3b82f6;
+  --primary-2:#60a5fa;
+  --shadow:0 14px 36px rgba(2,8,23,.35);
+}
+body{
+  background:
+    radial-gradient(circle at 10% -10%, rgba(59,130,246,.22), transparent 30%),
+    radial-gradient(circle at 100% 10%, rgba(14,165,233,.16), transparent 28%),
+    var(--bg);
+}
+.topbar{backdrop-filter:blur(12px)}
+.brand-card,.panel,.kpi,.product-card,.cart-item,.list-card{
+  border-color:rgba(148,163,184,.22);
+  background:linear-gradient(160deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+}
+.hero{
+  background:linear-gradient(135deg,#0f172a 0%,#1d4ed8 55%,#2563eb 100%);
+  border:1px solid rgba(147,197,253,.45);
+}
+.btn{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
+.btn.secondary,.btn.ghost{background:rgba(148,163,184,.08)}
+.nav{
+  background:rgba(9,14,26,.88);
+  border-color:rgba(148,163,184,.25);
+}
+.nav button.active{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
+.input,.select,.textarea{background:rgba(15,23,42,.66)}
+.receipt-theme{background:rgba(11,18,32,.82)}
+
+@media (min-width:1024px){
+  .app{max-width:1280px;padding-inline:24px}
+  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+}

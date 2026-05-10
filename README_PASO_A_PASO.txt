@@ -1,5 +1,5 @@
 SD COMAYAGUA · POS PRIVADO + DASHBOARD FINANCIERO
-Versión: sdc_pos_dashboard_v3
+Versión: sdc_pos_dashboard_v4_profesional
 
 CONTENIDO DEL PAQUETE
 1. index.html
@@ -12,38 +12,41 @@ CONTENIDO DEL PAQUETE
 8. assets/logo-sdc-2026.png
 9. assets/no-image.svg
 10. apps-script/Code.gs
-11. plantilla_sd_comayagua_pos_dashboard_v3.xlsx
+11. plantilla_sd_comayagua_pos_dashboard_v4.xlsx
 
-MEJORAS DE ESTA VERSIÓN
-- Corrección visual fuerte del inventario móvil: fotos cuadradas, tarjetas más compactas, títulos legibles y sin palabras quebradas de forma fea.
-- Se quitó el selector nativo feo del navegador en POS. Ahora hay buscador rápido y se toca el producto para agregarlo.
-- La factura ya no cobra envío si el carrito está vacío.
-- Factura Pro y Factura Gamer más compactas, legibles y con columnas de precio/total mejor separadas.
-- La imagen de factura ahora se genera en tamaño fijo de alta resolución aunque usted la descargue desde celular.
-- Al guardar/editar facturas se conservan promociones por cantidad para evitar diferencias entre vista previa y factura guardada.
-- Selector de Departamento y Municipio de Honduras: 18 departamentos y 298 municipios.
-- Ya no se escribe departamento/municipio manualmente.
-- Fotos de productos más claras: contenedor más grande, fondo blanco y object-fit: contain para evitar recortes feos.
-- Imagen del producto se puede tocar para verla grande.
-- Editor de producto separado: botón “Nuevo producto” / “Editar”. No estorba encima del inventario.
-- Subida de imagen desde el celular:
-  - Si Apps Script está conectado, sube la imagen a Google Drive y guarda el link.
-  - Si no hay Apps Script, la guarda localmente como respaldo.
-- Factura con 2 diseños:
-  - Pro limpia.
-  - Modo gamer.
-- Botón para descargar factura como imagen.
-- Botón para compartir imagen por WhatsApp usando el menú de compartir del celular cuando el navegador lo permite.
-- Mejor acomodo de precios en factura para que no se vea todo junto.
-- URL de Apps Script ya puede quedar fija desde js/config.js y también se conserva en Configuración/localStorage.
-- Apps Script actualizado con:
-  - uploadImage para Drive.
-  - hoja municipios_hn.
-  - descuento o devolución de stock por diferencia cuando se edita una factura.
+QUÉ SE CORRIGIÓ EN ESTA VERSIÓN
+- Tarjeta de producto rediseñada tipo comprador/pro: imagen cuadrada 1:1 arriba y datos abajo.
+- La foto del producto ahora se ve más limpia, con fondo blanco, proporción cuadrada y sin deformarse.
+- El cliente no verá datos internos; esta vista sigue siendo panel privado.
+- Datos internos visibles en producto: código, stock, nombre, categoría, versión/marca, precio, costo y ganancia.
+- Botones reorganizados: Agregar a carrito, POS y Editar.
+- Cotización y Venta quedan separadas.
+- Guardar venta descuenta stock.
+- Las cotizaciones guardadas tienen botón “Pasar a venta”. Al convertir, descuenta stock.
+- Si edita una venta, el stock se ajusta por diferencia:
+  - Si aumenta productos, descuenta solo lo adicional.
+  - Si baja cantidades, devuelve stock localmente.
+- Si borra una venta local, devuelve el stock localmente.
+- Validación de stock: no permite vender más de lo disponible.
+- Apps Script actualizado para reconocer status “Venta” y “Factura” como ventas reales con stock.
+- Dashboard de Sheets actualizado para sumar ventas reales, no cotizaciones.
+- La imagen que se sube desde celular se optimiza en 1200x1200 px para verse más profesional.
+- Facturas/cotizaciones quedan con mejores columnas y menos sensación de texto amontonado.
+
+PASOS PARA SUBIR A GITHUB PAGES
+1. Descomprima el ZIP.
+2. En su repositorio de GitHub Pages, reemplace estos archivos y carpetas:
+   - index.html
+   - css/
+   - js/
+   - assets/
+3. Suba también apps-script/ y la plantilla .xlsx si quiere tener respaldo dentro del repositorio.
+4. Abra su URL de GitHub Pages.
+5. En el celular, si ve diseño viejo, borre caché o abra en modo incógnito para probar.
 
 PASOS PARA GOOGLE SHEETS
-1. Suba el archivo plantilla_sd_comayagua_pos_dashboard_v3.xlsx a Google Drive.
-2. Abra el archivo con Google Sheets.
+1. Suba plantilla_sd_comayagua_pos_dashboard_v4.xlsx a Google Drive.
+2. Ábrala con Google Sheets.
 3. Revise que existan estas hojas:
    - productos_pos
    - facturas_pos
@@ -54,12 +57,10 @@ PASOS PARA GOOGLE SHEETS
    - municipios_hn
    - Dashboard_POS
 4. Copie el ID del Google Sheet desde la URL.
-   Ejemplo:
-   https://docs.google.com/spreadsheets/d/ESTE_ES_EL_ID/edit
 
 PASOS PARA APPS SCRIPT
 1. En el Google Sheet, vaya a Extensiones > Apps Script.
-2. Borre cualquier código de Code.gs.
+2. Borre cualquier código viejo de Code.gs.
 3. Pegue todo el contenido de apps-script/Code.gs.
 4. Cambie esta línea:
    const SHEET_ID = 'PEGA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET';
@@ -75,39 +76,19 @@ PASOS PARA APPS SCRIPT
 12. Quién tiene acceso: Cualquier persona con el enlace.
 13. Implemente y copie la URL que termina en /exec.
 
-PASOS PARA GITHUB PAGES
-1. Suba o reemplace en su repositorio estos archivos y carpetas:
-   - index.html
-   - css/
-   - js/
-   - assets/
-2. Puede subir también apps-script/ y la plantilla como respaldo.
-3. GitHub Pages solo necesita index.html, css, js y assets para funcionar.
-4. En GitHub, vaya a Settings > Pages.
-5. Source: Deploy from a branch.
-6. Branch: main / root.
-7. Abra la URL de GitHub Pages.
-
 CONECTAR LA APP CON APPS SCRIPT
 1. Abra la app en GitHub Pages.
 2. Entre a Configuración.
 3. Pegue la URL /exec de Apps Script en “URL Apps Script /exec”.
-4. Verifique que API Key sea: SDC_POS_2026
+4. Verifique que API Key sea: SDC_POS_2026.
 5. Presione Guardar configuración.
 6. Presione Probar y sincronizar.
 
-NOTA SOBRE LA URL PERMANENTE
-- En js/config.js se puede dejar una URL /exec fija para no estar copiando y pegando.
-- Si cambia la implementación de Apps Script, cambie esa URL en js/config.js y vuelva a subir el archivo.
-- También puede cambiarla desde Configuración dentro de la app.
-
-SUBIR FOTOS DE PRODUCTOS
-1. Entre a Productos.
-2. Toque “Nuevo producto” o “Editar”.
-3. Toque “Subir imagen”.
-4. Seleccione la foto desde el celular.
-5. Guarde el producto.
-6. Si Apps Script está conectado, la imagen queda en Drive y se guarda el enlace en productos_pos.
+USO CORRECTO DE COTIZACIÓN Y VENTA
+- Guardar cotización: no descuenta stock.
+- Guardar venta / descontar stock: sí descuenta stock.
+- Pasar a venta: convierte una cotización guardada en venta y descuenta stock.
+- Editar / imagen: carga el registro en POS para cambiar productos, cliente, envío o generar imagen.
 
 REGLA DE ENVÍO USADA
 - Envío Normal: Lps. 110 fijo.
@@ -116,7 +97,7 @@ REGLA DE ENVÍO USADA
 - Total final: productos + envío + comisión - descuento.
 
 IMPORTANTE
-- La app funciona localmente aunque no conecte con Sheets, usando datos de prueba y localStorage.
-- Para sincronizar productos reales, debe usar la URL /exec correcta.
+- La app funciona localmente aunque no conecte con Sheets, usando localStorage.
+- Para datos reales sincronizados, debe usar la URL /exec correcta.
 - No guarde contraseñas ni cuentas bancarias completas dentro de la plantilla.
 - Use “Lps.” como moneda visible, no HNL.

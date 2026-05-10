@@ -171,7 +171,7 @@
     const stock = active.reduce((a,p) => a + n(p.stock), 0);
     const value = active.reduce((a,p) => a + n(p.precio) * n(p.stock), 0);
     const invested = active.reduce((a,p) => a + n(p.costo) * n(p.stock), 0);
-    const realProfit = state.invoices.filter(x => x.status === 'Factura').reduce((a,x) => a + n(x.totals?.profit), 0);
+    const realProfit = state.invoices.filter(x => isSaleStatus(x.status)).reduce((a,x) => a + n(x.totals?.profit), 0);
     const out = active.filter(p => n(p.stock) <= 0).length;
     const low = active.filter(p => n(p.stock) > 0 && n(p.stock) <= n(state.config.lowStockLimit)).length;
     return { total:active.length, stock, value, invested, projected:value - invested, realProfit, out, low };
@@ -205,6 +205,9 @@
   }
   function activateClass(view){ return state.view === view ? 'active' : ''; }
 
+  function isSaleStatus(status){
+    return ['venta','factura'].includes(String(status || '').toLowerCase());
+  }
   function sectionDashboard(){
     const s = dashboardStats();
     return `<section class="section ${activateClass('dashboard')}" id="dashboard">
@@ -219,7 +222,7 @@
         ${kpi('Valor venta', money(s.value), 'Precio de venta × stock')}
         ${kpi('Total invertido', money(s.invested), 'Costo de compra × stock')}
         ${kpi('Ganancia proyectada', money(s.projected), 'Venta - inversión', 'good')}
-        ${kpi('Ganancia real', money(s.realProfit), 'Según facturas locales', 'good')}
+        ${kpi('Ganancia real', money(s.realProfit), 'Según ventas locales', 'good')}
         ${kpi('Agotados', s.out, 'Stock igual a 0', s.out ? 'danger' : '')}
         ${kpi('Bajo stock', s.low, `Límite: ${state.config.lowStockLimit}`, s.low ? 'warn' : '')}
       </div>
@@ -228,7 +231,7 @@
         <div class="button-row">
           <button class="btn" data-view="pos">Nueva cotización / POS</button>
           <button class="btn secondary" data-view="products">Ver productos</button>
-          <button class="btn secondary" data-view="invoices">Facturas guardadas</button>
+          <button class="btn secondary" data-view="invoices">Ventas / cotizaciones</button>
           <button class="btn ghost" data-action="sync">Sincronizar Sheets</button>
         </div>
       </div>
@@ -290,20 +293,30 @@
   }
   function draftField(label,id,value,type='text'){ return `<label class="field"><span>${esc(label)}</span><input class="input" id="${id}" type="${type}" value="${esc(value)}"></label>`; }
   function productCard(p){
-    const badge = p.estado_stock === 'Agotado' ? 'out' : p.estado_stock === 'Bajo stock' ? 'low' : '';
     const img = p.imagen || NO_IMG;
-    return `<article class="product-card">
-      <button class="product-img-btn" data-open-img="${esc(img)}" title="Ver foto completa">
-        <img class="product-img" src="${esc(img)}" alt="${esc(p.nombre)}" onerror="this.src='${NO_IMG}'">
-        <span class="view-photo">Ver foto</span>
+    const profit = n(p.precio) - n(p.costo);
+    const stockLabel = n(p.stock) <= 0 ? 'Agotado' : n(p.stock) <= n(state.config.lowStockLimit) ? `Bajo stock · ${n(p.stock)}` : `Disponible · ${n(p.stock)}`;
+    const stockClass = n(p.stock) <= 0 ? 'out' : n(p.stock) <= n(state.config.lowStockLimit) ? 'low' : 'ok';
+    const version = p.version || p.variante || p.marca || '—';
+    return `<article class="product-card product-card-v4">
+      <button class="product-img-btn product-photo-square" data-open-img="${esc(img)}" title="Ver foto completa">
+        <img crossorigin="anonymous" src="${esc(img)}" alt="${esc(p.nombre)}" onerror="this.src='${NO_IMG}'">
       </button>
-      <div class="product-info">
-        <div class="product-code-row"><span class="product-code">${esc(p.codigo)}</span><span class="stock-badge ${badge}">${esc(p.estado_stock)} · ${p.stock}</span></div>
-        <div class="product-title">${esc(p.nombre)}</div>
-        <div class="product-meta"><span class="tag">${esc(p.categoria)}</span>${p.marca ? `<span class="tag">${esc(p.marca)}</span>` : ''}</div>
-        <div class="price">${money(p.precio)}</div>
-        <div class="profit-line">Costo ${money(p.costo)} · G/u ${money(p.ganancia_unitaria)}</div>
-        <div class="product-actions"><button class="btn small" data-add="${esc(p.id)}" ${p.stock<=0?'disabled':''}>Agregar</button><button class="btn small secondary" data-view="pos">POS</button><button class="btn small ghost" data-edit-product="${esc(p.id)}">Editar</button></div>
+      <div class="product-info-v4">
+        <div class="product-topline"><span class="product-code-pill">${esc(p.codigo)}</span><span class="stock-pill ${stockClass}">${esc(stockLabel)}</span></div>
+        <h3 class="product-title-v4">${esc(p.nombre)}</h3>
+        <div class="product-spec-grid">
+          <div><small>Categoría</small><b>${esc(p.categoria || 'General')}</b></div>
+          <div><small>Versión / Marca</small><b>${esc(version)}</b></div>
+          <div><small>Precio</small><b class="price-cyan">${money(p.precio)}</b></div>
+          <div><small>Costo</small><b>${money(p.costo)}</b></div>
+          <div class="wide"><small>Ganancia por unidad</small><b class="profit-green">${money(profit)}</b></div>
+        </div>
+        <div class="product-actions-v4">
+          <button class="btn small" data-add="${esc(p.id)}" ${n(p.stock)<=0?'disabled':''}>Agregar a carrito</button>
+          <button class="btn small secondary" data-add="${esc(p.id)}" ${n(p.stock)<=0?'disabled':''}>POS</button>
+          <button class="btn small ghost" data-edit-product="${esc(p.id)}">Editar</button>
+        </div>
       </div>
     </article>`;
   }
@@ -334,7 +347,7 @@
             </div>
             <div class="button-row" style="margin-top:14px">
               <button class="btn secondary" data-action="save-quote">Guardar cotización</button>
-              <button class="btn" data-action="finish-invoice">Guardar factura</button>
+              <button class="btn" data-action="finish-invoice">Guardar venta / descontar stock</button>
             </div>
             <div class="button-row" style="margin-top:9px">
               <button class="btn ghost" data-action="copy-wa">Copiar WhatsApp</button>
@@ -385,7 +398,8 @@
   function receiptPreview(){
     const c = calcCart();
     const isGamer = state.invoiceTheme === 'gamer';
-    const title = state.editingInvoiceId ? 'FACTURA EDITABLE' : 'COTIZACIÓN';
+    const editingDoc = state.invoices.find(x => x.id === state.editingInvoiceId);
+    const title = editingDoc ? (isSaleStatus(editingDoc.status) ? 'FACTURA EDITABLE' : 'COTIZACIÓN EDITABLE') : 'COTIZACIÓN';
     const productRows = state.cart.length ? state.cart.map(it => {
       const img = it.imagen || NO_IMG;
       return `<tr>
@@ -418,12 +432,14 @@
   function sectionInvoices(){
     const list = [...state.invoices].sort((a,b) => String(b.createdAt).localeCompare(String(a.createdAt)));
     return `<section class="section ${activateClass('invoices')}" id="invoices">
-      <div class="panel"><div class="panel-head"><div><h2>Facturas / Cotizaciones</h2><p>Guardado básico en localStorage y sincronización opcional con Sheets.</p></div><span class="tag">${list.length}</span></div>
+      <div class="panel"><div class="panel-head"><div><h2>Ventas / Cotizaciones</h2><p>Guardado básico en localStorage y sincronización opcional con Sheets.</p></div><span class="tag">${list.length}</span></div>
       <div class="list">${list.length ? list.map(invoiceCard).join('') : '<div class="empty">Todavía no hay facturas o cotizaciones guardadas.</div>'}</div></div>
     </section>`;
   }
   function invoiceCard(x){
-    return `<div class="list-card"><div class="list-main"><div><b>${esc(x.code)} · ${esc(x.customer?.nombre || 'Cliente')}</b><span>${esc(x.status)} · ${new Date(x.createdAt).toLocaleString('es-HN')}</span><br><small>${(x.items||[]).map(i=>`${i.nombre} x${i.qty}`).join(' · ')}</small></div><div class="right"><b>${money(x.totals?.total)}</b><small>${esc(x.customer?.telefono || '')}</small></div></div><div class="button-row" style="margin-top:10px"><button class="btn small secondary" data-edit-invoice="${esc(x.id)}">Editar</button><button class="btn small ghost" data-wa-invoice="${esc(x.id)}">WhatsApp</button><button class="btn small danger" data-delete-invoice="${esc(x.id)}">Borrar</button></div></div>`;
+    const canConvert = !isSaleStatus(x.status);
+    const statusClass = isSaleStatus(x.status) ? 'sale' : 'quote';
+    return `<div class="list-card invoice-list-card"><div class="list-main"><div><b>${esc(x.code)} · ${esc(x.customer?.nombre || 'Cliente')}</b><span><em class="status-badge ${statusClass}">${esc(x.status)}</em> · ${new Date(x.createdAt).toLocaleString('es-HN')}</span><br><small>${(x.items||[]).map(i=>`${i.nombre} x${i.qty}`).join(' · ')}</small></div><div class="right"><b>${money(x.totals?.total)}</b><small>${esc(x.customer?.telefono || '')}</small></div></div><div class="button-row invoice-actions" style="margin-top:10px"><button class="btn small secondary" data-edit-invoice="${esc(x.id)}">Editar / imagen</button><button class="btn small ghost" data-wa-invoice="${esc(x.id)}">WhatsApp</button>${canConvert ? `<button class="btn small" data-convert-sale="${esc(x.id)}">Pasar a venta</button>` : ''}<button class="btn small danger" data-delete-invoice="${esc(x.id)}">Borrar</button></div></div>`;
   }
 
   function sectionClients(){
@@ -514,7 +530,7 @@
     const action = (name, fn) => $$(`[data-action="${name}"]`).forEach(b => b.onclick = fn);
     action('save-config', saveConfig);
     action('save-quote', () => saveDocument('Cotización'));
-    action('finish-invoice', () => saveDocument('Factura'));
+    action('finish-invoice', () => saveDocument('Venta'));
     action('copy-wa', async () => { await navigator.clipboard?.writeText(whatsappText()); toast('Mensaje copiado para WhatsApp.'); });
     action('open-wa', () => openWhatsApp(whatsappText()));
     action('print-receipt', () => window.print());
@@ -531,6 +547,7 @@
     action('reset-demo', () => { if(confirm('¿Reiniciar datos locales de esta app?')){ localStorage.removeItem(LS); state=defaultState(); save(); render(); toast('Datos locales reiniciados.'); }});
     $$('[data-edit-invoice]').forEach(b => b.onclick = () => editInvoice(b.dataset.editInvoice));
     $$('[data-delete-invoice]').forEach(b => b.onclick = () => deleteInvoice(b.dataset.deleteInvoice));
+    $$('[data-convert-sale]').forEach(b => b.onclick = () => convertToSale(b.dataset.convertSale));
     $$('[data-wa-invoice]').forEach(b => b.onclick = () => { const inv = state.invoices.find(x => x.id === b.dataset.waInvoice); if(inv) openWhatsApp(whatsappText(inv)); });
   }
 
@@ -609,16 +626,18 @@
         const img = new Image();
         img.onerror = reject;
         img.onload = () => {
-          const max = 1400;
-          const scale = Math.min(1, max / Math.max(img.width, img.height));
+          const size = 1200;
           const canvas = document.createElement('canvas');
-          canvas.width = Math.max(1, Math.round(img.width * scale));
-          canvas.height = Math.max(1, Math.round(img.height * scale));
+          canvas.width = size;
+          canvas.height = size;
           const ctx = canvas.getContext('2d');
           ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0,0,canvas.width,canvas.height);
-          ctx.drawImage(img,0,0,canvas.width,canvas.height);
-          resolve(canvas.toDataURL('image/jpeg', .86));
+          ctx.fillRect(0,0,size,size);
+          const scale = Math.min(size / img.width, size / img.height);
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
+          ctx.drawImage(img, Math.round((size-w)/2), Math.round((size-h)/2), w, h);
+          resolve(canvas.toDataURL('image/jpeg', .88));
         };
         img.src = reader.result;
       };
@@ -628,7 +647,7 @@
 
   function snapshot(status){
     const totals = calcCart();
-    const id = state.editingInvoiceId || uid(status === 'Factura' ? 'FAC' : 'COT');
+    const id = state.editingInvoiceId || uid(isSaleStatus(status) ? 'VEN' : 'COT');
     return {
       id,
       code:id,
@@ -642,9 +661,9 @@
     };
   }
   function applyStockDelta(previous, doc){
-    const oldItems = previous?.status === 'Factura' ? (previous.items || []) : [];
+    const oldItems = isSaleStatus(previous?.status) ? (previous.items || []) : [];
     const oldMap = new Map(oldItems.map(it => [it.id, n(it.qty)]));
-    const newItems = doc?.status === 'Factura' ? (doc.items || []) : [];
+    const newItems = isSaleStatus(doc?.status) ? (doc.items || []) : [];
     const newMap = new Map(newItems.map(it => [it.id, n(it.qty)]));
     const ids = new Set([...oldMap.keys(), ...newMap.keys()]);
     ids.forEach(id => {
@@ -655,21 +674,53 @@
     });
     state.products = state.products.map(normalizeProduct);
   }
+  function stockShortage(previous, doc){
+    if (!isSaleStatus(doc?.status)) return '';
+    const oldItems = isSaleStatus(previous?.status) ? (previous.items || []) : [];
+    const oldMap = new Map(oldItems.map(it => [it.id, n(it.qty)]));
+    const newMap = new Map((doc.items || []).map(it => [it.id, n(it.qty)]));
+    for (const [id, newQty] of newMap.entries()) {
+      const extraNeeded = newQty - (oldMap.get(id) || 0);
+      if (extraNeeded <= 0) continue;
+      const p = state.products.find(x => x.id === id);
+      if (p && extraNeeded > n(p.stock)) return `${p.nombre}: pide ${extraNeeded} más y solo hay ${n(p.stock)} disponibles.`;
+    }
+    return '';
+  }
   async function saveDocument(status){
     if (!state.cart.length) return toast('Agregue productos primero.');
     const doc = snapshot(status);
     const previous = state.invoices.find(x => x.id === doc.id);
+    const shortage = stockShortage(previous, doc);
+    if (shortage) return toast('Stock insuficiente. ' + shortage);
     const ix = state.invoices.findIndex(x => x.id === doc.id);
     if (ix >= 0) state.invoices[ix] = doc; else state.invoices.unshift(doc);
     saveClient(doc);
     applyStockDelta(previous, doc);
 
     state.editingInvoiceId = doc.id;
-    save(); render(); toast(`${status} guardada.`);
+    save(); render(); toast(isSaleStatus(status) ? 'Venta guardada y stock descontado.' : 'Cotización guardada.');
     if (SDCApi.ready()) {
       try { await SDCApi.post('saveInvoice', { invoice: toSheetInvoice(doc) }); } catch(e){ toast('Guardado local listo. Sheets no respondió.'); }
     }
   }
+  async function convertToSale(id){
+    const previous = state.invoices.find(x => x.id === id);
+    if (!previous) return toast('No encontré esa cotización.');
+    if (isSaleStatus(previous.status)) return toast('Este registro ya está como venta.');
+    const doc = { ...previous, status:'Venta', updatedAt:iso(), totals:{ ...previous.totals } };
+    const shortage = stockShortage(previous, doc);
+    if (shortage) return toast('Stock insuficiente. ' + shortage);
+    const ix = state.invoices.findIndex(x => x.id === id);
+    if (ix >= 0) state.invoices[ix] = doc;
+    applyStockDelta(previous, doc);
+    saveClient(doc);
+    save(); render(); toast('Cotización pasada a venta. Stock descontado.');
+    if (SDCApi.ready()) {
+      try { await SDCApi.post('saveInvoice', { invoice: toSheetInvoice(doc) }); } catch(e){ toast('Venta local lista. Sheets no respondió.'); }
+    }
+  }
+
   function saveClient(doc){
     const key = cleanPhone(doc.customer.telefono) || doc.customer.nombre.toLowerCase();
     if (!key) return;
@@ -693,19 +744,23 @@
     state.discount = x.totals?.descuento || 0;
     state.editingInvoiceId = x.id;
     state.view = 'pos';
-    save(); render(); toast('Factura cargada para editar.');
+    save(); render(); toast('Registro cargado para editar o generar imagen.');
   }
   function deleteInvoice(id){
-    if(!confirm('¿Borrar este registro local?')) return;
+    const doc = state.invoices.find(x => x.id === id);
+    if(!doc) return;
+    const msg = isSaleStatus(doc.status) ? '¿Borrar esta venta y devolver el stock local?' : '¿Borrar este registro local?';
+    if(!confirm(msg)) return;
+    if (isSaleStatus(doc.status)) applyStockDelta(doc, null);
     state.invoices = state.invoices.filter(x => x.id !== id);
-    save(); render(); toast('Registro borrado localmente.');
+    save(); render(); toast(isSaleStatus(doc.status) ? 'Venta borrada y stock devuelto localmente.' : 'Registro borrado localmente.');
   }
 
   function whatsappText(doc = snapshot('Cotización')){
     const c = doc.totals || calcCart(doc.items || []);
     const typeLabel = doc.shippingType === 'cod' ? 'Pagar al Recibir' : doc.shippingType === 'local' ? 'Entrega local' : 'Envío Normal';
     const lines = [
-      `Hola 😊 Le compartimos su ${doc.status === 'Factura' ? 'factura' : 'cotización'} de SD COMAYAGUA.`,
+      `Hola 😊 Le compartimos su ${isSaleStatus(doc.status) ? 'factura' : 'cotización'} de SD COMAYAGUA.`,
       '',
       `Código: ${doc.code}`,
       `Cliente: ${doc.customer?.nombre || 'Pendiente'}`,

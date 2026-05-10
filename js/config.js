@@ -3,7 +3,7 @@ window.SDC_CONFIG = {
   storeFullName: 'Soluciones Digitales Comayagua',
   whatsappNumber: '50431517755',
   currency: 'Lps.',
-  appsScriptUrl: '',
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbzZKAqIR_u-rmcdDUodffpLtZb5zFXOXms8MEcbN0zkfvXhEUe_MQE49dyAtDzaTkWY/exec',
   apiKey: 'SDC_POS_2026',
   normalShipping: 110,
   cashOnDeliveryShipping: 100,

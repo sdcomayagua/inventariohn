@@ -6,6 +6,11 @@
   const LS = 'sdc_pos_dashboard_v1';
   const LOGO = 'assets/logo-sdc-2026.png';
   const NO_IMG = 'assets/no-image.svg';
+  const HN_LOCATIONS = window.SDC_HN_LOCATIONS || {};
+  const DEPARTMENTS = Object.keys(HN_LOCATIONS);
+  const DEFAULT_DEPARTMENT = DEPARTMENTS.includes('Comayagua') ? 'Comayagua' : (DEPARTMENTS[0] || '');
+  const DEFAULT_MUNICIPALITY = (HN_LOCATIONS[DEFAULT_DEPARTMENT] || [DEFAULT_DEPARTMENT])[0] || '';
+  const emptyProductDraft = () => ({ id:'', codigo:'', nombre:'', categoria:'', marca:'', precio:'', costo:'', stock:'', descripcion:'', imagen:'', activo:true, promos:'', notas:'' });
 
   const defaultState = () => ({
     view:'dashboard',
@@ -15,14 +20,19 @@
     invoices:[],
     clients:[],
     filter:{ q:'', category:'Todos', status:'Todos' },
+    showProductForm:false,
+    productDraft:emptyProductDraft(),
     cart:[],
-    customer:{ nombre:'', telefono:'', departamento:'Comayagua', municipio:'Comayagua', direccion:'', referencia:'' },
+    customer:{ nombre:'', telefono:'', departamento:DEFAULT_DEPARTMENT, municipio:DEFAULT_DEPARTMENT === 'Comayagua' ? 'Comayagua' : DEFAULT_MUNICIPALITY, direccion:'', referencia:'' },
     shippingType:'normal',
     discount:0,
-    editingInvoiceId:''
+    editingInvoiceId:'',
+    invoiceTheme:'pro'
   });
 
   let state = load();
+  window.SDC_CONFIG = { ...window.SDC_CONFIG, ...state.config };
+  ensureCustomerLocation();
   applyMode();
   render();
 
@@ -38,6 +48,9 @@
       out.cart = Array.isArray(out.cart) ? out.cart : [];
       out.customer = { ...base.customer, ...(saved?.customer || {}) };
       out.filter = { ...base.filter, ...(saved?.filter || {}) };
+      out.showProductForm = Boolean(saved?.showProductForm);
+      out.productDraft = { ...emptyProductDraft(), ...(saved?.productDraft || {}) };
+      out.invoiceTheme = saved?.invoiceTheme || (out.mode === 'gamer' ? 'gamer' : 'pro');
       return out;
     }catch(e){ return defaultState(); }
   }
@@ -82,6 +95,15 @@
   function categories(){
     return ['Todos', ...Array.from(new Set(state.products.filter(p => p.activo).map(p => p.categoria || 'General'))).sort((a,b) => a.localeCompare(b,'es'))];
   }
+  function departmentOptions(){ return DEPARTMENTS.length ? DEPARTMENTS : ['Comayagua']; }
+  function municipalityOptions(dept = state.customer.departamento){ return HN_LOCATIONS[dept] || ['Comayagua']; }
+  function ensureCustomerLocation(){
+    const deps = departmentOptions();
+    if (!deps.includes(state.customer.departamento)) state.customer.departamento = DEFAULT_DEPARTMENT || deps[0];
+    const munis = municipalityOptions(state.customer.departamento);
+    if (!munis.includes(state.customer.municipio)) state.customer.municipio = munis[0] || '';
+  }
+
   function filteredProducts(){
     const q = state.filter.q.toLowerCase().trim();
     return state.products.filter(p => {
@@ -145,7 +167,7 @@
     return `<header class="topbar no-print">
       <div class="brand-card">
         <img class="logo" src="${LOGO}" alt="SD COMAYAGUA">
-        <div class="brand-title"><b>${esc(state.config.storeName)}</b><span>Panel privado · POS · Inventario</span></div>
+        <div class="brand-title"><b>${esc(state.config.storeName)}</b><span>Panel privado</span></div>
       </div>
       <div class="top-actions">
         <button class="icon-btn" data-action="sync" title="Sincronizar">↻</button>
@@ -197,7 +219,8 @@
     const list = filteredProducts();
     return `<section class="section ${activateClass('products')}" id="products">
       <div class="panel">
-        <div class="panel-head"><div><h2>Productos</h2><p>Buscador, filtros y tarjetas limpias para celular.</p></div><span class="tag">${list.length} resultados</span></div>
+        <div class="panel-head"><div><h2>Productos</h2><p>Buscador, filtros, foto clara y edición separada.</p></div><div class="button-row compact"><button class="btn small" data-action="toggle-product-form">${state.showProductForm ? 'Cerrar editor' : 'Nuevo producto'}</button></div></div>
+        ${productDraftForm()}
         <div class="search-line">
           <input class="input" id="searchProduct" placeholder="Buscar por producto, código, categoría..." value="${esc(state.filter.q)}">
           <select class="select" id="filterCategory">${categories().map(c => `<option ${state.filter.category===c?'selected':''}>${esc(c)}</option>`).join('')}</select>
@@ -208,16 +231,54 @@
       </div>
     </section>`;
   }
+  function productDraftForm(){
+    if (!state.showProductForm) return '';
+    const d = state.productDraft || emptyProductDraft();
+    const cats = categories().filter(c => c !== 'Todos');
+    const title = d.id ? 'Editar producto' : 'Agregar producto';
+    return `<div class="product-editor">
+      <div class="panel-head"><div><h2>${title}</h2><p>Puede pegar un link o subir una imagen desde el celular. Si Apps Script está conectado, se sube a Drive y queda el link guardado.</p></div></div>
+      <div class="editor-grid">
+        <div>
+          <div class="image-upload-box">
+            <img src="${esc(d.imagen || NO_IMG)}" alt="Vista previa" onerror="this.src='${NO_IMG}'">
+          </div>
+          <label class="upload-btn"><input id="prodFile" type="file" accept="image/*">Subir imagen</label>
+          <p class="muted small-note">Recomendado: foto cuadrada o bien centrada. La app la optimiza antes de guardarla.</p>
+        </div>
+        <div class="row two">
+          ${draftField('Código','draftCodigo',d.codigo)}
+          ${draftField('Nombre','draftNombre',d.nombre)}
+          <label class="field"><span>Categoría</span><input class="input" id="draftCategoria" list="catList" value="${esc(d.categoria)}"><datalist id="catList">${cats.map(c=>`<option value="${esc(c)}"></option>`).join('')}</datalist></label>
+          ${draftField('Marca','draftMarca',d.marca)}
+          ${draftField('Precio venta Lps.','draftPrecio',d.precio,'number')}
+          ${draftField('Costo compra Lps.','draftCosto',d.costo,'number')}
+          ${draftField('Stock','draftStock',d.stock,'number')}
+          <label class="field"><span>Activo</span><select class="select" id="draftActivo"><option value="true" ${d.activo!==false?'selected':''}>Sí, mostrar</option><option value="false" ${d.activo===false?'selected':''}>No, ocultar</option></select></label>
+          <label class="field" style="grid-column:1/-1"><span>Imagen / link</span><input class="input" id="draftImagen" value="${esc(d.imagen)}" placeholder="https://... o se llena al subir imagen"></label>
+          <label class="field" style="grid-column:1/-1"><span>Promos opcional</span><input class="input" id="draftPromos" value="${esc(d.promos)}" placeholder="1=25 | 2=50 | 3=69"></label>
+          <label class="field" style="grid-column:1/-1"><span>Descripción</span><textarea class="textarea" id="draftDescripcion">${esc(d.descripcion)}</textarea></label>
+        </div>
+      </div>
+      <div class="button-row" style="margin-top:12px">
+        <button class="btn" data-action="save-product">Guardar producto</button>
+        <button class="btn secondary" data-action="new-product-draft">Limpiar editor</button>
+        <button class="btn ghost" data-action="toggle-product-form">Cerrar</button>
+      </div>
+    </div>`;
+  }
+  function draftField(label,id,value,type='text'){ return `<label class="field"><span>${esc(label)}</span><input class="input" id="${id}" type="${type}" value="${esc(value)}"></label>`; }
   function productCard(p){
     const badge = p.estado_stock === 'Agotado' ? 'out' : p.estado_stock === 'Bajo stock' ? 'low' : '';
+    const img = p.imagen || NO_IMG;
     return `<article class="product-card">
-      <img class="product-img" src="${esc(p.imagen || NO_IMG)}" alt="${esc(p.nombre)}" onerror="this.src='${NO_IMG}'">
+      <button class="product-img-btn" data-open-img="${esc(img)}" title="Ver foto"><img class="product-img" src="${esc(img)}" alt="${esc(p.nombre)}" onerror="this.src='${NO_IMG}'"></button>
       <div class="product-info">
         <div class="product-top"><div><div class="product-code">${esc(p.codigo)}</div><div class="product-title">${esc(p.nombre)}</div></div><span class="stock-badge ${badge}">${esc(p.estado_stock)} · ${p.stock}</span></div>
         <div class="product-meta"><span class="tag">${esc(p.categoria)}</span>${p.marca ? `<span class="tag">${esc(p.marca)}</span>` : ''}</div>
         <div class="price">${money(p.precio)}</div>
         <div class="muted" style="font-size:.82rem">Costo: ${money(p.costo)} · Ganancia/u: ${money(p.ganancia_unitaria)}</div>
-        <div class="product-actions"><button class="btn small" data-add="${esc(p.id)}" ${p.stock<=0?'disabled':''}>Agregar</button><button class="btn small secondary" data-view="pos">POS</button></div>
+        <div class="product-actions"><button class="btn small" data-add="${esc(p.id)}" ${p.stock<=0?'disabled':''}>Agregar</button><button class="btn small secondary" data-view="pos">POS</button><button class="btn small ghost" data-edit-product="${esc(p.id)}">Editar</button></div>
       </div>
     </article>`;
   }
@@ -255,22 +316,26 @@
               <button class="btn ghost" data-action="open-wa">Abrir WhatsApp</button>
             </div>
           </div>
-          <div class="print-target">${receiptPreview()}</div>
+          <div class="receipt-side print-target">${receiptThemeControls()}${receiptPreview()}</div>
         </div>
         <div class="button-row no-print" style="margin-top:12px">
           <button class="btn secondary" data-action="print-receipt">Imprimir / PDF</button>
           <button class="btn secondary" data-action="download-image">Descargar imagen</button>
+          <button class="btn secondary" data-action="share-image">Enviar imagen WhatsApp</button>
           <button class="btn danger" data-action="clear-cart">Limpiar carrito</button>
         </div>
       </div>
     </section>`;
   }
   function customerForm(){
+    ensureCustomerLocation();
+    const deps = departmentOptions();
+    const munis = municipalityOptions(state.customer.departamento);
     return `<div class="row two">
       ${field('Nombre del cliente','custNombre',state.customer.nombre,'text')}
       ${field('Teléfono','custTelefono',state.customer.telefono,'tel')}
-      ${field('Departamento','custDepartamento',state.customer.departamento,'text')}
-      ${field('Municipio','custMunicipio',state.customer.municipio,'text')}
+      <label class="field"><span>Departamento</span><select class="select" id="custDepartamento">${deps.map(d => `<option value="${esc(d)}" ${state.customer.departamento===d?'selected':''}>${esc(d)}</option>`).join('')}</select></label>
+      <label class="field"><span>Municipio</span><select class="select" id="custMunicipio">${munis.map(m => `<option value="${esc(m)}" ${state.customer.municipio===m?'selected':''}>${esc(m)}</option>`).join('')}</select></label>
       <label class="field"><span>Tipo de envío</span><select class="select" id="shippingType">
         <option value="normal" ${state.shippingType==='normal'?'selected':''}>Envío Normal · ${money(state.config.normalShipping)}</option>
         <option value="cod" ${state.shippingType==='cod'?'selected':''}>Pagar al Recibir · envío ${money(state.config.cashOnDeliveryShipping)} + comisión</option>
@@ -289,14 +354,31 @@
     </div>`;
   }
 
+  function receiptThemeControls(){
+    return `<div class="receipt-theme no-print"><span>Diseño de factura</span><div><button class="chip ${state.invoiceTheme==='pro'?'active':''}" data-receipt-theme="pro">Pro limpia</button><button class="chip ${state.invoiceTheme==='gamer'?'active':''}" data-receipt-theme="gamer">Modo gamer</button></div></div>`;
+  }
   function receiptPreview(){
     const c = calcCart();
-    return `<div class="invoice-preview" id="receiptCard">
-      <div class="receipt-head"><img src="${LOGO}" alt="SD"><div><h3>${state.editingInvoiceId ? 'FACTURA EDITABLE' : 'COTIZACIÓN'}</h3><p>${esc(state.config.storeFullName)} · ${today()}</p></div></div>
-      <p><b>Cliente:</b> ${esc(state.customer.nombre || 'Cliente')}<br><b>Teléfono:</b> ${esc(state.customer.telefono || 'Pendiente')}<br><b>Destino:</b> ${esc([state.customer.municipio,state.customer.departamento].filter(Boolean).join(', ') || 'Pendiente')}</p>
-      <table class="receipt-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Total</th></tr></thead><tbody>
-        ${state.cart.length ? state.cart.map(it => `<tr><td>${esc(it.nombre)}<br><small>${esc(it.codigo)}</small></td><td>${it.qty}</td><td>${money(itemPrice(it,it.qty))}</td></tr>`).join('') : '<tr><td colspan="3">Sin productos agregados.</td></tr>'}
-      </tbody></table>
+    const isGamer = state.invoiceTheme === 'gamer';
+    const title = state.editingInvoiceId ? 'FACTURA EDITABLE' : 'COTIZACIÓN';
+    const productRows = state.cart.length ? state.cart.map(it => {
+      const img = it.imagen || NO_IMG;
+      return `<tr>
+        <td class="receipt-product"><img crossorigin="anonymous" src="${esc(img)}" onerror="this.src='${NO_IMG}'" alt=""><div><b>${esc(it.nombre)}</b><small>${esc(it.codigo)}</small></div></td>
+        <td class="center">${it.qty}</td>
+        <td class="right nowrap">${money(it.precio)}</td>
+        <td class="right nowrap">${money(itemPrice(it,it.qty))}</td>
+      </tr>`;
+    }).join('') : '<tr><td colspan="4">Sin productos agregados.</td></tr>';
+    return `<div class="invoice-preview ${isGamer ? 'invoice-gamer' : 'invoice-pro'}" id="receiptCard">
+      <div class="receipt-watermark">SD</div>
+      <div class="receipt-head"><img src="${LOGO}" alt="SD"><div><h3>${title}</h3><p>${esc(state.config.storeFullName)} · ${today()}</p></div></div>
+      <div class="receipt-client">
+        <div><span>Cliente</span><b>${esc(state.customer.nombre || 'Cliente')}</b></div>
+        <div><span>Teléfono</span><b>${esc(state.customer.telefono || 'Pendiente')}</b></div>
+        <div class="wide"><span>Destino</span><b>${esc([state.customer.municipio,state.customer.departamento].filter(Boolean).join(', ') || 'Pendiente')}</b></div>
+      </div>
+      <table class="receipt-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>${productRows}</tbody></table>
       <div class="receipt-total">
         <div><span>Total productos</span><b>${money(c.subtotal)}</b></div>
         <div><span>Envío</span><b>${money(c.envio)}</b></div>
@@ -365,7 +447,7 @@
 
   function bind(){
     $$('[data-view]').forEach(b => b.onclick = () => { state.view = b.dataset.view; save(); render(); window.scrollTo({top:0,behavior:'smooth'}); });
-    $$('[data-action="toggle-mode"]').forEach(b => b.onclick = () => { state.mode = state.mode === 'pro' ? 'gamer' : 'pro'; save(); render(); toast(state.mode === 'pro' ? 'Modo Pro activado.' : 'Modo Gamer activado.'); });
+    $$('[data-action="toggle-mode"]').forEach(b => b.onclick = () => { state.mode = state.mode === 'pro' ? 'gamer' : 'pro'; state.invoiceTheme = state.mode === 'gamer' ? 'gamer' : 'pro'; save(); render(); toast(state.mode === 'pro' ? 'Modo Pro activado.' : 'Modo Gamer activado.'); });
     $$('[data-action="sync"]').forEach(b => b.onclick = syncFromSheets);
     const search = $('#searchProduct'); if(search) search.oninput = e => { state.filter.q = e.target.value; save(); render(); $('#searchProduct')?.focus(); };
     const cat = $('#filterCategory'); if(cat) cat.onchange = e => { state.filter.category = e.target.value; save(); render(); };
@@ -377,17 +459,29 @@
     $$('[data-dec]').forEach(b => b.onclick = () => { const it = state.cart[+b.dataset.dec]; it.qty = Math.max(1, n(it.qty)-1); save(); render(); });
     $$('[data-remove]').forEach(b => b.onclick = () => { state.cart.splice(+b.dataset.remove,1); save(); render(); });
     $$('[data-qty]').forEach(inp => inp.oninput = () => { state.cart[+inp.dataset.qty].qty = Math.max(1, n(inp.value)); save(); render(); });
+    bindProductForm();
     bindCustomerInputs();
     bindActions();
   }
 
   function bindCustomerInputs(){
-    const map = { custNombre:'nombre', custTelefono:'telefono', custDepartamento:'departamento', custMunicipio:'municipio', custDireccion:'direccion', custReferencia:'referencia' };
-    Object.entries(map).forEach(([id,key]) => { const el = $('#'+id); if(el) el.oninput = e => { state.customer[key] = e.target.value; save(); softRefreshReceipt(); }; });
+    const textMap = { custNombre:'nombre', custTelefono:'telefono', custDireccion:'direccion', custReferencia:'referencia' };
+    Object.entries(textMap).forEach(([id,key]) => { const el = $('#'+id); if(el) el.oninput = e => { state.customer[key] = e.target.value; save(); softRefreshReceipt(); }; });
+    const dep = $('#custDepartamento'); if(dep) dep.onchange = e => { state.customer.departamento = e.target.value; state.customer.municipio = municipalityOptions(e.target.value)[0] || ''; save(); render(); };
+    const muni = $('#custMunicipio'); if(muni) muni.onchange = e => { state.customer.municipio = e.target.value; save(); softRefreshReceipt(); };
     const ship = $('#shippingType'); if(ship) ship.onchange = e => { state.shippingType = e.target.value; save(); render(); };
     const discount = $('#discount'); if(discount) discount.oninput = e => { state.discount = n(e.target.value); save(); render(); };
   }
-  function softRefreshReceipt(){ const target = $('#receiptCard'); if(target) target.outerHTML = receiptPreview().match(/<div class="invoice-preview"[\s\S]*<\/div>$/)?.[0] || receiptPreview(); }
+  function bindProductForm(){
+    if (!state.showProductForm) return;
+    const map = {
+      draftCodigo:'codigo', draftNombre:'nombre', draftCategoria:'categoria', draftMarca:'marca', draftPrecio:'precio', draftCosto:'costo', draftStock:'stock', draftImagen:'imagen', draftPromos:'promos', draftDescripcion:'descripcion'
+    };
+    Object.entries(map).forEach(([id,key]) => { const el = $('#'+id); if(el) el.oninput = e => { state.productDraft[key] = e.target.value; save(); }; });
+    const activo = $('#draftActivo'); if(activo) activo.onchange = e => { state.productDraft.activo = e.target.value === 'true'; save(); };
+    const file = $('#prodFile'); if(file) file.onchange = handleProductImageFile;
+  }
+  function softRefreshReceipt(){ const target = $('#receiptCard'); if(target) target.outerHTML = receiptPreview(); }
   function bindActions(){
     const action = (name, fn) => $$(`[data-action="${name}"]`).forEach(b => b.onclick = fn);
     action('save-config', saveConfig);
@@ -397,7 +491,14 @@
     action('open-wa', () => openWhatsApp(whatsappText()));
     action('print-receipt', () => window.print());
     action('download-image', downloadReceiptImage);
+    action('share-image', shareReceiptImage);
     action('clear-cart', () => { state.cart=[]; state.discount=0; state.editingInvoiceId=''; save(); render(); toast('Carrito limpio.'); });
+    action('toggle-product-form', () => { state.showProductForm = !state.showProductForm; if(state.showProductForm && !state.productDraft) state.productDraft = emptyProductDraft(); save(); render(); });
+    action('new-product-draft', () => { state.productDraft = emptyProductDraft(); state.showProductForm = true; save(); render(); });
+    action('save-product', saveProduct);
+    $$('[data-receipt-theme]').forEach(b => b.onclick = () => { state.invoiceTheme = b.dataset.receiptTheme; save(); render(); });
+    $$('[data-open-img]').forEach(b => b.onclick = () => openProductImage(b.dataset.openImg));
+    $$('[data-edit-product]').forEach(b => b.onclick = () => editProduct(b.dataset.editProduct));
     action('export-json', exportJSON);
     action('reset-demo', () => { if(confirm('¿Reiniciar datos locales de esta app?')){ localStorage.removeItem(LS); state=defaultState(); save(); render(); toast('Datos locales reiniciados.'); }});
     $$('[data-edit-invoice]').forEach(b => b.onclick = () => editInvoice(b.dataset.editInvoice));
@@ -412,6 +513,91 @@
     if (existing) existing.qty += 1;
     else state.cart.push({ ...p, qty:1 });
   }
+  function openProductImage(src){
+    if (!src || src === NO_IMG) return toast('Este producto no tiene imagen cargada.');
+    const w = window.open('', '_blank');
+    if (!w) return toast('El navegador bloqueó la vista de imagen.');
+    w.document.write(`<title>Foto producto</title><body style="margin:0;background:#061325;display:grid;place-items:center;min-height:100vh"><img src="${esc(src)}" style="max-width:100%;max-height:100vh;object-fit:contain;background:#fff"></body>`);
+  }
+  function editProduct(id){
+    const p = state.products.find(x => x.id === id); if(!p) return;
+    state.productDraft = { ...emptyProductDraft(), ...p };
+    state.showProductForm = true;
+    state.view = 'products';
+    save(); render();
+    setTimeout(() => $('.product-editor')?.scrollIntoView({behavior:'smooth', block:'start'}), 80);
+  }
+  async function saveProduct(){
+    readProductDraftFromForm();
+    const d = { ...emptyProductDraft(), ...state.productDraft };
+    if (!String(d.nombre || '').trim()) return toast('Escriba el nombre del producto.');
+    const product = normalizeProduct({
+      ...d,
+      id:d.id || `prod-sdc-${Date.now()}`,
+      codigo:d.codigo || `SDC-${String(state.products.length + 1).padStart(3,'0')}`,
+      precio:n(d.precio), costo:n(d.costo), stock:n(d.stock), activo:d.activo !== false && String(d.activo) !== 'false'
+    }, state.products.length);
+    const ix = state.products.findIndex(x => x.id === product.id);
+    if (ix >= 0) state.products[ix] = product; else state.products.unshift(product);
+    state.productDraft = emptyProductDraft();
+    state.showProductForm = false;
+    save(); render(); toast('Producto guardado.');
+    if (SDCApi.ready()) {
+      try { await SDCApi.post('upsertProduct', { product:toSheetProduct(product) }); toast('Producto guardado y sincronizado.'); }
+      catch(e){ console.error(e); toast('Producto local guardado. No se pudo sincronizar Sheets.'); }
+    }
+  }
+  function readProductDraftFromForm(){
+    if (!state.productDraft) state.productDraft = emptyProductDraft();
+    const map = { draftCodigo:'codigo', draftNombre:'nombre', draftCategoria:'categoria', draftMarca:'marca', draftPrecio:'precio', draftCosto:'costo', draftStock:'stock', draftImagen:'imagen', draftPromos:'promos', draftDescripcion:'descripcion' };
+    Object.entries(map).forEach(([id,key]) => { const el = $('#'+id); if(el) state.productDraft[key] = el.value; });
+    const activo = $('#draftActivo'); if(activo) state.productDraft.activo = activo.value === 'true';
+  }
+  function toSheetProduct(p){
+    return { id:p.id, codigo:p.codigo, nombre:p.nombre, categoria:p.categoria, marca:p.marca, precio:p.precio, costo:p.costo, stock:p.stock, descripcion:p.descripcion, imagen:p.imagen, activo:p.activo, promos:p.promos, notas:p.notas || '' };
+  }
+  async function handleProductImageFile(e){
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try{
+      toast('Procesando imagen...');
+      const dataUrl = await optimizeImage(file);
+      let imageValue = dataUrl;
+      if (SDCApi.ready()) {
+        try{
+          const data = await SDCApi.post('uploadImage', { fileName:file.name || `producto-${Date.now()}.jpg`, mimeType:'image/jpeg', data:dataUrl.split(',')[1] });
+          if (data.url) imageValue = data.url;
+        }catch(err){ console.warn(err); toast('No se pudo subir a Drive. Quedará guardada localmente.'); }
+      }
+      state.productDraft.imagen = imageValue;
+      save(); render(); toast(SDCApi.ready() && /^https?:/.test(imageValue) ? 'Imagen subida a Drive.' : 'Imagen agregada localmente.');
+    }catch(err){ console.error(err); toast('No se pudo leer la imagen.'); }
+  }
+  function optimizeImage(file){
+    return new Promise((resolve,reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const max = 1400;
+          const scale = Math.min(1, max / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(img.width * scale));
+          canvas.height = Math.max(1, Math.round(img.height * scale));
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0,0,canvas.width,canvas.height);
+          ctx.drawImage(img,0,0,canvas.width,canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', .86));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   function snapshot(status){
     const totals = calcCart();
     const id = state.editingInvoiceId || uid(status === 'Factura' ? 'FAC' : 'COT');
@@ -423,20 +609,33 @@
       updatedAt: iso(),
       customer:{ ...state.customer },
       shippingType:state.shippingType,
-      items: state.cart.map(x => ({ id:x.id, codigo:x.codigo, nombre:x.nombre, precio:n(x.precio), costo:n(x.costo), qty:n(x.qty)||1 })),
+      items: state.cart.map(x => ({ id:x.id, codigo:x.codigo, nombre:x.nombre, precio:n(x.precio), costo:n(x.costo), qty:n(x.qty)||1, imagen:x.imagen || '' })),
       totals
     };
+  }
+  function applyStockDelta(previous, doc){
+    const oldItems = previous?.status === 'Factura' ? (previous.items || []) : [];
+    const oldMap = new Map(oldItems.map(it => [it.id, n(it.qty)]));
+    const newItems = doc?.status === 'Factura' ? (doc.items || []) : [];
+    const newMap = new Map(newItems.map(it => [it.id, n(it.qty)]));
+    const ids = new Set([...oldMap.keys(), ...newMap.keys()]);
+    ids.forEach(id => {
+      const delta = (newMap.get(id) || 0) - (oldMap.get(id) || 0);
+      if (!delta) return;
+      const p = state.products.find(x => x.id === id);
+      if (p) p.stock = Math.max(0, n(p.stock) - delta);
+    });
+    state.products = state.products.map(normalizeProduct);
   }
   async function saveDocument(status){
     if (!state.cart.length) return toast('Agregue productos primero.');
     const doc = snapshot(status);
+    const previous = state.invoices.find(x => x.id === doc.id);
     const ix = state.invoices.findIndex(x => x.id === doc.id);
     if (ix >= 0) state.invoices[ix] = doc; else state.invoices.unshift(doc);
     saveClient(doc);
-    if (status === 'Factura' && !state.editingInvoiceId) {
-      doc.items.forEach(it => { const p = state.products.find(x => x.id === it.id); if(p) p.stock = Math.max(0, n(p.stock)-n(it.qty)); });
-      state.products = state.products.map(normalizeProduct);
-    }
+    applyStockDelta(previous, doc);
+
     state.editingInvoiceId = doc.id;
     save(); render(); toast(`${status} guardada.`);
     if (SDCApi.ready()) {
@@ -460,7 +659,7 @@
   }
   function editInvoice(id){
     const x = state.invoices.find(v => v.id === id); if(!x) return;
-    state.cart = (x.items || []).map(it => normalizeProduct({ ...it, stock:999, precio:it.precio, costo:it.costo, nombre:it.nombre, codigo:it.codigo })).map(it => ({...it, qty:(x.items.find(k=>k.id===it.id)?.qty || 1)}));
+    state.cart = (x.items || []).map(it => normalizeProduct({ ...it, stock:999, precio:it.precio, costo:it.costo, nombre:it.nombre, codigo:it.codigo, imagen:it.imagen })).map(it => ({...it, qty:(x.items.find(k=>k.id===it.id)?.qty || 1)}));
     state.customer = { ...state.customer, ...(x.customer || {}) };
     state.shippingType = x.shippingType || 'normal';
     state.discount = x.totals?.descuento || 0;
@@ -498,16 +697,39 @@
     const phone = cleanPhone(state.customer.telefono) || cleanPhone(state.config.whatsappNumber);
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
   }
-  async function downloadReceiptImage(){
+  async function receiptBlob(){
     const el = $('#receiptCard');
-    if (!el) return;
-    if (!window.html2canvas) { window.print(); return toast('html2canvas no cargó. Use Imprimir/PDF.'); }
-    const canvas = await html2canvas(el, { scale:2.4, backgroundColor:'#ffffff', useCORS:true });
-    const a = document.createElement('a');
-    a.href = canvas.toDataURL('image/png');
-    a.download = `sdc-${state.editingInvoiceId || 'cotizacion'}-${Date.now()}.png`;
-    a.click();
-    toast('Imagen descargada.');
+    if (!el) throw new Error('No hay factura visible.');
+    if (!window.html2canvas) throw new Error('html2canvas no cargó.');
+    const bg = state.invoiceTheme === 'gamer' ? '#061325' : '#ffffff';
+    const canvas = await html2canvas(el, { scale:2.5, backgroundColor:bg, useCORS:true, allowTaint:false });
+    return new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1));
+  }
+  async function downloadReceiptImage(){
+    try{
+      const blob = await receiptBlob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `sdc-${state.invoiceTheme}-${state.editingInvoiceId || 'cotizacion'}-${Date.now()}.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      toast('Imagen descargada.');
+    }catch(e){ console.error(e); window.print(); toast('No se pudo descargar imagen. Use Imprimir/PDF.'); }
+  }
+  async function shareReceiptImage(){
+    try{
+      const blob = await receiptBlob();
+      const file = new File([blob], `sdc-${state.invoiceTheme}-${state.editingInvoiceId || 'cotizacion'}.png`, { type:'image/png' });
+      if (navigator.canShare && navigator.canShare({ files:[file] })) {
+        await navigator.share({ files:[file], title:'Factura SD COMAYAGUA', text:'Le compartimos su factura de SD COMAYAGUA.' });
+        toast('Lista para compartir.');
+      } else {
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        openWhatsApp(whatsappText());
+        toast('Se descargó la imagen y se abrió WhatsApp para enviar el texto.');
+      }
+    }catch(e){ console.error(e); openWhatsApp(whatsappText()); toast('No se pudo compartir imagen. Se abrió WhatsApp con el texto.'); }
   }
 
   function saveConfig(){

@@ -401,7 +401,7 @@
     const c = calcCart();
     const isGamer = state.invoiceTheme === 'gamer';
     const editingDoc = state.invoices.find(x => x.id === state.editingInvoiceId);
-    const title = editingDoc ? (isSaleStatus(editingDoc.status) ? 'FACTURA EDITABLE' : 'COTIZACIÓN EDITABLE') : 'COTIZACIÓN';
+    const title = editingDoc ? (isSaleStatus(editingDoc.status) ? 'FACTURA DE VENTA' : 'COTIZACIÓN COMERCIAL') : 'COTIZACIÓN COMERCIAL';
     const productRows = state.cart.length ? state.cart.map(it => {
       const img = it.imagen || NO_IMG;
       return `<tr>
@@ -412,7 +412,7 @@
       </tr>`;
     }).join('') : '<tr><td colspan="4">Sin productos agregados.</td></tr>';
     return `<div class="invoice-preview ${isGamer ? 'invoice-gamer' : 'invoice-pro'}" id="receiptCard">
-      <div class="receipt-watermark">SD</div>
+      <div class="receipt-watermark">SDC</div>
       <div class="receipt-head"><img src="${LOGO}" alt="SD"><div><h3>${title}</h3><p>${esc(state.config.storeFullName)} · ${today()}</p></div></div>
       <div class="receipt-client">
         <div><span>Cliente</span><b>${esc(state.customer.nombre || 'Cliente')}</b></div>

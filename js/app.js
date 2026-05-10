@@ -709,63 +709,82 @@
     const editingDoc = state.invoices.find(x => x.id === state.editingInvoiceId);
     const title = editingDoc ? (isSaleStatus(editingDoc.status) ? 'FACTURA' : 'COTIZACIÓN') : 'COTIZACIÓN';
     const code = editingDoc?.code || state.editingInvoiceId || 'PREVIA';
-    const statusText = editingDoc?.status || (state.cart.length ? 'Previsualización' : 'Sin productos');
-    const productRows = state.cart.length ? state.cart.map((it, idx) => {
-      const img = it.imagen || NO_IMG;
-      return `<tr>
-        <td data-label="#" class="center receipt-index">${idx + 1}</td>
-        <td data-label="Producto"><div class="receipt-product"><img crossorigin="anonymous" src="${esc(img)}" onerror="this.src='${NO_IMG}'" alt=""><div><b>${esc(it.nombre)}</b><small>${esc(it.codigo)}${it.marca ? ' · ' + esc(it.marca) : ''}</small></div></div></td>
-        <td data-label="Cant." class="center"><b>${it.qty}</b></td>
-        <td data-label="Precio" class="right nowrap">${money(it.precio)}</td>
-        <td data-label="Total" class="right nowrap"><b>${money(itemPrice(it,it.qty))}</b></td>
-      </tr>`;
-    }).join('') : '<tr><td data-label="Producto" colspan="5"><div class="receipt-empty-row">Agregue productos para generar una cotización lista para WhatsApp.</div></td></tr>';
-    const address = shortAddress(state.customer) || 'Pendiente de confirmar';
-    const dest = [state.customer.municipio,state.customer.departamento].filter(Boolean).join(', ') || 'Pendiente';
     const ready = orderReadiness();
     const readyText = ready.ok ? 'Pedido listo' : `Falta: ${ready.missing.slice(0,3).join(', ')}`;
-    return `<div class="invoice-preview ${isGamer ? 'invoice-gamer' : 'invoice-pro'}" id="receiptCard">
-      <div class="receipt-watermark">SD</div>
-      <div class="receipt-hero">
-        <div class="receipt-brand-lockup">
-          <img src="${LOGO}" alt="SD">
-          <div><span>${esc(state.config.storeFullName)}</span><b>SD COMAYAGUA</b><small>WhatsApp +504 3151-7755</small></div>
+    const address = shortAddress(state.customer) || 'Pendiente de confirmar';
+    const dest = [state.customer.municipio,state.customer.departamento].filter(Boolean).join(', ') || 'Pendiente';
+    const productRows = state.cart.length ? state.cart.map((it, idx) => {
+      const img = it.imagen || NO_IMG;
+      const code = it.codigo || `PROD-${idx + 1}`;
+      return `<div class="sdc-items-row">
+        <div class="sdc-cell sdc-index">${idx + 1}</div>
+        <div class="sdc-cell sdc-product-cell">
+          <img crossorigin="anonymous" src="${esc(img)}" onerror="this.src='${NO_IMG}'" alt="">
+          <div><strong>${esc(it.nombre)}</strong><span>${esc(code)}</span></div>
         </div>
-        <div class="receipt-doc-box">
+        <div class="sdc-cell sdc-code">${esc(code)}</div>
+        <div class="sdc-cell sdc-qty"><b>${it.qty}</b></div>
+        <div class="sdc-cell sdc-price">${money(it.precio)}</div>
+        <div class="sdc-cell sdc-line-total"><b>${money(itemPrice(it,it.qty))}</b></div>
+      </div>`;
+    }).join('') : `<div class="sdc-empty-products">Agregue productos para generar una cotización lista para WhatsApp.</div>`;
+    return `<div class="invoice-preview sdc-receipt-v16 ${isGamer ? 'invoice-gamer' : 'invoice-pro'}" id="receiptCard">
+      <div class="sdc-receipt-top-line"></div>
+      <div class="sdc-receipt-watermark">SD</div>
+      <header class="sdc-receipt-header">
+        <div class="sdc-receipt-brand">
+          <img src="${LOGO}" alt="SD COMAYAGUA">
+          <div>
+            <h3>SD COMAYAGUA</h3>
+            <p>Soluciones Digitales Comayagua</p>
+            <small>🟢 WhatsApp +504 3151-7755</small>
+          </div>
+        </div>
+        <div class="sdc-doc-card">
           <span>${esc(title)}</span>
           <b>${esc(code)}</b>
-          <small>${today()}</small>
+          <small>📅 ${today()}</small>
         </div>
-      </div>
-      <div class="receipt-status-line">
-        <span>${esc(statusText)}</span>
-        <b>${esc(readyText)}</b>
-      </div>
-      <div class="receipt-client premium-client">
-        <div><span>Cliente</span><b>${esc(state.customer.nombre || 'Cliente pendiente')}</b></div>
-        <div><span>Teléfono</span><b>${esc(state.customer.telefono || 'Pendiente')}</b></div>
-        <div><span>Tipo de envío</span><b>${esc(shippingTypeLabel())}</b></div>
-        <div><span>Destino</span><b>${esc(dest)}</b></div>
-        <div class="wide"><span>Dirección / referencia</span><b>${esc(address)}</b></div>
-      </div>
-      <div class="receipt-section-title"><span>Detalle de productos</span><b>${state.cart.length} ítem${state.cart.length===1?'':'s'}</b></div>
-      <table class="receipt-table premium-table"><thead><tr><th>#</th><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>${productRows}</tbody></table>
-      <div class="receipt-bottom-grid">
-        <div class="receipt-policy">
-          <b>Información importante</b>
-          <span>Precios sujetos a disponibilidad y confirmación de stock.</span>
-          <span>Envíos por C807, Forza y Cargo Expreso según cobertura.</span>
-          <span>Guarde esta imagen como respaldo de su cotización.</span>
+      </header>
+
+      <section class="sdc-status-card">
+        <i>✓</i>
+        <div><span>Estado del pedido</span><b>${esc(readyText)}</b></div>
+      </section>
+
+      <section class="sdc-client-card">
+        <div class="sdc-info-cell"><i>👤</i><div><span>Cliente</span><b>${esc(state.customer.nombre || 'Cliente pendiente')}</b></div></div>
+        <div class="sdc-info-cell"><i>☎</i><div><span>Teléfono</span><b>${esc(state.customer.telefono || 'Pendiente')}</b></div></div>
+        <div class="sdc-info-cell"><i>🚚</i><div><span>Tipo de envío</span><b>${esc(shippingTypeLabel())}</b></div></div>
+        <div class="sdc-info-cell"><i>📍</i><div><span>Destino</span><b>${esc(dest)}</b></div></div>
+        <div class="sdc-info-cell sdc-wide"><i>🗺</i><div><span>Dirección / referencia</span><b>${esc(address)}</b></div></div>
+      </section>
+
+      <section class="sdc-products-card">
+        <div class="sdc-products-title"><div><i>🛒</i><span>Detalle de productos</span></div><b>${state.cart.length} ítem${state.cart.length===1?'':'s'}</b></div>
+        <div class="sdc-items-table">
+          <div class="sdc-items-head"><span>#</span><span>Producto</span><span>Código</span><span>Cant.</span><span>Precio</span><span>Total</span></div>
+          ${productRows}
         </div>
-        <div class="receipt-total premium-total">
+      </section>
+
+      <section class="sdc-receipt-footer-grid">
+        <aside class="sdc-policy-box">
+          <div><i>i</i><b>Información importante</b></div>
+          <p>✓ Precios sujetos a disponibilidad y confirmación de stock.</p>
+          <p>✓ Envíos por C807, Forza y Cargo Expreso según cobertura.</p>
+          <p>✓ Guarde esta imagen como respaldo de su cotización.</p>
+        </aside>
+        <aside class="sdc-total-box">
           <div><span>Total productos</span><b>${money(c.subtotal)}</b></div>
           <div><span>Envío</span><b>${money(c.envio)}</b></div>
           <div><span>Comisión Pagar al Recibir</span><b>${money(c.comision)}</b></div>
           ${c.descuento ? `<div><span>Descuento</span><b>− ${money(c.descuento)}</b></div>` : ''}
-          <div class="grand"><span>TOTAL A PAGAR</span><b>${money(c.total)}</b></div>
-        </div>
-      </div>
-      <div class="receipt-note premium-note">Gracias por preferir SD COMAYAGUA. Atención profesional, envíos a Honduras y soporte por WhatsApp.</div>
+          <div class="sdc-grand-total"><span>TOTAL A PAGAR</span><b>${money(c.total).replace('Lps.', 'LPS.')}</b></div>
+        </aside>
+      </section>
+
+      <footer class="sdc-receipt-note"><b>Gracias por preferir SD COMAYAGUA.</b><span>Atención profesional, envíos a Honduras y soporte por WhatsApp.</span></footer>
     </div>`;
   }
   function sectionInvoices(){

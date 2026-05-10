@@ -67,6 +67,7 @@
   function esc(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
   function today(){ return new Date().toLocaleString('es-HN', { day:'2-digit', month:'short', year:'numeric', hour:'numeric', minute:'2-digit' }); }
   function iso(){ return new Date().toISOString(); }
+  function safeCode(v, fallback='---'){ const t = String(v || '').trim(); return t || fallback; }
   function applyMode(){ document.body.classList.toggle('mode-gamer', state.mode !== 'pro'); document.body.classList.toggle('mode-pro', state.mode === 'pro'); }
 
   function normalizeProduct(p, i = 0){
@@ -178,10 +179,16 @@
   }
 
   function render(){
-    applyMode();
-    app.className = 'app';
-    app.innerHTML = `${topbar()}${nav()}${sectionDashboard()}${sectionProducts()}${sectionPos()}${sectionInvoices()}${sectionClients()}${sectionConfig()}`;
-    bind();
+    try{
+      applyMode();
+      app.className = 'app';
+      app.innerHTML = `${topbar()}${nav()}${sectionDashboard()}${sectionProducts()}${sectionPos()}${sectionInvoices()}${sectionClients()}${sectionConfig()}`;
+      bind();
+    }catch(err){
+      console.error('Render error:', err);
+      app.className = 'app';
+      app.innerHTML = `<section class="section active"><div class="panel"><div class="panel-head"><div><h2>Error de visualización</h2><p>Ocurrió un problema al renderizar la app. Recarga la página. Si persiste, limpia caché (Ctrl+F5).</p></div></div><pre class="small-note">${esc(err && err.message ? err.message : String(err))}</pre><div class="button-row"><button class="btn" onclick="location.reload()">Recargar</button></div></div></section>`;
+    }
   }
 
   function topbar(){
@@ -403,8 +410,7 @@
     const editingDoc = state.invoices.find(x => x.id === state.editingInvoiceId);
     const isSaleDoc = editingDoc ? isSaleStatus(editingDoc.status) : false;
     const title = isSaleDoc ? 'FACTURA DE VENTA' : 'COTIZACIÓN COMERCIAL';
-    const docCode = editingDoc?.code || (isSaleDoc ? 'FV-PREVIEW' : 'COT-PREVIEW');
-    const productRows = state.cart.length ? state.cart.map(it => {
+   const productRows = state.cart.length ? state.cart.map(it => {
       const img = it.imagen || NO_IMG;
       return `<tr>
         <td><div class="receipt-product"><img crossorigin="anonymous" src="${esc(img)}" onerror="this.src='${NO_IMG}'" alt=""><div><b>${esc(it.nombre)}</b><small>${esc(it.codigo)}</small></div></div></td>
@@ -421,7 +427,7 @@
         <div><span>Teléfono</span><b>${esc(state.customer.telefono || 'Pendiente')}</b></div>
         <div class="wide"><span>Destino</span><b>${esc([state.customer.municipio,state.customer.departamento].filter(Boolean).join(', ') || 'Pendiente')}</b></div>
       </div>
-      <table class="receipt-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>${productRows}</tbody></table>
+      <table class="receipt-table" aria-label="Detalle de productos"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>${productRows}</tbody></table>
       <div class="receipt-total">
         <div><span>Total productos</span><b>${money(c.subtotal)}</b></div>
         <div><span>Envío</span><b>${money(c.envio)}</b></div>

@@ -67,6 +67,7 @@
   function esc(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
   function today(){ return new Date().toLocaleString('es-HN', { day:'2-digit', month:'short', year:'numeric', hour:'numeric', minute:'2-digit' }); }
   function iso(){ return new Date().toISOString(); }
+  function safeCode(v, fallback='---'){ const t = String(v || '').trim(); return t || fallback; }
   function applyMode(){ document.body.classList.toggle('mode-gamer', state.mode !== 'pro'); document.body.classList.toggle('mode-pro', state.mode === 'pro'); }
 
   function normalizeProduct(p, i = 0){
@@ -401,7 +402,9 @@
     const c = calcCart();
     const isGamer = state.invoiceTheme === 'gamer';
     const editingDoc = state.invoices.find(x => x.id === state.editingInvoiceId);
-    const title = editingDoc ? (isSaleStatus(editingDoc.status) ? 'FACTURA EDITABLE' : 'COTIZACIÓN EDITABLE') : 'COTIZACIÓN';
+    const isSaleDoc = editingDoc ? isSaleStatus(editingDoc.status) : false;
+    const title = isSaleDoc ? 'FACTURA DE VENTA' : 'COTIZACIÓN COMERCIAL';
+    const docCode = safeCode(editingDoc && editingDoc.code, isSaleDoc ? 'FV-PREVIEW' : 'COT-PREVIEW');
     const productRows = state.cart.length ? state.cart.map(it => {
       const img = it.imagen || NO_IMG;
       return `<tr>
@@ -412,14 +415,14 @@
       </tr>`;
     }).join('') : '<tr><td colspan="4">Sin productos agregados.</td></tr>';
     return `<div class="invoice-preview ${isGamer ? 'invoice-gamer' : 'invoice-pro'}" id="receiptCard">
-      <div class="receipt-watermark">SD</div>
-      <div class="receipt-head"><img src="${LOGO}" alt="SD"><div><h3>${title}</h3><p>${esc(state.config.storeFullName)} · ${today()}</p></div></div>
+      <div class="receipt-watermark">SDC</div>
+      <div class="receipt-head"><img src="${LOGO}" alt="SD"><div><div class="receipt-head-meta"><span class="doc-pill ${isSaleDoc ? 'sale' : 'quote'}">${isSaleDoc ? 'Venta' : 'Cotización'}</span><span class="doc-code">${esc(docCode)}</span></div><h3>${title}</h3><p>${esc(state.config.storeFullName)} · ${today()}</p></div></div>
       <div class="receipt-client">
         <div><span>Cliente</span><b>${esc(state.customer.nombre || 'Cliente')}</b></div>
         <div><span>Teléfono</span><b>${esc(state.customer.telefono || 'Pendiente')}</b></div>
         <div class="wide"><span>Destino</span><b>${esc([state.customer.municipio,state.customer.departamento].filter(Boolean).join(', ') || 'Pendiente')}</b></div>
       </div>
-      <table class="receipt-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>${productRows}</tbody></table>
+      <table class="receipt-table" aria-label="Detalle de productos"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>${productRows}</tbody></table>
       <div class="receipt-total">
         <div><span>Total productos</span><b>${money(c.subtotal)}</b></div>
         <div><span>Envío</span><b>${money(c.envio)}</b></div>

@@ -541,3 +541,118 @@ body.mode-pro .bottom-nav button.active{background:linear-gradient(180deg,#14b7f
 @media (max-width:460px){
   .app-topbar{gap:10px}.brand-card{min-width:0}.product-card-v5{border-radius:28px}.product-card-v5 .product-photo-square{padding:14px}.product-info-v5{padding:16px}.product-spec-grid-v5{gap:9px}.product-spec-grid-v5>div{padding:12px}.product-actions-v5 .btn{min-height:56px}.invoice-preview{border-radius:28px;padding:16px}.receipt-head{grid-template-columns:64px 1fr;gap:14px}.receipt-head img{width:64px;height:64px}.receipt-product{grid-template-columns:50px 1fr;gap:10px}.receipt-product img{width:50px;height:50px}.receipt-table td{font-size:.88rem;padding:12px 4px}.receipt-table th{padding-inline:4px}.receipt-table th:nth-child(1){width:50%}.receipt-table th:nth-child(2){width:13%}.receipt-table th:nth-child(3),.receipt-table th:nth-child(4){width:18.5%}.receipt-product b{font-size:.92rem}.receipt-total .grand b{font-size:1.28rem}
 }
+
+/* ==========================
+   V5 PROFESSIONAL REFRESH
+   ========================== */
+:root{
+  --bg:#0b1220;
+  --surface:#111b2e;
+  --surface-2:#16243d;
+  --line:rgba(148,163,184,.24);
+  --text:#e6edf8;
+  --muted:#9fb0c7;
+  --primary:#3b82f6;
+  --primary-2:#60a5fa;
+  --shadow:0 14px 36px rgba(2,8,23,.35);
+}
+body{
+  background:
+    radial-gradient(circle at 10% -10%, rgba(59,130,246,.22), transparent 30%),
+    radial-gradient(circle at 100% 10%, rgba(14,165,233,.16), transparent 28%),
+    var(--bg);
+}
+.topbar{backdrop-filter:blur(12px)}
+.brand-card,.panel,.kpi,.product-card,.cart-item,.list-card{
+  border-color:rgba(148,163,184,.22);
+  background:linear-gradient(160deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+}
+.hero{
+  background:linear-gradient(135deg,#0f172a 0%,#1d4ed8 55%,#2563eb 100%);
+  border:1px solid rgba(147,197,253,.45);
+}
+.btn{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
+.btn.secondary,.btn.ghost{background:rgba(148,163,184,.08)}
+.nav{
+  background:rgba(9,14,26,.88);
+  border-color:rgba(148,163,184,.25);
+}
+.nav button.active{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
+.input,.select,.textarea{background:rgba(15,23,42,.66)}
+.receipt-theme{background:rgba(11,18,32,.82)}
+
+@media (min-width:1024px){
+  .app{max-width:1280px;padding-inline:24px}
+  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+}
+
+/* ==========================
+   V6 RECEIPT ULTRA PRO
+   ========================== */
+.receipt-side{gap:14px}
+.receipt-theme{border-radius:22px;background:linear-gradient(135deg,rgba(15,23,42,.92),rgba(30,41,59,.82));border:1px solid rgba(148,163,184,.28);padding:12px 14px}
+.receipt-theme .chip{padding:8px 14px;font-size:.78rem}
+.invoice-preview{
+  border-radius:30px;
+  padding:24px;
+  border:1px solid rgba(148,163,184,.24);
+  box-shadow:0 28px 70px rgba(2,6,23,.32);
+}
+.invoice-pro{
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  color:#0b1324;
+}
+.invoice-gamer{
+  background:
+    radial-gradient(circle at 85% -10%, rgba(14,165,233,.32), transparent 38%),
+    linear-gradient(160deg,#030b18 0%,#0a1a30 55%,#0f2d52 100%);
+}
+.receipt-head{grid-template-columns:88px minmax(0,1fr);gap:16px;padding-bottom:14px;margin-bottom:14px}
+.receipt-head h3{font-size:clamp(1.45rem,3.6vw,2.05rem);letter-spacing:.06em}
+.receipt-head p{font-size:.9rem;opacity:.88}
+.receipt-client div{border-radius:14px;padding:10px 12px}
+.receipt-table{margin-top:8px}
+.receipt-table th{font-size:.7rem;letter-spacing:.08em;font-weight:900}
+.receipt-table td{font-size:.84rem;padding:10px 6px}
+.receipt-product{grid-template-columns:42px minmax(0,1fr);gap:9px}
+.receipt-product img{width:42px;height:42px;border-radius:11px}
+.receipt-total{margin-top:12px}
+.receipt-total>div{margin:6px 0}
+.receipt-total .grand{border-top-width:3px;font-size:1.1rem;padding-top:12px}
+.receipt-total .grand b{font-size:1.35rem}
+.receipt-note{margin-top:14px;border-radius:14px;padding:12px;font-size:.82rem}
+.receipt-watermark{font-size:7.3rem;opacity:.05;right:0;bottom:-18px}
+
+@media (max-width:460px){
+  .invoice-preview{padding:18px;border-radius:24px}
+  .receipt-client{grid-template-columns:1fr}
+  .receipt-table th:nth-child(1){width:48%}
+  .receipt-table th:nth-child(2){width:14%}
+  .receipt-table th:nth-child(3),.receipt-table th:nth-child(4){width:19%}
+}
+
+/* ==========================
+   V7 CONTINUOUS POLISH
+   ========================== */
+.invoice-preview{position:relative;isolation:isolate}
+.invoice-preview::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 28%);z-index:-1}
+.receipt-head-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.doc-pill,.doc-code{display:inline-flex;align-items:center;min-height:26px;border-radius:999px;padding:4px 10px;font-size:.7rem;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.doc-pill.sale{background:rgba(16,185,129,.18);color:#10b981;border:1px solid rgba(16,185,129,.34)}
+.doc-pill.quote{background:rgba(59,130,246,.16);color:#60a5fa;border:1px solid rgba(96,165,250,.35)}
+.invoice-pro .doc-pill.quote{color:#1d4ed8}
+.doc-code{background:rgba(148,163,184,.14);border:1px solid rgba(148,163,184,.28);color:var(--muted)}
+.receipt-table tbody tr:nth-child(even){background:rgba(148,163,184,.05)}
+.invoice-gamer .receipt-table tbody tr:nth-child(even){background:rgba(148,163,184,.08)}
+.receipt-total .grand{background:linear-gradient(90deg,rgba(59,130,246,.08),transparent);border-radius:10px;padding-inline:10px}
+.invoice-gamer .receipt-total .grand{background:linear-gradient(90deg,rgba(14,165,233,.18),transparent)}
+
+/* ==========================
+   V8 STABILITY + ACCESSIBILITY
+   ========================== */
+.receipt-table[aria-label]{border-radius:12px;overflow:hidden}
+.doc-pill,.doc-code{line-height:1}
+@media print{
+  .doc-pill.sale,.doc-pill.quote{color:#0b1324!important;border-color:#a9b9cc!important;background:#eaf0f7!important}
+  .doc-code{color:#42556d!important;border-color:#cdd9e7!important;background:#f4f8fc!important}
+}

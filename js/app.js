@@ -179,10 +179,16 @@
   }
 
   function render(){
-    applyMode();
-    app.className = 'app';
-    app.innerHTML = `${topbar()}${nav()}${sectionDashboard()}${sectionProducts()}${sectionPos()}${sectionInvoices()}${sectionClients()}${sectionConfig()}`;
-    bind();
+    try{
+      applyMode();
+      app.className = 'app';
+      app.innerHTML = `${topbar()}${nav()}${sectionDashboard()}${sectionProducts()}${sectionPos()}${sectionInvoices()}${sectionClients()}${sectionConfig()}`;
+      bind();
+    }catch(err){
+      console.error('Render error:', err);
+      app.className = 'app';
+      app.innerHTML = `<section class="section active"><div class="panel"><div class="panel-head"><div><h2>Error de visualización</h2><p>Ocurrió un problema al renderizar la app. Recarga la página. Si persiste, limpia caché (Ctrl+F5).</p></div></div><pre class="small-note">${esc(err && err.message ? err.message : String(err))}</pre><div class="button-row"><button class="btn" onclick="location.reload()">Recargar</button></div></div></section>`;
+    }
   }
 
   function topbar(){

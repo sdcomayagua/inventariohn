@@ -4,6 +4,7 @@
   const app = $('#app');
   const toastEl = $('#toast');
   const LS = 'sdc_pos_dashboard_v1';
+  const CONFIG_LS = 'sdc_pos_dashboard_config_v2';
   const LOGO = 'assets/logo-sdc-2026.png';
   const NO_IMG = 'assets/no-image.svg';
   const HN_LOCATIONS = window.SDC_HN_LOCATIONS || {};
@@ -42,7 +43,7 @@
       const saved = JSON.parse(localStorage.getItem(LS) || 'null');
       const base = defaultState();
       const out = saved ? { ...base, ...saved } : base;
-      out.config = { ...window.SDC_CONFIG, ...(saved?.config || {}) };
+      out.config = { ...window.SDC_CONFIG, ...(saved?.config || {}), ...readStoredConfig() };
       out.products = Array.isArray(out.products) && out.products.length ? out.products.map(normalizeProduct) : base.products;
       out.invoices = Array.isArray(out.invoices) ? out.invoices : [];
       out.clients = Array.isArray(out.clients) ? out.clients : [];
@@ -58,7 +59,39 @@
       return out;
     }catch(e){ return defaultState(); }
   }
-  function save(){ localStorage.setItem(LS, JSON.stringify(state)); }
+  function readStoredConfig(){
+    try{ return JSON.parse(localStorage.getItem(CONFIG_LS) || '{}') || {}; }catch(e){ return {}; }
+  }
+  function persistConfig(){
+    try{
+      const safeConfig = {
+        appsScriptUrl: String(state.config?.appsScriptUrl || '').trim(),
+        apiKey: String(state.config?.apiKey || '').trim(),
+        whatsappNumber: cleanPhone(state.config?.whatsappNumber || ''),
+        normalShipping: n(state.config?.normalShipping),
+        cashOnDeliveryShipping: n(state.config?.cashOnDeliveryShipping),
+        cashOnDeliveryCommission: n(state.config?.cashOnDeliveryCommission),
+        localShipping: n(state.config?.localShipping),
+        lowStockLimit: n(state.config?.lowStockLimit) || 5,
+        currency: state.config?.currency || 'Lps.',
+        storeName: state.config?.storeName || 'SD COMAYAGUA',
+        storeFullName: state.config?.storeFullName || 'Soluciones Digitales Comayagua'
+      };
+      localStorage.setItem(CONFIG_LS, JSON.stringify(safeConfig));
+    }catch(e){ console.warn('No se pudo guardar configuración aislada', e); }
+  }
+  function save(){
+    persistConfig();
+    try{ localStorage.setItem(LS, JSON.stringify(state)); }
+    catch(e){ console.warn('No se pudo guardar todo el estado local', e); }
+  }
+  function normalizeAppsScriptUrl(value){
+    let url = String(value || '').trim();
+    if (!url) return '';
+    url = url.replace(/\s+/g, '');
+    if (/^script\.google\.com/i.test(url)) url = 'https://' + url;
+    return url;
+  }
   function toast(msg){ toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastEl._t); toastEl._t = setTimeout(() => toastEl.classList.remove('show'), 2600); }
   function n(v){ const x = Number(v || 0); return Number.isFinite(x) ? x : 0; }
   function money(v){ return `${state.config.currency || 'Lps.'} ${Math.round(n(v)).toLocaleString('es-HN')}`; }
@@ -447,6 +480,16 @@
     </div>`;
   }
   function field(label,id,value,type='text'){ return `<label class="field"><span>${esc(label)}</span><input class="input" id="${id}" type="${type}" value="${esc(value)}"></label>`; }
+  function configStatusCard(){
+    const url = String(state.config.appsScriptUrl || '').trim();
+    const isReady = /^https:\/\/script\.google\.com\/macros\/s\//.test(url);
+    const clean = url ? url.replace(/^https?:\/\//,'').replace(/\?.*$/,'') : 'No hay URL guardada';
+    const msg = isReady ? 'URL guardado localmente. Puede recargar la página y seguirá aquí.' : 'Pegue el enlace /exec de Apps Script y se guardará automáticamente en este dispositivo.';
+    return `<div class="config-status ${isReady ? 'ok' : 'pending'}">
+      <div><span>${isReady ? '✓ Conexión configurada' : '• Configuración pendiente'}</span><b>${esc(clean)}</b><small>${esc(msg)}</small></div>
+      <strong>${isReady ? 'Guardado' : 'Falta URL'}</strong>
+    </div>`;
+  }
   function cartItem(it, i){
     return `<div class="cart-item">
       <div><b>${esc(it.nombre)}</b><span>${esc(it.codigo)} · ${money(it.precio)} c/u · Total ${money(itemPrice(it, it.qty))}</span></div>
@@ -538,6 +581,7 @@
           ${field('Comisión Pagar al Recibir decimal','cfgCodCom',state.config.cashOnDeliveryCommission,'number')}
           ${field('Entrega local Lps.','cfgLocal',state.config.localShipping,'number')}
         </div>
+        ${configStatusCard()}
         <div class="button-row" style="margin-top:14px">
           <button class="btn" data-action="save-config">Guardar configuración</button>
           <button class="btn secondary" data-action="sync">Probar y sincronizar</button>
@@ -568,6 +612,7 @@
     $$('[data-qty]').forEach(inp => inp.oninput = () => { state.cart[+inp.dataset.qty].qty = Math.max(1, n(inp.value)); save(); render(); });
     bindProductForm();
     bindCustomerInputs();
+    bindConfigInputs();
     bindActions();
   }
 
@@ -578,6 +623,25 @@
     const muni = $('#custMunicipio'); if(muni) muni.onchange = e => { state.customer.municipio = e.target.value; save(); softRefreshReceipt(); };
     const ship = $('#shippingType'); if(ship) ship.onchange = e => { state.shippingType = e.target.value; save(); render(); };
     const discount = $('#discount'); if(discount) discount.oninput = e => { state.discount = n(e.target.value); save(); render(); };
+  }
+  function bindConfigInputs(){
+    const ids = ['cfgUrl','cfgKey','cfgWhatsapp','cfgLow','cfgNormal','cfgCodShip','cfgCodCom','cfgLocal'];
+    let timer;
+    ids.forEach(id => {
+      const el = $('#'+id);
+      if(!el) return;
+      const handler = () => {
+        saveConfig({ silent:true, rerender:false });
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          const status = $('.config-status');
+          if (status) status.outerHTML = configStatusCard();
+        }, 160);
+      };
+      el.oninput = handler;
+      el.onchange = handler;
+      el.onblur = () => saveConfig({ silent:false, rerender:false });
+    });
   }
   function bindProductForm(){
     if (!state.showProductForm) return;
@@ -607,7 +671,7 @@
     $$('[data-open-img]').forEach(b => b.onclick = () => openProductImage(b.dataset.openImg));
     $$('[data-edit-product]').forEach(b => b.onclick = () => editProduct(b.dataset.editProduct));
     action('export-json', exportJSON);
-    action('reset-demo', () => { if(confirm('¿Reiniciar datos locales de esta app?')){ localStorage.removeItem(LS); state=defaultState(); save(); render(); toast('Datos locales reiniciados.'); }});
+    action('reset-demo', () => { if(confirm('¿Reiniciar datos locales de esta app?')){ const savedCfg = readStoredConfig(); localStorage.removeItem(LS); state=defaultState(); state.config = { ...state.config, ...savedCfg }; window.SDC_CONFIG = { ...window.SDC_CONFIG, ...state.config }; save(); render(); toast('Datos locales reiniciados. La configuración se conservó.'); }});
     $$('[data-edit-invoice]').forEach(b => b.onclick = () => editInvoice(b.dataset.editInvoice));
     $$('[data-delete-invoice]').forEach(b => b.onclick = () => deleteInvoice(b.dataset.deleteInvoice));
     $$('[data-convert-sale]').forEach(b => b.onclick = () => convertToSale(b.dataset.convertSale));
@@ -894,18 +958,23 @@
     }catch(e){ console.error(e); openWhatsApp(whatsappText()); toast('No se pudo compartir imagen. Se abrió WhatsApp con el texto.'); }
   }
 
-  function saveConfig(){
-    state.config.appsScriptUrl = $('#cfgUrl').value.trim();
-    state.config.apiKey = $('#cfgKey').value.trim();
-    state.config.whatsappNumber = cleanPhone($('#cfgWhatsapp').value);
-    state.config.lowStockLimit = n($('#cfgLow').value) || 5;
-    state.config.normalShipping = n($('#cfgNormal').value);
-    state.config.cashOnDeliveryShipping = n($('#cfgCodShip').value);
-    state.config.cashOnDeliveryCommission = n($('#cfgCodCom').value);
-    state.config.localShipping = n($('#cfgLocal').value);
+  function getVal(id){ return $('#'+id)?.value ?? ''; }
+  function saveConfig(options = {}){
+    const { silent = false, rerender = true } = options;
+    state.config.appsScriptUrl = normalizeAppsScriptUrl(getVal('cfgUrl'));
+    state.config.apiKey = String(getVal('cfgKey')).trim();
+    state.config.whatsappNumber = cleanPhone(getVal('cfgWhatsapp'));
+    state.config.lowStockLimit = n(getVal('cfgLow')) || 5;
+    state.config.normalShipping = n(getVal('cfgNormal'));
+    state.config.cashOnDeliveryShipping = n(getVal('cfgCodShip'));
+    state.config.cashOnDeliveryCommission = n(getVal('cfgCodCom'));
+    state.config.localShipping = n(getVal('cfgLocal'));
     state.products = state.products.map(normalizeProduct);
     window.SDC_CONFIG = { ...window.SDC_CONFIG, ...state.config };
-    save(); render(); toast('Ajustes guardada.');
+    persistConfig();
+    save();
+    if (rerender) render();
+    if (!silent) toast(state.config.appsScriptUrl ? 'Configuración guardada en este dispositivo.' : 'Configuración guardada. Falta URL de Apps Script.');
   }
   async function syncFromSheets(){
     saveConfigIfVisible();
@@ -921,7 +990,7 @@
       save(); render(); toast('Sincronización completa.');
     }catch(e){ console.error(e); toast('No se pudo sincronizar. Revise URL, permisos y despliegue.'); }
   }
-  function saveConfigIfVisible(){ if($('#cfgUrl')) saveConfig(); }
+  function saveConfigIfVisible(){ if($('#cfgUrl')) saveConfig({ silent:true, rerender:false }); }
   function mergeInvoices(local, remote){ const map = new Map(); [...remote, ...local].forEach(x => x?.id && map.set(x.id, x)); return [...map.values()]; }
   function mergeClients(local, remote){ const map = new Map(); [...remote, ...local].forEach(x => { const key=x.id || cleanPhone(x.telefono) || x.nombre; if(key) map.set(key,x); }); return [...map.values()]; }
   function fromSheetInvoice(x){

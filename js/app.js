@@ -29,14 +29,17 @@
     shippingType:'normal',
     discount:0,
     editingInvoiceId:'',
-    invoiceTheme:'pro'
+    invoiceTheme:'pro',
+    productLoad:{ status:'local', message:'Productos locales listos.', count:0, updatedAt:'' }
   });
 
   let state = load();
+  let bootSyncDone = false;
   window.SDC_CONFIG = { ...window.SDC_CONFIG, ...state.config };
   ensureCustomerLocation();
   applyMode();
   render();
+  setTimeout(bootProducts, 280);
 
   function load(){
     try{
@@ -48,6 +51,8 @@
       out.invoices = Array.isArray(out.invoices) ? out.invoices : [];
       out.clients = Array.isArray(out.clients) ? out.clients : [];
       out.cart = Array.isArray(out.cart) ? out.cart : [];
+      out.productLoad = { ...base.productLoad, ...(saved?.productLoad || {}) };
+      out.productLoad.count = Array.isArray(out.products) ? out.products.length : 0;
       out.customer = { ...base.customer, ...(saved?.customer || {}) };
       out.filter = { ...base.filter, ...(saved?.filter || {}) };
       out.productPickQ = String(saved?.productPickQ || '');
@@ -102,30 +107,151 @@
   function iso(){ return new Date().toISOString(); }
   function applyMode(){ document.body.classList.toggle('mode-gamer', state.mode !== 'pro'); document.body.classList.toggle('mode-pro', state.mode === 'pro'); }
 
-  function normalizeProduct(p, i = 0){
-    const stock = n(p.stock ?? p.existencia);
-    const price = n(p.precio ?? p.price);
-    const cost = n(p.costo ?? p.cost);
+  function productSourceLabel(){
+    const load = state.productLoad || {};
+    const count = Array.isArray(state.products) ? state.products.filter(p => p.activo !== false).length : 0;
+    const status = load.status || 'local';
+    const labels = { synced:'Sincronizado', local:'Local', demo:'Demo', error:'Local / revisar conexión', loading:'Cargando' };
     return {
-      id:String(p.id || `prod-${i+1}`).trim(),
-      codigo:String(p.codigo || p.code || p.id || `SDC-${String(i+1).padStart(3,'0')}`).trim(),
-      nombre:String(p.nombre || p.name || 'Producto sin nombre').trim(),
-      categoria:String(p.categoria || p.category || p.categories || 'General').trim(),
-      marca:String(p.marca || p.brand || '').trim(),
+      status,
+      label:labels[status] || 'Local',
+      message:load.message || 'Productos listos.',
+      count,
+      updatedAt:load.updatedAt || ''
+    };
+  }
+  function setProductLoad(status, message){
+    state.productLoad = { status, message, count:Array.isArray(state.products) ? state.products.length : 0, updatedAt:iso() };
+  }
+  function demoProducts(){ return (window.SDC_DEMO_PRODUCTS || []).map(normalizeProduct); }
+  function pick(obj, keys, fallback = ''){
+    if (!obj || typeof obj !== 'object') return fallback;
+    for (const key of keys) {
+      if (Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== '' && obj[key] != null) return obj[key];
+    }
+    const wanted = keys.map(k => String(k).toLowerCase().replace(/[\s_.-]/g,''));
+    for (const [k,v] of Object.entries(obj)) {
+      const clean = String(k).toLowerCase().replace(/[\s_.-]/g,'');
+      if (wanted.includes(clean) && v !== '' && v != null) return v;
+    }
+    return fallback;
+  }
+  function productHasMeaning(p){
+    if (!p) return false;
+    const name = pick(p, ['nombre','name','producto','titulo','title','descripcion_producto','nombre_producto']);
+    const code = pick(p, ['codigo','code','sku','id']);
+    const price = pick(p, ['precio','price','precio_venta','venta','precio normal','precio_normal']);
+    return Boolean(String(name || '').trim() || String(code || '').trim() || String(price || '').trim());
+  }
+  function parseBoolActive(v){
+    const raw = String(v ?? '').trim().toLowerCase();
+    if (!raw) return true;
+    if (['false','falso','no','0','inactivo','oculto'].includes(raw)) return false;
+    return true;
+  }
+  function normalizeImageUrl(url){
+    let out = String(url || '').trim();
+    const drive = out.match(/drive\.google\.com\/file\/d\/([^/]+)/) || out.match(/[?&]id=([^&]+)/);
+    if (drive && drive[1]) out = `https://drive.google.com/uc?export=view&id=${drive[1]}`;
+    return out;
+  }
+  function extractProductArray(payload){
+    const d = payload?.data && typeof payload.data === 'object' ? payload.data : payload;
+    const pools = [
+      d?.products, d?.productos, d?.productos_pos, d?.items, d?.catalogo, d?.catalog,
+      d?.data?.products, d?.data?.productos, d?.result?.products, d?.result?.productos
+    ];
+    return pools.find(Array.isArray) || [];
+  }
+  function applyRemotePayload(payload, options = {}){
+    const productsRaw = extractProductArray(payload).filter(productHasMeaning);
+    const changed = { products:0, invoices:0, clients:0, settings:false };
+    if (productsRaw.length) {
+      const normalized = productsRaw.map(normalizeProduct).filter(productHasMeaning);
+      if (normalized.length) {
+        state.products = normalized;
+        changed.products = normalized.length;
+        setProductLoad('synced', `${normalized.length} productos cargados desde Google Sheets.`);
+      }
+    }
+    const settings = payload?.settings || payload?.ajustes || payload?.data?.settings;
+    if (settings && typeof settings === 'object') {
+      const safeSettings = { ...settings };
+      if (safeSettings.whatsapp && !safeSettings.whatsappNumber) safeSettings.whatsappNumber = safeSettings.whatsapp;
+      if (safeSettings.moneda && !safeSettings.currency) safeSettings.currency = safeSettings.moneda;
+      state.config = { ...state.config, ...safeSettings, appsScriptUrl:state.config.appsScriptUrl, apiKey:state.config.apiKey };
+      window.SDC_CONFIG = { ...window.SDC_CONFIG, ...state.config };
+      changed.settings = true;
+    }
+    const inv = payload?.invoices || payload?.facturas || payload?.data?.invoices;
+    if (Array.isArray(inv)) { state.invoices = mergeInvoices(state.invoices, inv.map(fromSheetInvoice)); changed.invoices = inv.length; }
+    const clients = payload?.clients || payload?.clientes || payload?.data?.clients;
+    if (Array.isArray(clients)) { state.clients = mergeClients(state.clients, clients); changed.clients = clients.length; }
+    if (!changed.products && !options.silent) setProductLoad('error', 'Sheets respondió, pero no encontré productos válidos. Se mantienen los productos locales.');
+    return changed;
+  }
+  async function bootProducts(){
+    if (bootSyncDone) return;
+    bootSyncDone = true;
+    if (!Array.isArray(state.products) || !state.products.length) {
+      state.products = demoProducts();
+      setProductLoad('demo', 'No había productos guardados. Mostrando productos demo/locales.');
+      save(); render();
+    }
+    if (!window.SDCApi || !SDCApi.ready()) {
+      if (!state.productLoad?.updatedAt) { setProductLoad('local', 'Productos locales listos. Configure Apps Script para sincronizar Sheets.'); save(); render(); }
+      return;
+    }
+    setProductLoad('loading', 'Cargando productos desde Google Sheets…');
+    save(); render();
+    try{
+      let data = await SDCApi.get('all');
+      let changed = applyRemotePayload(data, { silent:true });
+      if (!changed.products) {
+        data = await SDCApi.get('products');
+        changed = applyRemotePayload(data, { silent:true });
+      }
+      if (changed.products) { save(); render(); toast(`${changed.products} productos cargados.`); }
+      else { setProductLoad('error', 'Sheets no devolvió productos válidos. Se mantienen los productos locales.'); save(); render(); toast('No encontré productos en Sheets. Mostrando locales.'); }
+    }catch(e){
+      console.error(e);
+      setProductLoad('error', 'No se pudo conectar con Sheets. Mostrando productos locales.');
+      save(); render(); toast('No cargó Sheets. Mostrando productos locales.');
+    }
+  }
+
+  function normalizeProduct(p, i = 0){
+    p = p || {};
+    const rawId = pick(p, ['id','ID','codigo','code','sku'], `prod-${i+1}`);
+    const rawCode = pick(p, ['codigo','code','sku','id'], `SDC-${String(i+1).padStart(3,'0')}`);
+    const rawName = pick(p, ['nombre','name','producto','titulo','title','nombre_producto','descripcion_producto'], 'Producto sin nombre');
+    const rawCategory = pick(p, ['categoria','category','categoría','categories','rubro','tipo'], 'General');
+    const rawBrand = pick(p, ['marca','brand','variante','version','versión'], '');
+    const stock = n(pick(p, ['stock','existencia','cantidad','inventario','unidades'], 0));
+    const price = n(pick(p, ['precio','price','precio_venta','venta','precio normal','precio_normal','valor'], 0));
+    const cost = n(pick(p, ['costo','cost','costo_compra','compra','invertido'], 0));
+    const image = normalizeImageUrl(pick(p, ['imagen','image','img','foto','photo','url_imagen','imagen_url','image_url','thumbnail'], ''));
+    const active = parseBoolActive(pick(p, ['activo','active','visible','mostrar','estado'], true));
+    return {
+      id:String(rawId || `prod-${i+1}`).trim(),
+      codigo:String(rawCode || rawId || `SDC-${String(i+1).padStart(3,'0')}`).trim(),
+      nombre:String(rawName || 'Producto sin nombre').trim(),
+      categoria:String(rawCategory || 'General').trim(),
+      marca:String(rawBrand || '').trim(),
       precio:price,
       costo:cost,
       stock:stock,
-      descripcion:String(p.descripcion || p.description || '').trim(),
-      imagen:String(p.imagen || p.image || '').trim(),
-      activo:p.activo === false || String(p.activo).toLowerCase() === 'false' ? false : true,
-      updatedAt:p.updatedAt || iso(),
+      descripcion:String(pick(p, ['descripcion','description','detalle','detalles','notas','observacion'], '') || '').trim(),
+      imagen:image,
+      activo:active,
+      updatedAt:p.updatedAt || p.actualizado || p.fecha || iso(),
       valor_venta_stock:price * stock,
       inversion_stock:cost * stock,
       ganancia_unitaria:price - cost,
       ganancia_proyectada:(price - cost) * stock,
-      estado_stock:stock <= 0 ? 'Agotado' : stock <= n(window.SDC_CONFIG.lowStockLimit || 5) ? 'Bajo stock' : 'Disponible',
-      promos:String(p.promos || '').trim(),
-      notas:String(p.notas || '').trim()
+      estado_stock:stock <= 0 ? 'Agotado' : stock <= n((window.SDC_CONFIG && window.SDC_CONFIG.lowStockLimit) || 5) ? 'Bajo stock' : 'Disponible',
+      promos:String(pick(p, ['promos','ofertas','ofertas_json','promociones'], '') || '').trim(),
+      notas:String(pick(p, ['notas','nota','observaciones'], '') || '').trim()
     };
   }
 
@@ -321,6 +447,18 @@
   }
   function kpi(label, value, sub, cls=''){ return `<div class="kpi ${cls}"><span>${esc(label)}</span><b>${esc(value)}</b><small>${esc(sub)}</small></div>`; }
 
+  function productLoadCard(){
+    const src = productSourceLabel();
+    const cls = src.status === 'synced' ? 'ok' : src.status === 'error' ? 'warn' : src.status === 'loading' ? 'loading' : 'local';
+    return `<div class="product-load-card ${cls} no-print">
+      <div><span>${esc(src.label)}</span><b>${esc(src.count)} productos disponibles</b><small>${esc(src.message)}</small></div>
+      <div class="product-load-actions">
+        <button class="btn small secondary" data-action="force-sync-products">Cargar Sheets</button>
+        <button class="btn small ghost" data-action="load-demo-products">Usar demo</button>
+      </div>
+    </div>`;
+  }
+
   function sectionProducts(){
     const list = filteredProducts();
     return `<section class="section ${activateClass('products')}" id="products">
@@ -330,6 +468,7 @@
           <div><h2>Inventario móvil</h2><p>Tarjetas más limpias para celular, con precio, stock y acciones rápidas sin saturar la pantalla.</p></div>
           <div class="button-row compact"><button class="btn small" data-action="toggle-product-form">${state.showProductForm ? 'Cerrar editor' : 'Agregar producto'}</button></div>
         </div>
+        ${productLoadCard()}
         <div class="inventory-mobile-summary no-print">
           <span>${list.length} visibles</span><span>${state.products.filter(p=>p.activo && n(p.stock)>0).length} disponibles</span><span>${state.products.filter(p=>p.activo && n(p.stock)<=n(state.config.lowStockLimit)).length} revisar</span>
         </div>
@@ -505,35 +644,63 @@
     const editingDoc = state.invoices.find(x => x.id === state.editingInvoiceId);
     const title = editingDoc ? (isSaleStatus(editingDoc.status) ? 'FACTURA' : 'COTIZACIÓN') : 'COTIZACIÓN';
     const code = editingDoc?.code || state.editingInvoiceId || 'PREVIA';
-    const productRows = state.cart.length ? state.cart.map(it => {
+    const statusText = editingDoc?.status || (state.cart.length ? 'Previsualización' : 'Sin productos');
+    const productRows = state.cart.length ? state.cart.map((it, idx) => {
       const img = it.imagen || NO_IMG;
       return `<tr>
-        <td data-label="Producto"><div class="receipt-product"><img crossorigin="anonymous" src="${esc(img)}" onerror="this.src='${NO_IMG}'" alt=""><div><b>${esc(it.nombre)}</b><small>${esc(it.codigo)}</small></div></div></td>
-        <td data-label="Cant." class="center">${it.qty}</td>
+        <td data-label="#" class="center receipt-index">${idx + 1}</td>
+        <td data-label="Producto"><div class="receipt-product"><img crossorigin="anonymous" src="${esc(img)}" onerror="this.src='${NO_IMG}'" alt=""><div><b>${esc(it.nombre)}</b><small>${esc(it.codigo)}${it.marca ? ' · ' + esc(it.marca) : ''}</small></div></div></td>
+        <td data-label="Cant." class="center"><b>${it.qty}</b></td>
         <td data-label="Precio" class="right nowrap">${money(it.precio)}</td>
-        <td data-label="Total" class="right nowrap">${money(itemPrice(it,it.qty))}</td>
+        <td data-label="Total" class="right nowrap"><b>${money(itemPrice(it,it.qty))}</b></td>
       </tr>`;
-    }).join('') : '<tr><td data-label="Producto" colspan="4">Sin productos agregados.</td></tr>';
+    }).join('') : '<tr><td data-label="Producto" colspan="5"><div class="receipt-empty-row">Agregue productos para generar una cotización lista para WhatsApp.</div></td></tr>';
     const address = shortAddress(state.customer) || 'Pendiente de confirmar';
+    const dest = [state.customer.municipio,state.customer.departamento].filter(Boolean).join(', ') || 'Pendiente';
+    const ready = orderReadiness();
+    const readyText = ready.ok ? 'Pedido listo' : `Falta: ${ready.missing.slice(0,3).join(', ')}`;
     return `<div class="invoice-preview ${isGamer ? 'invoice-gamer' : 'invoice-pro'}" id="receiptCard">
       <div class="receipt-watermark">SD</div>
-      <div class="receipt-head"><img src="${LOGO}" alt="SD"><div><h3>${title}</h3><p>${esc(state.config.storeFullName)}<br>${today()}</p><span class="receipt-code">${esc(code)}</span></div></div>
-      <div class="receipt-client">
-        <div><span>Cliente</span><b>${esc(state.customer.nombre || 'Cliente')}</b></div>
+      <div class="receipt-hero">
+        <div class="receipt-brand-lockup">
+          <img src="${LOGO}" alt="SD">
+          <div><span>${esc(state.config.storeFullName)}</span><b>SD COMAYAGUA</b><small>WhatsApp +504 3151-7755</small></div>
+        </div>
+        <div class="receipt-doc-box">
+          <span>${esc(title)}</span>
+          <b>${esc(code)}</b>
+          <small>${today()}</small>
+        </div>
+      </div>
+      <div class="receipt-status-line">
+        <span>${esc(statusText)}</span>
+        <b>${esc(readyText)}</b>
+      </div>
+      <div class="receipt-client premium-client">
+        <div><span>Cliente</span><b>${esc(state.customer.nombre || 'Cliente pendiente')}</b></div>
         <div><span>Teléfono</span><b>${esc(state.customer.telefono || 'Pendiente')}</b></div>
-        <div><span>Envío</span><b>${esc(shippingTypeLabel())}</b></div>
-        <div><span>Destino</span><b>${esc([state.customer.municipio,state.customer.departamento].filter(Boolean).join(', ') || 'Pendiente')}</b></div>
+        <div><span>Tipo de envío</span><b>${esc(shippingTypeLabel())}</b></div>
+        <div><span>Destino</span><b>${esc(dest)}</b></div>
         <div class="wide"><span>Dirección / referencia</span><b>${esc(address)}</b></div>
       </div>
-      <table class="receipt-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>${productRows}</tbody></table>
-      <div class="receipt-total">
-        <div><span>Total productos</span><b>${money(c.subtotal)}</b></div>
-        <div><span>Envío</span><b>${money(c.envio)}</b></div>
-        <div><span>Comisión por Pagar al Recibir</span><b>${money(c.comision)}</b></div>
-        ${c.descuento ? `<div><span>Descuento</span><b>− ${money(c.descuento)}</b></div>` : ''}
-        <div class="grand"><span>TOTAL FINAL</span><b>${money(c.total)}</b></div>
+      <div class="receipt-section-title"><span>Detalle de productos</span><b>${state.cart.length} ítem${state.cart.length===1?'':'s'}</b></div>
+      <table class="receipt-table premium-table"><thead><tr><th>#</th><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th></tr></thead><tbody>${productRows}</tbody></table>
+      <div class="receipt-bottom-grid">
+        <div class="receipt-policy">
+          <b>Información importante</b>
+          <span>Precios sujetos a disponibilidad y confirmación de stock.</span>
+          <span>Envíos por C807, Forza y Cargo Expreso según cobertura.</span>
+          <span>Guarde esta imagen como respaldo de su cotización.</span>
+        </div>
+        <div class="receipt-total premium-total">
+          <div><span>Total productos</span><b>${money(c.subtotal)}</b></div>
+          <div><span>Envío</span><b>${money(c.envio)}</b></div>
+          <div><span>Comisión Pagar al Recibir</span><b>${money(c.comision)}</b></div>
+          ${c.descuento ? `<div><span>Descuento</span><b>− ${money(c.descuento)}</b></div>` : ''}
+          <div class="grand"><span>TOTAL A PAGAR</span><b>${money(c.total)}</b></div>
+        </div>
       </div>
-      <div class="receipt-note">Gracias por preferir SD COMAYAGUA. WhatsApp +504 3151-7755. Envíos por C807, Forza y Cargo Expreso. Precios sujetos a disponibilidad y confirmación de stock.</div>
+      <div class="receipt-note premium-note">Gracias por preferir SD COMAYAGUA. Atención profesional, envíos a Honduras y soporte por WhatsApp.</div>
     </div>`;
   }
   function sectionInvoices(){
@@ -666,12 +833,14 @@
     action('clear-cart', () => { state.cart=[]; state.discount=0; state.editingInvoiceId=''; save(); render(); toast('Carrito limpio.'); });
     action('toggle-product-form', () => { state.showProductForm = !state.showProductForm; if(state.showProductForm && !state.productDraft) state.productDraft = emptyProductDraft(); save(); render(); });
     action('new-product-draft', () => { state.productDraft = emptyProductDraft(); state.showProductForm = true; save(); render(); });
+    action('force-sync-products', () => { bootSyncDone = false; bootProducts(); });
+    action('load-demo-products', () => { state.products = demoProducts(); state.filter = { q:'', category:'Todos', status:'Todos' }; setProductLoad('demo', 'Productos demo/locales cargados correctamente.'); save(); render(); toast('Productos demo cargados.'); });
     action('save-product', saveProduct);
     $$('[data-receipt-theme]').forEach(b => b.onclick = () => { state.invoiceTheme = b.dataset.receiptTheme; save(); render(); });
     $$('[data-open-img]').forEach(b => b.onclick = () => openProductImage(b.dataset.openImg));
     $$('[data-edit-product]').forEach(b => b.onclick = () => editProduct(b.dataset.editProduct));
     action('export-json', exportJSON);
-    action('reset-demo', () => { if(confirm('¿Reiniciar datos locales de esta app?')){ const savedCfg = readStoredConfig(); localStorage.removeItem(LS); state=defaultState(); state.config = { ...state.config, ...savedCfg }; window.SDC_CONFIG = { ...window.SDC_CONFIG, ...state.config }; save(); render(); toast('Datos locales reiniciados. La configuración se conservó.'); }});
+    action('reset-demo', () => { if(confirm('¿Reiniciar datos locales de esta app?')){ const savedCfg = readStoredConfig(); localStorage.removeItem(LS); state=defaultState(); state.config = { ...state.config, ...savedCfg }; state.products = demoProducts(); setProductLoad('demo','Datos reiniciados. Productos demo/locales listos.'); window.SDC_CONFIG = { ...window.SDC_CONFIG, ...state.config }; save(); render(); toast('Datos locales reiniciados. La configuración se conservó.'); }});
     $$('[data-edit-invoice]').forEach(b => b.onclick = () => editInvoice(b.dataset.editInvoice));
     $$('[data-delete-invoice]').forEach(b => b.onclick = () => deleteInvoice(b.dataset.deleteInvoice));
     $$('[data-convert-sale]').forEach(b => b.onclick = () => convertToSale(b.dataset.convertSale));
@@ -978,17 +1147,22 @@
   }
   async function syncFromSheets(){
     saveConfigIfVisible();
-    if (!SDCApi.ready()) return toast('Pegue primero la URL /exec de Apps Script en Ajustes.');
+    if (!window.SDCApi || !SDCApi.ready()) return toast('Pegue primero la URL /exec de Apps Script en Ajustes.');
     try{
-      toast('Sincronizando con Google Sheets...');
-      const data = await SDCApi.get('all');
-      if (Array.isArray(data.products) && data.products.length) state.products = data.products.map(normalizeProduct);
-      if (data.settings) state.config = { ...state.config, ...data.settings, appsScriptUrl:state.config.appsScriptUrl, apiKey:state.config.apiKey };
-      if (Array.isArray(data.invoices)) state.invoices = mergeInvoices(state.invoices, data.invoices.map(fromSheetInvoice));
-      if (Array.isArray(data.clients)) state.clients = mergeClients(state.clients, data.clients);
+      setProductLoad('loading', 'Sincronizando con Google Sheets…');
+      save(); render(); toast('Sincronizando con Google Sheets...');
+      let data = await SDCApi.get('all');
+      let changed = applyRemotePayload(data, { silent:true });
+      if (!changed.products) {
+        data = await SDCApi.get('products');
+        const more = applyRemotePayload(data, { silent:true });
+        changed = { ...changed, products:more.products || changed.products, invoices:more.invoices || changed.invoices, clients:more.clients || changed.clients, settings:changed.settings || more.settings };
+      }
+      if (!changed.products) setProductLoad('error', 'Sheets respondió, pero no devolvió productos válidos. Se mantienen los productos locales.');
       state.products = state.products.map(normalizeProduct);
-      save(); render(); toast('Sincronización completa.');
-    }catch(e){ console.error(e); toast('No se pudo sincronizar. Revise URL, permisos y despliegue.'); }
+      save(); render();
+      toast(changed.products ? `Sincronización completa: ${changed.products} productos.` : 'Sincronización sin productos. Revise la hoja productos_pos.');
+    }catch(e){ console.error(e); setProductLoad('error', 'No se pudo sincronizar. Revise URL, permisos y despliegue.'); save(); render(); toast('No se pudo sincronizar. Revise URL, permisos y despliegue.'); }
   }
   function saveConfigIfVisible(){ if($('#cfgUrl')) saveConfig({ silent:true, rerender:false }); }
   function mergeInvoices(local, remote){ const map = new Map(); [...remote, ...local].forEach(x => x?.id && map.set(x.id, x)); return [...map.values()]; }

@@ -165,6 +165,29 @@
     state.productLoad = { status, message, count:Array.isArray(state.products) ? state.products.length : 0, updatedAt:iso() };
   }
   function demoProducts(){ return (window.SDC_DEMO_PRODUCTS || []).map(normalizeProduct); }
+  function ensureProductsFallback(message = 'Mostrando productos demo/locales para que la página no quede vacía.'){
+    if (!Array.isArray(state.products) || !state.products.length) {
+      state.products = demoProducts();
+      setProductLoad('demo', message);
+    }
+  }
+  function friendlySyncError(err){
+    const raw = String(err?.message || err || '').trim();
+    if (!raw) return 'No se pudo sincronizar con Apps Script.';
+    if (/Cannot call SpreadsheetApp.openById|Unexpected error.*openById|No item with the given ID|Document is missing/i.test(raw)) {
+      return 'Apps Script no puede abrir la hoja. Revise que Code.gs tenga el SHEET_ID correcto y vuelva a desplegar.';
+    }
+    if (/PEGA_AQUI|invalid id|ID de hoja|Spreadsheet/i.test(raw)) {
+      return 'El SHEET_ID del Apps Script no está correcto. Pegue el ID real de Google Sheets en Code.gs.';
+    }
+    if (/HTML|Sign in|Iniciar sesión|Cualquier usuario|permiso|permission|access/i.test(raw)) {
+      return 'Apps Script no está público o no está desplegado como Web App. Use acceso: Cualquier usuario.';
+    }
+    if (/JSON válido|JSON valido/i.test(raw)) {
+      return raw;
+    }
+    return raw.length > 180 ? raw.slice(0, 180) + '…' : raw;
+  }
   function pick(obj, keys, fallback = ''){
     if (!obj || typeof obj !== 'object') return fallback;
     for (const key of keys) {
@@ -256,8 +279,9 @@
       else { setProductLoad('error', 'Sheets no devolvió productos válidos. Se mantienen los productos locales.'); save(); render(); toast('No encontré productos en Sheets. Mostrando locales.'); }
     }catch(e){
       console.error(e);
-      setProductLoad('error', 'No se pudo conectar con Sheets. Mostrando productos locales.');
-      save(); render(); toast('No cargó Sheets. Mostrando productos locales.');
+      ensureProductsFallback('No se pudo conectar con Sheets. Mostrando productos demo/locales.');
+      setProductLoad('error', `${friendlySyncError(e)} Se mantienen productos locales/demo.`);
+      save(); render(); toast('No cargó Sheets. Se muestran productos locales/demo.');
     }
   }
 
@@ -793,6 +817,7 @@
         <div class="button-row" style="margin-top:14px">
           <button class="btn" data-action="save-config">Guardar configuración</button>
           <button class="btn secondary" data-action="sync">Probar y sincronizar</button>
+          <button class="btn ghost" data-action="test-connection">Diagnóstico URL</button>
           <button class="btn ghost" data-action="restore-official-config">Restaurar datos SD</button>
           <button class="btn ghost" data-action="export-json">Exportar respaldo JSON</button>
           <button class="btn danger" data-action="reset-demo">Reiniciar datos locales</button>
@@ -866,6 +891,7 @@
     const action = (name, fn) => $$(`[data-action="${name}"]`).forEach(b => b.onclick = fn);
     action('save-config', saveConfig);
     action('restore-official-config', restoreOfficialConfig);
+    action('test-connection', testConnection);
     action('save-quote', () => saveDocument('Cotización'));
     action('finish-invoice', () => saveDocument('Venta'));
     action('copy-wa', async () => { await navigator.clipboard?.writeText(whatsappText()); toast('Mensaje copiado para WhatsApp.'); });
@@ -1188,6 +1214,21 @@
     if (rerender) render();
     if (!silent) toast(state.config.appsScriptUrl ? 'Configuración guardada en este dispositivo.' : 'Configuración guardada. Falta URL de Apps Script.');
   }
+  async function testConnection(){
+    saveConfigIfVisible();
+    if (!window.SDCApi || !SDCApi.ready()) return toast('URL /exec inválida. Pegue el enlace completo de Apps Script.');
+    try{
+      toast('Probando URL de Apps Script...');
+      const data = await SDCApi.test();
+      const msg = data?.message || 'Apps Script respondió correctamente.';
+      setProductLoad(state.productLoad?.status || 'local', `Diagnóstico correcto: ${msg}`);
+      save(); render(); toast('Diagnóstico correcto. URL responde JSON.');
+    }catch(e){
+      console.error(e);
+      setProductLoad('error', `Diagnóstico: ${friendlySyncError(e)}`);
+      save(); render(); toast('Diagnóstico falló. Revise el mensaje en Productos.');
+    }
+  }
   async function syncFromSheets(){
     saveConfigIfVisible();
     if (!window.SDCApi || !SDCApi.ready()) return toast('Pegue primero la URL /exec de Apps Script en Ajustes.');
@@ -1201,11 +1242,19 @@
         const more = applyRemotePayload(data, { silent:true });
         changed = { ...changed, products:more.products || changed.products, invoices:more.invoices || changed.invoices, clients:more.clients || changed.clients, settings:changed.settings || more.settings };
       }
-      if (!changed.products) setProductLoad('error', 'Sheets respondió, pero no devolvió productos válidos. Se mantienen los productos locales.');
+      if (!changed.products) {
+        ensureProductsFallback('Sheets no devolvió productos. Mostrando productos demo/locales.');
+        setProductLoad('error', 'Sheets respondió, pero no devolvió productos válidos. Se mantienen productos locales/demo.');
+      }
       state.products = state.products.map(normalizeProduct);
       save(); render();
       toast(changed.products ? `Sincronización completa: ${changed.products} productos.` : 'Sincronización sin productos. Revise la hoja productos_pos.');
-    }catch(e){ console.error(e); setProductLoad('error', 'No se pudo sincronizar. Revise URL, permisos y despliegue.'); save(); render(); toast('No se pudo sincronizar. Revise URL, permisos y despliegue.'); }
+    }catch(e){
+      console.error(e);
+      ensureProductsFallback('No se pudo sincronizar. Mostrando productos demo/locales.');
+      setProductLoad('error', `${friendlySyncError(e)} Se mantienen productos locales/demo.`);
+      save(); render(); toast('No se pudo sincronizar. Revise el diagnóstico en Productos/Ajustes.');
+    }
   }
   function saveConfigIfVisible(){ if($('#cfgUrl')) saveConfig({ silent:true, rerender:false }); }
   function mergeInvoices(local, remote){ const map = new Map(); [...remote, ...local].forEach(x => x?.id && map.set(x.id, x)); return [...map.values()]; }

@@ -48,7 +48,7 @@
 
   const defaultState = () => ({
     view:'dashboard',
-    mode:'gamer',
+    mode:'pro',
     config:mergeConfigLayers(window.SDC_CONFIG),
     products:(window.SDC_DEMO_PRODUCTS || []).map(normalizeProduct),
     invoices:[],
@@ -94,7 +94,8 @@
       if (!String(out.config.apiKey || '').trim() && String(window.SDC_CONFIG.apiKey || '').trim()) out.config.apiKey = window.SDC_CONFIG.apiKey;
       out.showProductForm = Boolean(saved?.showProductForm);
       out.productDraft = { ...emptyProductDraft(), ...(saved?.productDraft || {}) };
-      out.invoiceTheme = saved?.invoiceTheme || (out.mode === 'gamer' ? 'gamer' : 'pro');
+      out.mode = 'pro';
+      out.invoiceTheme = 'pro';
       return out;
     }catch(e){ return defaultState(); }
   }
@@ -166,7 +167,7 @@
   function esc(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
   function today(){ return new Date().toLocaleString('es-HN', { day:'2-digit', month:'short', year:'numeric', hour:'numeric', minute:'2-digit' }); }
   function iso(){ return new Date().toISOString(); }
-  function applyMode(){ document.body.classList.toggle('mode-gamer', state.mode !== 'pro'); document.body.classList.toggle('mode-pro', state.mode === 'pro'); }
+  function applyMode(){ state.mode = 'pro'; state.invoiceTheme = 'pro'; document.body.classList.remove('mode-gamer'); document.body.classList.add('mode-pro'); }
 
   function productSourceLabel(){
     const load = state.productLoad || {};
@@ -472,11 +473,10 @@
     return `<header class="topbar no-print">
       <div class="brand-card">
         <img class="logo" src="${LOGO}" alt="SD COMAYAGUA">
-        <div class="brand-title"><b>${esc(state.config.storeName)}</b><span>POS móvil · inventario · facturas</span></div>
+        <div class="brand-title"><b>${esc(state.config.storeName)}</b><span>Modo claro PRO · inventario · facturas</span></div>
       </div>
       <div class="top-actions">
         <button class="icon-btn" data-action="sync" title="Sincronizar con Sheets">↻</button>
-        <button class="icon-btn" data-action="toggle-mode" title="Cambiar tema">${state.mode === 'pro' ? 'PRO' : '🎮'}</button>
       </div>
     </header>`;
   }
@@ -721,11 +721,11 @@
     </div>`;
   }
   function receiptThemeControls(){
-    return `<div class="receipt-theme no-print"><span>Diseño de factura</span><div class="no-scrollbar"><button class="chip ${state.invoiceTheme==='pro'?'active':''}" data-receipt-theme="pro">Premium clara</button><button class="chip ${state.invoiceTheme==='gamer'?'active':''}" data-receipt-theme="gamer">Azul gamer</button></div></div>`;
+    return `<div class="receipt-theme no-print receipt-theme-locked"><span>Diseño de factura</span><div class="no-scrollbar"><button class="chip active" type="button" disabled>Claro PRO</button></div></div>`;
   }
   function receiptPreview(){
     const c = calcCart();
-    const isGamer = state.invoiceTheme === 'gamer';
+    const isGamer = false;
     const editingDoc = state.invoices.find(x => x.id === state.editingInvoiceId);
     const title = editingDoc ? (isSaleStatus(editingDoc.status) ? 'FACTURA' : 'COTIZACIÓN') : 'COTIZACIÓN';
     const code = editingDoc?.code || state.editingInvoiceId || 'PREVIA';
@@ -748,7 +748,7 @@
         <div class="sdc-cell sdc-line-total"><b>${money(itemPrice(it,it.qty))}</b></div>
       </div>`;
     }).join('') : `<div class="sdc-empty-products">Agregue productos para generar una cotización lista para WhatsApp.</div>`;
-    return `<div class="invoice-preview sdc-receipt-v16 ${isGamer ? 'invoice-gamer' : 'invoice-pro'}" id="receiptCard">
+    return `<div class="invoice-preview sdc-receipt-v16 invoice-pro" id="receiptCard">
       <div class="sdc-receipt-top-line"></div>
       <div class="sdc-receipt-watermark">SD</div>
       <header class="sdc-receipt-header">
@@ -868,7 +868,6 @@
 
   function bind(){
     $$('[data-view]').forEach(b => b.onclick = () => { state.view = b.dataset.view; save(); render(); window.scrollTo({top:0,behavior:'smooth'}); });
-    $$('[data-action="toggle-mode"]').forEach(b => b.onclick = () => { state.mode = state.mode === 'pro' ? 'gamer' : 'pro'; state.invoiceTheme = state.mode === 'gamer' ? 'gamer' : 'pro'; save(); render(); toast(state.mode === 'pro' ? 'Modo Pro activado.' : 'Modo Gamer activado.'); });
     $$('[data-action="sync"]').forEach(b => b.onclick = syncFromSheets);
     const search = $('#searchProduct'); if(search) search.oninput = e => { state.filter.q = e.target.value; save(); render(); $('#searchProduct')?.focus(); };
     const cat = $('#filterCategory'); if(cat) cat.onchange = e => { state.filter.category = e.target.value; save(); render(); };
@@ -944,7 +943,6 @@
     action('force-sync-products', () => { bootSyncDone = false; bootProducts(); });
     action('load-demo-products', () => { state.products = demoProducts(); state.filter = { q:'', category:'Todos', status:'Todos' }; setProductLoad('demo', 'Productos demo/locales cargados correctamente.'); save(); render(); toast('Productos demo cargados.'); });
     action('save-product', saveProduct);
-    $$('[data-receipt-theme]').forEach(b => b.onclick = () => { state.invoiceTheme = b.dataset.receiptTheme; save(); render(); });
     $$('[data-open-img]').forEach(b => b.onclick = () => openProductImage(b.dataset.openImg));
     $$('[data-edit-product]').forEach(b => b.onclick = () => editProduct(b.dataset.editProduct));
     action('export-json', exportJSON);
@@ -1178,7 +1176,7 @@
     lines.push('', `Total productos: ${money(c.subtotal)}`, `Envío (${typeLabel}): ${money(c.envio)}`);
     if (c.comision) lines.push(`Comisión por Pagar al Recibir: ${money(c.comision)}`);
     if (c.descuento) lines.push(`Descuento: -${money(c.descuento)}`);
-    lines.push(`TOTAL FINAL: ${money(c.total)}`, '', 'Quedamos atentos para confirmar disponibilidad y datos de envío.');
+    lines.push(`TOTAL FINAL: ${money(c.total)}`, '', 'Gracias por preferir SD COMAYAGUA. Quedamos atentos para confirmar disponibilidad y datos de envío.');
     return lines.join('\n');
   }
   function openWhatsApp(text){
@@ -1189,21 +1187,21 @@
     const source = $('#receiptCard');
     if (!source) throw new Error('No hay factura visible.');
     if (!window.html2canvas) throw new Error('html2canvas no cargó.');
-    const bg = state.invoiceTheme === 'gamer' ? '#061325' : '#ffffff';
+    const bg = '#ffffff';
     const host = document.createElement('div');
     host.id = 'receiptExportHost';
-    host.style.cssText = 'position:fixed;left:-16000px;top:0;width:1400px;padding:0;background:'+bg+';z-index:-1;';
+    host.style.cssText = 'position:fixed;left:-18000px;top:0;width:1680px;padding:0;background:'+bg+';z-index:-1;';
     const clone = source.cloneNode(true);
     clone.classList.add('export-capture');
-    clone.style.width = '1240px';
-    clone.style.maxWidth = '1240px';
+    clone.style.width = '1440px';
+    clone.style.maxWidth = '1440px';
     clone.style.margin = '28px auto';
     host.appendChild(clone);
     document.body.appendChild(host);
     try{
       if (document.fonts && document.fonts.ready) await document.fonts.ready;
       await new Promise(resolve => setTimeout(resolve, 120));
-      const canvas = await html2canvas(clone, { scale:3, backgroundColor:bg, useCORS:true, allowTaint:false, logging:false, windowWidth:1400 });
+      const canvas = await html2canvas(clone, { scale:2.5, backgroundColor:bg, useCORS:true, allowTaint:false, logging:false, windowWidth:1680 });
       return await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1));
     } finally { host.remove(); }
   }
@@ -1213,7 +1211,7 @@
       const blob = await receiptBlob();
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `sdc-${state.invoiceTheme}-${state.editingInvoiceId || 'cotizacion'}-${Date.now()}.png`;
+      a.download = `sdc-claro-pro-${state.editingInvoiceId || 'cotizacion'}-${Date.now()}.png`; 
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 1000);
       toast('Imagen descargada.');
@@ -1222,7 +1220,7 @@
   async function shareReceiptImage(){
     try{
       const blob = await receiptBlob();
-      const file = new File([blob], `sdc-${state.invoiceTheme}-${state.editingInvoiceId || 'cotizacion'}.png`, { type:'image/png' });
+      const file = new File([blob], `sdc-claro-pro-${state.editingInvoiceId || 'cotizacion'}.png`, { type:'image/png' });
       if (navigator.canShare && navigator.canShare({ files:[file] })) {
         await navigator.share({ files:[file], title:'Factura SD COMAYAGUA', text:'Le compartimos su factura de SD COMAYAGUA.' });
         toast('Lista para compartir.');

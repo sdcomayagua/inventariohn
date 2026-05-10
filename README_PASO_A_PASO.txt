@@ -1,7 +1,7 @@
-SD COMAYAGUA · POS DASHBOARD V7 MOBILE S24 ULTRA
+SD COMAYAGUA · POS DASHBOARD V18 CLARO PRO
 =================================================
 
-Esta versión está trabajada como MOBILE-FIRST para uso en Samsung S24 Ultra y celulares grandes.
+Esta versión está trabajada como MOBILE-FIRST para uso en Samsung S24 Ultra y celulares grandes, ahora con modo claro PRO único.
 Mantiene la estructura completa del proyecto anterior: GitHub Pages + Google Sheets + Apps Script + plantilla Excel.
 
 ARCHIVOS PRINCIPALES
@@ -18,7 +18,7 @@ assets/no-image.svg
 apps-script/Code.gs
 plantilla_sd_comayagua_pos_dashboard_v5.xlsx
 
-QUÉ SE MEJORÓ EN V7
+QUÉ SE MEJORÓ EN V18
 -------------------
 1. Pantalla móvil más profesional:
    - Inicio más compacto.
@@ -38,14 +38,15 @@ QUÉ SE MEJORÓ EN V7
    - Botones más táctiles y con mejor tamaño.
 
 4. Factura / cotización mejorada:
-   - Vista móvil tipo tarjeta para que no se vea apretada.
+   - Diseño claro PRO único, más elegante y limpio.
    - Exportación HD más grande para que no salga pequeña al compartir.
-   - Diseño premium claro y azul gamer.
+   - Total final más destacado, tarjetas mejor alineadas y mejor contraste.
    - Nota final más profesional.
 
-5. Modo Pro y Modo Gamer:
-   - Se reforzaron colores para evitar texto oscuro sobre fondos oscuros.
-   - Botones, chips, campos y tarjetas tienen mejor contraste.
+5. Modo claro único:
+   - Se quitó el modo gamer y el botón de cambio de tema.
+   - Se corrigió contraste para evitar texto oscuro sobre fondos oscuros.
+   - Botones, chips, campos y tarjetas tienen mejor coherencia visual.
 
 CÓMO SUBIR A GITHUB PAGES
 -------------------------
@@ -64,8 +65,8 @@ CÓMO SUBIR A GITHUB PAGES
 
 IMPORTANTE SOBRE CACHE
 ----------------------
-Esta versión usa sufijo v7-mobile-s24 en index.html para forzar carga nueva de CSS y JS.
-Si aún mira diseño viejo, borre caché del navegador o agregue ?v=7 al final de la URL.
+Esta versión usa sufijo v18-claro-pro en index.html para forzar carga nueva de CSS y JS.
+Si aún mira diseño viejo, borre caché del navegador o agregue ?v=18 al final de la URL.
 
 CONEXIÓN CON APPS SCRIPT
 ------------------------

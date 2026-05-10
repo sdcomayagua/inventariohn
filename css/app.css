@@ -876,3 +876,106 @@ body.mode-gamer .section#products .product-actions-v5 .secondary{
 @media (max-width:640px){
   .sdc-receipt-v16{padding:18px!important;border-radius:24px!important}.sdc-receipt-header{grid-template-columns:1fr!important;gap:16px!important;margin-bottom:18px!important}.sdc-receipt-brand{grid-template-columns:78px minmax(0,1fr)!important;gap:13px!important}.sdc-receipt-brand img{width:78px!important;height:78px!important}.sdc-receipt-brand h3{font-size:2rem!important}.sdc-receipt-brand p{font-size:.92rem!important}.sdc-receipt-brand small{font-size:.86rem!important;margin-top:8px!important}.sdc-doc-card{justify-self:stretch!important;text-align:left!important;padding:18px 20px!important;border-radius:22px!important}.sdc-doc-card b{font-size:2rem!important}.sdc-status-card{grid-template-columns:48px 1fr!important;padding:13px 14px!important}.sdc-status-card i{width:40px!important;height:40px!important;border-radius:14px!important}.sdc-client-card{grid-template-columns:1fr!important;border-radius:22px!important}.sdc-info-cell{grid-template-columns:50px 1fr!important;padding:16px!important;border-right:0!important}.sdc-info-cell i{width:42px!important;height:42px!important;font-size:1rem!important}.sdc-info-cell b{font-size:.98rem!important}.sdc-products-title{padding:17px 16px 12px!important}.sdc-products-title span{font-size:1.2rem!important}.sdc-items-table{margin:0 12px 14px!important}.sdc-items-head,.sdc-items-row{grid-template-columns:34px minmax(0,1fr) 50px 86px!important}.sdc-items-head span:nth-child(3),.sdc-items-head span:nth-child(5),.sdc-code,.sdc-price{display:none!important}.sdc-items-head span{padding:11px 8px!important;font-size:.68rem!important}.sdc-cell{padding:12px 8px!important}.sdc-product-cell{grid-template-columns:52px minmax(0,1fr)!important;gap:10px!important}.sdc-product-cell img{width:52px!important;height:52px!important;border-radius:15px!important}.sdc-product-cell strong{font-size:.88rem!important;line-height:1.12!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.sdc-product-cell span{font-size:.74rem!important}.sdc-line-total{font-size:.86rem!important}.sdc-receipt-footer-grid{grid-template-columns:1fr!important;gap:14px!important}.sdc-total-box{order:1}.sdc-policy-box{order:2}.sdc-total-box,.sdc-policy-box{padding:16px!important;border-radius:20px!important}.sdc-total-box>div{font-size:.96rem!important}.sdc-grand-total{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}.sdc-grand-total span{font-size:1.25rem!important}.sdc-grand-total b{font-size:2.12rem!important;text-align:center!important;padding:13px 16px!important}.sdc-receipt-note{display:grid!important;padding:14px 16px!important;font-size:.88rem!important}.sdc-receipt-watermark{font-size:7rem!important;right:-20px!important;bottom:-30px!important}
 }
+
+
+/* =========================================================
+   SDC POS V18 · MODO CLARO PRO ÚNICO
+   Retoques profesionales: se elimina el modo gamer visual,
+   se refuerza contraste en blanco y se mejora factura/imagen HD.
+   ========================================================= */
+body.mode-pro{
+  --bg:#f7fbff;
+  --bg-2:#ffffff;
+  --surface:#ffffff;
+  --surface-2:#f6faff;
+  --surface-3:#edf6ff;
+  --text:#061325;
+  --muted:#53667c;
+  --soft:#718399;
+  --line:#dbe8f5;
+  --primary:#075eea;
+  --primary-2:#12aefe;
+  --primary-dark:#063f96;
+  --cyan:#12c9ff;
+  --shadow:0 24px 70px rgba(5,31,62,.12);
+  --soft-shadow:0 12px 30px rgba(5,31,62,.075);
+}
+body.mode-pro,
+body:not(.mode-gamer){
+  background:
+    radial-gradient(circle at 0 0,rgba(18,174,254,.16),transparent 32%),
+    radial-gradient(circle at 100% -10%,rgba(7,94,234,.10),transparent 34%),
+    linear-gradient(180deg,#f7fbff 0%,#ffffff 52%,#f5f9ff 100%)!important;
+  color:var(--text)!important;
+}
+body.mode-pro .topbar,
+body:not(.mode-gamer) .topbar{
+  background:linear-gradient(180deg,rgba(247,251,255,.98),rgba(247,251,255,.88) 72%,transparent)!important;
+}
+.brand-card,.panel,.list-card,.product-card-v5,.product-editor,.quick-product,.cart-item,.summary,.receipt-theme{
+  border-color:#dce8f5!important;
+  box-shadow:0 12px 34px rgba(5,31,62,.07)!important;
+}
+.brand-card{
+  background:rgba(255,255,255,.92)!important;
+  backdrop-filter:blur(18px);
+}
+.logo{box-shadow:0 0 0 3px rgba(7,94,234,.10),0 14px 28px rgba(5,31,62,.15)!important}
+.brand-title b{letter-spacing:.035em}.brand-title span{color:#5f7085!important}
+.icon-btn{background:#fff!important;color:#071426!important;border-color:#dbe8f5!important}.icon-btn:hover{box-shadow:0 14px 30px rgba(5,31,62,.10)!important}
+.hero{
+  background:linear-gradient(135deg,#061c43 0%,#075eea 55%,#14c8ff 135%)!important;
+  border:1px solid rgba(255,255,255,.32)!important;
+}
+.hero h1{letter-spacing:.018em!important}.hero p{color:#e8f5ff!important}
+.btn{background:linear-gradient(135deg,#075eea,#12aefe)!important;box-shadow:0 14px 28px rgba(7,94,234,.22)!important}.btn.secondary{background:#fff!important;color:#071426!important;border:1px solid #dbe8f5!important;box-shadow:0 8px 22px rgba(5,31,62,.055)!important}.btn.ghost{background:#f7fbff!important;color:#071426!important;border:1px solid #dbe8f5!important}.btn.danger{background:linear-gradient(135deg,#e93655,#b71d38)!important;color:#fff!important}.chip{background:#fff!important;border-color:#dbe8f5!important;color:#071426!important}.chip.active{background:linear-gradient(135deg,#075eea,#12aefe)!important;color:#fff!important}.receipt-theme-locked .chip:disabled{opacity:1;filter:none;cursor:default}
+.input,.select,.textarea{background:#fff!important;color:#071426!important;border-color:#dbe8f5!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)!important}.input::placeholder{color:#7d8da0}.input:focus,.select:focus,.textarea:focus{border-color:#12aefe!important;box-shadow:0 0 0 4px rgba(18,174,254,.14)!important}
+.product-photo-square,.image-upload-box{background:linear-gradient(145deg,#f5fbff,#e8f3ff)!important}.product-photo-square img,.quick-product img{border:1px solid #e6eef8}.product-actions-v5 .secondary{background:#f7fbff!important;color:#071426!important}.stock-pill.ok{background:#eaf8f2!important}.stock-pill.low{background:#fff6df!important}.stock-pill.out{background:#fff0f2!important}.empty{background:#fbfdff!important;color:#627387!important}
+.nav{
+  background:rgba(255,255,255,.92)!important;
+  border:1px solid rgba(219,232,245,.95)!important;
+  box-shadow:0 20px 60px rgba(5,31,62,.16)!important;
+}
+.nav button{color:#5e7087!important}.nav button.active{background:linear-gradient(135deg,#075eea,#12aefe)!important;color:#fff!important;box-shadow:0 12px 24px rgba(7,94,234,.22)!important}
+.toast{background:#061325!important;color:#fff!important}
+
+/* Factura PRO clara */
+.invoice-preview.sdc-receipt-v16,
+.sdc-receipt-v16.invoice-pro{
+  width:min(100%,960px)!important;
+  background:
+    linear-gradient(180deg,#ffffff 0%,#fbfdff 62%,#f7fbff 100%)!important;
+  color:#061325!important;
+  border:1px solid #d8e7f6!important;
+  box-shadow:0 30px 90px rgba(5,31,62,.14)!important;
+}
+.sdc-receipt-top-line{height:10px!important;background:linear-gradient(90deg,#062d78 0%,#075eea 45%,#12c9ff 100%)!important}
+.sdc-receipt-watermark{color:#075eea!important;opacity:.035!important}
+.sdc-receipt-brand img{background:#061325!important;box-shadow:0 16px 34px rgba(5,31,62,.14)!important}.sdc-receipt-brand h3{color:#061325!important;letter-spacing:.018em!important}.sdc-receipt-brand p{color:#334960!important}.sdc-receipt-brand small{color:#075e45!important;background:#ecfbf4;border:1px solid #d1f1e1;border-radius:999px;padding:7px 11px;width:max-content;max-width:100%}
+.sdc-doc-card{background:linear-gradient(145deg,#062d78,#075eea 62%,#12aefe)!important;border:1px solid rgba(255,255,255,.28)!important;box-shadow:0 18px 42px rgba(7,94,234,.26)!important}.sdc-doc-card span{letter-spacing:.16em!important}.sdc-doc-card b{font-size:2.18rem!important}.sdc-status-card{background:linear-gradient(90deg,#f1f8ff,#ffffff)!important;border-color:#d8e7f6!important}.sdc-status-card i,.sdc-info-cell i{background:linear-gradient(135deg,#062d78,#075eea,#12aefe)!important;box-shadow:0 12px 24px rgba(7,94,234,.18)!important}.sdc-status-card span,.sdc-info-cell span,.sdc-products-title span{color:#075eea!important}.sdc-client-card,.sdc-products-card,.sdc-policy-box,.sdc-total-box{background:#ffffff!important;border-color:#dbe8f5!important;box-shadow:0 14px 36px rgba(5,31,62,.055)!important}.sdc-info-cell{border-color:#e5eef8!important}.sdc-info-cell b{color:#061325!important}.sdc-products-title b{background:#edf6ff!important;color:#063f96!important}.sdc-items-table{border-color:#dce8f5!important}.sdc-items-head{background:linear-gradient(90deg,#062d78,#075eea,#12aefe)!important}.sdc-items-row{background:#fff!important;border-color:#e8f0f9!important}.sdc-product-cell img{background:#f6fbff!important;border-color:#dce8f5!important}.sdc-product-cell span,.sdc-code{color:#53667c!important}.sdc-index,.sdc-qty{color:#455a72!important}.sdc-line-total{color:#061325!important}.sdc-policy-box b{color:#075eea!important}.sdc-policy-box p{color:#4d6278!important;border-color:#e0eaf5!important}.sdc-total-box>div{border-color:#d7e5f3!important}.sdc-total-box>div span,.sdc-total-box>div b{color:#061325!important}.sdc-total-box .sdc-grand-total{border-top:4px solid #075eea!important}.sdc-grand-total span{color:#075eea!important}.sdc-grand-total b{background:linear-gradient(135deg,#062d78,#075eea,#12aefe)!important;color:#fff!important;box-shadow:0 16px 34px rgba(7,94,234,.24)!important}.sdc-receipt-note{background:linear-gradient(90deg,#062d78,#075eea,#12aefe)!important;box-shadow:0 14px 34px rgba(7,94,234,.20)!important}
+
+/* Exportación HD más grande y clara */
+#receiptExportHost .sdc-receipt-v16.export-capture{
+  width:1440px!important;
+  max-width:1440px!important;
+  margin:32px auto!important;
+  padding:70px!important;
+  border-radius:48px!important;
+  box-shadow:none!important;
+}
+#receiptExportHost .sdc-receipt-header{grid-template-columns:minmax(0,1fr) 410px!important;gap:42px!important;margin-bottom:34px!important}
+#receiptExportHost .sdc-receipt-brand{grid-template-columns:154px minmax(0,1fr)!important;gap:34px!important}
+#receiptExportHost .sdc-receipt-brand img{width:154px!important;height:154px!important}
+#receiptExportHost .sdc-receipt-brand h3{font-size:4rem!important}
+#receiptExportHost .sdc-doc-card b{font-size:3.05rem!important}
+#receiptExportHost .sdc-items-head,#receiptExportHost .sdc-items-row{grid-template-columns:70px minmax(390px,1fr) 156px 104px 158px 178px!important}
+#receiptExportHost .sdc-grand-total b{font-size:3.8rem!important}
+
+@media (max-width:520px){
+  body.mode-pro .topbar{background:linear-gradient(180deg,rgba(247,251,255,.99),rgba(247,251,255,.90) 76%,transparent)!important}
+  .top-actions .icon-btn{min-width:44px!important}
+  .invoice-preview.sdc-receipt-v16{padding:16px!important;border-radius:24px!important}
+  .sdc-receipt-brand small{width:fit-content;font-size:.78rem!important;padding:6px 9px!important}
+  .sdc-doc-card b{font-size:1.85rem!important}
+  .sdc-grand-total b{font-size:2rem!important}
+}

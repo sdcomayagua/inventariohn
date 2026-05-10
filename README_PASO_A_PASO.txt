@@ -1,5 +1,5 @@
 SD COMAYAGUA · POS PRIVADO + DASHBOARD FINANCIERO
-Versión: sdc_pos_dashboard_v2
+Versión: sdc_pos_dashboard_v3
 
 CONTENIDO DEL PAQUETE
 1. index.html
@@ -12,9 +12,15 @@ CONTENIDO DEL PAQUETE
 8. assets/logo-sdc-2026.png
 9. assets/no-image.svg
 10. apps-script/Code.gs
-11. plantilla_sd_comayagua_pos_dashboard_v2.xlsx
+11. plantilla_sd_comayagua_pos_dashboard_v3.xlsx
 
 MEJORAS DE ESTA VERSIÓN
+- Corrección visual fuerte del inventario móvil: fotos cuadradas, tarjetas más compactas, títulos legibles y sin palabras quebradas de forma fea.
+- Se quitó el selector nativo feo del navegador en POS. Ahora hay buscador rápido y se toca el producto para agregarlo.
+- La factura ya no cobra envío si el carrito está vacío.
+- Factura Pro y Factura Gamer más compactas, legibles y con columnas de precio/total mejor separadas.
+- La imagen de factura ahora se genera en tamaño fijo de alta resolución aunque usted la descargue desde celular.
+- Al guardar/editar facturas se conservan promociones por cantidad para evitar diferencias entre vista previa y factura guardada.
 - Selector de Departamento y Municipio de Honduras: 18 departamentos y 298 municipios.
 - Ya no se escribe departamento/municipio manualmente.
 - Fotos de productos más claras: contenedor más grande, fondo blanco y object-fit: contain para evitar recortes feos.
@@ -36,7 +42,7 @@ MEJORAS DE ESTA VERSIÓN
   - descuento o devolución de stock por diferencia cuando se edita una factura.
 
 PASOS PARA GOOGLE SHEETS
-1. Suba el archivo plantilla_sd_comayagua_pos_dashboard_v2.xlsx a Google Drive.
+1. Suba el archivo plantilla_sd_comayagua_pos_dashboard_v3.xlsx a Google Drive.
 2. Abra el archivo con Google Sheets.
 3. Revise que existan estas hojas:
    - productos_pos

@@ -20,6 +20,7 @@
     invoices:[],
     clients:[],
     filter:{ q:'', category:'Todos', status:'Todos' },
+    productPickQ:'',
     showProductForm:false,
     productDraft:emptyProductDraft(),
     cart:[],
@@ -48,6 +49,9 @@
       out.cart = Array.isArray(out.cart) ? out.cart : [];
       out.customer = { ...base.customer, ...(saved?.customer || {}) };
       out.filter = { ...base.filter, ...(saved?.filter || {}) };
+      out.productPickQ = String(saved?.productPickQ || '');
+      if (!String(out.config.appsScriptUrl || '').trim() && String(window.SDC_CONFIG.appsScriptUrl || '').trim()) out.config.appsScriptUrl = window.SDC_CONFIG.appsScriptUrl;
+      if (!String(out.config.apiKey || '').trim() && String(window.SDC_CONFIG.apiKey || '').trim()) out.config.apiKey = window.SDC_CONFIG.apiKey;
       out.showProductForm = Boolean(saved?.showProductForm);
       out.productDraft = { ...emptyProductDraft(), ...(saved?.productDraft || {}) };
       out.invoiceTheme = saved?.invoiceTheme || (out.mode === 'gamer' ? 'gamer' : 'pro');
@@ -116,6 +120,22 @@
     });
   }
 
+  function pickerProducts(){
+    const q = String(state.productPickQ || '').toLowerCase().trim();
+    return state.products
+      .filter(p => p.activo && n(p.stock) > 0)
+      .filter(p => {
+        if (!q) return true;
+        return [p.codigo,p.nombre,p.categoria,p.marca].join(' ').toLowerCase().includes(q);
+      })
+      .slice(0, 8);
+  }
+  function quickProductResults(){
+    const items = pickerProducts();
+    if (!items.length) return '<div class="empty compact-empty">No encontré productos disponibles.</div>';
+    return items.map(p => `<button type="button" class="quick-product" data-quick-add="${esc(p.id)}"><img src="${esc(p.imagen || NO_IMG)}" onerror="this.src=\'${NO_IMG}\'" alt=""><span><b>${esc(p.nombre)}</b><small>${esc(p.codigo)} · ${money(p.precio)} · Stock ${p.stock}</small></span><strong>+</strong></button>`).join('');
+  }
+
   function itemPrice(product, qty){
     const promo = promoTotal(product.promos, qty);
     return promo !== null ? promo : n(product.precio) * qty;
@@ -131,6 +151,7 @@
   }
 
   function calcCart(cart = state.cart){
+    if (!cart || !cart.length) return { subtotal:0, envio:0, comision:0, descuento:0, total:0, cost:0, profit:0 };
     const subtotal = cart.reduce((sum,it) => sum + itemPrice(it, n(it.qty) || 1), 0);
     const type = state.shippingType;
     let envio = 0;
@@ -272,12 +293,16 @@
     const badge = p.estado_stock === 'Agotado' ? 'out' : p.estado_stock === 'Bajo stock' ? 'low' : '';
     const img = p.imagen || NO_IMG;
     return `<article class="product-card">
-      <button class="product-img-btn" data-open-img="${esc(img)}" title="Ver foto"><img class="product-img" src="${esc(img)}" alt="${esc(p.nombre)}" onerror="this.src='${NO_IMG}'"></button>
+      <button class="product-img-btn" data-open-img="${esc(img)}" title="Ver foto completa">
+        <img class="product-img" src="${esc(img)}" alt="${esc(p.nombre)}" onerror="this.src='${NO_IMG}'">
+        <span class="view-photo">Ver foto</span>
+      </button>
       <div class="product-info">
-        <div class="product-top"><div><div class="product-code">${esc(p.codigo)}</div><div class="product-title">${esc(p.nombre)}</div></div><span class="stock-badge ${badge}">${esc(p.estado_stock)} · ${p.stock}</span></div>
+        <div class="product-code-row"><span class="product-code">${esc(p.codigo)}</span><span class="stock-badge ${badge}">${esc(p.estado_stock)} · ${p.stock}</span></div>
+        <div class="product-title">${esc(p.nombre)}</div>
         <div class="product-meta"><span class="tag">${esc(p.categoria)}</span>${p.marca ? `<span class="tag">${esc(p.marca)}</span>` : ''}</div>
         <div class="price">${money(p.precio)}</div>
-        <div class="muted" style="font-size:.82rem">Costo: ${money(p.costo)} · Ganancia/u: ${money(p.ganancia_unitaria)}</div>
+        <div class="profit-line">Costo ${money(p.costo)} · G/u ${money(p.ganancia_unitaria)}</div>
         <div class="product-actions"><button class="btn small" data-add="${esc(p.id)}" ${p.stock<=0?'disabled':''}>Agregar</button><button class="btn small secondary" data-view="pos">POS</button><button class="btn small ghost" data-edit-product="${esc(p.id)}">Editar</button></div>
       </div>
     </article>`;
@@ -290,10 +315,10 @@
         <div class="panel-head"><div><h2>Cotización / POS</h2><p>Carrito, cliente, envío, comisión y mensaje de WhatsApp.</p></div></div>
         <div class="pos-layout">
           <div class="panel" style="margin:0">
-            <div class="panel-head"><div><h2>Carrito</h2><p>Agregue productos desde la lista o seleccione aquí.</p></div></div>
-            <div class="row two">
-              <select class="select" id="quickProduct"><option value="">Agregar producto...</option>${state.products.filter(p=>p.activo && p.stock>0).map(p=>`<option value="${esc(p.id)}">${esc(p.codigo)} · ${esc(p.nombre)} · ${money(p.precio)}</option>`).join('')}</select>
-              <button class="btn" id="addQuickProduct">Agregar al carrito</button>
+            <div class="panel-head"><div><h2>Carrito</h2><p>Busque y toque el producto. Ya no se abre el selector feo del navegador.</p></div></div>
+            <div class="quick-picker">
+              <input class="input" id="quickProductSearch" placeholder="Buscar producto para agregar..." value="${esc(state.productPickQ || '')}" autocomplete="off">
+              <div class="quick-product-results" id="quickProductResults">${quickProductResults()}</div>
             </div>
             <div class="cart-list" style="margin-top:12px">${state.cart.length ? state.cart.map(cartItem).join('') : '<div class="empty">El carrito está vacío.</div>'}</div>
           </div>
@@ -364,7 +389,7 @@
     const productRows = state.cart.length ? state.cart.map(it => {
       const img = it.imagen || NO_IMG;
       return `<tr>
-        <td class="receipt-product"><img crossorigin="anonymous" src="${esc(img)}" onerror="this.src='${NO_IMG}'" alt=""><div><b>${esc(it.nombre)}</b><small>${esc(it.codigo)}</small></div></td>
+        <td><div class="receipt-product"><img crossorigin="anonymous" src="${esc(img)}" onerror="this.src='${NO_IMG}'" alt=""><div><b>${esc(it.nombre)}</b><small>${esc(it.codigo)}</small></div></div></td>
         <td class="center">${it.qty}</td>
         <td class="right nowrap">${money(it.precio)}</td>
         <td class="right nowrap">${money(itemPrice(it,it.qty))}</td>
@@ -454,7 +479,10 @@
     const st = $('#filterStatus'); if(st) st.onchange = e => { state.filter.status = e.target.value; save(); render(); };
     $$('[data-cat]').forEach(b => b.onclick = () => { state.filter.category = b.dataset.cat; save(); render(); });
     $$('[data-add]').forEach(b => b.onclick = () => { addToCart(b.dataset.add); state.view = 'pos'; save(); render(); toast('Producto agregado al POS.'); });
-    const quick = $('#addQuickProduct'); if(quick) quick.onclick = () => { const id = $('#quickProduct').value; if(!id) return toast('Seleccione un producto.'); addToCart(id); save(); render(); };
+    const quickSearch = $('#quickProductSearch');
+    const quickList = $('#quickProductResults');
+    if (quickSearch) quickSearch.oninput = e => { state.productPickQ = e.target.value; save(); if (quickList) quickList.innerHTML = quickProductResults(); };
+    if (quickList) quickList.onclick = e => { const b = e.target.closest('[data-quick-add]'); if(!b) return; addToCart(b.dataset.quickAdd); state.productPickQ = ''; save(); render(); toast('Producto agregado al carrito.'); };
     $$('[data-inc]').forEach(b => b.onclick = () => { state.cart[+b.dataset.inc].qty++; save(); render(); });
     $$('[data-dec]').forEach(b => b.onclick = () => { const it = state.cart[+b.dataset.dec]; it.qty = Math.max(1, n(it.qty)-1); save(); render(); });
     $$('[data-remove]').forEach(b => b.onclick = () => { state.cart.splice(+b.dataset.remove,1); save(); render(); });
@@ -609,7 +637,7 @@
       updatedAt: iso(),
       customer:{ ...state.customer },
       shippingType:state.shippingType,
-      items: state.cart.map(x => ({ id:x.id, codigo:x.codigo, nombre:x.nombre, precio:n(x.precio), costo:n(x.costo), qty:n(x.qty)||1, imagen:x.imagen || '' })),
+      items: state.cart.map(x => ({ id:x.id, codigo:x.codigo, nombre:x.nombre, categoria:x.categoria || '', marca:x.marca || '', precio:n(x.precio), costo:n(x.costo), qty:n(x.qty)||1, imagen:x.imagen || '', promos:x.promos || '' })),
       totals
     };
   }
@@ -698,12 +726,25 @@
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
   }
   async function receiptBlob(){
-    const el = $('#receiptCard');
-    if (!el) throw new Error('No hay factura visible.');
+    const source = $('#receiptCard');
+    if (!source) throw new Error('No hay factura visible.');
     if (!window.html2canvas) throw new Error('html2canvas no cargó.');
     const bg = state.invoiceTheme === 'gamer' ? '#061325' : '#ffffff';
-    const canvas = await html2canvas(el, { scale:2.5, backgroundColor:bg, useCORS:true, allowTaint:false });
-    return new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1));
+    const host = document.createElement('div');
+    host.id = 'receiptExportHost';
+    host.style.cssText = 'position:fixed;left:-12000px;top:0;width:980px;padding:40px;background:'+bg+';z-index:-1;';
+    const clone = source.cloneNode(true);
+    clone.classList.add('export-capture');
+    clone.style.width = '900px';
+    clone.style.maxWidth = '900px';
+    host.appendChild(clone);
+    document.body.appendChild(host);
+    try{
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      await new Promise(resolve => setTimeout(resolve, 80));
+      const canvas = await html2canvas(clone, { scale:2, backgroundColor:bg, useCORS:true, allowTaint:false, logging:false });
+      return await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1));
+    } finally { host.remove(); }
   }
   async function downloadReceiptImage(){
     try{

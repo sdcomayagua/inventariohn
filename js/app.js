@@ -172,6 +172,36 @@
     return 'Envío Normal';
   }
 
+  function orderReadiness(doc = null){
+    const customer = doc?.customer || state.customer || {};
+    const items = doc?.items || state.cart || [];
+    const totals = doc?.totals || calcCart(items);
+    const checks = [
+      { key:'items', label:'Productos', ok:items.length > 0, detail:items.length ? `${items.length} ítem${items.length===1?'':'s'}` : 'Agregue productos' },
+      { key:'name', label:'Cliente', ok:Boolean(String(customer.nombre || '').trim()), detail:String(customer.nombre || '').trim() || 'Falta nombre' },
+      { key:'phone', label:'Teléfono', ok:cleanPhone(customer.telefono).length >= 8, detail:customer.telefono || 'Falta teléfono' },
+      { key:'dest', label:'Destino', ok:Boolean(String(customer.departamento || '').trim() && String(customer.municipio || '').trim()), detail:[customer.municipio, customer.departamento].filter(Boolean).join(', ') || 'Falta destino' },
+      { key:'addr', label:'Dirección', ok:Boolean(shortAddress(customer)), detail:shortAddress(customer) || 'Falta dirección' },
+      { key:'total', label:'Total', ok:n(totals.total) > 0, detail:money(totals.total) }
+    ];
+    const done = checks.filter(x => x.ok).length;
+    const missing = checks.filter(x => !x.ok).map(x => x.label);
+    return { ok:missing.length === 0, progress:Math.round((done / checks.length) * 100), missing, checks };
+  }
+
+  function readinessCard(ready = orderReadiness()){
+    const title = ready.ok ? 'Pedido listo para enviar' : 'Revise antes de enviar';
+    const subtitle = ready.ok ? 'La cotización ya tiene los datos principales para WhatsApp o factura.' : `Falta completar: ${ready.missing.join(', ')}`;
+    return `<div class="order-readiness ${ready.ok ? 'is-ready' : 'is-pending'} no-print">
+      <div class="readiness-top">
+        <div><span>${ready.ok ? '✓ Control de calidad' : '⚠ Control de calidad'}</span><b>${esc(title)}</b><small>${esc(subtitle)}</small></div>
+        <strong>${ready.progress}%</strong>
+      </div>
+      <div class="readiness-meter"><i style="width:${ready.progress}%"></i></div>
+      <div class="readiness-list">${ready.checks.map(x => `<div class="readiness-pill ${x.ok ? 'ok' : 'pending'}"><em>${x.ok ? '✓' : '•'}</em><span><b>${esc(x.label)}</b><small>${esc(x.detail)}</small></span></div>`).join('')}</div>
+    </div>`;
+  }
+
   function shortAddress(customer = state.customer){
     return [customer.direccion, customer.referencia].filter(Boolean).join(' · ');
   }
@@ -349,11 +379,12 @@
 
   function sectionPos(){
     const c = calcCart();
+    const ready = orderReadiness();
     return `<section class="section ${activateClass('pos')}" id="pos">
       <div class="panel">
         <div class="panel-head"><div><h2>POS móvil</h2><p>Flujo optimizado para teléfono: agregue productos, confirme cliente y comparta factura en imagen o WhatsApp.</p></div><span class="tag">${state.cart.length} ítem${state.cart.length===1?'':'s'}</span></div>
         <div class="pos-mobile-dock no-print">
-          <div><span>Total final</span><b>${money(c.total)}</b><small>${state.cart.length} ítem${state.cart.length===1?'':'s'} · ${shippingTypeLabel()}</small></div>
+          <div><span>Total final</span><b>${money(c.total)}</b><small>${ready.ok ? 'Listo para enviar' : 'Falta: ' + ready.missing.slice(0,2).join(', ')}</small></div>
           <button class="btn small" data-action="open-wa">WhatsApp</button>
         </div>
         <div class="pos-layout">
@@ -375,6 +406,7 @@
               <div class="summary-row"><b>Descuento</b><b>${money(c.descuento)}</b></div>
               <div class="summary-total"><b>Total final</b><b>${money(c.total)}</b></div>
             </div>
+            ${readinessCard(ready)}
             <div class="button-row" style="margin-top:14px">
               <button class="btn secondary" data-action="save-quote">Guardar cotización</button>
               <button class="btn" data-action="finish-invoice">Guardar venta</button>

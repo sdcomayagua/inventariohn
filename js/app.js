@@ -761,7 +761,7 @@
 
       <section class="sdc-simple-status">
         <b>${esc(readyText)}</b>
-        <span>${esc(title)} generada para revisión del cliente.</span>
+        <span>Revise los datos antes de compartir con el cliente.</span>
       </section>
 
       <section class="sdc-simple-info-grid">
@@ -784,8 +784,8 @@
         <aside class="sdc-simple-notes">
           <b>Información importante</b>
           <p>Precios sujetos a disponibilidad y confirmación de stock.</p>
-          <p>Envíos por C807, Forza o Cargo Expreso según cobertura.</p>
-          <p>Guarde esta cotización como respaldo de su pedido.</p>
+          <p>Envíos por C807, Forza y Cargo Expreso según cobertura.</p>
+          <p>Documento de respaldo para el pedido del cliente.</p>
         </aside>
         <aside class="sdc-simple-totals">
           <div><span>Total productos</span><b>${money(c.subtotal)}</b></div>

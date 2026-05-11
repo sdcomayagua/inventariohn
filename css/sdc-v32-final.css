@@ -1,0 +1,724 @@
+/* SD COMAYAGUA · V32 mejoras finales: recibos, scroll, barra inferior y acciones */
+:root{
+  --sdc-bottom-safe: calc(92px + env(safe-area-inset-bottom));
+}
+html{
+  scroll-behavior:smooth;
+  overflow-x:hidden;
+  scroll-padding-top:16px;
+}
+body{
+  overflow-x:hidden;
+  min-height:100dvh;
+}
+body.modal-open,
+body.sdc-modal-open{
+  overflow:hidden;
+  touch-action:none;
+}
+#app,.app,.main,.content,.screen{
+  max-width:100vw;
+  overflow-x:hidden;
+}
+
+/* El toast/aviso de alertas debe salir centrado, no pegado a la izquierda */
+.toast,
+.sdc-alert-toast,
+.stock-toast,
+.notice-toast,
+#toast{
+  left:50% !important;
+  right:auto !important;
+  transform:translateX(-50%) translateY(14px) !important;
+  width:min(92vw,420px) !important;
+  max-width:calc(100vw - 28px) !important;
+  text-align:center !important;
+  justify-content:center !important;
+  border-radius:22px !important;
+  box-shadow:0 24px 80px rgba(0,0,0,.38) !important;
+  z-index:99999 !important;
+}
+.toast.show,
+#toast.show{
+  transform:translateX(-50%) translateY(0) !important;
+}
+
+/* Modales con scroll propio: evita que Cotizar / Vender se queden pegados */
+#modalRoot,
+.modal-root,
+.modal-overlay{
+  overscroll-behavior:contain;
+}
+#modalRoot .modal,
+.modal-panel,
+.quote-modal,
+.sale-modal,
+.sheet-modal{
+  max-height:calc(100dvh - 18px) !important;
+  overflow:hidden !important;
+  display:flex !important;
+  flex-direction:column !important;
+}
+#modalRoot .modal-body,
+.modal-body,
+.quote-body,
+.sale-body,
+.sheet-body{
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  padding-bottom:calc(26px + env(safe-area-inset-bottom)) !important;
+}
+.modal-head,
+.quote-head,
+.sale-head{
+  flex:0 0 auto !important;
+  position:sticky !important;
+  top:0 !important;
+  z-index:35 !important;
+  backdrop-filter:blur(18px) saturate(1.25) !important;
+}
+
+/* Barra flotante de lista: compacta, al pie y sin tapar los productos */
+.quote-sticky,
+.quote-cart-mini,
+.selected-summary,
+.sdc-cart-float,
+.cart-floating-summary{
+  left:12px !important;
+  right:12px !important;
+  bottom:calc(12px + env(safe-area-inset-bottom)) !important;
+  top:auto !important;
+  width:auto !important;
+  max-width:none !important;
+  border-radius:22px !important;
+  z-index:60 !important;
+}
+.quote-body .selected-summary,
+.quote-body .quote-cart-mini{
+  position:sticky !important;
+  bottom:8px !important;
+  margin:10px 0 0 !important;
+}
+
+/* Navegación inferior corregida, centrada y con 5 columnas iguales */
+.bottom-nav,
+.sdc-v3-bottom{
+  position:fixed !important;
+  left:max(10px, env(safe-area-inset-left)) !important;
+  right:max(10px, env(safe-area-inset-right)) !important;
+  bottom:max(10px, env(safe-area-inset-bottom)) !important;
+  width:auto !important;
+  max-width:720px !important;
+  margin:0 auto !important;
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  gap:4px !important;
+  padding:8px !important;
+  border-radius:26px !important;
+  transform:none !important;
+  overflow:visible !important;
+  z-index:900 !important;
+}
+.bottom-nav button,
+.sdc-v3-bottom button{
+  min-width:0 !important;
+  width:100% !important;
+  padding:9px 4px !important;
+  text-align:center !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  border-radius:18px !important;
+  white-space:nowrap !important;
+}
+.bottom-nav button span,
+.sdc-v3-bottom button span{
+  display:block !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  max-width:100% !important;
+  font-size:clamp(10px,2.6vw,13px) !important;
+  line-height:1.1 !important;
+}
+body:not(.modal-open) .app,
+body:not(.modal-open) #app{
+  padding-bottom:var(--sdc-bottom-safe) !important;
+}
+
+/* Acciones rápidas del documento: sin textos detrás y sin overflow a la derecha */
+.compact-actions,
+.doc-actions,
+.quick-actions,
+.receipt-actions,
+.actions-strip{
+  position:relative !important;
+  isolation:isolate !important;
+  overflow:hidden !important;
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:10px !important;
+  width:100% !important;
+  max-width:100% !important;
+  padding:16px !important;
+  border-radius:26px !important;
+  background:rgba(6,19,34,.84) !important;
+  border:1px solid rgba(79,231,222,.18) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+.compact-actions::before,
+.doc-actions::before,
+.quick-actions::before,
+.receipt-actions::before,
+.actions-strip::before{
+  content:'ACCIONES RÁPIDAS';
+  position:absolute;
+  left:16px;
+  top:10px;
+  font:800 11px/1.1 'Chakra Petch',sans-serif;
+  letter-spacing:.16em;
+  color:rgba(197,221,235,.42);
+  z-index:-1;
+}
+.compact-actions .btn,
+.doc-actions .btn,
+.quick-actions .btn,
+.receipt-actions .btn,
+.actions-strip .btn{
+  min-width:0 !important;
+  width:100% !important;
+  padding:16px 6px !important;
+  border-radius:22px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:4px !important;
+  white-space:normal !important;
+  text-align:center !important;
+}
+
+/* Recibo/cotización V32: más compacto y legible para imagen de WhatsApp */
+.receipt-v32{
+  width:min(100%,560px) !important;
+  margin:0 auto !important;
+  border-radius:28px !important;
+  overflow:hidden !important;
+  background:#f8fcff !important;
+  color:#071625 !important;
+  box-shadow:0 22px 80px rgba(0,0,0,.22) !important;
+}
+.receipt-v32 .receipt-band-pro{
+  padding:12px 18px !important;
+  min-height:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  background:#061322 !important;
+  color:#eaf8ff !important;
+}
+.receipt-v32 .receipt-band-pro span,
+.receipt-v32 .receipt-band-pro b{
+  font-size:clamp(10px,2.5vw,13px) !important;
+  letter-spacing:.12em !important;
+  white-space:normal !important;
+}
+.receipt-v32 .receipt-band-pro b{
+  background:linear-gradient(135deg,#29efbb,#27c8f4) !important;
+  color:#071625 !important;
+  border-radius:999px !important;
+  padding:8px 12px !important;
+}
+.receipt-v32 .receipt-inner-pro{
+  padding:16px 18px 18px !important;
+  background:#f8fcff !important;
+}
+.receipt-v32 .receipt-header-pro{
+  display:grid !important;
+  grid-template-columns:1fr minmax(145px,.55fr) !important;
+  gap:12px !important;
+  align-items:stretch !important;
+  margin:0 0 12px !important;
+}
+.receipt-v32 .receipt-brand-pro,
+.receipt-v32 .receipt-total-pro{
+  border:1px solid #dcebf2 !important;
+  border-radius:22px !important;
+  background:#fff !important;
+  color:#071625 !important;
+  padding:14px !important;
+}
+.receipt-v32 .receipt-brand-pro{
+  display:flex !important;
+  gap:12px !important;
+  align-items:center !important;
+  min-width:0 !important;
+}
+.receipt-v32 .doc-logo{
+  width:56px !important;
+  height:56px !important;
+  object-fit:contain !important;
+  border-radius:18px !important;
+  background:#061322 !important;
+  padding:5px !important;
+  box-shadow:0 8px 20px rgba(6,19,34,.16) !important;
+  flex:0 0 auto !important;
+}
+.receipt-v32 .receipt-brand-pro h2{
+  margin:0 !important;
+  font-size:clamp(25px,6vw,38px) !important;
+  line-height:.95 !important;
+  letter-spacing:-.03em !important;
+  color:#061322 !important;
+}
+.receipt-v32 .receipt-brand-pro small,
+.receipt-v32 .receipt-brand-pro p,
+.receipt-v32 .receipt-brand-pro em{
+  display:block !important;
+  margin:0 !important;
+  color:#526779 !important;
+  font-style:normal !important;
+  font-size:12px !important;
+  font-weight:800 !important;
+}
+.receipt-v32 .receipt-total-pro{
+  background:linear-gradient(135deg,#24f0b6,#27d0f7) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  color:#061322 !important;
+}
+.receipt-v32 .receipt-total-pro span{
+  font:800 11px/1 'Chakra Petch',sans-serif !important;
+  letter-spacing:.14em !important;
+  text-transform:uppercase !important;
+  opacity:.78 !important;
+}
+.receipt-v32 .receipt-total-pro b{
+  font-size:clamp(28px,7vw,44px) !important;
+  line-height:1 !important;
+  color:#061322 !important;
+}
+.receipt-v32 .receipt-client-pro{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:8px !important;
+  margin:0 0 12px !important;
+}
+.receipt-v32 .receipt-client-pro article{
+  background:#fff !important;
+  border:1px solid #dcebf2 !important;
+  border-radius:18px !important;
+  padding:11px 14px !important;
+  min-width:0 !important;
+}
+.receipt-v32 .receipt-client-pro article.wide{grid-column:1/-1 !important;}
+.receipt-v32 .receipt-client-pro span,
+.receipt-v32 .receipt-process-pro span,
+.receipt-v32 .receipt-summary-pro span{
+  display:block !important;
+  font:800 10.5px/1.1 'Chakra Petch',sans-serif !important;
+  letter-spacing:.16em !important;
+  text-transform:uppercase !important;
+  color:#81909d !important;
+}
+.receipt-v32 .receipt-client-pro b{
+  display:block !important;
+  margin-top:4px !important;
+  color:#071625 !important;
+  font-size:clamp(13px,3.5vw,16px) !important;
+  line-height:1.18 !important;
+  word-break:break-word !important;
+}
+.receipt-v32 .receipt-process-pro,
+.receipt-v32 .receipt-products-pro,
+.receipt-v32 .receipt-summary-pro,
+.receipt-v32 .receipt-footer-pro{
+  margin:12px 0 0 !important;
+  border:1px solid #dcebf2 !important;
+  border-radius:22px !important;
+  overflow:hidden !important;
+  background:#fff !important;
+}
+.receipt-v32 .receipt-process-pro{
+  padding:13px 15px !important;
+  background:#eefcf9 !important;
+}
+.receipt-v32 .receipt-process-pro div{display:flex !important;justify-content:space-between !important;gap:10px !important;align-items:center !important;}
+.receipt-v32 .receipt-process-pro p{margin:5px 0 0 !important;color:#385267 !important;font-weight:800 !important;line-height:1.22 !important;font-size:13px !important;}
+.receipt-v32 .receipt-title-pro{
+  padding:12px 15px !important;
+  background:#061322 !important;
+  color:#f2fbff !important;
+  display:flex !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  font:800 12px/1.1 'Chakra Petch',sans-serif !important;
+  letter-spacing:.12em !important;
+  text-transform:uppercase !important;
+}
+.receipt-v32 .receipt-item-pro{
+  display:grid !important;
+  grid-template-columns:36px 48px minmax(0,1fr) auto !important;
+  gap:10px !important;
+  align-items:center !important;
+  padding:12px 14px !important;
+  border-top:1px solid #e5eef4 !important;
+}
+.receipt-v32 .receipt-item-index,
+.receipt-v32 .receipt-item-thumb{
+  width:36px !important;
+  height:36px !important;
+  border-radius:13px !important;
+  background:#eef8ff !important;
+  display:grid !important;
+  place-items:center !important;
+  font-weight:900 !important;
+  color:#071625 !important;
+}
+.receipt-v32 .receipt-item-thumb{
+  width:48px !important;
+  height:48px !important;
+  object-fit:cover !important;
+}
+.receipt-v32 .receipt-thumb-fallback{
+  background:linear-gradient(135deg,#dffef7,#e8f8ff) !important;
+  border:1px solid #ccedf3 !important;
+  font-size:16px !important;
+}
+.receipt-v32 .receipt-item-info{min-width:0 !important;}
+.receipt-v32 .receipt-item-info b{
+  display:block !important;
+  color:#071625 !important;
+  font-size:clamp(13px,3.6vw,16px) !important;
+  line-height:1.12 !important;
+  overflow-wrap:anywhere !important;
+}
+.receipt-v32 .receipt-item-info span{
+  display:block !important;
+  margin-top:3px !important;
+  color:#5b7182 !important;
+  font-weight:800 !important;
+  font-size:12px !important;
+  line-height:1.15 !important;
+}
+.receipt-v32 .receipt-item-pro strong{
+  color:#071625 !important;
+  font-size:clamp(14px,4vw,18px) !important;
+  white-space:nowrap !important;
+}
+.receipt-v32 .receipt-summary-pro > div{
+  display:flex !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  align-items:center !important;
+  padding:12px 15px !important;
+  border-top:1px solid #e5eef4 !important;
+}
+.receipt-v32 .receipt-summary-pro > div:first-child{border-top:0 !important;}
+.receipt-v32 .receipt-summary-pro b{font-size:clamp(14px,4vw,18px) !important;color:#071625 !important;white-space:nowrap !important;}
+.receipt-v32 .receipt-summary-pro .grand{
+  background:#061322 !important;
+  color:#dffef7 !important;
+  padding:16px 15px !important;
+}
+.receipt-v32 .receipt-summary-pro .grand span{color:#e8f8ff !important;}
+.receipt-v32 .receipt-summary-pro .grand b{font-size:clamp(24px,7vw,36px) !important;color:#55ffd0 !important;}
+.receipt-v32 .receipt-footer-pro{
+  padding:14px 16px !important;
+  background:#f2f8fb !important;
+}
+.receipt-v32 .receipt-footer-pro b{
+  display:block !important;
+  color:#43586a !important;
+  font-size:clamp(13px,3.7vw,16px) !important;
+  line-height:1.25 !important;
+}
+.receipt-v32 .receipt-footer-pro span{
+  display:block !important;
+  margin-top:5px !important;
+  color:#0b7198 !important;
+  font-weight:900 !important;
+}
+
+@media (max-width:430px){
+  .receipt-v32{border-radius:24px !important;}
+  .receipt-v32 .receipt-inner-pro{padding:12px !important;}
+  .receipt-v32 .receipt-header-pro{grid-template-columns:1fr !important;}
+  .receipt-v32 .receipt-total-pro{min-height:86px !important;}
+  .receipt-v32 .receipt-item-pro{grid-template-columns:32px 42px minmax(0,1fr) !important;}
+  .receipt-v32 .receipt-item-pro strong{grid-column:3/4;justify-self:start;margin-top:2px !important;}
+  .receipt-v32 .receipt-item-index{width:32px !important;height:32px !important;}
+  .receipt-v32 .receipt-item-thumb{width:42px !important;height:42px !important;}
+  .compact-actions,.doc-actions,.quick-actions,.receipt-actions,.actions-strip{gap:8px !important;padding:14px 10px !important;}
+  .compact-actions .btn,.doc-actions .btn,.quick-actions .btn,.receipt-actions .btn,.actions-strip .btn{padding:14px 4px !important;font-size:12px !important;}
+}
+
+@media print{
+  .receipt-v32{box-shadow:none !important;width:100% !important;max-width:760px !important;}
+  .bottom-nav,.sdc-v3-bottom,.go-top,.toast{display:none !important;}
+}
+
+
+/* ==========================================================
+   SD COMAYAGUA · V33 RECIBO PREMIUM
+   Ajuste final para que cotización/venta se vean más limpios,
+   con azul más elegante, total sin recorte y mejor lectura.
+   ========================================================== */
+:root{
+  --sdc-r-bg:#f4f7fb;
+  --sdc-r-card:#ffffff;
+  --sdc-r-border:#dbe7ef;
+  --sdc-r-border-strong:#cfe0ea;
+  --sdc-r-text:#0b1727;
+  --sdc-r-muted:#647789;
+  --sdc-r-soft:#eef5f9;
+  --sdc-r-head-1:#07182a;
+  --sdc-r-head-2:#0d2b46;
+  --sdc-r-mint:#39e7c4;
+  --sdc-r-cyan:#58d7ff;
+  --sdc-r-total-1:#eafff8;
+  --sdc-r-total-2:#eaf8ff;
+  --sdc-r-total-border:#aeece3;
+  --sdc-r-status-bg:#e3fbf5;
+  --sdc-r-status-text:#0b6a56;
+}
+
+.receipt-v32{
+  background:var(--sdc-r-bg) !important;
+  color:var(--sdc-r-text) !important;
+  border:1px solid rgba(207,224,234,.94) !important;
+  box-shadow:0 20px 60px rgba(5,18,32,.20) !important;
+}
+.receipt-v32 .receipt-band-pro{
+  background:
+    radial-gradient(circle at 18% 0%,rgba(57,231,196,.16),transparent 38%),
+    linear-gradient(135deg,var(--sdc-r-head-1),var(--sdc-r-head-2)) !important;
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+  color:#f3fbff !important;
+}
+.receipt-v32 .receipt-band-pro span{
+  opacity:.96 !important;
+  letter-spacing:.13em !important;
+}
+.receipt-v32 .receipt-band-pro b{
+  background:var(--sdc-r-status-bg) !important;
+  color:var(--sdc-r-status-text) !important;
+  border:1px solid rgba(11,106,86,.12) !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+}
+.receipt-v32.receipt-sale-v32 .receipt-band-pro b{
+  background:#e8fff0 !important;
+  color:#11743c !important;
+  border-color:rgba(17,116,60,.13) !important;
+}
+.receipt-v32 .receipt-inner-pro{
+  background:var(--sdc-r-bg) !important;
+}
+.receipt-v32 .receipt-header-pro{
+  grid-template-columns:minmax(0,1fr) minmax(175px,205px) !important;
+  gap:12px !important;
+}
+.receipt-v32 .receipt-brand-pro,
+.receipt-v32 .receipt-total-pro,
+.receipt-v32 .receipt-client-pro article,
+.receipt-v32 .receipt-process-pro,
+.receipt-v32 .receipt-products-pro,
+.receipt-v32 .receipt-summary-pro,
+.receipt-v32 .receipt-footer-pro{
+  border-color:var(--sdc-r-border) !important;
+  background:var(--sdc-r-card) !important;
+  box-shadow:0 6px 18px rgba(15,23,42,.035) !important;
+}
+.receipt-v32 .receipt-brand-pro{
+  border-radius:21px !important;
+}
+.receipt-v32 .doc-logo{
+  background:#ffffff !important;
+  border:1px solid var(--sdc-r-border-strong) !important;
+  padding:4px !important;
+  box-shadow:0 8px 18px rgba(8,22,36,.10) !important;
+}
+.receipt-v32 .receipt-brand-pro h2{
+  color:var(--sdc-r-text) !important;
+  letter-spacing:-.04em !important;
+  text-shadow:none !important;
+}
+.receipt-v32 .receipt-brand-pro small,
+.receipt-v32 .receipt-brand-pro p,
+.receipt-v32 .receipt-brand-pro em{
+  color:var(--sdc-r-muted) !important;
+}
+.receipt-v32 .receipt-brand-pro small{
+  letter-spacing:.16em !important;
+  color:#718394 !important;
+}
+.receipt-v32 .receipt-brand-pro em{
+  color:#196985 !important;
+}
+.receipt-v32 .receipt-total-pro{
+  background:
+    radial-gradient(circle at 90% 8%,rgba(88,215,255,.22),transparent 40%),
+    linear-gradient(135deg,var(--sdc-r-total-1),var(--sdc-r-total-2)) !important;
+  border:1px solid var(--sdc-r-total-border) !important;
+  border-left:7px solid var(--sdc-r-mint) !important;
+  border-radius:21px !important;
+  box-shadow:0 12px 26px rgba(57,231,196,.14) !important;
+  overflow:visible !important;
+}
+.receipt-v32.receipt-sale-v32 .receipt-total-pro{
+  background:
+    radial-gradient(circle at 88% 10%,rgba(89,215,255,.20),transparent 40%),
+    linear-gradient(135deg,#effbff,#eafff8) !important;
+  border-left-color:#58d7ff !important;
+}
+.receipt-v32 .receipt-total-pro span{
+  color:#315066 !important;
+  opacity:1 !important;
+}
+.receipt-v32 .receipt-total-pro b{
+  color:#071625 !important;
+  font-size:clamp(26px,5.8vw,38px) !important;
+  white-space:nowrap !important;
+  letter-spacing:-.045em !important;
+  overflow:visible !important;
+}
+.receipt-v32 .receipt-client-pro span,
+.receipt-v32 .receipt-process-pro span,
+.receipt-v32 .receipt-summary-pro span{
+  color:#7d8d9b !important;
+  letter-spacing:.15em !important;
+}
+.receipt-v32 .receipt-client-pro b,
+.receipt-v32 .receipt-item-info b,
+.receipt-v32 .receipt-item-pro strong,
+.receipt-v32 .receipt-summary-pro b{
+  color:var(--sdc-r-text) !important;
+}
+.receipt-v32 .receipt-process-pro{
+  background:linear-gradient(135deg,#f0fffb,#f5fbff) !important;
+  border-color:#d2ece8 !important;
+}
+.receipt-v32.receipt-sale-v32 .receipt-process-pro{
+  background:linear-gradient(135deg,#f4fbff,#effff7) !important;
+}
+.receipt-v32 .receipt-process-pro p{
+  color:#4c6475 !important;
+  font-weight:760 !important;
+}
+.receipt-v32 .receipt-title-pro{
+  background:
+    radial-gradient(circle at 10% 0%,rgba(57,231,196,.12),transparent 35%),
+    linear-gradient(135deg,#07182a,#0d2b46) !important;
+  color:#f5fbff !important;
+}
+.receipt-v32 .receipt-item-pro{
+  background:#ffffff !important;
+  border-color:#e6eef4 !important;
+}
+.receipt-v32 .receipt-item-pro:nth-child(even){
+  background:#fbfdff !important;
+}
+.receipt-v32 .receipt-item-index{
+  background:#eff8fc !important;
+  color:#0b314a !important;
+}
+.receipt-v32 .receipt-item-thumb{
+  background:#f1fbfd !important;
+  border:1px solid #d7edf2 !important;
+}
+.receipt-v32 .receipt-thumb-fallback{
+  background:linear-gradient(135deg,#effff9,#eef9ff) !important;
+  color:#0e5062 !important;
+  border:1px solid #cfeef0 !important;
+}
+.receipt-v32 .receipt-item-info span{
+  color:#607587 !important;
+  font-weight:780 !important;
+}
+.receipt-v32 .receipt-summary-pro > div{
+  background:#fff !important;
+  border-color:#e6eef4 !important;
+}
+.receipt-v32 .receipt-summary-pro .grand{
+  background:
+    radial-gradient(circle at 92% 4%,rgba(57,231,196,.16),transparent 40%),
+    linear-gradient(135deg,#07182a,#0b2b46) !important;
+  color:#f4fbff !important;
+}
+.receipt-v32 .receipt-summary-pro .grand span{
+  color:#e7f9ff !important;
+}
+.receipt-v32 .receipt-summary-pro .grand b{
+  color:#66ffd4 !important;
+  letter-spacing:-.035em !important;
+}
+.receipt-v32 .receipt-footer-pro{
+  background:linear-gradient(135deg,#f3f8fb,#edf7f8) !important;
+  border-color:#d8e6ee !important;
+}
+.receipt-v32 .receipt-footer-pro b{
+  color:#465e70 !important;
+  font-weight:850 !important;
+}
+.receipt-v32 .receipt-footer-pro span{
+  color:#146f8f !important;
+}
+
+/* Vista dentro del modal: evita que el recibo se corte o genere scroll horizontal. */
+#modalRoot .receipt-v32,
+.modal .receipt-v32,
+.sheet-modal .receipt-v32{
+  max-width:calc(100vw - 42px) !important;
+}
+#modalRoot .receipt-v32 *{
+  max-width:100%;
+}
+
+/* Botones finales más limpios debajo del recibo. */
+.receipt-actions[data-sdc-v32-actions="1"],
+.quick-actions[data-sdc-v32-actions="1"],
+.doc-actions[data-sdc-v32-actions="1"]{
+  background:rgba(7,24,42,.64) !important;
+  border:1px solid rgba(130,220,235,.18) !important;
+  border-radius:22px !important;
+  padding:16px !important;
+  gap:10px !important;
+  overflow:hidden !important;
+}
+.receipt-actions[data-sdc-v32-actions="1"]::before,
+.quick-actions[data-sdc-v32-actions="1"]::before,
+.doc-actions[data-sdc-v32-actions="1"]::before{
+  color:rgba(230,248,255,.72) !important;
+  left:16px !important;
+  top:12px !important;
+  letter-spacing:.18em !important;
+}
+.receipt-actions[data-sdc-v32-actions="1"] .btn,
+.quick-actions[data-sdc-v32-actions="1"] .btn,
+.doc-actions[data-sdc-v32-actions="1"] .btn{
+  border-radius:18px !important;
+  background:linear-gradient(135deg,#0a2946,#0d3c5f) !important;
+  border-color:rgba(116,214,235,.22) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 10px 22px rgba(0,0,0,.16) !important;
+}
+
+@media (max-width:430px){
+  .receipt-v32 .receipt-header-pro{grid-template-columns:1fr !important;gap:10px !important;}
+  .receipt-v32 .receipt-total-pro{min-height:82px !important;border-left-width:6px !important;}
+  .receipt-v32 .receipt-total-pro b{font-size:clamp(30px,10vw,42px) !important;}
+  .receipt-v32 .receipt-band-pro{padding:11px 12px !important;}
+  .receipt-v32 .receipt-band-pro b{padding:7px 10px !important;font-size:10px !important;}
+}
+
+@media (max-width:360px){
+  .receipt-v32 .receipt-client-pro{grid-template-columns:1fr !important;}
+  .receipt-v32 .receipt-item-pro{grid-template-columns:28px 38px minmax(0,1fr) !important;gap:7px !important;}
+  .receipt-v32 .receipt-item-thumb{width:38px !important;height:38px !important;}
+  .receipt-v32 .receipt-item-index{width:28px !important;height:28px !important;}
+}

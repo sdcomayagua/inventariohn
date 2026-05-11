@@ -1,0 +1,189 @@
+/* SDC V40 - Cotizador más limpio + factura legible */
+
+/* En cotizar/vender no se muestran los 500 productos hasta elegir categoría */
+.quote-category-strip{
+  padding-bottom:8px!important;
+}
+.quote-category-strip .chip{
+  background:rgba(255,255,255,.06)!important;
+  border:1px solid rgba(24,231,255,.28)!important;
+  color:#e8f6ff!important;
+}
+.quote-category-strip .chip.active{
+  background:linear-gradient(135deg,#1ed7ff,#2ce6ff)!important;
+  border-color:rgba(46,230,255,.45)!important;
+  color:#06131f!important;
+  box-shadow:0 10px 22px rgba(30,215,255,.16)!important;
+}
+.picker-empty{
+  min-height:150px;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  padding:26px 18px;
+  border-radius:26px;
+  border:1px dashed rgba(24,231,255,.30);
+  background:linear-gradient(145deg,rgba(13,33,52,.74),rgba(6,15,27,.92));
+  color:#dceeff;
+}
+.picker-empty b{
+  display:block;
+  font-size:clamp(20px,4vw,28px);
+  line-height:1.08;
+  letter-spacing:.03em;
+  margin-bottom:8px;
+}
+.picker-empty span{
+  display:block;
+  max-width:620px;
+  color:#9fb5c8;
+  font-weight:850;
+  line-height:1.35;
+}
+body.theme-pro .picker-empty,
+body.pro-mode .picker-empty,
+body[data-theme="pro"] .picker-empty{
+  background:linear-gradient(145deg,#f8fbff,#eef6fb)!important;
+  border-color:#cfe2ee!important;
+  color:#0a1a2a!important;
+  box-shadow:none!important;
+}
+body.theme-pro .picker-empty span,
+body.pro-mode .picker-empty span,
+body[data-theme="pro"] .picker-empty span{
+  color:#607286!important;
+}
+
+/* Modo PRO: colores más combinados, menos verde neón */
+body.theme-pro,
+body.pro-mode,
+body[data-theme="pro"]{
+  --pro-navy:#092238;
+  --pro-blue:#1687d9;
+  --pro-cyan:#25bfea;
+  --pro-soft:#eef6fb;
+  --pro-line:#d7e6f0;
+  --pro-text:#071827;
+  background:linear-gradient(120deg,#f7fbff,#edf4f8)!important;
+}
+body.theme-pro .btn,
+body.pro-mode .btn,
+body[data-theme="pro"] .btn{
+  background:linear-gradient(135deg,var(--pro-blue),var(--pro-cyan))!important;
+  color:#fff!important;
+  box-shadow:0 14px 28px rgba(22,135,217,.18)!important;
+}
+body.theme-pro .btn.ghost,
+body.theme-pro .btn.secondary,
+body.pro-mode .btn.ghost,
+body.pro-mode .btn.secondary,
+body[data-theme="pro"] .btn.ghost,
+body[data-theme="pro"] .btn.secondary{
+  background:#f1f6fa!important;
+  color:var(--pro-text)!important;
+  border-color:#cfe0ea!important;
+  box-shadow:none!important;
+}
+body.theme-pro .chip.active,
+body.pro-mode .chip.active,
+body[data-theme="pro"] .chip.active{
+  background:linear-gradient(135deg,#0e6fb2,#23b4df)!important;
+  color:#fff!important;
+}
+body.theme-pro .stock-badge,
+body.pro-mode .stock-badge,
+body[data-theme="pro"] .stock-badge{
+  background:linear-gradient(135deg,#0e6fb2,#23b4df)!important;
+  color:#fff!important;
+}
+body.theme-pro .price-badge,
+body.pro-mode .price-badge,
+body[data-theme="pro"] .price-badge{
+  background:#092238!important;
+  color:#fff!important;
+  border-color:#1a8ed0!important;
+}
+body.theme-pro .metric b,
+body.pro-mode .metric b,
+body[data-theme="pro"] .metric b,
+body.theme-pro .stat b,
+body.pro-mode .stat b,
+body[data-theme="pro"] .stat b{
+  color:#071827!important;
+}
+
+/* Factura/cotización: evitar que el total superior se salga */
+.receipt-header-pro{
+  grid-template-columns:minmax(0,1fr) minmax(245px,330px)!important;
+  align-items:stretch!important;
+}
+.receipt-total-pro{
+  min-width:0!important;
+  overflow:hidden!important;
+  padding:22px 24px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+.receipt-total-pro b{
+  display:block!important;
+  max-width:100%!important;
+  font-size:clamp(30px,3.8vw,42px)!important;
+  line-height:.98!important;
+  letter-spacing:-.065em!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+  color:#071827!important;
+  text-shadow:none!important;
+}
+.receipt-band-pro{
+  background:#08263c!important;
+}
+.receipt-badge-pro{
+  background:#dcecff!important;
+  color:#08263c!important;
+  border-color:#bcd7ea!important;
+}
+.receipt-footer-pro{
+  grid-template-columns:minmax(0,1fr) minmax(220px,max-content)!important;
+  gap:24px!important;
+}
+.receipt-footer-pro b,
+.receipt-footer-phone{
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  color:#0b6f9a!important;
+}
+@media(max-width:760px){
+  .receipt-header-pro{
+    grid-template-columns:1fr!important;
+  }
+  .receipt-total-pro{
+    min-height:auto!important;
+    padding:16px 18px!important;
+  }
+  .receipt-total-pro b{
+    font-size:clamp(32px,10vw,48px)!important;
+  }
+  .receipt-footer-pro{
+    grid-template-columns:1fr!important;
+    text-align:left!important;
+  }
+}
+.picker-limit-note{
+  padding:14px 16px;
+  border-radius:18px;
+  border:1px solid rgba(24,231,255,.25);
+  background:rgba(24,231,255,.08);
+  color:#b9d2e6;
+  font-weight:900;
+  text-align:center;
+}
+body.theme-pro .picker-limit-note,
+body.pro-mode .picker-limit-note,
+body[data-theme="pro"] .picker-limit-note{
+  background:#f1f7fb!important;
+  color:#51677b!important;
+  border-color:#d2e4ef!important;
+}

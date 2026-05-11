@@ -716,7 +716,7 @@
     const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
     const itemCount=(doc.items||[]).reduce((a,it)=>a+Math.max(1,Number(it.qty)||1),0);
     const titleText=isSale?'RECIBO DE COMPRA':'COTIZACIÓN PARA CLIENTE';
-    const statusText=isSale?'Venta registrada':'Pendiente de aprobación';
+    const statusText=isSale?'Venta confirmada':'Pendiente de confirmación';
     const productTitle=isSale?'Productos vendidos':'Productos cotizados';
     const paymentTitle=doc.cod?'Pagar al recibir':'Envío normal';
     const process=doc.cod?'Productos + Lps. 100 de envío + comisión del '+(state.settings.codPercent||6)+'%. Total redondeado en lempiras.':'Productos + Lps. 110 de envío. Pago por depósito, transferencia o Tigo Money.';
@@ -745,7 +745,7 @@
     }).join('')||'<div class="receipt-empty-pro">Sin productos agregados</div>';
     const commissionRow=(doc.cod||c.commission>0)?`<div><span>Comisión pagar al recibir</span><b>${money(c.commission)}</b></div>`:'';
     const discountRow=c.discount>0?`<div><span>Descuento</span><b>- ${money(c.discount)}</b></div>`:'';
-    const note=isSale?'Venta registrada en SD COMAYAGUA. Gracias por su compra; conserve este recibo para cualquier consulta.':'Cotización pendiente de aprobación. No aparta producto. Antes de pagar, confirme disponibilidad, entrega y total final.';
+    const note=isSale?'Venta confirmada en SD COMAYAGUA. Gracias por su compra; conserve este recibo para cualquier consulta.':'Cotización pendiente de confirmación. No aparta producto. Antes de pagar, confirme disponibilidad, entrega y total final.';
     return `<div class="doc-wrap compact-doc doc-v21 doc-v23 receipt-pro-v4 receipt-v32 ${isSale?'receipt-sale-v32':'receipt-quote-v32'}" id="printableDoc">
       <div class="receipt-band-pro"><span>${titleText}</span><b>${statusText}</b></div>
       <div class="receipt-inner-pro">
@@ -818,10 +818,10 @@
     const client=String(doc.client||'').trim()||'Cliente no registrado';
     const phone=String(doc.phone||'').trim()||'No registrado';
     const title=isSale?'🧾 *RECIBO DE COMPRA - SD COMAYAGUA*':'📋 *COTIZACIÓN - SD COMAYAGUA*';
-    const status=isSale?'Venta registrada':'Pendiente de aprobación';
+    const status=isSale?'Venta confirmada':'Pendiente de confirmación';
     const footer=isSale
-      ? 'Gracias por su compra. Conserve este recibo para cualquier consulta.'
-      : 'Esta cotización no aparta producto. El stock se descuenta hasta convertir la cotización en venta. Antes de pagar, confirme disponibilidad, entrega y total final.';
+      ? 'Venta confirmada. Gracias por su compra. Conserve este recibo para cualquier consulta.'
+      : 'Cotización pendiente de confirmación. Esta cotización no aparta producto. El stock se descuenta hasta convertir la cotización en venta. Antes de pagar, confirme disponibilidad, entrega y total final.';
     const paymentNote=doc.cod
       ? `Pagar al recibir: productos + ${money(c.shipping)} de envío + comisión del ${state.settings.codPercent||6}%.`
       : `Envío normal: productos + ${money(c.shipping)} de envío. Pago por depósito, transferencia o Tigo Money.`;

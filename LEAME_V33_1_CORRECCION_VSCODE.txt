@@ -1,0 +1,18 @@
+CORRECCION V33.1 - AVISOS DE VSCODE
+
+Esta version agrega archivos de configuracion para evitar los avisos:
+- No se puede leer jsconfig.json
+- No se puede leer tsconfig.json
+- No se encontraron entradas en el archivo de configuracion
+
+Estos avisos son de Visual Studio Code / TypeScript, no son un error visible en la pagina web.
+
+Archivos agregados:
+- jsconfig.json
+- tsconfig.json
+- js/jsconfig.json
+- js/tsconfig.json
+
+Si GitHub le pide reemplazar, acepte reemplazar.
+Despues cierre y vuelva a abrir VSCode o presione Ctrl + Shift + P y ejecute:
+TypeScript: Restart TS Server

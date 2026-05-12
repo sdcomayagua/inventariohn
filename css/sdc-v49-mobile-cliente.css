@@ -1395,3 +1395,93 @@ body.sdc-mobile-pro .quote-category-strip .chip{
   font-size:11.5px!important;
   background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04))!important;
 }
+
+/* ==========================================================
+   V49.8 - Ajustes auditados: foto cliente, acciones, recibo horizontal
+   ========================================================== */
+body.gamer-mode .topbar .top-title,
+body.sdc-mobile-pro .topbar .top-title{min-width:0!important;flex:1 1 auto!important;overflow:hidden!important;}
+body.gamer-mode .topbar .top-title h1,
+body.sdc-mobile-pro .topbar .top-title h1{font-size:clamp(18px,5.4vw,25px)!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important;letter-spacing:.05em!important;}
+body.gamer-mode .topbar .top-title p,
+body.sdc-mobile-pro .topbar .top-title p{display:none!important;}
+body.gamer-mode .stat span,
+body.sdc-mobile-pro .stat span{color:#d8e8f2!important;opacity:.86!important;text-shadow:0 1px 1px rgba(0,0,0,.25)!important;}
+
+/* Producto / detalle: título menos pesado y pestañas sin tapar contenido */
+body.gamer-mode #modalRoot .modal-head.v49-detail-head h3,
+body.sdc-mobile-pro #modalRoot .modal-head.v49-detail-head h3{font-size:clamp(18px,5.2vw,26px)!important;line-height:1.1!important;letter-spacing:.025em!important;text-transform:none!important;-webkit-line-clamp:3!important;}
+body.gamer-mode #modalRoot .v49-tabbar,
+body.sdc-mobile-pro #modalRoot .v49-tabbar{position:relative!important;top:auto!important;z-index:1!important;background:transparent!important;box-shadow:none!important;border:0!important;}
+
+/* 1 fila: STOCK con forma y fuerza similar a VER */
+body.gamer-mode .grid.one-col .v49-card-actions.v49-card-actions-single,
+body.sdc-mobile-pro .grid.one-col .v49-card-actions.v49-card-actions-single{grid-template-columns:1.05fr .95fr!important;gap:10px!important;}
+body.gamer-mode .grid.one-col .v49-card-actions.v49-card-actions-single button,
+body.sdc-mobile-pro .grid.one-col .v49-card-actions.v49-card-actions-single button,
+body.gamer-mode .grid.one-col .v49-stock-pill,
+body.sdc-mobile-pro .grid.one-col .v49-stock-pill{min-height:54px!important;border-radius:24px!important;font-size:clamp(12px,3.3vw,14px)!important;letter-spacing:.07em!important;font-weight:950!important;}
+body.gamer-mode .grid.one-col .v49-stock-pill,
+body.sdc-mobile-pro .grid.one-col .v49-stock-pill{background:linear-gradient(135deg,#15374a,#0f2b3d)!important;color:#f4fbff!important;border:1px solid rgba(122,225,255,.34)!important;box-shadow:0 10px 22px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08)!important;}
+body.gamer-mode .grid.one-col .v49-stock-pill.low,
+body.sdc-mobile-pro .grid.one-col .v49-stock-pill.low{background:linear-gradient(135deg,#284028,#123b3d)!important;color:#ffdf75!important;border-color:rgba(255,213,90,.48)!important;}
+body.gamer-mode .grid.one-col .v49-stock-pill.out,
+body.sdc-mobile-pro .grid.one-col .v49-stock-pill.out{background:linear-gradient(135deg,#472333,#152a3d)!important;color:#ff9aac!important;border-color:rgba(255,92,119,.48)!important;}
+@media(max-width:374px){body.gamer-mode .grid.one-col .v49-stock-pill,body.sdc-mobile-pro .grid.one-col .v49-stock-pill{font-size:11px!important;}}
+
+/* Acciones rápidas: solo texto, sin iconos cortados */
+body.gamer-mode #modalRoot .v49-actions-textonly,
+body.sdc-mobile-pro #modalRoot .v49-actions-textonly{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important;padding:14px!important;}
+body.gamer-mode #modalRoot .v49-actions-textonly .btn,
+body.sdc-mobile-pro #modalRoot .v49-actions-textonly .btn{min-height:74px!important;padding:10px 8px!important;border-radius:22px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;overflow:hidden!important;}
+body.gamer-mode #modalRoot .v49-actions-textonly .btn::before,
+body.gamer-mode #modalRoot .v49-actions-textonly .btn::after,
+body.sdc-mobile-pro #modalRoot .v49-actions-textonly .btn::before,
+body.sdc-mobile-pro #modalRoot .v49-actions-textonly .btn::after{display:none!important;content:none!important;}
+body.gamer-mode #modalRoot .v49-actions-textonly .btn span,
+body.sdc-mobile-pro #modalRoot .v49-actions-textonly .btn span{display:block!important;width:100%!important;font-size:clamp(17px,4.9vw,23px)!important;line-height:1.05!important;letter-spacing:.055em!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:normal!important;hyphens:none!important;}
+body.gamer-mode #modalRoot .v49-actions-textonly .btn small,
+body.sdc-mobile-pro #modalRoot .v49-actions-textonly .btn small{display:none!important;}
+@media(max-width:374px){body.gamer-mode #modalRoot .v49-actions-textonly .btn span,body.sdc-mobile-pro #modalRoot .v49-actions-textonly .btn span{font-size:15px!important;}}
+
+/* Foto para cliente: textos más grandes, contraste más fuerte y menos azul suave */
+.productPhotoExportHost{position:fixed!important;left:-99999px!important;top:0!important;width:auto!important;height:auto!important;opacity:1!important;pointer-events:none!important;z-index:-1!important;}
+.productPhotoClean-v498{width:1080px!important;background:#fff!important;color:#061522!important;border-radius:34px!important;padding:52px!important;box-shadow:none!important;border:0!important;overflow:hidden!important;}
+.productPhotoClean-v498 .productPhotoHead{height:112px!important;background:#061827!important;border:0!important;border-radius:0!important;color:#fff!important;padding:22px 28px!important;display:grid!important;grid-template-columns:74px minmax(0,1fr) 235px!important;gap:20px!important;align-items:center!important;}
+.productPhotoClean-v498 .productPhotoHead img{width:74px!important;height:74px!important;border-radius:18px!important;background:#fff!important;padding:5px!important;object-fit:contain!important;}
+.productPhotoClean-v498 .productPhotoHead strong{font-size:34px!important;line-height:.98!important;letter-spacing:.055em!important;color:#fff!important;white-space:nowrap!important;}
+.productPhotoClean-v498 .productPhotoHead span{font-size:18px!important;letter-spacing:.18em!important;color:#c9e4f2!important;margin-top:5px!important;}
+.productPhotoClean-v498 .productPhotoCount{display:block!important;margin-top:7px!important;font-size:16px!important;letter-spacing:.10em!important;color:#94fff2!important;font-style:normal!important;}
+.productPhotoClean-v498 .productPhotoHead>b{height:52px!important;border-radius:999px!important;background:#f4fbff!important;color:#062138!important;border:1px solid #bfe7f2!important;font-size:17px!important;letter-spacing:.10em!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0 18px!important;white-space:nowrap!important;}
+.productPhotoClean-v498 .productPhotoImageWrap{margin:52px 0 38px!important;border-radius:36px!important;overflow:hidden!important;background:#eef8fd!important;border:1px solid #d8ebf4!important;height:780px!important;position:relative!important;}
+.productPhotoClean-v498 .productPhotoImageWrap img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;}
+.productPhotoClean-v498 .productPhotoImageWrap strong{position:absolute!important;left:34px!important;bottom:28px!important;min-width:520px!important;height:82px!important;border-radius:0 999px 999px 0!important;background:#f7fbff!important;color:#061522!important;border:4px solid #34efd0!important;box-shadow:0 14px 32px rgba(0,0,0,.16)!important;font-size:41px!important;letter-spacing:-.03em!important;display:flex!important;align-items:center!important;padding:0 34px!important;}
+.productPhotoClean-v498 .productPhotoBody{padding:32px 34px 42px!important;border:1px solid #e1edf3!important;border-radius:28px!important;background:#fff!important;}
+.productPhotoClean-v498 .productPhotoBody h2{font-size:43px!important;line-height:1.05!important;letter-spacing:-.02em!important;margin:0 0 18px!important;color:#071625!important;}
+.productPhotoClean-v498 .productPhotoBody p{font-size:22px!important;line-height:1.45!important;color:#193246!important;font-weight:850!important;margin:0 0 24px!important;}
+.productPhotoClean-v498 .productPhotoQty{height:62px!important;border-radius:18px!important;background:#f4fbff!important;border:1px solid #d6ecf6!important;display:flex!important;align-items:center!important;justify-content:space-between!important;padding:0 22px!important;margin:0 0 20px!important;}
+.productPhotoClean-v498 .productPhotoQty span{font-size:15px!important;color:#667d91!important;letter-spacing:.18em!important;font-weight:950!important;text-transform:uppercase!important;}
+.productPhotoClean-v498 .productPhotoQty b{font-size:26px!important;color:#061522!important;font-weight:950!important;letter-spacing:-.02em!important;white-space:nowrap!important;}
+.productPhotoClean-v498 .productPhotoPrices{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:16px!important;}
+.productPhotoClean-v498 .productPhotoPrices>div{min-height:126px!important;border-radius:19px!important;background:#fff!important;border:1px solid #dbe9f0!important;padding:18px!important;}
+.productPhotoClean-v498 .productPhotoPrices span{font-size:14px!important;color:#617789!important;letter-spacing:.14em!important;font-weight:950!important;text-transform:uppercase!important;}
+.productPhotoClean-v498 .productPhotoPrices b{display:block!important;font-size:30px!important;line-height:1.05!important;color:#061522!important;margin-top:8px!important;}
+.productPhotoClean-v498 .productPhotoPrices small{display:block!important;font-size:14px!important;color:#5e7485!important;font-weight:850!important;margin-top:8px!important;}
+.productPhotoClean-v498 .productPhotoNote{margin-top:22px!important;border-radius:18px!important;background:#f7fffc!important;border:1px solid #cbf4e8!important;color:#07906f!important;font-size:30px!important;line-height:1.1!important;text-align:center!important;font-weight:950!important;padding:22px!important;}
+.productPhotoClean-v498 .productPhotoFooter{height:70px!important;background:#061827!important;color:#e8faff!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:27px!important;letter-spacing:.06em!important;font-weight:950!important;margin-top:42px!important;}
+
+/* Recibo corto: cliente + hora en una línea compacta */
+.short-receipt .short-meta{display:flex!important;gap:8px!important;align-items:center!important;flex-wrap:nowrap!important;font-size:clamp(14px,3.5vw,17px)!important;line-height:1.15!important;max-width:100%!important;color:#607487!important;}
+.short-receipt .short-meta span{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-weight:900!important;}
+.short-receipt .short-meta em{font-style:normal!important;white-space:nowrap!important;font-weight:850!important;color:#607487!important;}
+.short-receipt .short-brand h2{font-size:clamp(30px,7vw,43px)!important;line-height:.95!important;white-space:nowrap!important;}
+
+/* Categorías / chips: más finos y premium */
+body.gamer-mode .category-card,
+body.sdc-mobile-pro .category-card{border-radius:18px!important;background:linear-gradient(180deg,rgba(13,45,66,.92),rgba(7,28,45,.96))!important;border:1px solid rgba(93,212,255,.24)!important;box-shadow:0 12px 28px rgba(0,0,0,.18)!important;}
+body.gamer-mode .category-card.active,
+body.sdc-mobile-pro .category-card.active{background:linear-gradient(135deg,#2fe7f2,#2cf0b4)!important;border-color:rgba(255,255,255,.4)!important;}
+body.gamer-mode .quote-category-strip .chip,
+body.sdc-mobile-pro .quote-category-strip .chip{min-height:38px!important;padding:8px 14px!important;border-radius:999px!important;background:#0d2a3d!important;color:#dff7ff!important;border:1px solid rgba(117,218,255,.25)!important;font-size:12px!important;letter-spacing:.07em!important;}
+body.gamer-mode .quote-category-strip .chip.active,
+body.sdc-mobile-pro .quote-category-strip .chip.active{background:linear-gradient(135deg,#2fe7f2,#2cf0b4)!important;color:#061522!important;border-color:transparent!important;}

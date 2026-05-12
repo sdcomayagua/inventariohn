@@ -843,19 +843,19 @@
     bindProductDetails(p);
   }
 
-  function productClientPhotoHTML(p, qty){
+  function productClientPhotoHTML(p, qty, imgOverride='', photoIndex=1, photoTotal=1){
     const q=Math.max(1,Number(qty||1));
     const total=productItemsTotal(p,q);
-    const unit=total/q;
     const normal=total+SHIPPING.normal.fee;
     const cod=Math.round((total+SHIPPING.cod.fee)*(1+((state.settings.codPercent||6)/100)));
-    const img=productImage(p);
+    const img=String(imgOverride||productImage(p)||'').trim();
     const st=status(p);
     const gift=p.gift || p.regalo || p.obsequio || '';
     const offer=promoLabelForQty(p,q);
+    const photoLabel=photoTotal>1?`<small class="productPhotoCount">Foto ${num(photoIndex)} de ${num(photoTotal)}</small>`:'';
     return `
-      <div class="productPhotoClean productPhotoClean-v49" data-export="product-photo-clean">
-        <div class="productPhotoHead"><img src="${LOGO_SRC}" crossorigin="anonymous"><div><strong>SD COMAYAGUA</strong><span>Producto para cliente</span></div><b>${st.text}</b></div>
+      <div class="productPhotoClean productPhotoClean-v49 productPhotoClean-v498" data-export="product-photo-clean">
+        <div class="productPhotoHead"><img src="${LOGO_SRC}" crossorigin="anonymous"><div><strong>SD COMAYAGUA</strong><span>Producto para cliente</span>${photoLabel}</div><b>${st.text}</b></div>
         <div class="productPhotoImageWrap"><img src="${escapeHtml(img)}" crossorigin="anonymous" onerror="this.onerror=null;this.src='${escapeHtml(captureFallbackImage())}'"><strong>${money(p.price)}</strong></div>
         <div class="productPhotoBody">
           <h2>${escapeHtml(p.name)}</h2>
@@ -911,7 +911,8 @@
     const normal=total+SHIPPING.normal.fee;
     const cod=Math.round((total+SHIPPING.cod.fee)*(1+((state.settings.codPercent||6)/100)));
     const offer=promoLabelForQty(p,q);
-    const desc=productDescription(p);
+    let desc=productDescription(p);
+    if(desc && !/[.!?…]$/.test(desc.trim())) desc=desc.trim()+'.';
     return `📦 *${p.name}*\n\n💰 *Precio:* ${money(p.price)}\n🔢 *Cantidad consultada:* ${num(q)}\n🧾 *Producto:* ${money(total)}${offer?`\n🎁 *Oferta aplicada:* ${offer}`:''}\n\n🚚 *Opciones de entrega:*\n• Depósito / Tigo Money: *${money(normal)}*\n• Pagar al recibir: *${money(cod)}*\n• Envío local: *${LOCAL_PLACEHOLDER}*\n\n📝 *Descripción:*\n${desc}\n\n✅ *Precio sujeto a disponibilidad.*\n\n🏪 *SD COMAYAGUA*\n📲 WhatsApp: +504 3151-7755`;
   }
 
@@ -937,26 +938,35 @@
     if(!p) return toast('Producto no encontrado.');
     const original = btn?.textContent || btn?.innerHTML;
     if(btn){ btn.disabled = true; btn.textContent = 'GENERANDO...'; }
+    const images = galleryOf(p).slice(0,6);
+    const safeImages = images.length ? images : [productImage(p)||captureFallbackImage()];
     const host = document.createElement('div');
     host.className = 'productPhotoExportHost';
-    host.innerHTML = productClientPhotoHTML(p, clientQty(p.id));
     document.body.appendChild(host);
     try{
-      await waitImages(host);
-      const node = host.querySelector('[data-export="product-photo-clean"]');
-      let blob = null;
-      try{
-        blob = await captureNodeAsPngBlob(node, 3);
-      }catch(firstErr){
-        console.warn('Primer intento de captura falló. Reintentando con imagen segura.', firstErr);
-        host.querySelectorAll('.productPhotoImageWrap img').forEach(img=>img.src=captureFallbackImage());
+      let count=0;
+      for(const [idx,imgSrc] of safeImages.entries()){
+        host.innerHTML = productClientPhotoHTML(p, clientQty(p.id), imgSrc, idx+1, safeImages.length);
         await waitImages(host);
-        blob = await captureNodeAsPngBlob(node, 3);
+        const node = host.querySelector('[data-export="product-photo-clean"]');
+        let blob = null;
+        try{
+          blob = await captureNodeAsPngBlob(node, 3);
+        }catch(firstErr){
+          console.warn('Primer intento de captura falló. Reintentando con imagen segura.', firstErr);
+          host.querySelectorAll('.productPhotoImageWrap img').forEach(img=>img.src=captureFallbackImage());
+          await waitImages(host);
+          blob = await captureNodeAsPngBlob(node, 3);
+        }
+        if(blob){
+          const suffix=safeImages.length>1?`-foto-${idx+1}`:'';
+          const filename = `producto-${slugFile(p.name||p.id||'producto')}${suffix}-${fileStamp()}-${slugFile(p.id||'sdc')}.png`;
+          downloadBlob(blob, filename);
+          count++;
+          await sleep(180);
+        }
       }
-      if(!blob) throw new Error('No se pudo crear la imagen.');
-      const filename = `producto-${slugFile(p.name||p.id||'producto')}-${fileStamp()}-${slugFile(p.id||'sdc')}.png`;
-      downloadBlob(blob, filename);
-      toast('PNG limpio descargado sin barra del navegador.');
+      toast(count>1?`${count} fotos limpias descargadas.`:'PNG limpio descargado sin barra del navegador.');
     }catch(err){
       console.error(err);
       toast('No se pudo generar la foto del producto. Verifique que la librería html2canvas cargó.');
@@ -980,31 +990,39 @@
     const ref=prompt('Número o nombre del cliente para nombrar la imagen. Déjelo vacío para compartir manual:', state.settings.lastClientFileRef||'');
     if(ref===null)return;
     state.settings.lastClientFileRef=ref.trim(); save();
-    const filename=`producto-${slugFile(ref||p.name||p.id||'producto')}-${fileStamp()}-${slugFile(p.id||'sdc')}.png`;
+    const images=galleryOf(p).slice(0,6);
+    const safeImages=images.length?images:[productImage(p)||captureFallbackImage()];
     const host=document.createElement('div');
     host.className='productPhotoExportHost';
-    host.innerHTML=productClientPhotoHTML(p,q);
     document.body.appendChild(host);
     try{
-      await waitImages(host);
-      const node=host.querySelector('[data-export="product-photo-clean"]');
-      let blob=null;
-      try{
-        blob=await captureNodeAsPngBlob(node,3);
-      }catch(firstErr){
-        console.warn('No se pudo capturar con imagen externa. Usando respaldo.',firstErr);
-        host.querySelectorAll('.productPhotoImageWrap img').forEach(img=>img.src=captureFallbackImage());
+      const files=[];
+      for(const [idx,imgSrc] of safeImages.entries()){
+        host.innerHTML=productClientPhotoHTML(p,q,imgSrc,idx+1,safeImages.length);
         await waitImages(host);
-        blob=await captureNodeAsPngBlob(node,3);
-      }
-      if(blob && navigator.canShare){
-        const file=new File([blob],filename,{type:'image/png'});
-        if(navigator.canShare({files:[file]})){
-          try{await navigator.share({files:[file],text,title:'Producto SD Comayagua'}); toast('Seleccione WhatsApp y el chat del cliente.'); return;}catch(e){if(e && e.name==='AbortError')return;}
+        const node=host.querySelector('[data-export="product-photo-clean"]');
+        let blob=null;
+        try{
+          blob=await captureNodeAsPngBlob(node,3);
+        }catch(firstErr){
+          console.warn('No se pudo capturar con imagen externa. Usando respaldo.',firstErr);
+          host.querySelectorAll('.productPhotoImageWrap img').forEach(img=>img.src=captureFallbackImage());
+          await waitImages(host);
+          blob=await captureNodeAsPngBlob(node,3);
+        }
+        if(blob){
+          const suffix=safeImages.length>1?`-foto-${idx+1}`:'';
+          const filename=`producto-${slugFile(ref||p.name||p.id||'producto')}${suffix}-${fileStamp()}-${slugFile(p.id||'sdc')}.png`;
+          files.push(new File([blob],filename,{type:'image/png'}));
         }
       }
-      if(blob){downloadBlob(blob,filename); toast('La foto se descargó para compartirla por WhatsApp.');}
-      else toast('No se pudo generar la foto del producto.');
+      if(files.length && navigator.canShare && navigator.canShare({files})){
+        try{await navigator.share({files,text,title:'Producto SD Comayagua'}); toast(files.length>1?'Seleccione WhatsApp; se compartirán todas las fotos.':'Seleccione WhatsApp y el chat del cliente.'); return;}catch(e){if(e && e.name==='AbortError')return;}
+      }
+      if(files.length){
+        files.forEach(file=>downloadBlob(file,file.name));
+        toast(files.length>1?'Se descargaron las fotos para compartirlas por WhatsApp.':'La foto se descargó para compartirla por WhatsApp.');
+      }else toast('No se pudo generar la foto del producto.');
     }catch(err){
       console.error(err);
       toast('No se pudo compartir la foto. Verifique que cargó html2canvas.');
@@ -1017,7 +1035,7 @@
   function quoteModalHTML(isSale=false){
     const doc=isSale?saleDraft:quote; const editingSale=isSale && !!doc.editingId; const title=isSale?(editingSale?'Editar factura':'Venta / factura real'):'Cotización previa';
     const currentTitle=isSale?'Factura actual':'Cotización actual';
-    return `<div class="modal-head quote-head"><h3>${title}</h3><button class="close">×</button></div><div class="modal-body quote-body"><div class="pill quote-status"><span class="dot"></span>${isSale?(editingSale?'Editando factura guardada':'Factura y registro'):'Preventa / información'}</div><div class="quote-jumpbar no-print"><button type="button" data-jump="pickerList">Productos</button><button type="button" data-jump="currentDocTitle">Lista</button><button type="button" data-jump="docPreview">Vista previa</button></div><div class="modal-grid quote-grid" style="margin-top:14px"><div class="card-box span2 picker-card"><div class="picker-head-compact"><div><b>Seleccionar producto</b><small>Primero toque una categoría. El listado aparece después para no estorbar.</small></div><span id="pickerCounter" class="found-pill">Elija categoría</span></div><div class="searchbar"><span class="icon">⌕</span><input id="pickSearch" placeholder="Buscar por nombre o código... mínimo 2 letras"></div><div class="chips quote-category-strip" id="pickChips">${allCategories().filter(c=>c!=='Todos').map(c=>`<button class="chip" data-pickcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="pickerList" class="picker-list"></div></div><div class="card-box calc-card"><h4>Datos para calcular</h4>${fieldsHTML(doc)}</div><div class="card-box current-card"><div class="current-card-head"><h4 id="currentDocTitle">${currentTitle}</h4><span class="selected-count-pill" id="selectedCountPill">0 artículos</span></div><div id="cartNotice" class="cart-notice hide"><b>✓ Artículo seleccionado</b><span>Producto agregado correctamente.</span></div><div id="cartList" class="cart-list"></div><div id="totalsMini"></div></div><div class="span2 preview-card"><div id="docPreview">${docCard(doc,isSale)}</div></div></div><div class="modal-actions quote-actions premium-actions compact-actions v47-actions v49-actions-clean v49-actions-readable"><button class="btn secondary" id="backToQuote"><span>Volver</span><small>Cotizar</small></button><button class="btn secondary" id="downloadDoc"><span>Imagen</span><small>Descargar</small></button><button class="btn secondary" id="shortReceipt"><span>Recibo</span><small>Corto</small></button><button class="btn secondary" id="waText"><span>Texto</span><small>WhatsApp</small></button>${!isSale?'<button class="btn save-doc" id="saveQuote"><span>Guardar</span><small>Cotización</small></button><button class="btn secondary" id="openQuotes"><span>Guardadas</span><small>Lista</small></button><button class="btn secondary" id="openClientsFromDoc"><span>Clientes</span><small>Agenda</small></button><button class="btn main-wide to-sale" id="toSale"><span>Facturar</span><small>Venta real</small></button>':`<button class="btn main-wide" id="finishSale"><span>${editingSale?'Guardar':'Finalizar'}</span><small>${editingSale?'Cambios':'Venta'}</small></button><button class="btn secondary" id="printDoc"><span>PDF</span><small>Imprimir</small></button>`}</div></div>`
+    return `<div class="modal-head quote-head"><h3>${title}</h3><button class="close">×</button></div><div class="modal-body quote-body"><div class="pill quote-status"><span class="dot"></span>${isSale?(editingSale?'Editando factura guardada':'Factura y registro'):'Preventa / información'}</div><div class="quote-jumpbar no-print"><button type="button" data-jump="pickerList">Productos</button><button type="button" data-jump="currentDocTitle">Lista</button><button type="button" data-jump="docPreview">Vista previa</button></div><div class="modal-grid quote-grid" style="margin-top:14px"><div class="card-box span2 picker-card"><div class="picker-head-compact"><div><b>Seleccionar producto</b><small>Primero toque una categoría. El listado aparece después para no estorbar.</small></div><span id="pickerCounter" class="found-pill">Elija categoría</span></div><div class="searchbar"><span class="icon">⌕</span><input id="pickSearch" placeholder="Buscar por nombre o código... mínimo 2 letras"></div><div class="chips quote-category-strip" id="pickChips">${allCategories().filter(c=>c!=='Todos').map(c=>`<button class="chip" data-pickcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="pickerList" class="picker-list"></div></div><div class="card-box calc-card"><h4>Datos para calcular</h4>${fieldsHTML(doc)}</div><div class="card-box current-card"><div class="current-card-head"><h4 id="currentDocTitle">${currentTitle}</h4><span class="selected-count-pill" id="selectedCountPill">0 artículos</span></div><div id="cartNotice" class="cart-notice hide"><b>✓ Artículo seleccionado</b><span>Producto agregado correctamente.</span></div><div id="cartList" class="cart-list"></div><div id="totalsMini"></div></div><div class="span2 preview-card"><div id="docPreview">${docCard(doc,isSale)}</div></div></div><div class="modal-actions quote-actions premium-actions compact-actions v47-actions v49-actions-clean v49-actions-readable v49-actions-textonly"><button class="btn secondary" id="backToQuote"><span>Volver</span></button><button class="btn secondary" id="downloadDoc"><span>Imagen</span></button><button class="btn secondary" id="shortReceipt"><span>Recibo corto</span></button><button class="btn secondary" id="waText"><span>WhatsApp</span></button>${!isSale?'<button class="btn save-doc" id="saveQuote"><span>Guardar</span></button><button class="btn secondary" id="openQuotes"><span>Guardadas</span></button><button class="btn secondary" id="openClientsFromDoc"><span>Clientes</span></button><button class="btn main-wide to-sale" id="toSale"><span>Facturar</span></button>':`<button class="btn main-wide" id="finishSale"><span>${editingSale?'Guardar':'Finalizar'}</span></button><button class="btn secondary" id="printDoc"><span>PDF</span></button>`}</div></div>`
   }
   function fieldsHTML(doc){
     const type=shippingKey(doc);
@@ -1121,7 +1139,7 @@
     $('#waPhoto')&&($('#waPhoto').onclick=()=>shareDocPhoto(isSale));
     $('#sendCompleteQuote')&&($('#sendCompleteQuote').onclick=sendCompleteQuote);
     $('#openClientsFromDoc')&&($('#openClientsFromDoc').onclick=()=>openClients(isSale?'sale':'quote'));
-    $('#printDoc')&&($('#printDoc').onclick=printDocumentCard);
+    $('#printDoc')&&($('#printDoc').onclick=()=>printDocumentCard(isSale));
     $('#saveQuote')&&($('#saveQuote').onclick=saveCurrentQuote);
     $('#openQuotes')&&($('#openQuotes').onclick=openSavedQuotes);
     $('#toSale')&&($('#toSale').onclick=()=>{if(!quote.items.length)return toast('Agrega productos antes de pasar a venta.'); closeModal(); openSale(null,quote)});
@@ -1281,40 +1299,97 @@
     return doc.phone||'';
   }
   function sendWhatsAppText(isSale){const doc=currentDoc(isSale); if(!doc.items.length)return toast('Agrega productos primero.'); const c=calc(doc); if(c.products<=0||c.total<=0)return toast('El total está en cero. Revisa producto, precio y envío antes de enviar.'); const phone=chooseWaPhone(doc); if(phone===null)return; save(); openWhatsApp(phone,whatsappText(doc,isSale));}
-  async function docToBlob(){
+  function receiptLandscapeHTML(doc,isSale=true){
+    const c=calc(doc);
+    const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
+    const title=isSale?'RECIBO DE COMPRA':'COTIZACIÓN PREVIA';
+    const status=isSale?'VENTA CONFIRMADA':'PENDIENTE';
+    const note=isSale?'Venta confirmada en SD COMAYAGUA. Gracias por su compra; conserve este recibo para cualquier consulta.':'Cotización pendiente de confirmación. No aparta producto. Antes de pagar, confirme disponibilidad, entrega y total final.';
+    const items=(doc.items||[]).map((it,i)=>{
+      const qty=Math.max(1,+it.qty||1);
+      const total=itemTotal(it);
+      const unit=total/qty;
+      const img=it.image||productImage(itemProductRef(it))||captureFallbackImage();
+      return `<div class="rl-row"><span class="rl-num">${i+1}</span><img src="${escapeHtml(img)}" crossorigin="anonymous" onerror="this.onerror=null;this.src='${escapeHtml(captureFallbackImage())}'"><div><b>${escapeHtml(it.name)}</b><small>${num(qty)} ${qty===1?'unidad':'unidades'} · ${money(unit)} c/u</small></div><strong>${money(total)}</strong></div>`;
+    }).join('')||'<div class="rl-empty">Sin productos agregados.</div>';
+    const commission=c.commission?`<div><span>Comisión</span><b>${money(c.commission)}</b></div>`:'';
+    const discount=c.discount?`<div><span>Descuento</span><b>- ${money(c.discount)}</b></div>`:'';
+    return `<article class="receiptLandscape-v49" id="receiptLandscapeDoc">
+      <header class="rl-top"><div class="rl-brand"><img src="${RECEIPT_LOGO_SRC}" crossorigin="anonymous" onerror="this.style.display='none'"><div><small>SD COMAYAGUA</small><h1>${title}</h1><p>${date} · ${escapeHtml(doc.id||'SDC')}</p></div></div><b>${status}</b></header>
+      <section class="rl-main">
+        <div class="rl-left">
+          <div class="rl-total"><span>Total a pagar</span><b>${money(c.total)}</b></div>
+          <div class="rl-grid"><div><span>Cliente</span><b>${escapeHtml(doc.client||'Cliente no registrado')}</b></div><div><span>Teléfono</span><b>${escapeHtml(doc.phone||'No registrado')}</b></div><div><span>Ubicación</span><b>${escapeHtml((doc.department||'Comayagua')+' / '+(doc.municipality||'Comayagua'))}</b></div><div><span>Pago</span><b>${escapeHtml(shippingLabel(doc))}</b></div></div>
+          <div class="rl-note"><span>Proceso de pago</span><b>${escapeHtml(shippingLabel(doc))}</b><p>${escapeHtml(shippingNote(doc))}</p></div>
+        </div>
+        <div class="rl-right">
+          <div class="rl-products-head"><span>Productos vendidos</span><b>${(doc.items||[]).reduce((a,x)=>a+(+x.qty||1),0)} ${(doc.items||[]).length===1?'artículo':'artículos'}</b></div>
+          <div class="rl-products">${items}</div>
+          <div class="rl-summary"><div><span>Subtotal productos</span><b>${money(c.products)}</b></div><div><span>Envío</span><b>${money(c.shipping)}</b></div>${commission}${discount}<div class="grand"><span>Total a pagar</span><b>${money(c.total)}</b></div></div>
+          <footer class="rl-footer"><p>${note}</p><b>WhatsApp: +504 3151-7755</b></footer>
+        </div>
+      </section>
+    </article>`;
+  }
+  function receiptLandscapeCSS(){return `
+    .receiptLandscape-v49{width:1320px;min-height:760px;background:#f3fbff;color:#061522;border-radius:34px;overflow:hidden;font-family:Barlow,Arial,sans-serif;border:1px solid #d8eaf4;box-shadow:0 24px 60px rgba(4,18,31,.18)}
+    .receiptLandscape-v49 *{box-sizing:border-box}.rl-top{height:118px;background:#061827;color:white;display:flex;align-items:center;justify-content:space-between;padding:24px 34px;border-bottom:8px solid #43f0d0}.rl-brand{display:flex;align-items:center;gap:18px}.rl-brand img{width:76px;height:76px;object-fit:contain;background:white;border-radius:18px;padding:5px}.rl-brand small,.rl-grid span,.rl-note span,.rl-summary span,.rl-total span,.rl-products-head span{display:block;text-transform:uppercase;letter-spacing:.12em;font-weight:900;color:#7b8d9b;font-size:15px}.rl-brand small{color:#8eefff}.rl-brand h1{margin:0;font-size:52px;line-height:.9;letter-spacing:-.04em;color:white}.rl-brand p{margin:5px 0 0;font-size:18px;color:#b9cbd8;font-weight:800}.rl-top>b{background:#a9ffd9;color:#08351e;border-radius:999px;padding:15px 24px;text-transform:uppercase;letter-spacing:.08em;font-size:18px}.rl-main{display:grid;grid-template-columns:430px 1fr;gap:22px;padding:26px}.rl-left,.rl-right{display:flex;flex-direction:column;gap:18px}.rl-total{background:linear-gradient(135deg,#eafcff,#d5fff4);border:1px solid #bceee4;border-radius:28px;padding:26px}.rl-total b{display:block;font-size:72px;line-height:.95;letter-spacing:-.06em;color:#051623;margin-top:8px}.rl-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rl-grid div,.rl-note,.rl-footer{background:white;border:1px solid #dbeaf2;border-radius:20px;padding:17px}.rl-grid b{font-size:19px;color:#071625;line-height:1.12}.rl-note{background:#effcf8}.rl-note>b{display:block;font-size:21px;margin:5px 0;color:#071625}.rl-note p,.rl-footer p{font-size:18px;line-height:1.25;color:#33495c;font-weight:800;margin:0}.rl-products-head{background:#061827;color:white;border-radius:20px 20px 0 0;padding:17px 20px;display:flex;justify-content:space-between}.rl-products-head span{color:white}.rl-products-head b{color:#a9ffd9;font-size:19px;text-transform:uppercase;letter-spacing:.08em}.rl-products{background:white;border:1px solid #dbeaf2;border-top:0;border-radius:0 0 20px 20px;overflow:hidden;max-height:260px}.rl-row{display:grid;grid-template-columns:46px 58px 1fr 115px;align-items:center;gap:12px;padding:13px 18px;border-top:1px solid #eef4f8}.rl-row:first-child{border-top:0}.rl-row img{width:58px;height:58px;object-fit:cover;border-radius:14px;background:#eff8fd}.rl-num{width:42px;height:42px;border-radius:14px;background:#eef9fd;display:grid;place-items:center;font-weight:950;color:#0a688c}.rl-row b{display:block;font-size:20px;line-height:1.06;color:#071625}.rl-row small{display:block;font-size:16px;color:#607487;font-weight:800;margin-top:4px}.rl-row strong{font-size:23px;text-align:right;color:#071625}.rl-summary{background:white;border:1px solid #dbeaf2;border-radius:20px;overflow:hidden}.rl-summary>div{display:flex;justify-content:space-between;gap:20px;padding:14px 18px;border-bottom:1px solid #edf4f8}.rl-summary>div:last-child{border-bottom:0}.rl-summary b{font-size:22px;color:#071625}.rl-summary .grand{background:#061827;color:white}.rl-summary .grand span{color:white}.rl-summary .grand b{font-size:38px;color:#56ffd2}.rl-footer b{margin-top:14px;display:inline-flex;border:1px solid #cbeaf2;background:#edfaff;color:#07658d;border-radius:999px;padding:10px 18px;font-size:19px}.rl-empty{padding:25px;font-weight:900;color:#617889}@media print{html,body{margin:0!important;background:white!important}.receiptLandscape-v49{width:100%!important;min-height:auto!important;border-radius:0!important;box-shadow:none!important;border:0!important}.rl-main{grid-template-columns:35% 1fr!important;padding:14px!important;gap:14px!important}.rl-top{height:96px!important;padding:16px 24px!important}.rl-brand h1{font-size:38px!important}.rl-total b{font-size:50px!important}.rl-row b{font-size:15px!important}.rl-row small{font-size:12px!important}.rl-products{max-height:none!important}.rl-note p,.rl-footer p{font-size:14px!important}.rl-grid b{font-size:15px!important}.rl-summary b{font-size:17px!important}.rl-summary .grand b{font-size:31px!important}}
+  `}
+  async function landscapeDocToBlob(doc,isSale=true){
+    const host=document.createElement('div');
+    host.className='productPhotoExportHost docLandscapeExportHost';
+    host.innerHTML=`<style>${receiptLandscapeCSS()}</style>${receiptLandscapeHTML(doc,isSale)}`;
+    document.body.appendChild(host);
+    try{
+      await waitImages(host);
+      const el=host.querySelector('#receiptLandscapeDoc');
+      return await captureNodeAsPngBlob(el,2.4);
+    }finally{host.remove();}
+  }
+
+  async function docToBlob(isSale=false){
+    if(isSale){
+      const doc=currentDoc(true);
+      const blob=await landscapeDocToBlob(doc,true);
+      if(!blob) toast('No se pudo generar la imagen horizontal del recibo.');
+      return blob;
+    }
     const el=$('#printableDoc',modalRoot);
     const blob=await captureNodeToBlob(el,'#eaf5f9');
     if(!blob) toast('No se pudo generar la imagen del documento. Verifique que las miniaturas hayan cargado o use el botón PDF.');
     return blob;
   }
 
-
-  function printDocumentCard(){
-    const node=$('#printableDoc',modalRoot);
-    if(!node){toast('No hay documento listo para imprimir.');return;}
+  function printDocumentCard(isSale=false){
+    const doc=currentDoc(isSale);
     const popup=window.open('','_blank');
     if(!popup){
       document.body.classList.add('sdc-print-direct');
       setTimeout(()=>{window.print(); setTimeout(()=>document.body.classList.remove('sdc-print-direct'),700);},100);
       return;
     }
-    const html=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Documento SD Comayagua</title><style>
-      @page{size:letter;margin:8mm}*{box-sizing:border-box}html,body{margin:0;background:#fff;color:#071625;font-family:Arial,Helvetica,sans-serif}.print-wrap{width:100%;display:flex;justify-content:center;align-items:flex-start;padding:0}.compact-doc,.quote-doc,.receipt-doc{width:100%;max-width:760px;margin:0 auto;background:#fff!important;color:#071625!important;border-radius:22px;overflow:hidden}.doc-top,.doc-header,.receipt-head{background:#071625!important;color:#fff!important;padding:18px 24px;display:flex;justify-content:space-between;gap:12px}.doc-card,.doc-info,.doc-total,.doc-section,.doc-foot,.doc-payment,.doc-box,.doc-customer,.doc-delivery,.doc-pay{border:1px solid #dceaf2;border-radius:18px;margin:14px 20px;padding:16px;background:#fff;color:#071625}.doc-card{display:flex;align-items:center;gap:16px}.doc-total,.doc-grand{background:linear-gradient(135deg,#2ff0bb,#28caf5)!important;color:#071625!important}.doc-products{margin:14px 20px;border:1px solid #dceaf2;border-radius:18px;overflow:hidden}.doc-products-title,.doc-products-head{background:#071625!important;color:#fff!important;padding:14px 18px;display:flex;justify-content:space-between}.receipt-item-v15,.receipt-item-pro{display:grid;grid-template-columns:42px 54px 1fr auto;gap:12px;align-items:center;padding:14px 18px;border-top:1px solid #e7f1f6}.receipt-num,.receipt-item-index,.receipt-item-thumb{width:42px;height:42px;border-radius:12px;background:#eaf8ff;display:grid;place-items:center;font-weight:900}.receipt-item-thumb{object-fit:cover}.receipt-thumb-fallback{font-size:14px}.totals,.doc-totals{margin:14px 20px;border:1px solid #dceaf2;border-radius:18px;overflow:hidden}.totals>div,.doc-totals>div{display:flex;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #e7f1f6}.totals .grand,.doc-totals .grand{background:#071625!important;color:#52ffcc!important;border-bottom:0}img{max-width:100%;height:auto}p{margin:0}.receipt-headline-pro,.receipt-top-grid-pro{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(190px,300px)!important;gap:16px!important}.receipt-total-pro{min-width:0!important;overflow:hidden!important;background:linear-gradient(135deg,#f4f9fd,#e9f3fa)!important;color:#071625!important}.receipt-total-pro b{display:block!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;font-size:42px!important;line-height:1!important;letter-spacing:-.05em!important;color:#071625!important}.receipt-summary-pro .grand,.doc-totals .grand,.totals .grand{background:#071f34!important;color:#fff!important}.receipt-summary-pro .grand b,.doc-totals .grand b,.totals .grand b{color:#fff!important;font-size:38px!important;white-space:nowrap!important;max-width:55%!important;overflow:hidden!important}.receipt-footer-pro,.receipt-footer-clean{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;align-items:stretch!important;overflow:hidden!important;background:#f8fbfd!important;border:1px solid #dceaf2!important;border-radius:20px!important;padding:18px 22px!important}.receipt-note-text{font-size:18px!important;line-height:1.25!important;font-weight:900!important;color:#30475a!important;overflow-wrap:break-word!important}.receipt-whatsapp-pill{display:inline-flex!important;justify-content:center!important;align-items:center!important;justify-self:start!important;border-radius:999px!important;background:#eaf6fc!important;border:1px solid #cbe3f1!important;color:#07658d!important;font-weight:900!important;padding:10px 14px!important;white-space:nowrap!important;font-size:17px!important}.receipt-footer-pro b,.receipt-footer-pro p{overflow-wrap:anywhere!important}.receipt-footer-pro span,.receipt-footer-pro a,.receipt-footer-pro strong{color:#075e88!important;white-space:normal!important;font-size:15px!important}.receipt-logo-inline,.doc-logo,.share-brand-logo{display:block!important;opacity:1!important;visibility:visible!important;object-fit:contain!important;background:#fff!important}.receipt-logo-box,.doc-logo-box,.receipt-brand-logo{background:#fff!important;border:1px solid #d8e5ef!important;color:#075e88!important}.receipt-status-pro,.status-pro{background:#e8f4fb!important;color:#075e88!important;border:1px solid #b9d9eb!important}@media(max-width:760px){.receipt-headline-pro,.receipt-top-grid-pro{grid-template-columns:1fr!important}.receipt-footer-pro{grid-template-columns:1fr!important}.receipt-footer-pro span,.receipt-footer-pro a,.receipt-footer-pro strong{white-space:normal!important}}.no-print,.modal-actions{display:none!important}</style></head><body><div class="print-wrap">${node.outerHTML}</div><script>setTimeout(()=>{window.focus();window.print();},350);</script></body></html>`;
+    const content=isSale?receiptLandscapeHTML(doc,true):($('#printableDoc',modalRoot)?.outerHTML||'');
+    const extraCSS=isSale?receiptLandscapeCSS():'';
+    const html=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${isSale?'Recibo horizontal':'Documento'} SD Comayagua</title><style>
+      @page{size:letter ${isSale?'landscape':'portrait'};margin:6mm}*{box-sizing:border-box}html,body{margin:0;background:#fff;color:#071625;font-family:Arial,Helvetica,sans-serif}.print-wrap{width:100%;display:flex;justify-content:center;align-items:flex-start;padding:0}.no-print,.modal-actions{display:none!important}${extraCSS}
+      ${!isSale?'.compact-doc,.quote-doc,.receipt-doc{width:100%;max-width:760px;margin:0 auto;background:#fff!important;color:#071625!important;border-radius:22px;overflow:hidden}.doc-top,.doc-header,.receipt-head{background:#071625!important;color:#fff!important;padding:18px 24px;display:flex;justify-content:space-between;gap:12px}.doc-card,.doc-info,.doc-total,.doc-section,.doc-foot,.doc-payment,.doc-box,.doc-customer,.doc-delivery,.doc-pay{border:1px solid #dceaf2;border-radius:18px;margin:14px 20px;padding:16px;background:#fff;color:#071625}.doc-products{margin:14px 20px;border:1px solid #dceaf2;border-radius:18px;overflow:hidden}.doc-products-title,.doc-products-head{background:#071625!important;color:#fff!important;padding:14px 18px;display:flex;justify-content:space-between}.totals,.doc-totals{margin:14px 20px;border:1px solid #dceaf2;border-radius:18px;overflow:hidden}.totals>div,.doc-totals>div{display:flex;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #e7f1f6}.totals .grand,.doc-totals .grand{background:#071625!important;color:#52ffcc!important;border-bottom:0}img{max-width:100%;height:auto}p{margin:0}':''}
+      </style></head><body><div class="print-wrap">${content}</div><script>setTimeout(()=>{window.focus();window.print();},450);<\/script></body></html>`;
     popup.document.open();
     popup.document.write(html);
     popup.document.close();
   }
 
   async function downloadDocImage(name='documento'){
-    const doc=name==='recibo'?saleDraft:quote;
-    const blob=await docToBlob();
+    const isSale=name==='recibo';
+    const doc=isSale?saleDraft:quote;
+    const blob=await docToBlob(isSale);
     if(!blob)return;
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download=`${name}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc?.id||'sdc')}.png`;
+    a.download=`${name}${isSale?'-horizontal':''}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc?.id||'sdc')}.png`;
     a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-    toast('Imagen descargada con nombre único.');
+    toast(isSale?'Recibo horizontal descargado con nombre único.':'Imagen descargada con nombre único.');
   }
   async function copyTextSafe(text){
     try{await navigator.clipboard?.writeText(text); return true;}catch(e){return false;}
@@ -1380,9 +1455,9 @@
     const c=calc(doc);
     if(c.products<=0||c.total<=0)return toast('El total está en cero. Revisa producto, precio y envío antes de enviar.');
     save();
-    const blob=await docToBlob();
+    const blob=await docToBlob(isSale);
     const text=whatsappText(doc,isSale);
-    const filename=`${isSale?'recibo':'cotizacion'}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc.id||'sdc')}.png`;
+    const filename=`${isSale?'recibo-horizontal':'cotizacion'}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc.id||'sdc')}.png`;
     if(blob && navigator.canShare){
       const file=new File([blob],filename,{type:'image/png'});
       if(navigator.canShare({files:[file]})){
@@ -1752,7 +1827,7 @@
   function openShortReceipt(isSale){
     const doc=currentDoc(isSale); const c=calc(doc);
     const lines=(doc.items||[]).map(it=>{const qty=Math.max(1,+it.qty||1); return `<div class="short-line item"><span>${escapeHtml(it.name)} <em>x${num(qty)}</em></span><b>${money(itemTotal(it))}</b></div>`}).join('');
-    openModal(`<div class="modal-head short-receipt-head"><h3>Recibo corto</h3><button class="close">×</button></div><div class="modal-body short-receipt-screen"><div class="short-receipt short-receipt-v34 short-receipt-v36" id="shortReceiptCard"><div class="short-brand"><div class="short-logo-box"><span>SD</span><img class="receipt-logo-inline" src="${RECEIPT_LOGO_SRC}" alt="SD" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback-active')"></div><div><h2>SD COMAYAGUA</h2><p>${escapeHtml(doc.client||'Cliente')} · ${nowHN()}</p></div></div>${lines}<hr><div class="short-line"><span>Productos</span><b>${money(c.products)}</b></div><div class="short-line"><span>${shippingLabel(doc)}</span><b>${money(c.shipping)}</b></div>${c.commission?`<div class="short-line"><span>Comisión</span><b>${money(c.commission)}</b></div>`:''}<div class="grand short-line"><span>Total</span><b>${money(c.total)}</b></div><small>WhatsApp +504 3151-7755</small></div><div class="modal-actions short-receipt-actions" style="position:static"><button class="btn secondary" id="backFromShortReceipt">← Atrás</button><button class="btn" id="copyShortReceipt">Copiar texto</button></div></div>`,true);
+    openModal(`<div class="modal-head short-receipt-head"><h3>Recibo corto</h3><button class="close">×</button></div><div class="modal-body short-receipt-screen"><div class="short-receipt short-receipt-v34 short-receipt-v36" id="shortReceiptCard"><div class="short-brand"><div class="short-logo-box"><span>SD</span><img class="receipt-logo-inline" src="${RECEIPT_LOGO_SRC}" alt="SD" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback-active')"></div><div><h2>SD COMAYAGUA</h2><p class="short-meta"><span>${escapeHtml(doc.client||'Cliente')}</span><em>${nowHN()}</em></p></div></div>${lines}<hr><div class="short-line"><span>Productos</span><b>${money(c.products)}</b></div><div class="short-line"><span>${shippingLabel(doc)}</span><b>${money(c.shipping)}</b></div>${c.commission?`<div class="short-line"><span>Comisión</span><b>${money(c.commission)}</b></div>`:''}<div class="grand short-line"><span>Total</span><b>${money(c.total)}</b></div><small>WhatsApp +504 3151-7755</small></div><div class="modal-actions short-receipt-actions" style="position:static"><button class="btn secondary" id="backFromShortReceipt">← Atrás</button><button class="btn" id="copyShortReceipt">Copiar texto</button></div></div>`,true);
     $('#backFromShortReceipt')&&($('#backFromShortReceipt').onclick=()=>{openModal(quoteModalHTML(isSale),true); bindQuoteCommon(isSale); toast('Volviste a la cotización sin borrar los datos.');});
     $('#copyShortReceipt').onclick=()=>{
       const body=[

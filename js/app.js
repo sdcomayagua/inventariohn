@@ -40,7 +40,8 @@
   function money(n){return `${state.settings.currency||'Lps.'} ${Number(n||0).toLocaleString('es-HN',{maximumFractionDigits:0})}`}
   function moneyPrivate(n){return state.settings.moneyLocked?'Oculto':money(n)}
   function num(n){return Number(n||0).toLocaleString('es-HN',{maximumFractionDigits:0})}
-  function nowHN(){return new Date().toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'})}
+  function nowHN(){return new Date().toLocaleString('es-HN',{timeZone:'America/Tegucigalpa',day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'})}
+  function nowHNPanel(){return new Date().toLocaleString('es-HN',{timeZone:'America/Tegucigalpa',weekday:'short',day:'2-digit',month:'short',hour:'numeric',minute:'2-digit',second:'2-digit'}).replace(',', ' ·')}
   function cleanPhone(p){return String(p||'').replace(/\D/g,'').replace(/^5040?/,'504')}
   function isMobileDevice(){return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'')}
   function pad2(n){return String(n).padStart(2,'0')}
@@ -419,7 +420,7 @@
   }
   function unlock(){ if($('#keyInput').value.trim()===(state.settings.accessKey||'199311')){state.unlocked=true;save();render();bootSheetSync();toast('Acceso autorizado.')} else toast('Clave incorrecta.'); }
   function topbar(){
-    return `<header class="topbar"><img class="top-logo" src="${LOGO_SRC}" alt="SD"><div class="top-title"><h1>SD COMAYAGUA</h1><p>Ventas · inventario · cotizaciones</p></div><div class="spacer"></div><button class="btn small ghost sync-status sync-icon-only" data-action="sync" title="Sincronizar con Google Sheets" aria-label="Sincronizar con Google Sheets"><span class="sync-dot"></span><span class="sync-icon">↻</span><span class="sync-label">${lastSyncLabel()}</span></button><button class="btn small secondary logout-btn logout-icon-btn" data-action="lock" title="Salir del panel" aria-label="Salir del panel"><span class="logout-power" aria-hidden="true">⏻</span><span class="logout-text">Salir</span></button></header>`
+    return `<header class="topbar"><img class="top-logo" src="${LOGO_SRC}" alt="SD"><div class="top-title"><h1>SD COMAYAGUA</h1><p>Ventas · inventario · cotizaciones</p></div><div class="spacer"></div><button class="btn small ghost sync-status sync-icon-only" data-action="sync" title="Sincronizar con Google Sheets" aria-label="Sincronizar con Google Sheets"><span class="sync-dot"></span><span class="sync-icon">↻</span><span class="sync-label">${lastSyncLabel()}</span></button><button class="btn small secondary logout-btn logout-icon-btn" data-action="lock" title="Salir del panel" aria-label="Salir del panel"><span class="logout-door" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M9 4h7.2c.9 0 1.6.7 1.6 1.6v12.8c0 .9-.7 1.6-1.6 1.6H9"/><path d="M9 3.8 5.4 5.2v13.6L9 20.2V3.8Z"/><path d="M12.2 12h7"/><path d="m17 9.8 2.2 2.2-2.2 2.2"/></svg></span><span class="logout-text">Salir</span></button></header>`
   }
   function hero(){
     const st=stats();
@@ -582,6 +583,7 @@
         <h3 data-action="viewProduct" data-id="${id}">${escapeHtml(p.name)}</h3>
         <div class="v49-card-actions v49-card-actions-single">
           <button type="button" data-action="viewProduct" data-id="${id}">Ver</button>
+          <span class="v49-stock-pill ${st.cls}">Stock ${num(p.stock)}</span>
         </div>
       </div>
     </article>`;
@@ -746,7 +748,7 @@
     const invested=Number(p.cost||0)*Number(p.stock||0);
     const sellAll=Number(p.price||0)*Number(p.stock||0);
     const promo=promoLabelForQty(p,q);
-    return `<div class="modal-head v49-detail-head"><div><span class="sdc-safe-pill detail-pill">SDC V49</span><h3>${escapeHtml(p.name)}</h3></div><button class="close">×</button></div>
+    return `<div class="modal-head v49-detail-head"><div><span class="sdc-safe-pill detail-pill hn-time-pill" id="hnLiveTime">${nowHNPanel()}</span><h3>${escapeHtml(p.name)}</h3></div><button class="close">×</button></div>
       <div class="modal-body v49-product-detail">
         <div class="v49-detail-hero">
           <div class="v49-detail-image"><img src="${escapeHtml(productImage(p))}" alt="${escapeHtml(p.name)}" crossorigin="anonymous" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><span class="stock-badge ${st.cls}"><i></i>${st.text}</span></div>
@@ -758,7 +760,7 @@
           <button type="button" data-tab="captura">CAPTURA</button>
         </div>
         <section class="v49-tab active" data-panel="cliente">
-          <div class="v49-qty-line"><label><span>Cantidad</span><input id="v49DetailQty" class="input" type="number" inputmode="numeric" min="1" value="${q}"></label>${promo?`<em data-v49-offer>🎁 ${escapeHtml(promo)}</em>`:`<em data-v49-offer style="display:none"></em>`}</div>
+          <div class="v49-qty-line"><div class="v49-qty-wrap"><span>Cantidad</span><div class="v49-qty-stepper" role="group" aria-label="Cantidad del producto"><button type="button" id="v49QtyMinus" aria-label="Restar cantidad">−</button><b id="v49DetailQty" data-v49-qty-value="${q}">${num(q)}</b><button type="button" id="v49QtyPlus" aria-label="Sumar cantidad">+</button></div></div>${promo?`<em data-v49-offer>🎁 ${escapeHtml(promo)}</em>`:`<em data-v49-offer style="display:none"></em>`}</div>
           <div class="v49-price-cards">
             <div><span>Precio producto</span><b data-v49-total="product">${money(productTotal)}</b><small>Según cantidad seleccionada</small></div>
             <div><span>Depósito / Tigo Money</span><b data-v49-total="normal">${money(normal)}</b><small>Producto + Lps. 100</small></div>
@@ -790,8 +792,15 @@
       </div>`;
   }
   function bindProductDetails(p){
-    const redrawTotals=()=>{
-      const q=Math.max(1,Number($('#v49DetailQty',modalRoot)?.value)||1);
+    const qtyValue=()=>Math.max(1,Number($('#v49DetailQty',modalRoot)?.dataset.v49QtyValue)||clientQty(p.id)||1);
+    const setQtyValue=(next)=>{
+      const clean=Math.max(1,Math.min(999,Number(next)||1));
+      const el=$('#v49DetailQty',modalRoot);
+      if(el){el.dataset.v49QtyValue=String(clean); el.textContent=num(clean);}
+      redrawTotals(clean);
+    };
+    const redrawTotals=(forcedQty=null)=>{
+      const q=Math.max(1,Number(forcedQty)||qtyValue());
       setClientQty(p.id,q);
       const productTotal=productItemsTotal(p,q);
       const normal=productTotal+SHIPPING.normal.fee;
@@ -807,7 +816,13 @@
       $$('.v49-tabbar [data-tab]',modalRoot).forEach(x=>x.classList.toggle('active',x===btn));
       $$('.v49-tab',modalRoot).forEach(panel=>panel.classList.toggle('active',panel.dataset.panel===btn.dataset.tab));
     });
-    $('#v49DetailQty',modalRoot)?.addEventListener('input',redrawTotals);
+    $('#v49QtyMinus',modalRoot)?.addEventListener('click',()=>setQtyValue(qtyValue()-1));
+    $('#v49QtyPlus',modalRoot)?.addEventListener('click',()=>setQtyValue(qtyValue()+1));
+    const timeEl=$('#hnLiveTime',modalRoot);
+    if(timeEl){
+      const paintTime=()=>{ if(!document.body.contains(timeEl)){clearInterval(timeEl._timer); return;} timeEl.textContent=nowHNPanel(); };
+      paintTime(); timeEl._timer=setInterval(paintTime,1000);
+    }
     $('#v49DownloadProductPhoto',modalRoot)?.addEventListener('click',e=>downloadProductPhotoDirect(p.id,e.currentTarget));
     $('#v49QuoteProduct',modalRoot)?.addEventListener('click',()=>{closeModal();openQuote(p.id);});
     $('#v49SellProduct',modalRoot)?.addEventListener('click',()=>{closeModal();openSale(p.id);});
@@ -956,7 +971,7 @@
   function quoteModalHTML(isSale=false){
     const doc=isSale?saleDraft:quote; const editingSale=isSale && !!doc.editingId; const title=isSale?(editingSale?'Editar factura':'Venta / factura real'):'Cotización previa';
     const currentTitle=isSale?'Factura actual':'Cotización actual';
-    return `<div class="modal-head quote-head"><h3>${title}</h3><button class="close">×</button></div><div class="modal-body quote-body"><div class="pill quote-status"><span class="dot"></span>${isSale?(editingSale?'Editando factura guardada':'Factura y registro'):'Preventa / información'}</div><div class="quote-jumpbar no-print"><button type="button" data-jump="pickerList">Productos</button><button type="button" data-jump="currentDocTitle">Lista</button><button type="button" data-jump="docPreview">Vista previa</button></div><div class="modal-grid quote-grid" style="margin-top:14px"><div class="card-box span2 picker-card"><div class="picker-head-compact"><div><b>Seleccionar producto</b><small>Primero toque una categoría. El listado aparece después para no estorbar.</small></div><span id="pickerCounter" class="found-pill">Elija categoría</span></div><div class="searchbar"><span class="icon">⌕</span><input id="pickSearch" placeholder="Buscar por nombre o código... mínimo 2 letras"></div><div class="chips quote-category-strip" id="pickChips">${allCategories().filter(c=>c!=='Todos').map(c=>`<button class="chip" data-pickcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="pickerList" class="picker-list"></div></div><div class="card-box calc-card"><h4>Datos para calcular</h4>${fieldsHTML(doc)}</div><div class="card-box current-card"><div class="current-card-head"><h4 id="currentDocTitle">${currentTitle}</h4><span class="selected-count-pill" id="selectedCountPill">0 artículos</span></div><div id="cartNotice" class="cart-notice hide"><b>✓ Artículo seleccionado</b><span>Producto agregado correctamente.</span></div><div id="cartList" class="cart-list"></div><div id="totalsMini"></div></div><div class="span2 preview-card"><div id="docPreview">${docCard(doc,isSale)}</div></div></div><div class="modal-actions quote-actions premium-actions compact-actions v47-actions"><button class="btn secondary" id="backToQuote"><b>↩</b><span>Volver</span><small>cotizar</small></button><button class="btn secondary" id="downloadDoc"><b>▣</b><span>Imagen</span><small>descargar</small></button><button class="btn secondary" id="shortReceipt"><b>▤</b><span>Recibo</span><small>corto</small></button><button class="btn secondary" id="waText"><b>✎</b><span>Texto</span><small>WhatsApp</small></button>${!isSale?'<button class="btn save-doc" id="saveQuote"><b>✓</b><span>Guardar</span><small>cotización</small></button><button class="btn secondary" id="openQuotes"><b>▦</b><span>Guardadas</span><small>lista</small></button><button class="btn secondary" id="openClientsFromDoc"><b>👥</b><span>Clientes</span><small>agenda</small></button><button class="btn main-wide to-sale" id="toSale"><b>→</b><span>Facturar</span><small>venta real</small></button>':`<button class="btn main-wide" id="finishSale"><b>${editingSale?'Guardar':'Finalizar'}</b><span>${editingSale?'Cambios':'Venta'}</span></button><button class="btn secondary" id="printDoc"><b>PDF</b><span>Imprimir</span></button>`}</div></div>`
+    return `<div class="modal-head quote-head"><h3>${title}</h3><button class="close">×</button></div><div class="modal-body quote-body"><div class="pill quote-status"><span class="dot"></span>${isSale?(editingSale?'Editando factura guardada':'Factura y registro'):'Preventa / información'}</div><div class="quote-jumpbar no-print"><button type="button" data-jump="pickerList">Productos</button><button type="button" data-jump="currentDocTitle">Lista</button><button type="button" data-jump="docPreview">Vista previa</button></div><div class="modal-grid quote-grid" style="margin-top:14px"><div class="card-box span2 picker-card"><div class="picker-head-compact"><div><b>Seleccionar producto</b><small>Primero toque una categoría. El listado aparece después para no estorbar.</small></div><span id="pickerCounter" class="found-pill">Elija categoría</span></div><div class="searchbar"><span class="icon">⌕</span><input id="pickSearch" placeholder="Buscar por nombre o código... mínimo 2 letras"></div><div class="chips quote-category-strip" id="pickChips">${allCategories().filter(c=>c!=='Todos').map(c=>`<button class="chip" data-pickcat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="pickerList" class="picker-list"></div></div><div class="card-box calc-card"><h4>Datos para calcular</h4>${fieldsHTML(doc)}</div><div class="card-box current-card"><div class="current-card-head"><h4 id="currentDocTitle">${currentTitle}</h4><span class="selected-count-pill" id="selectedCountPill">0 artículos</span></div><div id="cartNotice" class="cart-notice hide"><b>✓ Artículo seleccionado</b><span>Producto agregado correctamente.</span></div><div id="cartList" class="cart-list"></div><div id="totalsMini"></div></div><div class="span2 preview-card"><div id="docPreview">${docCard(doc,isSale)}</div></div></div><div class="modal-actions quote-actions premium-actions compact-actions v47-actions v49-actions-clean"><button class="btn secondary" id="backToQuote"><b>↩</b><span>Volver</span><small>Cotizar</small></button><button class="btn secondary" id="downloadDoc"><b>▣</b><span>Imagen</span><small>Descargar</small></button><button class="btn secondary" id="shortReceipt"><b>▤</b><span>Recibo</span><small>Corto</small></button><button class="btn secondary" id="waText"><b>✎</b><span>Texto</span><small>WhatsApp</small></button>${!isSale?'<button class="btn save-doc" id="saveQuote"><b>✓</b><span>Guardar</span><small>Cotización</small></button><button class="btn secondary" id="openQuotes"><b>▦</b><span>Guardadas</span><small>Lista</small></button><button class="btn secondary" id="openClientsFromDoc"><b>👥</b><span>Clientes</span><small>Agenda</small></button><button class="btn main-wide to-sale" id="toSale"><b>→</b><span>Facturar</span><small>Venta real</small></button>':`<button class="btn main-wide" id="finishSale"><b>${editingSale?'Guardar':'Finalizar'}</b><span>${editingSale?'Cambios':'Venta'}</span></button><button class="btn secondary" id="printDoc"><b>PDF</b><span>Imprimir</span></button>`}</div></div>`
   }
   function fieldsHTML(doc){
     const type=shippingKey(doc);

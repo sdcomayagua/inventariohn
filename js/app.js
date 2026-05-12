@@ -715,7 +715,7 @@
       $$('[data-delimage]',modalRoot).forEach(b=>b.onclick=()=>{if(imageRows.length>1)imageRows.splice(+b.dataset.delimage,1);else imageRows[0]='';drawImages()});
     }
     function drawPromos(){
-      $('#promoRows',modalRoot).innerHTML=promoRows.map((r,i)=>{const q=Number(r.qty)||0, pr=Number(r.price)||0, unit=q&&pr?money(pr/q):'—'; return `<div class="mini-row promo-row promo-row-v26"><span class="row-index">Oferta ${i+1}</span><label><small>Cantidad mínima</small><input class="input pPromoQty" inputmode="numeric" type="number" value="${escapeHtml(r.qty)}" placeholder="20"></label><label><small>Total paquete</small><input class="input pPromoPrice" inputmode="numeric" type="number" value="${escapeHtml(r.price)}" placeholder="400"></label><span class="promo-unit-preview">${unit} c/u</span><button class="btn small ghost" data-delpromo="${i}" type="button">×</button></div>`}).join('');
+      $('#promoRows',modalRoot).innerHTML=promoRows.map((r,i)=>{const q=Number(r.qty)||0, pr=Number(r.price)||0, unit=q&&pr?money(pr/q):'—'; return `<div class="mini-row promo-row promo-row-v26 promo-row-v49"><div class="promo-row-title"><strong>Oferta ${i+1}</strong><small>Precio por cantidad</small></div><label class="promo-field promo-qty-field"><small>Cantidad mínima</small><input class="input pPromoQty" inputmode="numeric" type="number" value="${escapeHtml(r.qty)}" placeholder="Ej. 20"></label><label class="promo-field promo-total-field"><small>Total paquete</small><input class="input pPromoPrice" inputmode="numeric" type="number" value="${escapeHtml(r.price)}" placeholder="Ej. 400"></label><div class="promo-unit-preview"><span>Precio c/u</span><b>${unit}</b></div><button class="btn small ghost promo-delete-btn" data-delpromo="${i}" type="button" aria-label="Eliminar oferta ${i+1}">×</button></div>`}).join('');
       $$('.promo-row',modalRoot).forEach((row,i)=>{ $('.pPromoQty',row).oninput=e=>promoRows[i].qty=e.target.value; $('.pPromoPrice',row).oninput=e=>promoRows[i].price=e.target.value; });
       $$('[data-delpromo]',modalRoot).forEach(b=>b.onclick=()=>{if(promoRows.length>1)promoRows.splice(+b.dataset.delpromo,1);else promoRows[0]={qty:'',price:''};drawPromos()});
     }
@@ -1057,6 +1057,7 @@
   function bindQuoteCommon(isSale){
     renderPicker(isSale); bindDocFields(isSale); refreshQuoteUI(isSale);
     $$('[data-jump]',modalRoot).forEach(b=>b.onclick=()=>{$('#'+b.dataset.jump,modalRoot)?.scrollIntoView({behavior:'smooth',block:'start'});});
+    $('#backToQuote')&&($('#backToQuote').onclick=()=>{$('#currentDocTitle',modalRoot)?.scrollIntoView({behavior:'smooth',block:'start'}); toast('La cotización sigue abierta.');});
     $('#downloadDoc')&&($('#downloadDoc').onclick=()=>downloadDocImage(isSale?'recibo':'cotizacion'));
     $('#shortReceipt')&&($('#shortReceipt').onclick=()=>openShortReceipt(isSale));
     $('#waText')&&($('#waText').onclick=()=>sendWhatsAppText(isSale));
@@ -1118,7 +1119,7 @@
     const commissionRow=(isCodDoc(doc)||c.commission>0)?`<div><span>Comisión pagar al recibir</span><b>${money(c.commission)}</b></div>`:'';
     const discountRow=c.discount>0?`<div><span>Descuento</span><b>- ${money(c.discount)}</b></div>`:'';
     const note=isSale?'Venta confirmada en SD COMAYAGUA. Gracias por su compra; conserve este recibo para cualquier consulta.':'Cotización pendiente de confirmación. No aparta producto. Antes de pagar, confirme disponibilidad, entrega y total final.';
-    return `<div class="doc-wrap compact-doc doc-v21 doc-v23 receipt-pro-v4 receipt-v32 receipt-v36 ${isSale?'receipt-sale-v32':'receipt-quote-v32'}" id="printableDoc">
+    return `<div class="doc-wrap compact-doc doc-v21 doc-v23 receipt-pro-v4 receipt-v32 receipt-v36 receipt-v49-tight ${isSale?'receipt-sale-v32':'receipt-quote-v32'}" id="printableDoc">
       <div class="receipt-band-pro"><span>${titleText}</span><b>${statusText}</b></div>
       <div class="receipt-inner-pro">
         <header class="receipt-header-pro">
@@ -1693,7 +1694,8 @@
   function openShortReceipt(isSale){
     const doc=currentDoc(isSale); const c=calc(doc);
     const lines=(doc.items||[]).map(it=>{const qty=Math.max(1,+it.qty||1); return `<div class="short-line item"><span>${escapeHtml(it.name)} <em>x${num(qty)}</em></span><b>${money(itemTotal(it))}</b></div>`}).join('');
-    openModal(`<div class="modal-head"><h3>Recibo corto</h3><button class="close">×</button></div><div class="modal-body"><div class="short-receipt short-receipt-v34 short-receipt-v36" id="shortReceiptCard"><div class="short-brand"><div class="short-logo-box"><span>SD</span><img class="receipt-logo-inline" src="${RECEIPT_LOGO_SRC}" alt="SD" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback-active')"></div><div><h2>SD COMAYAGUA</h2><p>${escapeHtml(doc.client||'Cliente')} · ${nowHN()}</p></div></div>${lines}<hr><div class="short-line"><span>Productos</span><b>${money(c.products)}</b></div><div class="short-line"><span>${shippingLabel(doc)}</span><b>${money(c.shipping)}</b></div>${c.commission?`<div class="short-line"><span>Comisión</span><b>${money(c.commission)}</b></div>`:''}<div class="grand short-line"><span>Total</span><b>${money(c.total)}</b></div><small>WhatsApp +504 3151-7755</small></div><div class="modal-actions" style="position:static"><button class="btn" id="copyShortReceipt">Copiar texto</button></div></div>`,true);
+    openModal(`<div class="modal-head short-receipt-head"><h3>Recibo corto</h3><button class="close">×</button></div><div class="modal-body short-receipt-screen"><div class="short-receipt short-receipt-v34 short-receipt-v36" id="shortReceiptCard"><div class="short-brand"><div class="short-logo-box"><span>SD</span><img class="receipt-logo-inline" src="${RECEIPT_LOGO_SRC}" alt="SD" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback-active')"></div><div><h2>SD COMAYAGUA</h2><p>${escapeHtml(doc.client||'Cliente')} · ${nowHN()}</p></div></div>${lines}<hr><div class="short-line"><span>Productos</span><b>${money(c.products)}</b></div><div class="short-line"><span>${shippingLabel(doc)}</span><b>${money(c.shipping)}</b></div>${c.commission?`<div class="short-line"><span>Comisión</span><b>${money(c.commission)}</b></div>`:''}<div class="grand short-line"><span>Total</span><b>${money(c.total)}</b></div><small>WhatsApp +504 3151-7755</small></div><div class="modal-actions short-receipt-actions" style="position:static"><button class="btn secondary" id="backFromShortReceipt">← Atrás</button><button class="btn" id="copyShortReceipt">Copiar texto</button></div></div>`,true);
+    $('#backFromShortReceipt')&&($('#backFromShortReceipt').onclick=()=>{openModal(quoteModalHTML(isSale),true); bindQuoteCommon(isSale); toast('Volviste a la cotización sin borrar los datos.');});
     $('#copyShortReceipt').onclick=()=>{
       const body=[
         'SD COMAYAGUA',

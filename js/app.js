@@ -399,7 +399,7 @@
     applyAppearance();
     if(!state.unlocked){renderLogin();return}
     app.className='app';
-    app.innerHTML = `${topbar()}${hero()}${quickPanel()}${cardModePanel()}${searchPanel()}${categoryGallery()}${inventoryHTML()}${bottomNav()}`;
+    app.innerHTML = `${topbar()}${hero()}${quickPanel()}${cardModePanel()}${searchPanel()}${categoryGallery()}${inventoryHTML()}${pageFooter()}${bottomNav()}`;
     bindMain();
     // V25: conectar controles de cantidad en la vista Cliente desde la primera carga del catálogo.
     bindProductCards();
@@ -501,6 +501,10 @@
         <div class="alert-card"><div><b>${state.settings.moneyLocked?'Ganancias ocultas':'Ganancias visibles'}</b><span>Protege costos y utilidad.</span></div><button class="btn small secondary" data-action="moneyLock">${state.settings.moneyLocked?'Mostrar':'Ocultar'}</button></div>
       </div>
     </section>`
+  }
+  function pageFooter(){
+    const updated=nowHNPanel();
+    return `<footer class="sdc-page-footer no-print"><div><b>SD COMAYAGUA</b><span>Fin del inventario · Actualizado ${escapeHtml(updated)}</span></div><small>WhatsApp +504 3151-7755 · Comayagua, Honduras</small></footer>`
   }
   function cardModePanel(){
     const mode=cardView();
@@ -781,13 +785,14 @@
         <section class="v49-tab" data-panel="captura">
           <div class="v49-capture-note"><b>Imagen limpia para cliente</b><span>Genera PNG sin barra del navegador, sin enlace y sin datos internos.</span></div>
           <div id="productShareCard">${productClientPhotoHTML(p,q)}</div>
-          <button class="btn full" type="button" id="v49DownloadProductPhoto">Generar PNG limpio</button>
+          <div class="v49-capture-buttons"><button class="btn full" type="button" id="v49DownloadProductPhoto">Generar PNG limpio</button><button class="btn secondary full" type="button" id="v49ShareProductPhotoTab">Compartir foto</button></div>
         </section>
         <div class="modal-actions v49-detail-actions" style="position:static">
           <button class="btn" type="button" id="v49QuoteProduct">Cotizar</button>
           <button class="btn secondary" type="button" id="v49SellProduct">Vender</button>
           <button class="btn secondary" type="button" id="v49TextProduct">Textos</button>
           <button class="btn ghost" type="button" id="v49EditProduct">Editar</button>
+          <button class="btn v49-share-photo-btn" type="button" id="v49ShareProductPhoto">Compartir foto</button>
         </div>
       </div>`;
   }
@@ -824,6 +829,8 @@
       paintTime(); timeEl._timer=setInterval(paintTime,1000);
     }
     $('#v49DownloadProductPhoto',modalRoot)?.addEventListener('click',e=>downloadProductPhotoDirect(p.id,e.currentTarget));
+    $('#v49ShareProductPhoto',modalRoot)?.addEventListener('click',()=>shareProductPhoto(p,qtyValue()));
+    $('#v49ShareProductPhotoTab',modalRoot)?.addEventListener('click',()=>shareProductPhoto(p,qtyValue()));
     $('#v49QuoteProduct',modalRoot)?.addEventListener('click',()=>{closeModal();openQuote(p.id);});
     $('#v49SellProduct',modalRoot)?.addEventListener('click',()=>{closeModal();openSale(p.id);});
     $('#v49TextProduct',modalRoot)?.addEventListener('click',()=>openMarketingText(p.id));
@@ -965,7 +972,44 @@
   }
 
   async function downloadProductPhoto(p){const blob=await productCardToBlob(); if(!blob)return; const ref=prompt('Nombre o número del cliente para guardar esta imagen. Puedes dejarlo vacío:', state.settings.lastClientFileRef||''); if(ref===null)return; state.settings.lastClientFileRef=ref.trim(); save(); const label=slugFile(ref||p.name||p.id||'producto'); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`producto-${label}-${fileStamp()}-${slugFile(p.id||'sdc')}.png`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Imagen del producto descargada con nombre único.');}
-  async function shareProductPhoto(p,qty=1){const blob=await productCardToBlob(); const text=productWhatsAppText(p,qty); const ref=prompt('Número o nombre del cliente para nombrar la imagen. Déjalo vacío si solo quieres compartir:', state.settings.lastClientFileRef||''); if(ref===null)return; state.settings.lastClientFileRef=ref.trim(); save(); const filename=`producto-${slugFile(ref||p.name||p.id||'producto')}-${fileStamp()}-${slugFile(p.id||'sdc')}.png`; if(blob && navigator.canShare){const file=new File([blob],filename,{type:'image/png'}); if(navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text,title:'Producto SD Comayagua'}); toast('Selecciona WhatsApp y el chat del cliente. La foto y el texto van juntos.'); return}catch(e){if(e && e.name==='AbortError')return;}}} if(blob){const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);} toast('Se descargó la imagen para compartir.');}
+  async function shareProductPhoto(p,qty=1){
+    const q=Math.max(1,Number(qty)||1);
+    const text=productWhatsAppText(p,q);
+    const ref=prompt('Número o nombre del cliente para nombrar la imagen. Déjelo vacío para compartir manual:', state.settings.lastClientFileRef||'');
+    if(ref===null)return;
+    state.settings.lastClientFileRef=ref.trim(); save();
+    const filename=`producto-${slugFile(ref||p.name||p.id||'producto')}-${fileStamp()}-${slugFile(p.id||'sdc')}.png`;
+    const host=document.createElement('div');
+    host.className='productPhotoExportHost';
+    host.innerHTML=productClientPhotoHTML(p,q);
+    document.body.appendChild(host);
+    try{
+      await waitImages(host);
+      const node=host.querySelector('[data-export="product-photo-clean"]');
+      let blob=null;
+      try{
+        blob=await captureNodeAsPngBlob(node,3);
+      }catch(firstErr){
+        console.warn('No se pudo capturar con imagen externa. Usando respaldo.',firstErr);
+        host.querySelectorAll('.productPhotoImageWrap img').forEach(img=>img.src=captureFallbackImage());
+        await waitImages(host);
+        blob=await captureNodeAsPngBlob(node,3);
+      }
+      if(blob && navigator.canShare){
+        const file=new File([blob],filename,{type:'image/png'});
+        if(navigator.canShare({files:[file]})){
+          try{await navigator.share({files:[file],text,title:'Producto SD Comayagua'}); toast('Seleccione WhatsApp y el chat del cliente.'); return;}catch(e){if(e && e.name==='AbortError')return;}
+        }
+      }
+      if(blob){downloadBlob(blob,filename); toast('La foto se descargó para compartirla por WhatsApp.');}
+      else toast('No se pudo generar la foto del producto.');
+    }catch(err){
+      console.error(err);
+      toast('No se pudo compartir la foto. Verifique que cargó html2canvas.');
+    }finally{
+      host.remove();
+    }
+  }
   function sendProductWhatsApp(p,qty=1){const phone=askClientPhone(); if(phone===null)return; openWhatsApp(phone,productWhatsAppText(p,qty));}
 
   function quoteModalHTML(isSale=false){

@@ -613,3 +613,284 @@ body.sdc-mobile-pro .quote-actions.v49-actions-clean .to-sale{grid-column:auto!i
   body.gamer-mode #inventario .count-pill,
   body.sdc-mobile-pro #inventario .count-pill{padding:9px 10px!important;font-size:12px!important;}
 }
+
+/* SDC V49.5 · Pulido final según capturas reales de celular */
+/* Barra superior: que SD COMAYAGUA se lea completo */
+body.gamer-mode .top-title h1,
+body.sdc-mobile-pro .top-title h1{
+  max-width:190px!important;
+  font-size:16px!important;
+  letter-spacing:.055em!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+  color:#f7fbff!important;
+}
+@media(max-width:380px){
+  body.gamer-mode .top-title h1,
+  body.sdc-mobile-pro .top-title h1{font-size:15px!important;max-width:168px!important;letter-spacing:.04em!important;}
+  body.gamer-mode .topbar,
+  body.sdc-mobile-pro .topbar{gap:8px!important;padding-left:8px!important;padding-right:8px!important;}
+  body.gamer-mode .top-logo,
+  body.sdc-mobile-pro .top-logo{width:42px!important;height:42px!important;}
+}
+
+/* Centro de ventas: etiquetas grises más visibles */
+body.gamer-mode .stat span,
+body.sdc-mobile-pro .stat span,
+.hero .stat span{
+  color:#b7ccdc!important;
+  opacity:1!important;
+  text-shadow:0 1px 10px rgba(0,0,0,.35)!important;
+  font-weight:900!important;
+}
+body.gamer-mode .stat b,
+body.sdc-mobile-pro .stat b{color:#fff!important;}
+
+/* Inventario 1 fila: STOCK con el mismo aire del botón VER */
+body.gamer-mode .grid.one-col .v49-card-actions.v49-card-actions-single,
+body.sdc-mobile-pro .grid.one-col .v49-card-actions.v49-card-actions-single{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  align-items:stretch!important;
+  width:min(100%,330px)!important;
+}
+body.gamer-mode .grid.one-col .v49-card-actions.v49-card-actions-single button,
+body.sdc-mobile-pro .grid.one-col .v49-card-actions.v49-card-actions-single button,
+body.gamer-mode .grid.one-col .v49-stock-pill,
+body.sdc-mobile-pro .grid.one-col .v49-stock-pill{
+  width:100%!important;
+  min-height:52px!important;
+  flex:auto!important;
+  border-radius:22px!important;
+  font-size:14px!important;
+  letter-spacing:.075em!important;
+  font-weight:950!important;
+}
+body.gamer-mode .grid.one-col .v49-stock-pill,
+body.sdc-mobile-pro .grid.one-col .v49-stock-pill{
+  background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.055))!important;
+  color:#eefbff!important;
+  border:1px solid rgba(109,218,255,.30)!important;
+  box-shadow:0 10px 22px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+body.gamer-mode .grid.one-col .v49-stock-pill.low,
+body.sdc-mobile-pro .grid.one-col .v49-stock-pill.low{color:#ffe08b!important;border-color:rgba(255,204,76,.45)!important;background:linear-gradient(180deg,rgba(255,203,70,.16),rgba(255,203,70,.07))!important;}
+body.gamer-mode .grid.one-col .v49-stock-pill.out,
+body.sdc-mobile-pro .grid.one-col .v49-stock-pill.out{color:#ff9caf!important;border-color:rgba(255,75,102,.42)!important;background:linear-gradient(180deg,rgba(255,75,102,.16),rgba(255,75,102,.07))!important;}
+@media(max-width:390px){
+  body.gamer-mode .grid.one-col .product-card-v49,
+  body.sdc-mobile-pro .grid.one-col .product-card-v49{grid-template-columns:124px minmax(0,1fr)!important;}
+  body.gamer-mode .grid.one-col .v49-card-actions.v49-card-actions-single,
+  body.sdc-mobile-pro .grid.one-col .v49-card-actions.v49-card-actions-single{gap:8px!important;}
+  body.gamer-mode .grid.one-col .v49-card-actions.v49-card-actions-single button,
+  body.sdc-mobile-pro .grid.one-col .v49-card-actions.v49-card-actions-single button,
+  body.gamer-mode .grid.one-col .v49-stock-pill,
+  body.sdc-mobile-pro .grid.one-col .v49-stock-pill{font-size:12.5px!important;min-height:48px!important;}
+}
+
+/* Modal producto: título menos agresivo y pestañas sin quedarse pegadas encima */
+body.gamer-mode .modal-head.v49-detail-head,
+body.sdc-mobile-pro .modal-head.v49-detail-head{
+  position:relative!important;
+  top:auto!important;
+  z-index:2!important;
+  padding:18px 22px 20px!important;
+}
+body.gamer-mode .modal-head.v49-detail-head h3,
+body.sdc-mobile-pro .modal-head.v49-detail-head h3{
+  font-size:clamp(22px,6.4vw,30px)!important;
+  line-height:1.06!important;
+  letter-spacing:.045em!important;
+  max-width:calc(100vw - 118px)!important;
+  margin:12px 0 0!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:3!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+body.gamer-mode .v49-tabbar,
+body.sdc-mobile-pro .v49-tabbar{
+  position:static!important;
+  top:auto!important;
+  z-index:auto!important;
+  margin:12px 0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+body.gamer-mode .v49-tabbar button,
+body.sdc-mobile-pro .v49-tabbar button{box-shadow:0 7px 18px rgba(5,25,42,.08)!important;}
+body.gamer-mode .v49-detail-actions,
+body.sdc-mobile-pro .v49-detail-actions{padding-bottom:10px!important;}
+body.gamer-mode .v49-detail-actions .v49-share-photo-btn,
+body.sdc-mobile-pro .v49-detail-actions .v49-share-photo-btn{
+  grid-column:1/-1!important;
+  background:linear-gradient(135deg,#1ee8ff,#2cf0b4)!important;
+  color:#04131e!important;
+}
+.v49-capture-buttons{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;margin-top:10px!important;}
+
+/* Editor: chips debajo de descripción legibles, sin montarse */
+body.gamer-mode .product-editor .chips,
+body.sdc-mobile-pro .product-editor .chips,
+.product-editor .chips{
+  display:flex!important;
+  gap:8px!important;
+  overflow-x:auto!important;
+  flex-wrap:nowrap!important;
+  padding:8px 2px 12px!important;
+  scrollbar-width:none!important;
+}
+.product-editor .chips::-webkit-scrollbar{display:none!important;}
+body.gamer-mode .product-editor .chips .chip,
+body.sdc-mobile-pro .product-editor .chips .chip,
+.product-editor .chips .chip{
+  flex:0 0 auto!important;
+  min-width:max-content!important;
+  min-height:38px!important;
+  padding:9px 13px!important;
+  border-radius:999px!important;
+  font-size:11px!important;
+  letter-spacing:.04em!important;
+  color:#eafaff!important;
+  background:rgba(255,255,255,.075)!important;
+  border:1px solid rgba(104,220,255,.25)!important;
+  white-space:nowrap!important;
+}
+
+/* Cotización previa: nombres y productos en fondo oscuro legibles */
+body.gamer-mode .picker-item b,
+body.sdc-mobile-pro .picker-item b,
+body.gamer-mode .cart-row-v24 .cart-info b,
+body.sdc-mobile-pro .cart-row-v24 .cart-info b,
+body.gamer-mode .current-card b,
+body.sdc-mobile-pro .current-card b{
+  color:#f7fbff!important;
+  opacity:1!important;
+  text-shadow:0 1px 12px rgba(0,0,0,.50)!important;
+}
+body.gamer-mode .picker-item span,
+body.sdc-mobile-pro .picker-item span,
+body.gamer-mode .cart-row-v24 .cart-info span,
+body.sdc-mobile-pro .cart-row-v24 .cart-info span{
+  color:#d7e8f5!important;
+  opacity:1!important;
+}
+body.gamer-mode .picker-item,
+body.sdc-mobile-pro .picker-item{background:rgba(255,255,255,.085)!important;border-color:rgba(123,219,255,.18)!important;}
+
+/* Acciones rápidas: textos en una sola línea y sin letras sobrepuestas */
+body.gamer-mode .quote-actions.v49-actions-clean,
+body.sdc-mobile-pro .quote-actions.v49-actions-clean{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px!important;
+}
+body.gamer-mode .quote-actions.v49-actions-clean .btn,
+body.sdc-mobile-pro .quote-actions.v49-actions-clean .btn{
+  min-height:64px!important;
+  padding:9px 7px!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+}
+body.gamer-mode .quote-actions.v49-actions-clean .btn b,
+body.sdc-mobile-pro .quote-actions.v49-actions-clean .btn b{
+  display:none!important;
+}
+body.gamer-mode .quote-actions.v49-actions-clean .btn span,
+body.sdc-mobile-pro .quote-actions.v49-actions-clean .btn span{
+  font-size:clamp(14px,4.2vw,17px)!important;
+  line-height:1.05!important;
+  letter-spacing:.05em!important;
+  white-space:nowrap!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  color:inherit!important;
+}
+body.gamer-mode .quote-actions.v49-actions-clean .btn small,
+body.sdc-mobile-pro .quote-actions.v49-actions-clean .btn small{
+  font-size:9px!important;
+  letter-spacing:.08em!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+body.gamer-mode .quote-actions.v49-actions-clean .to-sale,
+body.sdc-mobile-pro .quote-actions.v49-actions-clean .to-sale{grid-column:auto!important;}
+
+/* Categorías: más finas y tipo chip premium */
+body.gamer-mode .category-gallery,
+body.sdc-mobile-pro .category-gallery{
+  padding:12px!important;
+  border-radius:24px!important;
+  background:rgba(5,19,33,.72)!important;
+  border:1px solid rgba(85,211,255,.18)!important;
+  overflow:hidden!important;
+}
+body.gamer-mode .category-head h2,
+body.sdc-mobile-pro .category-head h2{font-size:22px!important;letter-spacing:.07em!important;}
+body.gamer-mode .category-head p,
+body.sdc-mobile-pro .category-head p{display:none!important;}
+body.gamer-mode .category-grid,
+body.sdc-mobile-pro .category-grid{
+  display:flex!important;
+  gap:9px!important;
+  overflow-x:auto!important;
+  padding:4px 2px 8px!important;
+  scrollbar-width:none!important;
+}
+body.gamer-mode .category-grid::-webkit-scrollbar,
+body.sdc-mobile-pro .category-grid::-webkit-scrollbar{display:none!important;}
+body.gamer-mode .category-card,
+body.sdc-mobile-pro .category-card{
+  flex:0 0 auto!important;
+  min-width:132px!important;
+  max-width:150px!important;
+  min-height:78px!important;
+  padding:11px 12px!important;
+  border-radius:20px!important;
+  display:grid!important;
+  grid-template-columns:34px 1fr!important;
+  grid-template-rows:auto auto!important;
+  gap:2px 8px!important;
+  text-align:left!important;
+  background:linear-gradient(145deg,rgba(10,45,70,.92),rgba(6,24,40,.92))!important;
+  border:1px solid rgba(93,214,255,.22)!important;
+}
+body.gamer-mode .category-card img,
+body.sdc-mobile-pro .category-card img{width:34px!important;height:34px!important;grid-row:1/3!important;border-radius:12px!important;}
+body.gamer-mode .category-card b,
+body.sdc-mobile-pro .category-card b{font-size:12px!important;line-height:1.05!important;color:#f5fbff!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+body.gamer-mode .category-card small,
+body.sdc-mobile-pro .category-card small{font-size:9.5px!important;color:#b9d4e7!important;white-space:nowrap!important;}
+body.gamer-mode .category-card.active,
+body.sdc-mobile-pro .category-card.active{background:linear-gradient(135deg,#18dfff,#28efb1)!important;color:#03131e!important;}
+body.gamer-mode .category-card.active b,
+body.gamer-mode .category-card.active small,
+body.sdc-mobile-pro .category-card.active b,
+body.sdc-mobile-pro .category-card.active small{color:#03131e!important;}
+.quote-category-strip .chip{white-space:nowrap!important;min-width:max-content!important;border-radius:999px!important;}
+
+/* Pie de página para que el final del catálogo no se mire vacío */
+.sdc-page-footer{
+  margin:24px 6px 96px!important;
+  padding:18px 16px!important;
+  border-radius:24px!important;
+  background:linear-gradient(145deg,rgba(7,27,45,.92),rgba(4,16,29,.96))!important;
+  border:1px solid rgba(85,211,255,.20)!important;
+  color:#eaf8ff!important;
+  box-shadow:0 18px 38px rgba(0,0,0,.22)!important;
+}
+.sdc-page-footer div{display:flex!important;flex-direction:column!important;gap:4px!important;}
+.sdc-page-footer b{font-size:16px!important;letter-spacing:.10em!important;}
+.sdc-page-footer span,.sdc-page-footer small{display:block!important;color:#bcd3e4!important;font-size:12px!important;line-height:1.35!important;}
+
+/* Ajuste extra para botones de acciones del producto y formularios */
+.product-form-actions .btn{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+body.gamer-mode .topbar .spacer,
+body.sdc-mobile-pro .topbar .spacer{display:none!important;}

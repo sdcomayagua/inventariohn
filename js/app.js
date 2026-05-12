@@ -1301,49 +1301,56 @@
   function sendWhatsAppText(isSale){const doc=currentDoc(isSale); if(!doc.items.length)return toast('Agrega productos primero.'); const c=calc(doc); if(c.products<=0||c.total<=0)return toast('El total está en cero. Revisa producto, precio y envío antes de enviar.'); const phone=chooseWaPhone(doc); if(phone===null)return; save(); openWhatsApp(phone,whatsappText(doc,isSale));}
   function receiptLandscapeHTML(doc,isSale=true){
     const c=calc(doc);
-    const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
+    const date=new Date(doc.date||Date.now()).toLocaleString('es-HN',{day:'2-digit',month:'long',year:'numeric',hour:'numeric',minute:'2-digit'});
     const title=isSale?'RECIBO DE COMPRA':'COTIZACIÓN PREVIA';
-    const status=isSale?'VENTA CONFIRMADA':'PENDIENTE';
+    const status=isSale?'VENTA CONFIRMADA':'COTIZACIÓN';
     const note=isSale?'Venta confirmada en SD COMAYAGUA. Gracias por su compra; conserve este recibo para cualquier consulta.':'Cotización pendiente de confirmación. No aparta producto. Antes de pagar, confirme disponibilidad, entrega y total final.';
-    const items=(doc.items||[]).map((it,i)=>{
+    const allItems=doc.items||[];
+    const maxItems=6;
+    const visibleItems=allItems.slice(0,maxItems);
+    const moreCount=Math.max(0,allItems.length-visibleItems.length);
+    const rows=visibleItems.map((it,i)=>{
       const qty=Math.max(1,+it.qty||1);
       const total=itemTotal(it);
       const unit=total/qty;
       const img=it.image||productImage(itemProductRef(it))||captureFallbackImage();
-      return `<div class="rl-row"><span class="rl-num">${i+1}</span><img src="${escapeHtml(img)}" crossorigin="anonymous" onerror="this.onerror=null;this.src='${escapeHtml(captureFallbackImage())}'"><div><b>${escapeHtml(it.name)}</b><small>${num(qty)} ${qty===1?'unidad':'unidades'} · ${money(unit)} c/u</small></div><strong>${money(total)}</strong></div>`;
-    }).join('')||'<div class="rl-empty">Sin productos agregados.</div>';
-    const commission=c.commission?`<div><span>Comisión</span><b>${money(c.commission)}</b></div>`:'';
+      return `<div class="rp-row"><span class="rp-num">${i+1}</span><img src="${escapeHtml(img)}" crossorigin="anonymous" onerror="this.onerror=null;this.src='${escapeHtml(captureFallbackImage())}'"><div class="rp-prod"><b>${escapeHtml(it.name)}</b><small>${num(qty)} ${qty===1?'unidad':'unidades'} · ${money(unit)} c/u</small></div><strong>${money(total)}</strong></div>`;
+    }).join('')||'<div class="rp-empty">Sin productos agregados.</div>';
+    const moreRow=moreCount?`<div class="rp-more">+ ${num(moreCount)} producto${moreCount===1?'':'s'} adicional${moreCount===1?'':'es'} incluido${moreCount===1?'':'s'} en el total.</div>`:'';
+    const commission=c.commission?`<div><span>Comisión pagar al recibir</span><b>${money(c.commission)}</b></div>`:'';
     const discount=c.discount?`<div><span>Descuento</span><b>- ${money(c.discount)}</b></div>`:'';
-    return `<article class="receiptLandscape-v49" id="receiptLandscapeDoc">
-      <header class="rl-top"><div class="rl-brand"><img src="${RECEIPT_LOGO_SRC}" crossorigin="anonymous" onerror="this.style.display='none'"><div><small>SD COMAYAGUA</small><h1>${title}</h1><p>${date} · ${escapeHtml(doc.id||'SDC')}</p></div></div><b>${status}</b></header>
-      <section class="rl-main">
-        <div class="rl-left">
-          <div class="rl-total"><span>Total a pagar</span><b>${money(c.total)}</b></div>
-          <div class="rl-grid"><div><span>Cliente</span><b>${escapeHtml(doc.client||'Cliente no registrado')}</b></div><div><span>Teléfono</span><b>${escapeHtml(doc.phone||'No registrado')}</b></div><div><span>Ubicación</span><b>${escapeHtml((doc.department||'Comayagua')+' / '+(doc.municipality||'Comayagua'))}</b></div><div><span>Pago</span><b>${escapeHtml(shippingLabel(doc))}</b></div></div>
-          <div class="rl-note"><span>Proceso de pago</span><b>${escapeHtml(shippingLabel(doc))}</b><p>${escapeHtml(shippingNote(doc))}</p></div>
-        </div>
-        <div class="rl-right">
-          <div class="rl-products-head"><span>Productos vendidos</span><b>${(doc.items||[]).reduce((a,x)=>a+(+x.qty||1),0)} ${(doc.items||[]).length===1?'artículo':'artículos'}</b></div>
-          <div class="rl-products">${items}</div>
-          <div class="rl-summary"><div><span>Subtotal productos</span><b>${money(c.products)}</b></div><div><span>Envío</span><b>${money(c.shipping)}</b></div>${commission}${discount}<div class="grand"><span>Total a pagar</span><b>${money(c.total)}</b></div></div>
-          <footer class="rl-footer"><p>${note}</p><b>WhatsApp: +504 3151-7755</b></footer>
-        </div>
+    return `<article class="receiptPage-v50" id="receiptLandscapeDoc">
+      <header class="rp-top"><span>RECIBO SD COMAYAGUA</span><b>${status}</b></header>
+      <section class="rp-hero">
+        <div class="rp-brand"><img src="${RECEIPT_LOGO_SRC}" crossorigin="anonymous" onerror="this.style.display='none'"><div><small>SD COMAYAGUA</small><h1>${title}</h1><p>${date}</p><p>${escapeHtml(doc.id||'SDC')}</p></div></div>
+        <div class="rp-total"><span>Total a pagar</span><b>${money(c.total)}</b></div>
       </section>
+      <section class="rp-info">
+        <div><span>Cliente</span><b>${escapeHtml(doc.client||'Cliente no registrado')}</b></div>
+        <div><span>Teléfono</span><b>${escapeHtml(doc.phone||'No registrado')}</b></div>
+        <div><span>Ubicación</span><b>${escapeHtml((doc.department||'Comayagua')+' / '+(doc.municipality||'Comayagua'))}</b></div>
+        <div><span>Pago / entrega</span><b>${escapeHtml(shippingLabel(doc))}</b></div>
+      </section>
+      <section class="rp-payment"><div><span>Proceso de pago</span><b>${escapeHtml(shippingLabel(doc))}</b></div><p>${escapeHtml(shippingNote(doc))}</p></section>
+      <section class="rp-products"><div class="rp-section-head"><span>Productos vendidos</span><b>${(doc.items||[]).reduce((a,x)=>a+(+x.qty||1),0)} ${(doc.items||[]).length===1?'artículo':'artículos'}</b></div><div class="rp-lines">${rows}${moreRow}</div></section>
+      <section class="rp-summary"><div><span>Subtotal productos</span><b>${money(c.products)}</b></div><div><span>Envío</span><b>${money(c.shipping)}</b></div>${commission}${discount}<div class="grand"><span>Total a pagar</span><b>${money(c.total)}</b></div></section>
+      <footer class="rp-footer"><p>${note}</p><b>WhatsApp: +504 3151-7755</b></footer>
     </article>`;
   }
   function receiptLandscapeCSS(){return `
-    .receiptLandscape-v49{width:1320px;min-height:760px;background:#f3fbff;color:#061522;border-radius:34px;overflow:hidden;font-family:Barlow,Arial,sans-serif;border:1px solid #d8eaf4;box-shadow:0 24px 60px rgba(4,18,31,.18)}
-    .receiptLandscape-v49 *{box-sizing:border-box}.rl-top{height:118px;background:#061827;color:white;display:flex;align-items:center;justify-content:space-between;padding:24px 34px;border-bottom:8px solid #43f0d0}.rl-brand{display:flex;align-items:center;gap:18px}.rl-brand img{width:76px;height:76px;object-fit:contain;background:white;border-radius:18px;padding:5px}.rl-brand small,.rl-grid span,.rl-note span,.rl-summary span,.rl-total span,.rl-products-head span{display:block;text-transform:uppercase;letter-spacing:.12em;font-weight:900;color:#7b8d9b;font-size:15px}.rl-brand small{color:#8eefff}.rl-brand h1{margin:0;font-size:52px;line-height:.9;letter-spacing:-.04em;color:white}.rl-brand p{margin:5px 0 0;font-size:18px;color:#b9cbd8;font-weight:800}.rl-top>b{background:#a9ffd9;color:#08351e;border-radius:999px;padding:15px 24px;text-transform:uppercase;letter-spacing:.08em;font-size:18px}.rl-main{display:grid;grid-template-columns:430px 1fr;gap:22px;padding:26px}.rl-left,.rl-right{display:flex;flex-direction:column;gap:18px}.rl-total{background:linear-gradient(135deg,#eafcff,#d5fff4);border:1px solid #bceee4;border-radius:28px;padding:26px}.rl-total b{display:block;font-size:72px;line-height:.95;letter-spacing:-.06em;color:#051623;margin-top:8px}.rl-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rl-grid div,.rl-note,.rl-footer{background:white;border:1px solid #dbeaf2;border-radius:20px;padding:17px}.rl-grid b{font-size:19px;color:#071625;line-height:1.12}.rl-note{background:#effcf8}.rl-note>b{display:block;font-size:21px;margin:5px 0;color:#071625}.rl-note p,.rl-footer p{font-size:18px;line-height:1.25;color:#33495c;font-weight:800;margin:0}.rl-products-head{background:#061827;color:white;border-radius:20px 20px 0 0;padding:17px 20px;display:flex;justify-content:space-between}.rl-products-head span{color:white}.rl-products-head b{color:#a9ffd9;font-size:19px;text-transform:uppercase;letter-spacing:.08em}.rl-products{background:white;border:1px solid #dbeaf2;border-top:0;border-radius:0 0 20px 20px;overflow:hidden;max-height:260px}.rl-row{display:grid;grid-template-columns:46px 58px 1fr 115px;align-items:center;gap:12px;padding:13px 18px;border-top:1px solid #eef4f8}.rl-row:first-child{border-top:0}.rl-row img{width:58px;height:58px;object-fit:cover;border-radius:14px;background:#eff8fd}.rl-num{width:42px;height:42px;border-radius:14px;background:#eef9fd;display:grid;place-items:center;font-weight:950;color:#0a688c}.rl-row b{display:block;font-size:20px;line-height:1.06;color:#071625}.rl-row small{display:block;font-size:16px;color:#607487;font-weight:800;margin-top:4px}.rl-row strong{font-size:23px;text-align:right;color:#071625}.rl-summary{background:white;border:1px solid #dbeaf2;border-radius:20px;overflow:hidden}.rl-summary>div{display:flex;justify-content:space-between;gap:20px;padding:14px 18px;border-bottom:1px solid #edf4f8}.rl-summary>div:last-child{border-bottom:0}.rl-summary b{font-size:22px;color:#071625}.rl-summary .grand{background:#061827;color:white}.rl-summary .grand span{color:white}.rl-summary .grand b{font-size:38px;color:#56ffd2}.rl-footer b{margin-top:14px;display:inline-flex;border:1px solid #cbeaf2;background:#edfaff;color:#07658d;border-radius:999px;padding:10px 18px;font-size:19px}.rl-empty{padding:25px;font-weight:900;color:#617889}@media print{html,body{margin:0!important;background:white!important}.receiptLandscape-v49{width:100%!important;min-height:auto!important;border-radius:0!important;box-shadow:none!important;border:0!important}.rl-main{grid-template-columns:35% 1fr!important;padding:14px!important;gap:14px!important}.rl-top{height:96px!important;padding:16px 24px!important}.rl-brand h1{font-size:38px!important}.rl-total b{font-size:50px!important}.rl-row b{font-size:15px!important}.rl-row small{font-size:12px!important}.rl-products{max-height:none!important}.rl-note p,.rl-footer p{font-size:14px!important}.rl-grid b{font-size:15px!important}.rl-summary b{font-size:17px!important}.rl-summary .grand b{font-size:31px!important}}
+    .receiptPage-v50{width:1080px;min-height:1397px;background:#f4fbff;color:#061522;font-family:Barlow,Arial,sans-serif;border-radius:0;overflow:hidden;padding:0 28px 28px;border:0;box-shadow:none}
+    .receiptPage-v50 *{box-sizing:border-box}.rp-top{height:88px;margin:0 -28px 28px;background:#061827;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 34px;border-bottom:7px solid #36efd0}.rp-top span{font-size:25px;text-transform:uppercase;letter-spacing:.16em;font-weight:950}.rp-top>b{background:#a9ffd9;color:#08351e;border-radius:999px;padding:16px 28px;text-transform:uppercase;letter-spacing:.10em;font-size:20px}.rp-hero{display:grid;grid-template-columns:1fr 340px;gap:22px;margin-bottom:20px}.rp-brand,.rp-total,.rp-info>div,.rp-payment,.rp-products,.rp-summary,.rp-footer{background:white;border:1px solid #d9ecf5;border-radius:28px}.rp-brand{display:flex;align-items:center;gap:24px;padding:26px 28px}.rp-brand img{width:104px;height:104px;object-fit:contain;background:white;border:1px solid #dbeaf2;border-radius:24px;padding:7px;box-shadow:0 12px 30px rgba(5,25,38,.10)}.rp-brand small,.rp-total span,.rp-info span,.rp-payment span,.rp-summary span,.rp-section-head span{display:block;text-transform:uppercase;letter-spacing:.14em;color:#7f91a0;font-size:17px;font-weight:950}.rp-brand small{font-size:20px;color:#8a9aa8}.rp-brand h1{margin:2px 0 6px;font-size:58px;line-height:.88;letter-spacing:-.05em;color:#061522}.rp-brand p{margin:2px 0;color:#536779;font-size:22px;font-weight:900;line-height:1.08}.rp-total{background:linear-gradient(135deg,#ecfcff,#dbfff6);padding:30px 28px;display:flex;flex-direction:column;justify-content:center}.rp-total b{display:block;font-size:76px;line-height:.95;letter-spacing:-.07em;color:#061522;margin-top:16px;white-space:nowrap}.rp-info{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:18px}.rp-info>div{padding:18px 20px;min-height:94px}.rp-info b{display:block;color:#071625;font-size:21px;line-height:1.08;margin-top:9px}.rp-payment{display:grid;grid-template-columns:290px 1fr;gap:16px;align-items:center;background:#effcf8;border-color:#c8f4e8;padding:22px 24px;margin-bottom:18px}.rp-payment b{display:block;color:#061522;font-size:26px;margin-top:8px}.rp-payment p{margin:0;color:#33495c;font-size:22px;line-height:1.25;font-weight:850}.rp-products{overflow:hidden;margin-bottom:18px}.rp-section-head{height:70px;background:#061827;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 26px}.rp-section-head span{color:white}.rp-section-head b{color:#b6ffdf;font-size:21px;text-transform:uppercase;letter-spacing:.08em}.rp-lines{background:#fff}.rp-row{display:grid;grid-template-columns:56px 70px 1fr 135px;align-items:center;gap:14px;min-height:92px;padding:13px 24px;border-top:1px solid #edf4f8}.rp-row:first-child{border-top:0}.rp-row img{width:70px;height:70px;object-fit:cover;border-radius:16px;background:#eff8fd}.rp-num{width:48px;height:48px;border-radius:16px;background:#eef9fd;display:grid;place-items:center;font-weight:950;color:#0a688c;font-size:20px}.rp-prod{min-width:0}.rp-row b{display:block;color:#061522;font-size:22px;line-height:1.06;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rp-row small{display:block;color:#607487;font-size:16px;font-weight:850;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rp-row strong{text-align:right;color:#061522;font-size:24px;white-space:nowrap}.rp-more{padding:12px 24px;background:#f5fbff;color:#315068;font-weight:900;font-size:18px;border-top:1px solid #edf4f8}.rp-empty{padding:24px;color:#617889;font-weight:900}.rp-summary{overflow:hidden;margin-bottom:18px}.rp-summary>div{display:flex;align-items:center;justify-content:space-between;min-height:62px;padding:0 26px;border-top:1px solid #edf4f8}.rp-summary>div:first-child{border-top:0}.rp-summary b{font-size:27px;color:#061522;white-space:nowrap}.rp-summary .grand{min-height:92px;background:#061827;color:#fff}.rp-summary .grand span{color:white}.rp-summary .grand b{font-size:56px;color:#56ffd2;letter-spacing:-.06em}.rp-footer{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;padding:24px 28px;min-height:118px}.rp-footer p{margin:0;color:#33495c;font-size:22px;line-height:1.25;font-weight:850}.rp-footer b{border:1px solid #cbeaf2;background:#edfaff;color:#07658d;border-radius:999px;padding:14px 22px;font-size:21px;white-space:nowrap}
+    @media print{@page{size:letter portrait;margin:0}html,body{margin:0!important;background:white!important}.receiptPage-v50{width:100%!important;min-height:100vh!important;border-radius:0!important;padding:0 20px 20px!important}.rp-top{margin:0 -20px 18px!important;height:70px!important}.rp-top span{font-size:18px!important}.rp-top>b{font-size:15px!important;padding:10px 18px!important}.rp-hero{grid-template-columns:1fr 280px!important;gap:14px!important}.rp-brand{padding:18px!important}.rp-brand img{width:82px!important;height:82px!important}.rp-brand h1{font-size:40px!important}.rp-brand p{font-size:15px!important}.rp-total b{font-size:52px!important}.rp-info{gap:10px!important}.rp-info>div{padding:12px!important;min-height:70px!important}.rp-info b{font-size:14px!important}.rp-payment{padding:14px!important}.rp-payment p{font-size:15px!important}.rp-row{min-height:62px!important;padding:8px 14px!important}.rp-row img{width:46px!important;height:46px!important}.rp-row b{font-size:15px!important}.rp-row small{font-size:11px!important}.rp-row strong{font-size:16px!important}.rp-summary>div{min-height:45px!important}.rp-summary .grand{min-height:64px!important}.rp-summary .grand b{font-size:37px!important}.rp-footer{min-height:72px!important;padding:14px 18px!important}.rp-footer p{font-size:14px!important}.rp-footer b{font-size:14px!important;padding:9px 13px!important}}
   `}
   async function landscapeDocToBlob(doc,isSale=true){
     const host=document.createElement('div');
-    host.className='productPhotoExportHost docLandscapeExportHost';
+    host.className='productPhotoExportHost docReceiptExportHost';
     host.innerHTML=`<style>${receiptLandscapeCSS()}</style>${receiptLandscapeHTML(doc,isSale)}`;
     document.body.appendChild(host);
     try{
       await waitImages(host);
       const el=host.querySelector('#receiptLandscapeDoc');
-      return await captureNodeAsPngBlob(el,2.4);
+      return await captureNodeAsPngBlob(el,2.35);
     }finally{host.remove();}
   }
 
@@ -1360,23 +1367,45 @@
     return blob;
   }
 
-  function printDocumentCard(isSale=false){
+  function blobToDataURL(blob){
+    return new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onload=()=>resolve(reader.result);
+      reader.onerror=reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+  async function printDocumentCard(isSale=false){
     const doc=currentDoc(isSale);
+    if(!doc.items.length)return toast('Agrega productos primero.');
+    const c=calc(doc);
+    if(c.products<=0||c.total<=0)return toast('El total está en cero. Revisa producto, precio y envío antes de imprimir.');
     const popup=window.open('','_blank');
     if(!popup){
-      document.body.classList.add('sdc-print-direct');
-      setTimeout(()=>{window.print(); setTimeout(()=>document.body.classList.remove('sdc-print-direct'),700);},100);
+      await downloadDocImage(isSale?'recibo':'cotizacion');
+      toast('El navegador bloqueó la ventana de PDF. Se descargó la imagen limpia para imprimirla o enviarla.');
       return;
     }
-    const content=isSale?receiptLandscapeHTML(doc,true):($('#printableDoc',modalRoot)?.outerHTML||'');
-    const extraCSS=isSale?receiptLandscapeCSS():'';
-    const html=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${isSale?'Recibo horizontal':'Documento'} SD Comayagua</title><style>
-      @page{size:letter ${isSale?'landscape':'portrait'};margin:6mm}*{box-sizing:border-box}html,body{margin:0;background:#fff;color:#071625;font-family:Arial,Helvetica,sans-serif}.print-wrap{width:100%;display:flex;justify-content:center;align-items:flex-start;padding:0}.no-print,.modal-actions{display:none!important}${extraCSS}
-      ${!isSale?'.compact-doc,.quote-doc,.receipt-doc{width:100%;max-width:760px;margin:0 auto;background:#fff!important;color:#071625!important;border-radius:22px;overflow:hidden}.doc-top,.doc-header,.receipt-head{background:#071625!important;color:#fff!important;padding:18px 24px;display:flex;justify-content:space-between;gap:12px}.doc-card,.doc-info,.doc-total,.doc-section,.doc-foot,.doc-payment,.doc-box,.doc-customer,.doc-delivery,.doc-pay{border:1px solid #dceaf2;border-radius:18px;margin:14px 20px;padding:16px;background:#fff;color:#071625}.doc-products{margin:14px 20px;border:1px solid #dceaf2;border-radius:18px;overflow:hidden}.doc-products-title,.doc-products-head{background:#071625!important;color:#fff!important;padding:14px 18px;display:flex;justify-content:space-between}.totals,.doc-totals{margin:14px 20px;border:1px solid #dceaf2;border-radius:18px;overflow:hidden}.totals>div,.doc-totals>div{display:flex;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #e7f1f6}.totals .grand,.doc-totals .grand{background:#071625!important;color:#52ffcc!important;border-bottom:0}img{max-width:100%;height:auto}p{margin:0}':''}
-      </style></head><body><div class="print-wrap">${content}</div><script>setTimeout(()=>{window.focus();window.print();},450);<\/script></body></html>`;
     popup.document.open();
-    popup.document.write(html);
+    popup.document.write(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Preparando documento SD Comayagua</title><style>html,body{margin:0;height:100%;background:#f4fbff;font-family:Arial,sans-serif;color:#061522;display:grid;place-items:center}.box{padding:24px;border:1px solid #d9ecf5;border-radius:18px;background:white;text-align:center;font-weight:800}</style></head><body><div class="box">Preparando PDF limpio de SD COMAYAGUA...</div></body></html>`);
     popup.document.close();
+    try{
+      const blob=isSale?await landscapeDocToBlob(doc,true):await docToBlob(false);
+      if(!blob)throw new Error('No se pudo crear la imagen del documento.');
+      const dataURL=await blobToDataURL(blob);
+      const title=isSale?'Recibo SD Comayagua':'Cotización SD Comayagua';
+      const html=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>
+        @page{size:letter portrait;margin:0}*{box-sizing:border-box}html,body{margin:0;background:#fff;color:#061522}body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center}.paper{width:100%;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:0;background:#fff}.paper img{display:block;width:100%;height:auto;max-width:8.5in;object-fit:contain;background:#fff}.hint{display:none}@media screen{body{background:#eaf2f6;padding:18px}.paper{width:auto;min-height:0;box-shadow:0 18px 50px rgba(0,0,0,.18)}}@media print{html,body{width:100%;height:100%;background:#fff!important}.paper{padding:0!important;box-shadow:none!important}.paper img{width:100%!important;max-width:none!important;max-height:100vh!important;object-fit:contain!important;page-break-inside:avoid!important}}
+      </style></head><body><main class="paper"><img alt="${title}" src="${dataURL}"></main><script>window.onload=()=>setTimeout(()=>{window.focus();window.print();},250);<\/script></body></html>`;
+      popup.document.open();
+      popup.document.write(html);
+      popup.document.close();
+    }catch(err){
+      console.error(err);
+      try{popup.close();}catch(e){}
+      await downloadDocImage(isSale?'recibo':'cotizacion');
+      toast('No se pudo abrir el PDF limpio. Se descargó la imagen del recibo.');
+    }
   }
 
   async function downloadDocImage(name='documento'){
@@ -1386,10 +1415,10 @@
     if(!blob)return;
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download=`${name}${isSale?'-horizontal':''}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc?.id||'sdc')}.png`;
+    a.download=`${name}${isSale?'-cliente':''}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc?.id||'sdc')}.png`;
     a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-    toast(isSale?'Recibo horizontal descargado con nombre único.':'Imagen descargada con nombre único.');
+    toast(isSale?'Recibo limpio descargado con nombre único.':'Imagen descargada con nombre único.');
   }
   async function copyTextSafe(text){
     try{await navigator.clipboard?.writeText(text); return true;}catch(e){return false;}
@@ -1457,7 +1486,7 @@
     save();
     const blob=await docToBlob(isSale);
     const text=whatsappText(doc,isSale);
-    const filename=`${isSale?'recibo-horizontal':'cotizacion'}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc.id||'sdc')}.png`;
+    const filename=`${isSale?'recibo-cliente':'cotizacion'}-${clientLabel(doc)}-${fileStamp()}-${slugFile(doc.id||'sdc')}.png`;
     if(blob && navigator.canShare){
       const file=new File([blob],filename,{type:'image/png'});
       if(navigator.canShare({files:[file]})){

@@ -1232,3 +1232,166 @@ body.sdc-mobile-pro .sdc-page-footer{
   margin-top:30px!important;
   margin-bottom:110px!important;
 }
+
+/* SDC V49.7 · Magia final: capturas grandes, acciones legibles y recibo más limpio */
+body.gamer-mode .top-title h1,
+body.sdc-mobile-pro .top-title h1{
+  max-width:230px!important;
+  font-size:17px!important;
+  letter-spacing:.045em!important;
+  color:#fff!important;
+  text-shadow:0 1px 10px rgba(0,0,0,.25)!important;
+}
+@media(max-width:390px){
+  body.gamer-mode .top-title h1,
+  body.sdc-mobile-pro .top-title h1{max-width:184px!important;font-size:15.5px!important;}
+}
+
+/* Imagen / captura para cliente en mayor tamaño real */
+.productPhotoExportHost{width:1080px!important;}
+.productPhotoExportHost .productPhotoClean-v49{width:1080px!important;max-width:none!important;}
+#productShareCard .productPhotoClean-v49{width:min(100%,980px)!important;}
+.productPhotoClean-v49{
+  border-radius:42px!important;
+  border:1px solid #d6eaf4!important;
+  box-shadow:0 32px 80px rgba(3,17,28,.16)!important;
+}
+.productPhotoClean-v49 .productPhotoHead{padding:24px 28px!important;gap:18px!important;}
+.productPhotoClean-v49 .productPhotoHead img{width:70px!important;height:70px!important;border-radius:20px!important;}
+.productPhotoClean-v49 .productPhotoHead strong{font-size:31px!important;letter-spacing:.035em!important;}
+.productPhotoClean-v49 .productPhotoHead span{font-size:17px!important;letter-spacing:.13em!important;color:#b9f3ff!important;}
+.productPhotoClean-v49 .productPhotoHead b{font-size:15px!important;padding:12px 24px!important;min-width:190px!important;text-align:center!important;}
+.productPhotoClean-v49 .productPhotoImageWrap strong{left:28px!important;bottom:28px!important;font-size:46px!important;padding:17px 28px!important;min-width:520px!important;}
+.productPhotoClean-v49 .productPhotoBody{padding:34px 34px 30px!important;}
+.productPhotoClean-v49 .productPhotoBody h2{font-size:44px!important;line-height:1.04!important;margin-bottom:14px!important;}
+.productPhotoClean-v49 .productPhotoBody p{font-size:24px!important;line-height:1.34!important;margin-bottom:18px!important;color:#23394b!important;font-weight:700!important;}
+.productPhotoClean-v49 .productPhotoQty,
+.productPhotoClean-v49 .productPhotoNote{border-radius:24px!important;padding:17px 20px!important;margin:16px 0!important;}
+.productPhotoClean-v49 .productPhotoQty span{font-size:15px!important;}
+.productPhotoClean-v49 .productPhotoQty b{font-size:25px!important;color:#071625!important;}
+.productPhotoClean-v49 .productPhotoPrices{gap:14px!important;}
+.productPhotoClean-v49 .productPhotoPrices div{border-radius:23px!important;padding:18px!important;}
+.productPhotoClean-v49 .productPhotoPrices span{font-size:14px!important;letter-spacing:.10em!important;}
+.productPhotoClean-v49 .productPhotoPrices b{font-size:30px!important;}
+.productPhotoClean-v49 .productPhotoPrices small{font-size:14px!important;line-height:1.18!important;}
+.productPhotoClean-v49 .productPhotoNote{font-size:31px!important;font-weight:950!important;text-align:center!important;color:#45d9bc!important;}
+.productPhotoClean-v49 .productPhotoFooter{padding:24px!important;font-size:24px!important;letter-spacing:.05em!important;}
+@media(max-width:520px){
+  #productShareCard .productPhotoClean-v49{width:100%!important;}
+  #productShareCard .productPhotoClean-v49 .productPhotoBody h2{font-size:28px!important;}
+  #productShareCard .productPhotoClean-v49 .productPhotoBody p{font-size:16px!important;}
+  #productShareCard .productPhotoClean-v49 .productPhotoPrices{grid-template-columns:1fr!important;}
+}
+
+/* Acciones rápidas legibles en Cotización y Factura */
+body.gamer-mode #modalRoot .quote-actions.v49-actions-readable,
+body.sdc-mobile-pro #modalRoot .quote-actions.v49-actions-readable{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+  padding:16px 0 0!important;
+  background:transparent!important;
+  border:0!important;
+}
+body.gamer-mode #modalRoot .quote-actions.v49-actions-readable .btn,
+body.sdc-mobile-pro #modalRoot .quote-actions.v49-actions-readable .btn{
+  min-width:0!important;
+  min-height:78px!important;
+  padding:12px 10px!important;
+  border-radius:22px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  text-align:center!important;
+  overflow:hidden!important;
+  white-space:normal!important;
+  background:linear-gradient(145deg,#09253b,#0b3652)!important;
+  border:1px solid rgba(96,216,255,.26)!important;
+  color:#f5fbff!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 24px rgba(0,0,0,.16)!important;
+}
+body.gamer-mode #modalRoot .quote-actions.v49-actions-readable .btn span,
+body.sdc-mobile-pro #modalRoot .quote-actions.v49-actions-readable .btn span{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  font-size:clamp(16px,4.7vw,20px)!important;
+  line-height:1.05!important;
+  letter-spacing:.035em!important;
+  font-weight:950!important;
+  color:#ffffff!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+  text-shadow:0 1px 10px rgba(0,0,0,.25)!important;
+}
+body.gamer-mode #modalRoot .quote-actions.v49-actions-readable .btn small,
+body.sdc-mobile-pro #modalRoot .quote-actions.v49-actions-readable .btn small{
+  display:block!important;
+  width:100%!important;
+  font-size:10px!important;
+  line-height:1.05!important;
+  letter-spacing:.10em!important;
+  font-weight:900!important;
+  color:#b7d8e9!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+  opacity:1!important;
+}
+body.gamer-mode #modalRoot .quote-actions.v49-actions-readable .main-wide,
+body.sdc-mobile-pro #modalRoot .quote-actions.v49-actions-readable .main-wide,
+body.gamer-mode #modalRoot .quote-actions.v49-actions-readable .save-doc,
+body.sdc-mobile-pro #modalRoot .quote-actions.v49-actions-readable .save-doc{
+  background:linear-gradient(135deg,#24eaff,#2cf0b1)!important;
+  color:#03131e!important;
+  border-color:rgba(56,246,207,.55)!important;
+}
+body.gamer-mode #modalRoot .quote-actions.v49-actions-readable .main-wide span,
+body.sdc-mobile-pro #modalRoot .quote-actions.v49-actions-readable .main-wide span,
+body.gamer-mode #modalRoot .quote-actions.v49-actions-readable .save-doc span,
+body.sdc-mobile-pro #modalRoot .quote-actions.v49-actions-readable .save-doc span{color:#03131e!important;text-shadow:none!important;}
+body.gamer-mode #modalRoot .quote-actions.v49-actions-readable .main-wide small,
+body.sdc-mobile-pro #modalRoot .quote-actions.v49-actions-readable .main-wide small,
+body.gamer-mode #modalRoot .quote-actions.v49-actions-readable .save-doc small,
+body.sdc-mobile-pro #modalRoot .quote-actions.v49-actions-readable .save-doc small{color:#073349!important;}
+
+/* Recibo del cliente un poco más premium y claro */
+.receipt-v49-tight.receipt-pro-v4{border-radius:34px!important;overflow:hidden!important;box-shadow:0 24px 70px rgba(5,25,40,.12)!important;}
+.receipt-v49-tight .receipt-inner-pro{background:linear-gradient(180deg,#f7fcff 0%,#edfaff 100%)!important;}
+.receipt-v49-tight .receipt-header-pro{background:#fff!important;border:1px solid #dcebf4!important;border-radius:26px!important;padding:18px!important;}
+.receipt-v49-tight .receipt-brand-pro small{color:#7e91a0!important;font-weight:950!important;letter-spacing:.16em!important;}
+.receipt-v49-tight .receipt-brand-pro h2{letter-spacing:.015em!important;}
+.receipt-v49-tight .receipt-total-pro{background:linear-gradient(135deg,#efffff,#d5fbf4)!important;border:1px solid #bcf5e8!important;}
+.receipt-v49-tight .receipt-total-pro span{color:#607488!important;}
+.receipt-v49-tight .receipt-total-pro b{color:#061827!important;text-shadow:none!important;}
+.receipt-v49-tight .receipt-item-pro{background:#fff!important;border:1px solid #dbeaf3!important;}
+.receipt-v49-tight .receipt-item-info b{color:#061827!important;font-weight:950!important;}
+.receipt-v49-tight .receipt-item-info span{color:#607488!important;font-weight:850!important;}
+.receipt-v49-tight .receipt-item-pro strong{color:#061827!important;font-weight:950!important;}
+.receipt-v49-tight .receipt-summary-pro .grand{background:linear-gradient(135deg,#061827,#0a2b42)!important;}
+.receipt-v49-tight .receipt-summary-pro .grand b{color:#55ffcb!important;text-shadow:0 0 16px rgba(72,255,205,.22)!important;}
+.receipt-v49-tight .receipt-footer-clean{background:#fff!important;border:1px solid #dbeaf3!important;border-radius:24px!important;}
+
+/* Categorías / chips más finos */
+body.gamer-mode .category-card,
+body.sdc-mobile-pro .category-card{
+  border-radius:22px!important;
+  padding:12px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.04))!important;
+  border:1px solid rgba(94,218,255,.20)!important;
+  box-shadow:0 10px 22px rgba(0,0,0,.12)!important;
+}
+body.gamer-mode .category-card b,
+body.sdc-mobile-pro .category-card b{font-size:13px!important;line-height:1.08!important;color:#f3fbff!important;}
+body.gamer-mode .category-card small,
+body.sdc-mobile-pro .category-card small{font-size:10px!important;color:#b9d7e6!important;}
+body.gamer-mode .quote-category-strip .chip,
+body.sdc-mobile-pro .quote-category-strip .chip{
+  padding:11px 15px!important;
+  border-radius:16px!important;
+  font-size:11.5px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04))!important;
+}

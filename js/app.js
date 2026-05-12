@@ -419,7 +419,7 @@
   }
   function unlock(){ if($('#keyInput').value.trim()===(state.settings.accessKey||'199311')){state.unlocked=true;save();render();bootSheetSync();toast('Acceso autorizado.')} else toast('Clave incorrecta.'); }
   function topbar(){
-    return `<header class="topbar"><img class="top-logo" src="${LOGO_SRC}" alt="SD"><div class="top-title"><h1>SD COMAYAGUA</h1><p>Ventas · inventario · cotizaciones</p></div><div class="spacer"></div><button class="btn small ghost sync-status sync-icon-only" data-action="sync" title="Sincronizar con Google Sheets" aria-label="Sincronizar con Google Sheets"><span class="sync-dot"></span><span class="sync-icon">↻</span><span class="sync-label">${lastSyncLabel()}</span></button><button class="btn small secondary logout-btn" data-action="lock">Salir</button></header>`
+    return `<header class="topbar"><img class="top-logo" src="${LOGO_SRC}" alt="SD"><div class="top-title"><h1>SD COMAYAGUA</h1><p>Ventas · inventario · cotizaciones</p></div><div class="spacer"></div><button class="btn small ghost sync-status sync-icon-only" data-action="sync" title="Sincronizar con Google Sheets" aria-label="Sincronizar con Google Sheets"><span class="sync-dot"></span><span class="sync-icon">↻</span><span class="sync-label">${lastSyncLabel()}</span></button><button class="btn small secondary logout-btn logout-icon-btn" data-action="lock" title="Salir del panel" aria-label="Salir del panel"><span class="logout-power" aria-hidden="true">⏻</span><span class="logout-text">Salir</span></button></header>`
   }
   function hero(){
     const st=stats();
@@ -580,12 +580,8 @@
       <div class="v49-card-body">
         <strong class="v49-price">${money(p.price)}</strong>
         <h3 data-action="viewProduct" data-id="${id}">${escapeHtml(p.name)}</h3>
-        <div class="v49-card-actions">
-          <button type="button" data-action="quoteProduct" data-id="${id}">Cotizar</button>
-          <button type="button" data-action="sellProduct" data-id="${id}">Vender</button>
+        <div class="v49-card-actions v49-card-actions-single">
           <button type="button" data-action="viewProduct" data-id="${id}">Ver</button>
-          <button type="button" data-action="marketingProduct" data-id="${id}">Textos</button>
-          <button type="button" data-action="editProduct" data-id="${id}">Editar</button>
         </div>
       </div>
     </article>`;

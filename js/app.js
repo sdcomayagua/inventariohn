@@ -17,7 +17,7 @@
     local: { type:'Local', label:'Envío Local', fee:0, cod:false, note:'Entrega local con costo definido manualmente según la zona o acuerdo con el cliente.' }
   };
   const LOCAL_PLACEHOLDER = 'Por definir';
-  const SDC_VERSION_LABEL = 'PRO ESTABLE V39';
+  const SDC_VERSION_LABEL = 'SDC V49 MOBILE CLIENTE';
   quote = emptyQuote();
 
   function hydrateState(){
@@ -157,13 +157,17 @@
   function autoProductSpecs(p={}){
     return {estado:'Nuevo',categoria:firstTag(p)||'General',pais:'Honduras',envios:'Normal Lps.100 · Pagar al Recibir Lps.100 + 6% · Local por definir'};
   }
+  function isActiveProduct(p){
+    return p && p.active!==false && p.activo!==false && !['no','false','0','inactivo','oculto','borrado','eliminado'].includes(String(p.status||p.estado||'').toLowerCase().trim());
+  }
+  function activeProducts(){return (state.products||[]).filter(isActiveProduct)}
   function allCategories(){
-    const cats=Array.from(new Set(state.products.flatMap(p=>productTags(p)).filter(Boolean)));
+    const cats=Array.from(new Set(activeProducts().flatMap(p=>productTags(p)).filter(Boolean)));
     return ['Todos',...cats.sort((a,b)=>a.localeCompare(b,'es'))];
   }
   function catSlug(str){return String(str||'categoria').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'categoria'}
   function categoryImage(cat){const c=String(cat||'General').toLowerCase(); if(c==='todos')return 'assets/categorias/todas.svg'; return `assets/categorias/${catSlug(cat)}.svg`}
-  function categoryCount(cat){if(cat==='Todos')return state.products.length; const t=String(cat).toLowerCase(); return state.products.filter(p=>productTags(p).some(x=>x.toLowerCase()===t)).length}
+  function categoryCount(cat){const base=activeProducts(); if(cat==='Todos')return base.length; const t=String(cat).toLowerCase(); return base.filter(p=>productTags(p).some(x=>x.toLowerCase()===t)).length}
 
   function placeholderFor(p){const tags=productTags(p).join(' ').toLowerCase(); if(tags.includes('gamer')||tags.includes('dedal')||tags.includes('gatillo'))return SDC_PLACEHOLDERS.gamer; if(tags.includes('tec')||tags.includes('celular')||tags.includes('audio')||tags.includes('cable'))return SDC_PLACEHOLDERS.tecnologia; if(tags.includes('hogar')||tags.includes('cocina'))return SDC_PLACEHOLDERS.hogar; return SDC_PLACEHOLDERS.default}
   function captureFallbackImage(){return (window.SDC_PLACEHOLDERS && (SDC_PLACEHOLDERS.gamer||SDC_PLACEHOLDERS.default)) || LOGO_SRC}
@@ -172,7 +176,7 @@
   function onImgError(img,p){img.onerror=null; img.src=placeholderFor(p||{});}
   function productById(id){return state.products.find(p=>p.id===id)}
   function nextCode(){let max=0; state.products.forEach(p=>{const m=String(p.id).match(/(\d+)$/); if(m) max=Math.max(max,Number(m[1]))}); return `SDC-${String(max+1).padStart(3,'0')}`}
-  function emptyQuote(){return {id:'COT-'+Date.now(),items:[],client:'',phone:'',department:'Comayagua',municipality:'Comayagua',reference:'',shippingType:'Normal',company:'Forza',shipping:SHIPPING.normal.fee,cod:false,discount:0,date:new Date().toISOString(),saved:false}}
+  function emptyQuote(){return {id:'COT-'+Date.now(),items:[],client:'',phone:'',department:'Comayagua',municipality:'Comayagua',reference:'',shippingType:'Normal',company:'Forza',shipping:SHIPPING.normal.fee,cod:false,discount:0,date:new Date().toISOString(),saved:false,qtyMap:{}}}
   function emptySale(){return {...emptyQuote(), id:'SDC-'+Date.now().toString().slice(-10), kind:'receipt'}}
   function itemProductRef(it){return productById(it?.id)||it||{}}
   function itemTotal(it){
@@ -428,7 +432,7 @@
       </div>
     </section>`
   }
-  function stats(){let count=state.products.length,stock=0,value=0,invested=0; state.products.forEach(p=>{stock+=+p.stock||0; value+=(+p.stock||0)*(+p.price||0); invested+=(+p.stock||0)*(+p.cost||0)}); return {count,stock,value,invested,profit:value-invested}}
+  function stats(){const base=activeProducts(); let count=base.length,stock=0,value=0,invested=0; base.forEach(p=>{stock+=+p.stock||0; value+=(+p.stock||0)*(+p.price||0); invested+=(+p.stock||0)*(+p.cost||0)}); return {count,stock,value,invested,profit:value-invested}}
   function lastSyncLabel(){
     const d=state.settings.lastSheetSync?new Date(state.settings.lastSheetSync):null;
     if(!d || Number.isNaN(d.getTime())) return getSheetApiUrl()?'Sheets listo':'Sin Sheets';
@@ -446,7 +450,7 @@
   function setClientQty(id,qty){
     state.settings.clientQtyMap=state.settings.clientQtyMap||{};
     const clean=Math.max(1,Math.min(999,Number(qty)||1));
-    state.settings.clientQtyMap[id]=clean;
+    if(id) state.settings.clientQtyMap[id]=clean;
     save();
     updateClientCardTotals(id);
   }
@@ -540,7 +544,7 @@
 
   function filteredProducts(){
     const q=filter.q.trim().toLowerCase();
-    return state.products.filter(p=>{
+    return activeProducts().filter(p=>{
       const tags=productTags(p);
       const inCat=filter.cat==='Todos'||tags.some(t=>t.toLowerCase()===filter.cat.toLowerCase());
       const hay=[p.name,p.id,categoryText(p),p.description,p.category,p.categoria,p.etiquetas].join(' ').toLowerCase();
@@ -552,47 +556,42 @@
     })
   }
   function inventoryHTML(){const list=filteredProducts(); return `<section id="inventario">${inventoryHeadHTML(list.length)}<div class="inventory-content">${inventoryGridHTML(list)}</div></section>`}
+  function status(p){
+    const stock=Number(p?.stock||0);
+    const low=Number(state.settings.lowStockLimit||3);
+    if(stock<=0) return {text:'Agotado',cls:'out'};
+    if(stock<=low) return {text:'Bajo stock',cls:'low'};
+    return {text:'Disponible',cls:'ok'};
+  }
+  function priceForQty(p,qty=1){
+    const q=Math.max(1,Number(qty)||1);
+    const total=productItemsTotal(p,q);
+    return total/q;
+  }
   function productCard(p){
-    const qty=quote.qtyMap[p.id]||1;
     const st=status(p);
     const img=productImage(p);
-    const price=priceForQty(p,qty);
-    const total=price*qty;
-    const normal=total+100;
-    const cod=Math.round((total+100)*1.06);
-    const adminView=state.workMode==='admin';
-    const gift=p.gift || p.regalo || p.obsequio || '';
-    return `<article class="product-card product-card-v48 ${inventoryLayout()==='two'?'compact':'wide'} ${adminView?'is-admin':'is-client'}" data-product-id="${p.id}">
-      <div class="product-topline"><span>${escapeHtml(firstTag(p))}</span><span>${escapeHtml(p.id)}</span></div>
-      <button type="button" class="product-photo-hit" data-action="viewProduct" data-id="${p.id}" aria-label="Ver producto">
-        <div class="product-img">
-          <img src="${img}" alt="${escapeHtml(p.name)}" loading="lazy" crossorigin="anonymous" onerror="this.src='assets/logo-sdc-2026.png'">
-          <b class="stock-badge ${st.cls}"><i></i>${st.text}</b>
-          <strong>${money(p.price)}</strong>
-        </div>
+    const id=escapeHtml(p.id||'');
+    return `<article class="product-card product-card-v49 ${inventoryLayout()==='one'?'wide':'compact'}" data-id="${id}" data-product-id="${id}">
+      <button type="button" class="v49-card-photo" data-action="viewProduct" data-id="${id}" aria-label="Ver detalle de ${escapeHtml(p.name)}">
+        <img src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}" loading="lazy" crossorigin="anonymous" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'">
+        <span class="stock-badge ${st.cls}"><i></i>${st.text}</span>
       </button>
-      <h3 data-action="viewProduct" data-id="${p.id}">${escapeHtml(p.name)}</h3>
-      ${gift?`<div class="gift-strip">🎁 Regalo: ${escapeHtml(gift)}</div>`:''}
-      ${adminView?`
-        <div class="admin-only-metrics">
-          <div><span>Stock</span><b>${p.stock} disponibles</b></div>
-          <div><span>Invertido</span><b>${moneyPrivate((p.cost||0)*p.stock)}</b></div>
-          <div><span>Ganancia c/u</span><b>${moneyPrivate(Math.max(0,p.price-(p.cost||0)))}</b></div>
-          <div><span>Ganancia total</span><b>${moneyPrivate(Math.max(0,(p.price-(p.cost||0))*p.stock))}</b></div>
-          <div class="full"><span>Si vende todo el stock</span><b>${money(p.price*p.stock)}</b></div>
-        </div>`:`
-        <div class="client-only-info">
-          <p>${escapeHtml(productDescription(p))}</p>
-          <div class="client-price-grid">
-            <div><span>Depósito</span><b>${money(normal)}</b><small>Producto + Lps. 100</small></div>
-            <div><span>Pagar al recibir</span><b>${money(cod)}</b><small>Producto + Lps. 100 + 6%</small></div>
-          </div>
-        </div>`}
-      <div class="product-tap-note">Toque la foto para ver opciones</div>
+      <div class="v49-card-body">
+        <strong class="v49-price">${money(p.price)}</strong>
+        <h3 data-action="viewProduct" data-id="${id}">${escapeHtml(p.name)}</h3>
+        <div class="v49-card-actions">
+          <button type="button" data-action="quoteProduct" data-id="${id}">Cotizar</button>
+          <button type="button" data-action="sellProduct" data-id="${id}">Vender</button>
+          <button type="button" data-action="viewProduct" data-id="${id}">Ver</button>
+          <button type="button" data-action="marketingProduct" data-id="${id}">Textos</button>
+          <button type="button" data-action="editProduct" data-id="${id}">Editar</button>
+        </div>
+      </div>
     </article>`;
   }
 
-  function bottomNav(){return `<nav class="bottom-nav no-print"><button class="nav-btn ${currentView==='catalog'?'active':''}" data-action="catalog"><i>⌂</i><span>Catálogo</span></button><button class="nav-btn" data-action="sell"><i>🛒</i><span>Vender</span></button><button class="nav-btn" data-action="receipts"><i>▤</i><span>Caja</span></button><button class="nav-btn" data-action="newProduct"><i>＋</i><span>Producto</span></button><button class="nav-btn ${currentView==='quote'?'active':''}" data-action="quote"><i>▧</i><span>Cotizar</span></button></nav>`}
+  function bottomNav(){return `<nav class="bottom-nav no-print v49-bottom-nav"><button class="nav-btn ${currentView==='catalog'?'active':''}" data-action="catalog"><i>⌂</i><span>Inicio</span></button><button class="nav-btn" data-action="focusSearch"><i>⌕</i><span>Buscar</span></button><button class="nav-btn ${currentView==='quote'?'active':''}" data-action="quote"><i>▧</i><span>Cotizar</span></button><button class="nav-btn" data-action="sell"><i>⚡</i><span>Vender</span></button><button class="nav-btn" data-action="receipts"><i>▤</i><span>Caja</span></button></nav>`}
 
   function bindMain(){
     if(document.body.dataset.sdcCriticalDelegates!=='1'){
@@ -645,6 +644,7 @@
     if(!source) return;
     const a=source.dataset.action, id=source.dataset.id || source.closest?.('.product-card')?.dataset?.id || '';
     if(a==='catalog') return setView('catalog');
+    if(a==='focusSearch'){ const search=$('#searchInput'); search?.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>search?.focus({preventScroll:true}),250); return; }
     if(a==='sell') return openSale();
     if(a==='quote') return openQuote();
     if(a==='newProduct') return openProductEditor();
@@ -738,43 +738,172 @@
     $('#deleteProduct')&&( $('#deleteProduct').onclick=async()=>{if(confirm('¿Eliminar este producto?')){state.products=state.products.filter(x=>x.id!==id);save(); let remoteOk=false; try{remoteOk=await archiveProductInSheets(id)}catch(err){console.warn('Sheets archive failed',err)} closeModal();render();toast(remoteOk?'Producto ocultado en Google Sheets.':'Producto eliminado localmente.')}})
   }
 
+  function productDetailHTML(p){
+    const q=clientQty(p.id);
+    const st=status(p);
+    const productTotal=productItemsTotal(p,q);
+    const normal=productTotal+SHIPPING.normal.fee;
+    const cod=Math.round((productTotal+SHIPPING.cod.fee)*(1+((state.settings.codPercent||6)/100)));
+    const local=LOCAL_PLACEHOLDER;
+    const gainUnit=Math.max(0,Number(p.price||0)-Number(p.cost||0));
+    const gainTotal=Math.max(0,gainUnit*Number(p.stock||0));
+    const invested=Number(p.cost||0)*Number(p.stock||0);
+    const sellAll=Number(p.price||0)*Number(p.stock||0);
+    const promo=promoLabelForQty(p,q);
+    return `<div class="modal-head v49-detail-head"><div><span class="sdc-safe-pill detail-pill">SDC V49</span><h3>${escapeHtml(p.name)}</h3></div><button class="close">×</button></div>
+      <div class="modal-body v49-product-detail">
+        <div class="v49-detail-hero">
+          <div class="v49-detail-image"><img src="${escapeHtml(productImage(p))}" alt="${escapeHtml(p.name)}" crossorigin="anonymous" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><span class="stock-badge ${st.cls}"><i></i>${st.text}</span></div>
+          <div class="v49-detail-main"><small>${escapeHtml(firstTag(p))} · ${escapeHtml(p.id||'')}</small><b>${money(p.price)}</b><p>${escapeHtml(productDescription(p))}</p></div>
+        </div>
+        <div class="v49-tabbar" role="tablist">
+          <button class="active" type="button" data-tab="cliente">CLIENTE</button>
+          <button type="button" data-tab="admin">ADMIN</button>
+          <button type="button" data-tab="captura">CAPTURA</button>
+        </div>
+        <section class="v49-tab active" data-panel="cliente">
+          <div class="v49-qty-line"><label><span>Cantidad</span><input id="v49DetailQty" class="input" type="number" inputmode="numeric" min="1" value="${q}"></label>${promo?`<em data-v49-offer>🎁 ${escapeHtml(promo)}</em>`:`<em data-v49-offer style="display:none"></em>`}</div>
+          <div class="v49-price-cards">
+            <div><span>Precio producto</span><b data-v49-total="product">${money(productTotal)}</b><small>Según cantidad seleccionada</small></div>
+            <div><span>Depósito / Tigo Money</span><b data-v49-total="normal">${money(normal)}</b><small>Producto + Lps. 100</small></div>
+            <div><span>Pagar al recibir</span><b data-v49-total="cod">${money(cod)}</b><small>Producto + Lps. 100 + comisión 6%</small></div>
+            <div><span>Envío local</span><b>${local}</b><small>Se escribe manual según zona</small></div>
+          </div>
+          <div class="v49-benefits"><b>Beneficios para cliente</b><p>${escapeHtml(productDescription(p))}</p></div>
+        </section>
+        <section class="v49-tab" data-panel="admin">
+          <div class="v49-admin-grid">
+            <div><span>Stock</span><b>${num(p.stock)}</b></div>
+            <div><span>Invertido</span><b>${moneyPrivate(invested)}</b></div>
+            <div><span>Ganancia c/u</span><b>${moneyPrivate(gainUnit)}</b></div>
+            <div><span>Ganancia total</span><b>${moneyPrivate(gainTotal)}</b></div>
+            <div class="full"><span>Si vende todo el stock</span><b>${money(sellAll)}</b></div>
+          </div>
+        </section>
+        <section class="v49-tab" data-panel="captura">
+          <div class="v49-capture-note"><b>Imagen limpia para cliente</b><span>Genera PNG sin barra del navegador, sin enlace y sin datos internos.</span></div>
+          <div id="productShareCard">${productClientPhotoHTML(p,q)}</div>
+          <button class="btn full" type="button" id="v49DownloadProductPhoto">Generar PNG limpio</button>
+        </section>
+        <div class="modal-actions v49-detail-actions" style="position:static">
+          <button class="btn" type="button" id="v49QuoteProduct">Cotizar</button>
+          <button class="btn secondary" type="button" id="v49SellProduct">Vender</button>
+          <button class="btn secondary" type="button" id="v49TextProduct">Textos</button>
+          <button class="btn ghost" type="button" id="v49EditProduct">Editar</button>
+        </div>
+      </div>`;
+  }
+  function bindProductDetails(p){
+    const redrawTotals=()=>{
+      const q=Math.max(1,Number($('#v49DetailQty',modalRoot)?.value)||1);
+      setClientQty(p.id,q);
+      const productTotal=productItemsTotal(p,q);
+      const normal=productTotal+SHIPPING.normal.fee;
+      const cod=Math.round((productTotal+SHIPPING.cod.fee)*(1+((state.settings.codPercent||6)/100)));
+      const offer=promoLabelForQty(p,q);
+      const set=(key,val)=>{const el=modalRoot.querySelector(`[data-v49-total="${key}"]`); if(el) el.textContent=val;};
+      set('product',money(productTotal)); set('normal',money(normal)); set('cod',money(cod));
+      const offerEl=modalRoot.querySelector('[data-v49-offer]');
+      if(offerEl){offerEl.textContent=offer?`🎁 ${offer}`:''; offerEl.style.display=offer?'inline-flex':'none';}
+      const card=$('#productShareCard',modalRoot); if(card) card.innerHTML=productClientPhotoHTML(p,q);
+    };
+    $$('.v49-tabbar [data-tab]',modalRoot).forEach(btn=>btn.onclick=()=>{
+      $$('.v49-tabbar [data-tab]',modalRoot).forEach(x=>x.classList.toggle('active',x===btn));
+      $$('.v49-tab',modalRoot).forEach(panel=>panel.classList.toggle('active',panel.dataset.panel===btn.dataset.tab));
+    });
+    $('#v49DetailQty',modalRoot)?.addEventListener('input',redrawTotals);
+    $('#v49DownloadProductPhoto',modalRoot)?.addEventListener('click',e=>downloadProductPhotoDirect(p.id,e.currentTarget));
+    $('#v49QuoteProduct',modalRoot)?.addEventListener('click',()=>{closeModal();openQuote(p.id);});
+    $('#v49SellProduct',modalRoot)?.addEventListener('click',()=>{closeModal();openSale(p.id);});
+    $('#v49TextProduct',modalRoot)?.addEventListener('click',()=>openMarketingText(p.id));
+    $('#v49EditProduct',modalRoot)?.addEventListener('click',()=>{closeModal();openProductEditor(p.id);});
+  }
+  function openProductDetails(id){
+    const p=productById(id);
+    if(!p) return toast('Producto no encontrado.');
+    openModal(productDetailHTML(p),true);
+    bindProductDetails(p);
+  }
+
   function productClientPhotoHTML(p, qty){
     const q=Math.max(1,Number(qty||1));
-    const price=priceForQty(p,q);
-    const total=price*q;
-    const normal=total+100;
-    const cod=Math.round((total+100)*1.06);
+    const total=productItemsTotal(p,q);
+    const unit=total/q;
+    const normal=total+SHIPPING.normal.fee;
+    const cod=Math.round((total+SHIPPING.cod.fee)*(1+((state.settings.codPercent||6)/100)));
     const img=productImage(p);
     const st=status(p);
-    const offer=(p.offers||[]).filter(o=>q>=o.min).sort((a,b)=>b.min-a.min)[0];
     const gift=p.gift || p.regalo || p.obsequio || '';
+    const offer=promoLabelForQty(p,q);
     return `
-      <div class="productPhotoClean" data-export="product-photo-clean">
+      <div class="productPhotoClean productPhotoClean-v49" data-export="product-photo-clean">
         <div class="productPhotoHead"><img src="${LOGO_SRC}" crossorigin="anonymous"><div><strong>SD COMAYAGUA</strong><span>Producto para cliente</span></div><b>${st.text}</b></div>
-        <div class="productPhotoImageWrap"><img src="${img}" crossorigin="anonymous" onerror="this.src='assets/logo-sdc-2026.png'"><strong>${money(p.price)}</strong></div>
+        <div class="productPhotoImageWrap"><img src="${escapeHtml(img)}" crossorigin="anonymous" onerror="this.onerror=null;this.src='${escapeHtml(captureFallbackImage())}'"><strong>${money(p.price)}</strong></div>
         <div class="productPhotoBody">
           <h2>${escapeHtml(p.name)}</h2>
           ${gift?`<div class="gift-strip big">🎁 Regalo: ${escapeHtml(gift)}</div>`:''}
           <p>${escapeHtml(productDescription(p))}</p>
-          <div class="productPhotoQty"><span>Cantidad consultada</span><b>${q} ${q===1?'unidad':'unidades'} · ${money(total)}</b></div>
+          <div class="productPhotoQty"><span>Cantidad consultada</span><b>${num(q)} ${q===1?'unidad':'unidades'} · ${money(total)}</b></div>
           <div class="productPhotoPrices">
-            <div><span>Depósito</span><b>${money(normal)}</b><small>Producto + Lps. 100</small></div>
+            <div><span>Depósito / Tigo Money</span><b>${money(normal)}</b><small>Producto + Lps. 100</small></div>
             <div><span>Pagar al recibir</span><b>${money(cod)}</b><small>Producto + Lps. 100 + 6%</small></div>
-            <div><span>Envío local</span><b>Por definir</b><small>Según zona o acuerdo</small></div>
+            <div><span>Envío local</span><b>${LOCAL_PLACEHOLDER}</b><small>Según zona o acuerdo</small></div>
           </div>
-          ${offer?`<div class="productPhotoNote">🎁 Oferta aplicada: ${money(price)} c/u desde ${offer.min} unidades</div>`:'<div class="productPhotoNote">Precio sujeto a disponibilidad.</div>'}
+          <div class="productPhotoNote">${offer?`🎁 ${escapeHtml(offer)}`:'Precio sujeto a disponibilidad.'}</div>
         </div>
         <div class="productPhotoFooter">SD COMAYAGUA · WhatsApp +504 3151-7755</div>
       </div>`;
   }
 
+  function waitImages(root,timeout=4500){
+    const imgs=Array.from(root.querySelectorAll('img'));
+    if(!imgs.length) return Promise.resolve();
+    return Promise.all(imgs.map(img=>new Promise(resolve=>{
+      if(img.complete) return resolve();
+      const done=()=>resolve();
+      const t=setTimeout(done,timeout);
+      img.addEventListener('load',()=>{clearTimeout(t);done();},{once:true});
+      img.addEventListener('error',()=>{clearTimeout(t);done();},{once:true});
+    })));
+  }
+  function downloadBlob(blob,filename){
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1200);
+  }
+  async function ensureHtml2Canvas(){
+    if(window.html2canvas) return true;
+    const started=Date.now();
+    while(!window.html2canvas && Date.now()-started<6500){
+      await new Promise(r=>setTimeout(r,150));
+    }
+    return !!window.html2canvas;
+  }
+  function askClientPhone(){
+    const typed=prompt('Número WhatsApp del cliente. Déjelo vacío para elegir el chat manualmente en WhatsApp:','');
+    return typed===null?null:typed.trim();
+  }
+  function productWhatsAppText(p,qty=1){
+    const q=Math.max(1,Number(qty)||1);
+    const total=productItemsTotal(p,q);
+    const normal=total+SHIPPING.normal.fee;
+    const cod=Math.round((total+SHIPPING.cod.fee)*(1+((state.settings.codPercent||6)/100)));
+    const offer=promoLabelForQty(p,q);
+    return `📦 *${p.name}*\n\nPrecio: *${money(p.price)}*\nCantidad consultada: ${num(q)}\nProducto: *${money(total)}*${offer?`\n${offer}`:''}\n\n🚚 *Opciones de entrega*\n• Depósito / Tigo Money: ${money(normal)}\n• Pagar al recibir: ${money(cod)}\n• Envío local: ${LOCAL_PLACEHOLDER}\n\n${productDescription(p)}\n\nSD COMAYAGUA\nWhatsApp: +504 3151-7755`;
+  }
+
   async function captureNodeAsPngBlob(node, scale=3){
-    if(!window.html2canvas) throw new Error('html2canvas no está disponible.');
+    const ok=await ensureHtml2Canvas();
+    if(!ok) throw new Error('html2canvas no está disponible todavía.');
     const canvas = await html2canvas(node, {
       scale,
       backgroundColor: null,
       useCORS: true,
-      allowTaint: true,
+      allowTaint: false,
       logging: false,
       scrollX: 0,
       scrollY: 0,
@@ -790,19 +919,27 @@
     if(btn){ btn.disabled = true; btn.textContent = 'GENERANDO...'; }
     const host = document.createElement('div');
     host.className = 'productPhotoExportHost';
-    host.innerHTML = productClientPhotoHTML(p, quote.qtyMap[p.id]||1);
+    host.innerHTML = productClientPhotoHTML(p, clientQty(p.id));
     document.body.appendChild(host);
     try{
       await waitImages(host);
       const node = host.querySelector('[data-export="product-photo-clean"]');
-      const blob = await captureNodeAsPngBlob(node, 3);
+      let blob = null;
+      try{
+        blob = await captureNodeAsPngBlob(node, 3);
+      }catch(firstErr){
+        console.warn('Primer intento de captura falló. Reintentando con imagen segura.', firstErr);
+        host.querySelectorAll('.productPhotoImageWrap img').forEach(img=>img.src=captureFallbackImage());
+        await waitImages(host);
+        blob = await captureNodeAsPngBlob(node, 3);
+      }
       if(!blob) throw new Error('No se pudo crear la imagen.');
-      const filename = `producto-${slugFile(p.name||p.id||'producto')}-${Date.now()}.png`;
+      const filename = `producto-${slugFile(p.name||p.id||'producto')}-${fileStamp()}-${slugFile(p.id||'sdc')}.png`;
       downloadBlob(blob, filename);
-      toast('Foto del producto descargada sin barra del navegador.');
+      toast('PNG limpio descargado sin barra del navegador.');
     }catch(err){
       console.error(err);
-      toast('No se pudo generar la foto del producto.');
+      toast('No se pudo generar la foto del producto. Verifique que la librería html2canvas cargó.');
     }finally{
       host.remove();
       if(btn){ btn.disabled = false; btn.innerHTML = original || 'FOTO'; }
@@ -862,7 +999,7 @@
         return;
       }
       const catKey=localNorm(cat);
-      const allItems=state.products.filter(p=>{
+      const allItems=activeProducts().filter(p=>{
         const okCat=!cat || productTags(p).map(localNorm).includes(catKey);
         const searchable=[p.name,p.id,categoryText(p),p.category,p.categoria,p.etiquetas].join(' ');
         const okSearch=!hasSearch || localNorm(searchable).includes(term);
@@ -1542,7 +1679,7 @@
     const doc=emptySale(); saleDraft=doc;
     openModal(`<div class="modal-head"><h3>Venta rápida</h3><button class="close">×</button></div><div class="modal-body quick-sale-v26"><div class="card-box"><b>Venta rápida desde celular</b><span>Producto, cantidad y tipo de envío. Los datos del cliente son opcionales.</span><div class="searchbar"><span class="icon">⌕</span><input id="quickSearch" placeholder="Buscar producto..."></div><div id="quickList" class="picker-list"></div></div><div class="card-box"><label><span class="label">Cantidad</span><input id="quickQty" class="input" type="number" inputmode="numeric" value="1" min="1"></label><label><span class="label">Tipo de cobro</span><select id="quickType" class="select"><option value="Normal">Depósito Lps.100</option><option value="COD">Pagar al Recibir Lps.100 + 6%</option><option value="Local">Envío Local: Por definir</option></select></label><label><span class="label">Envío Lps.</span><input id="quickShip" class="input" type="number" inputmode="numeric" value="100" min="0" placeholder="Escriba el costo"></label><label><span class="label">Teléfono cliente opcional</span><input id="quickPhone" class="input" inputmode="tel" placeholder="31517755"></label><label><span class="label">Cliente opcional</span><input id="quickClient" class="input" placeholder="Nombre"></label><div id="quickSummary" class="summary"></div><button class="btn full" id="quickFinish">Registrar venta rápida</button></div></div>`,true);
     let selected=null, q='';
-    function drawList(){const term=q.toLowerCase(); const list=state.products.filter(p=>!term||[p.name,p.id,categoryText(p)].join(' ').toLowerCase().includes(term)).slice(0,30); $('#quickList').innerHTML=list.map(p=>`<div class="picker-item ${selected===p.id?'active':''}"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><div><b>${escapeHtml(p.name)}</b><span>${money(p.price)} · Stock ${num(p.stock)}</span></div><button class="btn small" data-qselect="${escapeHtml(p.id)}">Elegir</button></div>`).join(''); $$('[data-qselect]',modalRoot).forEach(b=>b.onclick=()=>{selected=b.dataset.qselect; drawList(); drawSummary();});}
+    function drawList(){const term=q.toLowerCase(); const list=activeProducts().filter(p=>!term||[p.name,p.id,categoryText(p)].join(' ').toLowerCase().includes(term)).slice(0,30); $('#quickList').innerHTML=list.map(p=>`<div class="picker-item ${selected===p.id?'active':''}"><img src="${escapeHtml(productImage(p))}" onerror="this.onerror=null;this.src='${escapeHtml(placeholderFor(p))}'"><div><b>${escapeHtml(p.name)}</b><span>${money(p.price)} · Stock ${num(p.stock)}</span></div><button class="btn small" data-qselect="${escapeHtml(p.id)}">Elegir</button></div>`).join(''); $$('[data-qselect]',modalRoot).forEach(b=>b.onclick=()=>{selected=b.dataset.qselect; drawList(); drawSummary();});}
     function drawSummary(){const p=productById(selected); const qty=Math.max(1,+($('#quickQty')?.value||1)); if(!p){$('#quickSummary').innerHTML='<div class="empty-state">Elegí un producto.</div>';return;} const products=productItemsTotal(p,qty); const type=$('#quickType').value; const cod=type==='COD'; const shipping=type==='COD'?SHIPPING.cod.fee:type==='Local'?(+$('#quickShip').value||0):SHIPPING.normal.fee; const total=cod?Math.round((products+shipping)*(1+((state.settings.codPercent||6)/100))):products+shipping; const offer=promoLabelForQty(p,qty); const shipName=type==='Local'?'Envío local':type==='COD'?'Pagar al recibir':'Depósito'; $('#quickSummary').innerHTML=`<div class="summary-row"><b>Producto</b><b>${money(products)}</b></div><div class="summary-row"><b>${shipName}</b><b>${money(shipping)}</b></div>${offer?`<div class="promo-applied-v26">🎁 ${escapeHtml(offer)}</div>`:''}<div class="summary-total"><b>Total</b><b>${money(total)}</b></div>`;}
     $('#quickSearch').oninput=e=>{q=e.target.value;drawList()}; $('#quickQty').oninput=drawSummary; $('#quickShip').oninput=drawSummary; $('#quickType').onchange=()=>{const t=$('#quickType').value; $('#quickShip').value=t==='COD'?SHIPPING.cod.fee:t==='Local'?0:SHIPPING.normal.fee; drawSummary();}; drawList(); drawSummary();
     $('#quickFinish').onclick=()=>{const p=productById(selected); if(!p)return toast('Elegí un producto.'); const qty=Math.max(1,+$('#quickQty').value||1); saleDraft=emptySale(); saleDraft.client=$('#quickClient').value.trim(); saleDraft.phone=$('#quickPhone').value.trim(); saleDraft.shippingType=$('#quickType').value; saleDraft.cod=saleDraft.shippingType==='COD'; saleDraft.shipping=+$('#quickShip').value||0; applyShippingPreset(saleDraft,saleDraft.shippingType,false); saleDraft.shipping=+$('#quickShip').value||0; saleDraft.status=isCodDoc(saleDraft)?'Pagar al recibir':isLocalDoc(saleDraft)?'Entrega local':'Vendido'; saleDraft.items=[{id:p.id,name:p.name,price:+p.price||0,cost:+p.cost||0,qty,image:productImage(p)}]; finishSale(); closeModal(); render();};
@@ -1590,18 +1727,3 @@
   requestAnimationFrame(function(){ try{ window.scrollTo({top:0,left:0,behavior:'auto'}); }catch(e){ window.scrollTo(0,0); } });
   setTimeout(function(){ try{ window.scrollTo({top:0,left:0,behavior:'auto'}); }catch(e){} }, 250);
 })();
-  // V44: refuerzo para que el botón VER abra siempre el detalle del producto.
-  function bindViewProductFallback(){
-    document.addEventListener('click', e=>{
-      const btn=e.target.closest && e.target.closest('[data-action="viewProduct"]');
-      if(!btn) return;
-      const id=btn.getAttribute('data-id');
-      if(!id) return;
-      e.preventDefault();
-      e.stopPropagation();
-      const p=productById(id);
-      if(p) openProductDetail(p);
-      else toast('No se encontró el producto.');
-    }, true);
-  }
-

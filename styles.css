@@ -3124,3 +3124,18 @@ body.capture-exporting .share-description,body.capture-v7-stable .share-descript
     letter-spacing:.07em !important;
   }
 }
+
+/* ---------------------------------------------------
+   CORRECCIONES FINALES 
+--------------------------------------------------- */
+
+/* 1. Eliminación definitiva de la lupa */
+.searchbar .icon {
+    display: none !important;
+}
+
+/* 2. Forzar el scroll vertical en la página de ventas */
+html, body, #app {
+    overflow-y: auto !important;
+    height: auto !important;
+}

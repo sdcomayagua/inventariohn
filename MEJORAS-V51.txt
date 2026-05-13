@@ -1,0 +1,24 @@
+SD COMAYAGUA · V51 PRO UPGRADE
+
+Cambios aplicados:
+1. Rediseño visual completo encima de la versión V50 sin romper la lógica actual.
+2. Hero principal más profesional con acciones directas: Nueva venta, Cotizar y + Producto.
+3. Cards de producto más vendibles: código, categoría, descripción corta y botones Ver / Cotizar / Vender / WhatsApp.
+4. Barra de búsqueda sticky con botón para limpiar, mejor placeholder y accesos rápidos: / o Ctrl+K.
+5. Categorías rediseñadas con scroll horizontal en móvil.
+6. Acciones rápidas más claras con estilo tipo dashboard.
+7. Panel de modo Admin / Cliente / Captura visible y más fácil de usar.
+8. Header, bottom nav, footer, alertas y estados visuales más limpios.
+9. Transiciones, hover effects y foco accesible para teclado.
+10. Se agregaron archivos nuevos:
+   - css/sdc-v51-pro-upgrade.css
+   - js/sdc-v51-pro-upgrade.js
+
+Archivos modificados:
+- index.html
+- js/app.js
+
+Notas:
+- La clave de acceso y la conexión con Google Sheets se mantienen igual.
+- No se eliminaron productos ni datos.
+- La página sigue funcionando localmente y en hosting estático.

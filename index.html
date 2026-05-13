@@ -1,47 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#061522">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="SDC POS">
-  <meta name="mobile-web-app-capable" content="yes">
-  <link rel="manifest" href="manifest.webmanifest?v=65-fix-caja">
-  <title>SD Comayagua · POS Móvil V70</title>
-  <link rel="icon" href="assets/logo-sdc.png?v=65-fix-caja">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=65-fix-caja">
-  <link rel="stylesheet" href="css/sdc-v61-mobile-clean.css?v=68-scroll-categorias">
-  <link rel="stylesheet" href="css/sdc-v63-fix-imagen-cotizacion.css?v=65-fix-caja">
-  <link rel="stylesheet" href="css/sdc-v67-font-gamer.css?v=69-categorias-font-gamer">
-  <link rel="stylesheet" href="css/sdc-v70-sheets-imagen-fix.css?v=70-sheets-imagen-fix">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="sdc-v60-pos sdc-v61-clean sdc-theme-red">
-  <div id="app">
-    <section class="boot-loading" data-sdc-loading="1">
-      <div class="boot-loading-card">
-        <img src="assets/logo-sdc.png" alt="SD Comayagua">
-        <h1>SDC POS</h1>
-        <p>Cargando panel móvil.</p>
-      </div>
-    </section>
-  </div>
-  <div id="modalRoot"></div>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <button id="goTop" class="go-top" aria-label="Subir">↑</button>
+<body>
 
-  <script defer src="js/sdc-error-guard.js?v=65-fix-caja"></script>
-  <script defer src="js/data.js?v=65-fix-caja"></script>
-  <script defer src="js/storage.js?v=65-fix-caja"></script>
-  <script defer src="js/app.js?v=65-fix-caja"></script>
-  <script defer src="js/sdc-boot-check.js?v=65-fix-caja"></script>
-  <script defer src="js/sdc-v60-mobile-pos.js?v=65-fix-caja"></script>
-  <script defer src="js/sdc-v61-touch-fix.js?v=68-scroll-categorias"></script>
-  <script defer src="js/sdc-v70-sheets-imagen-fix.js?v=70-sheets-imagen-fix"></script>
-  <script async src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script async src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <div class="admin-panel">
+        <div class="productos-header">
+            <div class="productos-titulo">
+                <h2>Productos</h2>
+            </div>
+            <div class="productos-botones">
+                <button class="btn producto-btn">+ Producto</button>
+                <button class="btn sheets-btn">Sheets</button>
+                <span class="resultados">40 resultados</span>
+            </div>
+        </div>
+
+        <div class="productos-lista">
+            <div class="producto-card">
+                <img src="https://via.placeholder.com/150" alt="Producto">
+                <div class="producto-info">
+                    <h3>Producto 1</h3>
+                    <p>Descripción del producto</p>
+                </div>
+            </div>
+            <div class="producto-card">
+                <img src="https://via.placeholder.com/150" alt="Producto">
+                <div class="producto-info">
+                    <h3>Producto 2</h3>
+                    <p>Descripción del producto</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>

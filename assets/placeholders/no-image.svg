@@ -11,9 +11,9 @@
   </defs>
   <rect width="1200" height="1200" rx="96" fill="url(#g)"/>
   <rect width="1200" height="1200" fill="url(#grid)"/>
-  <rect x="130" y="270" width="940" height="620" rx="70" fill="#07111f" stroke="#1bb8ff44" stroke-width="7"/>
+  <rect x="130" y="270" width="940" height="620" rx="70" fill="#07111f" stroke="#a62b3544" stroke-width="7"/>
   <circle cx="448" cy="492" r="80" fill="#18f4d344"/>
-  <path d="M225 785 455 580 610 720l120-105 245 170" fill="none" stroke="#eaf8ff" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="600" y="990" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="62" fill="#eaf8ff" letter-spacing="6">IMAGEN NO DISPONIBLE</text>
-  <text x="600" y="1070" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#18b9ff">SD COMAYAGUA</text>
+  <path d="M225 785 455 580 610 720l120-105 245 170" fill="none" stroke="#f8fafc" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="600" y="990" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="62" fill="#f8fafc" letter-spacing="6">IMAGEN NO DISPONIBLE</text>
+  <text x="600" y="1070" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#a62b35">SD COMAYAGUA</text>
 </svg>

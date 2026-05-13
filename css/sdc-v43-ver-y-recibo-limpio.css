@@ -1,0 +1,134 @@
+/* SDC V43 - Corrección de VER + recibo más limpio */
+
+/* El botón VER vuelve a ser claramente clickeable en ambos modos */
+.product-card [data-action="viewProduct"],
+.product-card button:has(> span),
+.product-card .btn {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 6 !important;
+}
+.product-card .card-actions,
+.product-card .card-actions * {
+  pointer-events: auto !important;
+}
+
+/* Footer de cotización/factura: menos grande, más limpio y sin columnas raras */
+.receipt-footer-pro.receipt-footer-clean,
+.receipt-footer-clean,
+.doc-card .receipt-footer-pro {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  padding: 18px 22px !important;
+  min-height: unset !important;
+}
+.receipt-note-text,
+.receipt-footer-clean .receipt-note-text,
+.doc-card .receipt-note-text {
+  display: block !important;
+  width: 100% !important;
+  max-width: 820px !important;
+  font-size: clamp(13px, 1.05vw, 16px) !important;
+  line-height: 1.38 !important;
+  letter-spacing: -0.01em !important;
+  font-weight: 750 !important;
+  color: #33485a !important;
+  text-align: left !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: none !important;
+}
+.receipt-whatsapp-pill,
+.receipt-footer-clean .receipt-whatsapp-pill,
+.doc-card .receipt-whatsapp-pill {
+  align-self: flex-start !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 8px 16px !important;
+  border-radius: 999px !important;
+  font-size: clamp(13px, 1.05vw, 16px) !important;
+  line-height: 1.1 !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  color: #075f7f !important;
+  background: #f4fbff !important;
+  border: 1px solid #cfe5f2 !important;
+}
+
+/* Total superior e inferior: evita que los números se salgan en totales grandes */
+.receipt-total-pro,
+.doc-card .receipt-total-pro,
+.receipt-top-total,
+.receipt-total-box {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+.receipt-total-pro b,
+.doc-card .receipt-total-pro b,
+.receipt-top-total b,
+.receipt-total-box b {
+  display: block !important;
+  max-width: 100% !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  font-size: clamp(30px, 4.2vw, 54px) !important;
+  line-height: .95 !important;
+  letter-spacing: -0.05em !important;
+}
+.receipt-total-final b,
+.doc-card .receipt-total-final b {
+  font-size: clamp(34px, 5vw, 62px) !important;
+  letter-spacing: -0.055em !important;
+  white-space: nowrap !important;
+}
+
+/* Modo PRO: texto de estado más sobrio, sin verde demasiado fuerte en recibos */
+.sdc-mode-pro .receipt-status-pill,
+.sdc-mode-pro .doc-status,
+.sdc-mode-pro .receipt-badge-status {
+  background: #eef4f8 !important;
+  color: #24465c !important;
+  border-color: #d8e6ee !important;
+  text-shadow: none !important;
+}
+
+@media (min-width: 760px){
+  .receipt-footer-pro.receipt-footer-clean,
+  .receipt-footer-clean,
+  .doc-card .receipt-footer-pro {
+    padding: 20px 26px !important;
+  }
+}
+
+@media (max-width: 640px){
+  .receipt-footer-pro.receipt-footer-clean,
+  .receipt-footer-clean,
+  .doc-card .receipt-footer-pro {
+    padding: 14px 16px !important;
+    gap: 8px !important;
+  }
+  .receipt-note-text,
+  .receipt-footer-clean .receipt-note-text,
+  .doc-card .receipt-note-text {
+    font-size: 12.5px !important;
+    line-height: 1.35 !important;
+  }
+  .receipt-whatsapp-pill,
+  .receipt-footer-clean .receipt-whatsapp-pill,
+  .doc-card .receipt-whatsapp-pill {
+    font-size: 12.5px !important;
+    padding: 7px 12px !important;
+  }
+  .receipt-total-pro b,
+  .doc-card .receipt-total-pro b,
+  .receipt-top-total b,
+  .receipt-total-box b {
+    font-size: clamp(28px, 10vw, 42px) !important;
+  }
+}

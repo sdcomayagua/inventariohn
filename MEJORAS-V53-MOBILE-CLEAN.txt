@@ -1,0 +1,18 @@
+SDC V53 · MOBILE CLEAN
+
+Cambios aplicados:
+- Rediseño visual completo sin azul turquesa dominante.
+- Paleta limpia: fondo claro, tarjetas blancas, header negro y acento dorado discreto.
+- Vista de productos simplificada: cada producto muestra únicamente el botón VER.
+- Dentro del detalle del producto se muestran los botones principales: Cotizar, Vender, WhatsApp y Editar.
+- Botón Editar abre el editor del producto existente.
+- Guardar producto mantiene sincronización con Google Sheets usando upsertProduct y envía codigo/previousCodigo para facilitar actualización de filas existentes.
+- Cards de producto optimizadas para celular: foto a la izquierda, información clara, precio visible y botón único.
+- Se ocultó texto innecesario en cards móviles para reducir ruido visual.
+- Modal de producto optimizado como pantalla completa en celular.
+- Acciones del modal quedan pegadas abajo en celular para acceso rápido con el pulgar.
+- Buscador, categorías, inventario, bottom nav y botones rápidos fueron limpiados visualmente.
+
+Notas:
+- La sincronización con Google Sheets depende de que la URL /exec de Apps Script esté configurada correctamente en js/data.js o en la configuración guardada.
+- Si el Apps Script ya soporta action=upsertProduct, editar y guardar actualiza la hoja. Si tu script usa otro nombre de acción, hay que ajustar esa acción en js/app.js.

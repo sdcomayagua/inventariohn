@@ -1,0 +1,1319 @@
+/* =====================================================================
+   SDC V52 · MOBILE PREMIUM
+   Enfoque: celular primero, sin azul turquesa, lectura clara y botones grandes.
+   Carga encima de todas las versiones anteriores.
+   ===================================================================== */
+:root{
+  color-scheme:dark;
+  --v52-bg:#0b0c10;
+  --v52-bg-2:#111216;
+  --v52-panel:#17171b;
+  --v52-panel-2:#201b16;
+  --v52-card:#fffaf1;
+  --v52-card-soft:#f5ebdc;
+  --v52-ink:#17130d;
+  --v52-white:#fff8ea;
+  --v52-muted:#b9ad9b;
+  --v52-muted-2:#8f8374;
+  --v52-line:rgba(218,184,107,.22);
+  --v52-line-soft:rgba(255,245,222,.10);
+  --v52-gold:#d8b76a;
+  --v52-gold-2:#f0d487;
+  --v52-copper:#b8754e;
+  --v52-brown:#6b4a2b;
+  --v52-red:#d65b5b;
+  --v52-green:#4f9b6f;
+  --v52-shadow:0 20px 54px rgba(0,0,0,.42);
+  --v52-shadow-soft:0 12px 28px rgba(0,0,0,.26);
+
+  /* Neutraliza el esquema turquesa anterior sin romper variables viejas. */
+  --v51-bg:#0b0c10 !important;
+  --v51-bg-2:#111216 !important;
+  --v51-card:#17171b !important;
+  --v51-card-2:#201b16 !important;
+  --v51-white:#fff8ea !important;
+  --v51-muted:#b9ad9b !important;
+  --v51-line:rgba(218,184,107,.20) !important;
+  --v51-line-strong:rgba(218,184,107,.34) !important;
+  --v51-blue:#d8b76a !important;
+  --v51-blue-2:#b8754e !important;
+  --v51-green:#f0d487 !important;
+  --v51-amber:#f0d487 !important;
+  --v51-red:#d65b5b !important;
+
+  --sdc-blue:#d8b76a !important;
+  --sdc-mint:#f0d487 !important;
+  --sdc-pro-cyan:#d8b76a !important;
+  --sdc-pro-green:#f0d487 !important;
+  --sdc-final-cyan:#d8b76a !important;
+  --sdc-final-green:#f0d487 !important;
+  --sdc-max-cyan:#d8b76a !important;
+  --sdc-max-mint:#f0d487 !important;
+  --v3-cyan:#d8b76a !important;
+  --v3-green:#f0d487 !important;
+  --cyan:#d8b76a !important;
+  --mint:#f0d487 !important;
+  --green:#caa45e !important;
+  --accent:#d8b76a !important;
+  --accent2:#b8754e !important;
+}
+
+html{
+  background:var(--v52-bg) !important;
+  -webkit-text-size-adjust:100%;
+}
+body.gamer-mode,
+body.sdc-mobile-pro{
+  min-width:0 !important;
+  background:
+    radial-gradient(circle at 12% -8%, rgba(216,183,106,.18), transparent 34%),
+    radial-gradient(circle at 98% 0%, rgba(184,117,78,.14), transparent 32%),
+    linear-gradient(180deg,#0a0b0f 0%,#111216 44%,#15120f 100%) !important;
+  color:var(--v52-white) !important;
+  overscroll-behavior-y:contain;
+}
+body.gamer-mode::before,
+body.sdc-mobile-pro::before{
+  opacity:.32 !important;
+  background:
+    linear-gradient(90deg, rgba(255,248,234,.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255,248,234,.026) 1px, transparent 1px) !important;
+  background-size:34px 34px !important;
+  mask-image:linear-gradient(180deg, rgba(0,0,0,.76), transparent 68%) !important;
+}
+body.gamer-mode .app,
+body.sdc-mobile-pro .app{
+  width:100% !important;
+  max-width:1160px !important;
+  margin:0 auto !important;
+  padding:12px 12px 118px !important;
+  overflow-x:hidden !important;
+}
+body.gamer-mode *,
+body.sdc-mobile-pro *{
+  box-sizing:border-box;
+}
+body.gamer-mode button,
+body.sdc-mobile-pro button,
+body.gamer-mode .btn,
+body.sdc-mobile-pro .btn{
+  font-family:Barlow, Arial, sans-serif !important;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+body.gamer-mode button:focus-visible,
+body.sdc-mobile-pro button:focus-visible,
+body.gamer-mode input:focus-visible,
+body.sdc-mobile-pro input:focus-visible,
+body.gamer-mode select:focus-visible,
+body.sdc-mobile-pro select:focus-visible,
+body.gamer-mode textarea:focus-visible,
+body.sdc-mobile-pro textarea:focus-visible{
+  outline:3px solid rgba(216,183,106,.42) !important;
+  outline-offset:2px !important;
+}
+
+/* Login */
+body.gamer-mode .login-wrap,
+body.sdc-mobile-pro .login-wrap{
+  min-height:100dvh !important;
+  display:grid !important;
+  place-items:center !important;
+  padding:18px !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(216,183,106,.18), transparent 36%),
+    linear-gradient(180deg,#0a0b0f,#15120f) !important;
+}
+body.gamer-mode .login-card,
+body.sdc-mobile-pro .login-card{
+  border-radius:30px !important;
+  border:1px solid rgba(216,183,106,.34) !important;
+  background:linear-gradient(180deg, rgba(28,26,24,.96), rgba(12,12,15,.96)) !important;
+  box-shadow:var(--v52-shadow) !important;
+}
+body.gamer-mode .login-pill,
+body.sdc-mobile-pro .login-pill{
+  color:#2a2112 !important;
+  background:linear-gradient(135deg,var(--v52-gold-2),var(--v52-gold)) !important;
+  border-color:rgba(255,255,255,.18) !important;
+}
+body.gamer-mode .input,
+body.sdc-mobile-pro .input,
+body.gamer-mode .select,
+body.sdc-mobile-pro .select,
+body.gamer-mode .textarea,
+body.sdc-mobile-pro .textarea{
+  border-color:rgba(216,183,106,.24) !important;
+}
+
+/* Topbar */
+body.gamer-mode .topbar,
+body.sdc-mobile-pro .topbar{
+  position:sticky !important;
+  top:0 !important;
+  z-index:70 !important;
+  min-width:0 !important;
+  margin:0 0 12px !important;
+  padding:10px 12px !important;
+  border-radius:0 0 24px 24px !important;
+  border:1px solid rgba(216,183,106,.18) !important;
+  background:linear-gradient(135deg, rgba(13,13,17,.92), rgba(31,26,19,.90)) !important;
+  box-shadow:0 18px 42px rgba(0,0,0,.38) !important;
+  backdrop-filter:blur(18px) saturate(1.1) !important;
+}
+body.gamer-mode .topbar::after,
+body.sdc-mobile-pro .topbar::after{
+  left:16px !important;
+  right:16px !important;
+  bottom:-1px !important;
+  background:linear-gradient(90deg, transparent, rgba(216,183,106,.62), transparent) !important;
+}
+body.gamer-mode .top-logo,
+body.sdc-mobile-pro .top-logo{
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  border-radius:16px !important;
+  background:#fffaf1 !important;
+  border:1px solid rgba(216,183,106,.28) !important;
+  padding:4px !important;
+  box-shadow:0 10px 22px rgba(0,0,0,.26) !important;
+}
+body.gamer-mode .top-title,
+body.sdc-mobile-pro .top-title{min-width:0 !important;}
+body.gamer-mode .top-title h1,
+body.sdc-mobile-pro .top-title h1{
+  color:var(--v52-white) !important;
+  font-size:17px !important;
+  line-height:1 !important;
+  letter-spacing:.045em !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+body.gamer-mode .top-title p,
+body.sdc-mobile-pro .top-title p{
+  color:var(--v52-muted) !important;
+  font-size:11px !important;
+  margin-top:4px !important;
+}
+body.gamer-mode .v51-top-badge,
+body.sdc-mobile-pro .v51-top-badge{
+  color:#2a2112 !important;
+  background:linear-gradient(135deg,var(--v52-gold-2),var(--v52-gold)) !important;
+  box-shadow:0 10px 22px rgba(216,183,106,.16) !important;
+}
+body.gamer-mode .sync-status,
+body.sdc-mobile-pro .sync-status,
+body.gamer-mode .logout-icon-btn,
+body.sdc-mobile-pro .logout-icon-btn{
+  width:44px !important;
+  min-width:44px !important;
+  height:44px !important;
+  border-radius:16px !important;
+  background:rgba(255,248,234,.08) !important;
+  border:1px solid rgba(255,248,234,.12) !important;
+  color:var(--v52-white) !important;
+  box-shadow:none !important;
+}
+body.gamer-mode .sync-dot,
+body.sdc-mobile-pro .sync-dot{
+  background:var(--v52-gold) !important;
+}
+
+/* Hero */
+body.gamer-mode .hero,
+body.sdc-mobile-pro .hero{
+  position:relative !important;
+  overflow:hidden !important;
+  margin:10px 0 12px !important;
+  padding:18px !important;
+  border-radius:30px !important;
+  border:1px solid rgba(216,183,106,.26) !important;
+  background:
+    radial-gradient(circle at 10% 2%, rgba(216,183,106,.18), transparent 31%),
+    radial-gradient(circle at 96% 8%, rgba(184,117,78,.16), transparent 30%),
+    linear-gradient(145deg, rgba(29,27,24,.98), rgba(12,12,15,.98)) !important;
+  box-shadow:var(--v52-shadow) !important;
+}
+body.gamer-mode .hero::before,
+body.sdc-mobile-pro .hero::before{
+  background:radial-gradient(circle, rgba(216,183,106,.18), transparent 68%) !important;
+  opacity:.9 !important;
+}
+body.gamer-mode .hero::after,
+body.sdc-mobile-pro .hero::after{
+  background:linear-gradient(120deg, transparent 0%, rgba(255,248,234,.055) 45%, transparent 72%) !important;
+}
+body.gamer-mode .v51-hero-shell,
+body.sdc-mobile-pro .v51-hero-shell{gap:14px !important;}
+body.gamer-mode .pill,
+body.sdc-mobile-pro .pill,
+body.gamer-mode .v51-kicker,
+body.sdc-mobile-pro .v51-kicker{
+  border-color:rgba(216,183,106,.30) !important;
+  background:rgba(216,183,106,.105) !important;
+  color:#f2d797 !important;
+}
+body.gamer-mode .pill .dot,
+body.sdc-mobile-pro .pill .dot{
+  background:var(--v52-gold) !important;
+  box-shadow:0 0 0 5px rgba(216,183,106,.12) !important;
+}
+body.gamer-mode .hero h2,
+body.sdc-mobile-pro .hero h2{
+  margin:10px 0 7px !important;
+  color:#fff8ea !important;
+  font-size:clamp(31px,7.8vw,58px) !important;
+  line-height:.98 !important;
+  letter-spacing:-.047em !important;
+  text-wrap:balance;
+}
+body.gamer-mode .hero p,
+body.sdc-mobile-pro .hero p{
+  max-width:590px !important;
+  color:#cbbfae !important;
+  font-size:14px !important;
+  line-height:1.42 !important;
+  font-weight:700 !important;
+}
+body.gamer-mode .v51-hero-actions,
+body.sdc-mobile-pro .v51-hero-actions{
+  gap:8px !important;
+}
+body.gamer-mode .v51-hero-actions button,
+body.sdc-mobile-pro .v51-hero-actions button{
+  min-height:46px !important;
+  padding:0 15px !important;
+  border-radius:17px !important;
+  color:#241a0c !important;
+  background:linear-gradient(135deg,var(--v52-gold-2),var(--v52-gold)) !important;
+  box-shadow:0 14px 28px rgba(216,183,106,.16) !important;
+}
+body.gamer-mode .v51-hero-actions button.secondary,
+body.sdc-mobile-pro .v51-hero-actions button.secondary{
+  color:#f5ead8 !important;
+  background:rgba(255,248,234,.08) !important;
+  border:1px solid rgba(255,248,234,.14) !important;
+  box-shadow:none !important;
+}
+
+/* Stats */
+body.gamer-mode .stats,
+body.sdc-mobile-pro .stats{
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  gap:10px !important;
+  margin-top:2px !important;
+}
+body.gamer-mode .stat,
+body.sdc-mobile-pro .stat{
+  min-width:0 !important;
+  min-height:74px !important;
+  padding:13px !important;
+  border-radius:22px !important;
+  background:linear-gradient(180deg, rgba(255,248,234,.095), rgba(255,248,234,.045)) !important;
+  border:1px solid rgba(255,248,234,.10) !important;
+}
+body.gamer-mode .stat b,
+body.sdc-mobile-pro .stat b{
+  color:#fff8ea !important;
+  font-size:clamp(17px,2.35vw,28px) !important;
+}
+body.gamer-mode .stat span,
+body.sdc-mobile-pro .stat span{
+  color:#b7aa99 !important;
+  font-size:9.5px !important;
+}
+body.gamer-mode .stat:nth-child(5) b,
+body.sdc-mobile-pro .stat:nth-child(5) b{
+  color:#f0d487 !important;
+}
+
+/* Quick actions */
+body.gamer-mode .quick-panel,
+body.sdc-mobile-pro .quick-panel{
+  margin:12px 0 !important;
+  padding:0 !important;
+}
+body.gamer-mode .quick-grid,
+body.sdc-mobile-pro .quick-grid{
+  display:grid !important;
+  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+  gap:10px !important;
+  min-width:0 !important;
+}
+body.gamer-mode .quick-btn,
+body.sdc-mobile-pro .quick-btn{
+  min-width:0 !important;
+  position:relative !important;
+  overflow:hidden !important;
+  min-height:88px !important;
+  padding:13px 12px !important;
+  border-radius:23px !important;
+  color:#fff7e7 !important;
+  text-align:left !important;
+  background:linear-gradient(180deg, rgba(30,28,25,.98), rgba(16,16,19,.98)) !important;
+  border:1px solid rgba(216,183,106,.18) !important;
+  box-shadow:var(--v52-shadow-soft) !important;
+}
+body.gamer-mode .quick-btn::before,
+body.sdc-mobile-pro .quick-btn::before{
+  color:#241a0c !important;
+  background:linear-gradient(135deg,var(--v52-gold-2),var(--v52-gold)) !important;
+  box-shadow:0 10px 20px rgba(216,183,106,.14) !important;
+}
+body.gamer-mode .quick-btn:hover,
+body.sdc-mobile-pro .quick-btn:hover{
+  border-color:rgba(216,183,106,.50) !important;
+  box-shadow:0 18px 38px rgba(0,0,0,.34) !important;
+}
+body.gamer-mode .quick-btn b,
+body.sdc-mobile-pro .quick-btn b{
+  color:#fff8ea !important;
+  font-size:14px !important;
+}
+body.gamer-mode .quick-btn small,
+body.sdc-mobile-pro .quick-btn small{
+  color:#a99e8f !important;
+  font-size:10.5px !important;
+  line-height:1.2 !important;
+}
+
+/* Alerts */
+body.gamer-mode .alert-row,
+body.sdc-mobile-pro .alert-row{
+  margin:12px 0 14px !important;
+}
+body.gamer-mode .alert-grid,
+body.sdc-mobile-pro .alert-grid{
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  gap:10px !important;
+  min-width:0 !important;
+}
+body.gamer-mode .alert-card,
+body.sdc-mobile-pro .alert-card{
+  min-width:0 !important;
+  min-height:74px !important;
+  padding:13px !important;
+  border-radius:22px !important;
+  background:rgba(255,248,234,.06) !important;
+  border:1px solid rgba(255,248,234,.10) !important;
+}
+body.gamer-mode .alert-card b,
+body.sdc-mobile-pro .alert-card b{color:#fff8ea !important;}
+body.gamer-mode .alert-card span,
+body.sdc-mobile-pro .alert-card span{color:#a99e8f !important;}
+body.gamer-mode .alert-card .btn,
+body.sdc-mobile-pro .alert-card .btn,
+body.gamer-mode .btn.secondary,
+body.sdc-mobile-pro .btn.secondary{
+  color:#2a2112 !important;
+  background:linear-gradient(135deg,#f0d487,#d8b76a) !important;
+  border:0 !important;
+}
+
+/* Mode panel */
+body.gamer-mode .view-mode-panel,
+body.sdc-mobile-pro .view-mode-panel{
+  margin:14px 0 !important;
+  padding:14px !important;
+  border-radius:25px !important;
+  background:linear-gradient(135deg, rgba(255,248,234,.075), rgba(255,248,234,.035)) !important;
+  border:1px solid rgba(216,183,106,.18) !important;
+}
+body.gamer-mode .view-mode-copy b,
+body.sdc-mobile-pro .view-mode-copy b{
+  color:#fff8ea !important;
+  font-size:13px !important;
+  letter-spacing:.055em !important;
+}
+body.gamer-mode .view-mode-copy span,
+body.sdc-mobile-pro .view-mode-copy span{
+  color:#b9ad9b !important;
+  font-size:11px !important;
+}
+body.gamer-mode .view-mode-buttons,
+body.sdc-mobile-pro .view-mode-buttons{
+  background:rgba(7,7,10,.62) !important;
+  border:1px solid rgba(255,248,234,.08) !important;
+}
+body.gamer-mode .view-mode-buttons button,
+body.sdc-mobile-pro .view-mode-buttons button{
+  color:#b4a894 !important;
+  min-height:42px !important;
+}
+body.gamer-mode .view-mode-buttons button.active,
+body.sdc-mobile-pro .view-mode-buttons button.active,
+body.gamer-mode .layout-toggle button.active,
+body.sdc-mobile-pro .layout-toggle button.active{
+  color:#241a0c !important;
+  background:linear-gradient(135deg,#f0d487,#d8b76a) !important;
+  box-shadow:0 10px 22px rgba(216,183,106,.16) !important;
+}
+
+/* Search */
+body.gamer-mode .search-panel,
+body.sdc-mobile-pro .search-panel{
+  position:sticky !important;
+  top:72px !important;
+  z-index:55 !important;
+  margin:12px 0 !important;
+  padding:12px !important;
+  border-radius:24px !important;
+  background:rgba(12,12,15,.88) !important;
+  border:1px solid rgba(216,183,106,.20) !important;
+  box-shadow:0 16px 34px rgba(0,0,0,.30) !important;
+  backdrop-filter:blur(16px) !important;
+}
+body.gamer-mode .search-title,
+body.sdc-mobile-pro .search-title{
+  margin-bottom:9px !important;
+}
+body.gamer-mode .search-title b,
+body.sdc-mobile-pro .search-title b{
+  color:#fff8ea !important;
+  font-size:13px !important;
+}
+body.gamer-mode .search-title span,
+body.sdc-mobile-pro .search-title span{
+  color:#a99e8f !important;
+  font-size:10.5px !important;
+}
+body.gamer-mode .searchbar,
+body.sdc-mobile-pro .searchbar{
+  height:54px !important;
+  border-radius:18px !important;
+  background:#fffaf1 !important;
+  border:1px solid rgba(255,248,234,.82) !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.90) !important;
+}
+body.gamer-mode .searchbar .icon,
+body.sdc-mobile-pro .searchbar .icon{
+  color:#8b612e !important;
+  font-size:21px !important;
+}
+body.gamer-mode #searchInput,
+body.sdc-mobile-pro #searchInput{
+  color:#17130d !important;
+  font-size:16px !important;
+  font-weight:850 !important;
+  padding-right:52px !important;
+}
+body.gamer-mode #searchInput::placeholder,
+body.sdc-mobile-pro #searchInput::placeholder{
+  color:#9b8f7d !important;
+  font-weight:750 !important;
+}
+body.gamer-mode .v51-clear-search,
+body.sdc-mobile-pro .v51-clear-search{
+  background:#efe3cf !important;
+  color:#5d4324 !important;
+}
+body.gamer-mode .v51-clear-search:hover,
+body.sdc-mobile-pro .v51-clear-search:hover{
+  background:#e3d2b8 !important;
+}
+
+/* Categories */
+body.gamer-mode .category-gallery,
+body.sdc-mobile-pro .category-gallery{
+  margin:14px 0 !important;
+  padding:16px !important;
+  border-radius:28px !important;
+  background:linear-gradient(180deg, rgba(255,248,234,.065), rgba(255,248,234,.035)) !important;
+  border:1px solid rgba(216,183,106,.16) !important;
+}
+body.gamer-mode .category-head h2,
+body.sdc-mobile-pro .category-head h2,
+body.gamer-mode .section-head h2,
+body.sdc-mobile-pro .section-head h2{
+  color:#fff8ea !important;
+  font-size:21px !important;
+}
+body.gamer-mode .category-head p,
+body.sdc-mobile-pro .category-head p,
+body.gamer-mode .section-head p,
+body.sdc-mobile-pro .section-head p{
+  color:#b0a391 !important;
+  font-size:11px !important;
+}
+body.gamer-mode .category-head>span,
+body.sdc-mobile-pro .category-head>span{
+  color:#241a0c !important;
+  background:linear-gradient(135deg,#f0d487,#d8b76a) !important;
+}
+body.gamer-mode .category-card,
+body.sdc-mobile-pro .category-card{
+  min-width:0 !important;
+  min-height:108px !important;
+  border-radius:22px !important;
+  color:#fff7e7 !important;
+  background:linear-gradient(180deg, rgba(27,25,23,.92), rgba(15,15,18,.94)) !important;
+  border:1px solid rgba(216,183,106,.16) !important;
+}
+body.gamer-mode .category-card img,
+body.sdc-mobile-pro .category-card img{
+  background:#fffaf1 !important;
+  box-shadow:0 9px 18px rgba(0,0,0,.20) !important;
+}
+body.gamer-mode .category-card b,
+body.sdc-mobile-pro .category-card b{
+  color:#fff8ea !important;
+}
+body.gamer-mode .category-card small,
+body.sdc-mobile-pro .category-card small{
+  color:#a99e8f !important;
+}
+body.gamer-mode .category-card:hover,
+body.sdc-mobile-pro .category-card:hover,
+body.gamer-mode .category-card.active,
+body.sdc-mobile-pro .category-card.active{
+  border-color:rgba(216,183,106,.58) !important;
+  background:linear-gradient(180deg, rgba(58,42,24,.96), rgba(22,20,18,.96)) !important;
+  box-shadow:0 16px 36px rgba(0,0,0,.30) !important;
+}
+
+/* Inventory */
+body.gamer-mode #inventario,
+body.sdc-mobile-pro #inventario{
+  margin-top:18px !important;
+}
+body.gamer-mode .inventory-head-actions,
+body.sdc-mobile-pro .inventory-head-actions{min-width:0 !important;}
+body.gamer-mode .inventory-new-btn,
+body.sdc-mobile-pro .inventory-new-btn{
+  color:#241a0c !important;
+  background:linear-gradient(135deg,#f0d487,#d8b76a) !important;
+  border:0 !important;
+  box-shadow:0 10px 22px rgba(216,183,106,.14) !important;
+}
+body.gamer-mode .layout-toggle,
+body.sdc-mobile-pro .layout-toggle{
+  background:rgba(255,248,234,.06) !important;
+  border:1px solid rgba(255,248,234,.10) !important;
+}
+body.gamer-mode .layout-toggle button,
+body.sdc-mobile-pro .layout-toggle button{
+  color:#b4a894 !important;
+}
+body.gamer-mode .count-pill,
+body.sdc-mobile-pro .count-pill{
+  color:#f2d797 !important;
+  background:rgba(216,183,106,.10) !important;
+  border:1px solid rgba(216,183,106,.22) !important;
+}
+body.gamer-mode .grid.two-col,
+body.sdc-mobile-pro .grid.two-col{
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:14px !important;
+}
+
+/* Product cards */
+body.gamer-mode .product-card-v49,
+body.sdc-mobile-pro .product-card-v49{
+  min-width:0 !important;
+  border-radius:27px !important;
+  background:linear-gradient(180deg,#fffaf1,#f2e5d2) !important;
+  color:#17130d !important;
+  border:1px solid rgba(255,248,234,.88) !important;
+  box-shadow:0 16px 34px rgba(0,0,0,.31) !important;
+}
+body.gamer-mode .product-card-v49:hover,
+body.sdc-mobile-pro .product-card-v49:hover{
+  border-color:rgba(216,183,106,.75) !important;
+  box-shadow:0 22px 48px rgba(0,0,0,.38) !important;
+}
+body.gamer-mode .product-card-v49::after,
+body.sdc-mobile-pro .product-card-v49::after{
+  background:linear-gradient(135deg, rgba(216,183,106,.13), transparent 40%) !important;
+}
+body.gamer-mode .v49-card-photo,
+body.sdc-mobile-pro .v49-card-photo{
+  background:#eadcc6 !important;
+}
+body.gamer-mode .stock-badge,
+body.sdc-mobile-pro .stock-badge{
+  background:rgba(255,250,241,.96) !important;
+  color:#17130d !important;
+  border:1px solid rgba(37,28,17,.10) !important;
+}
+body.gamer-mode .stock-badge i,
+body.sdc-mobile-pro .stock-badge i{
+  background:var(--v52-green) !important;
+}
+body.gamer-mode .stock-badge.low i,
+body.sdc-mobile-pro .stock-badge.low i{background:#d8a13d !important;}
+body.gamer-mode .stock-badge.out i,
+body.sdc-mobile-pro .stock-badge.out i{background:#d65b5b !important;}
+body.gamer-mode .v51-product-meta span,
+body.sdc-mobile-pro .v51-product-meta span{
+  color:#5f4c31 !important;
+  background:#efe3cf !important;
+}
+body.gamer-mode .v51-product-meta span:last-child,
+body.sdc-mobile-pro .v51-product-meta span:last-child{
+  color:#6b4a2b !important;
+  background:#f6ead5 !important;
+}
+body.gamer-mode .v49-price,
+body.sdc-mobile-pro .v49-price{
+  color:#7a4f20 !important;
+}
+body.gamer-mode .product-card-v49 h3,
+body.sdc-mobile-pro .product-card-v49 h3{
+  color:#17130d !important;
+}
+body.gamer-mode .v51-product-desc,
+body.sdc-mobile-pro .v51-product-desc{
+  color:#6f6252 !important;
+}
+body.gamer-mode .v49-card-actions button,
+body.sdc-mobile-pro .v49-card-actions button,
+body.gamer-mode .grid.one-col .v49-card-actions button,
+body.sdc-mobile-pro .grid.one-col .v49-card-actions button{
+  border-radius:14px !important;
+  min-height:38px !important;
+  font-weight:950 !important;
+  box-shadow:none !important;
+}
+body.gamer-mode .v49-card-actions button:nth-child(1),
+body.sdc-mobile-pro .v49-card-actions button:nth-child(1){
+  color:#241a0c !important;
+  background:linear-gradient(135deg,#f0d487,#d8b76a) !important;
+}
+body.gamer-mode .v49-card-actions button:nth-child(2),
+body.sdc-mobile-pro .v49-card-actions button:nth-child(2){
+  color:#fff8ea !important;
+  background:#17171b !important;
+}
+body.gamer-mode .v49-card-actions button:nth-child(3),
+body.sdc-mobile-pro .v49-card-actions button:nth-child(3){
+  color:#fff8ea !important;
+  background:linear-gradient(135deg,#8a5236,#633b29) !important;
+}
+body.gamer-mode .v49-card-actions button:nth-child(4),
+body.sdc-mobile-pro .v49-card-actions button:nth-child(4){
+  color:#2e2112 !important;
+  background:#e8dcc8 !important;
+}
+
+/* General buttons/actions that inherited turquoise */
+body.gamer-mode .btn:not(.ghost):not(.secondary),
+body.sdc-mobile-pro .btn:not(.ghost):not(.secondary),
+body.gamer-mode .quote-actions #toSale,
+body.sdc-mobile-pro .quote-actions #toSale,
+body.gamer-mode .quote-actions #finishSale,
+body.sdc-mobile-pro .quote-actions #finishSale,
+body.gamer-mode .quote-actions #waPhoto,
+body.sdc-mobile-pro .quote-actions #waPhoto,
+body.gamer-mode .product-actions-grid .btn:not(.secondary):not(.ghost),
+body.sdc-mobile-pro .product-actions-grid .btn:not(.secondary):not(.ghost){
+  color:#241a0c !important;
+  background:linear-gradient(135deg,#f0d487,#d8b76a) !important;
+  border-color:rgba(216,183,106,.28) !important;
+}
+body.gamer-mode .btn.ghost,
+body.sdc-mobile-pro .btn.ghost,
+body.gamer-mode .quote-actions .btn.secondary,
+body.sdc-mobile-pro .quote-actions .btn.secondary,
+body.gamer-mode .quote-actions .btn.ghost,
+body.sdc-mobile-pro .quote-actions .btn.ghost,
+body.gamer-mode .product-actions-grid .btn.secondary,
+body.sdc-mobile-pro .product-actions-grid .btn.secondary,
+body.gamer-mode .product-actions-grid .btn.ghost,
+body.sdc-mobile-pro .product-actions-grid .btn.ghost{
+  color:#f5ead8 !important;
+  background:linear-gradient(160deg,rgba(33,30,26,.88),rgba(14,14,17,.96)) !important;
+  border:1px solid rgba(216,183,106,.18) !important;
+}
+body.gamer-mode .found-pill,
+body.sdc-mobile-pro .found-pill,
+body.gamer-mode .detail-pill,
+body.sdc-mobile-pro .detail-pill{
+  color:#f2d797 !important;
+  background:rgba(216,183,106,.10) !important;
+  border-color:rgba(216,183,106,.24) !important;
+}
+
+/* Modals */
+body.gamer-mode .modal,
+body.sdc-mobile-pro .modal{
+  border-color:rgba(216,183,106,.22) !important;
+  box-shadow:0 24px 80px rgba(0,0,0,.58) !important;
+}
+body.gamer-mode .modal-head,
+body.sdc-mobile-pro .modal-head{
+  background:linear-gradient(135deg,#111112,#251c14) !important;
+  border-bottom:1px solid rgba(216,183,106,.18) !important;
+}
+body.gamer-mode .v49-tabbar button.active,
+body.sdc-mobile-pro .v49-tabbar button.active{
+  color:#241a0c !important;
+  background:linear-gradient(135deg,#f0d487,#d8b76a) !important;
+}
+body.gamer-mode .v49-detail-main b,
+body.sdc-mobile-pro .v49-detail-main b{
+  color:#7a4f20 !important;
+}
+
+/* Bottom nav */
+body.gamer-mode .bottom-nav,
+body.sdc-mobile-pro .bottom-nav{
+  left:50% !important;
+  right:auto !important;
+  bottom:max(10px, env(safe-area-inset-bottom)) !important;
+  transform:translateX(-50%) !important;
+  width:min(620px, calc(100vw - 20px)) !important;
+  padding:8px !important;
+  border-radius:26px !important;
+  background:rgba(12,12,15,.92) !important;
+  border:1px solid rgba(216,183,106,.20) !important;
+  box-shadow:0 18px 50px rgba(0,0,0,.46) !important;
+  backdrop-filter:blur(18px) !important;
+}
+body.gamer-mode .nav-btn,
+body.sdc-mobile-pro .nav-btn{
+  min-width:0 !important;
+  min-height:52px !important;
+  border-radius:19px !important;
+  color:#a99e8f !important;
+  font-weight:900 !important;
+}
+body.gamer-mode .nav-btn i,
+body.sdc-mobile-pro .nav-btn i{
+  color:inherit !important;
+}
+body.gamer-mode .nav-btn.active,
+body.sdc-mobile-pro .nav-btn.active{
+  color:#241a0c !important;
+  background:linear-gradient(135deg,#f0d487,#d8b76a) !important;
+  box-shadow:0 12px 25px rgba(216,183,106,.18) !important;
+}
+
+/* Footer */
+body.gamer-mode .sdc-page-footer,
+body.sdc-mobile-pro .sdc-page-footer{
+  background:linear-gradient(180deg, rgba(255,248,234,.065), rgba(255,248,234,.035)) !important;
+  border-color:rgba(216,183,106,.16) !important;
+  color:#f5ead8 !important;
+}
+body.gamer-mode .footer-services span,
+body.sdc-mobile-pro .footer-services span{
+  background:rgba(255,248,234,.07) !important;
+  border-color:rgba(216,183,106,.14) !important;
+  color:#cabda8 !important;
+}
+
+/* Go top */
+#goTop{
+  border:1px solid rgba(216,183,106,.24) !important;
+  background:linear-gradient(135deg,#2b2116,#111112) !important;
+  color:#f0d487 !important;
+  box-shadow:0 16px 34px rgba(0,0,0,.34) !important;
+}
+
+/* MOBILE FIRST REFINEMENTS */
+@media (max-width: 980px){
+  body.gamer-mode .stats,
+  body.sdc-mobile-pro .stats{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
+  body.gamer-mode .quick-grid,
+  body.sdc-mobile-pro .quick-grid{grid-template-columns:repeat(4,minmax(0,1fr)) !important;}
+  body.gamer-mode .alert-grid,
+  body.sdc-mobile-pro .alert-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+  body.gamer-mode .category-grid,
+  body.sdc-mobile-pro .category-grid{grid-template-columns:repeat(4,minmax(0,1fr)) !important;}
+  body.gamer-mode .grid.two-col,
+  body.sdc-mobile-pro .grid.two-col{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
+}
+
+@media (max-width: 720px){
+  body.gamer-mode .app,
+  body.sdc-mobile-pro .app{
+    max-width:440px !important;
+    padding:8px 10px 114px !important;
+  }
+  body.gamer-mode .topbar,
+  body.sdc-mobile-pro .topbar{
+    min-height:62px !important;
+    padding:9px 10px !important;
+    gap:9px !important;
+    border-radius:0 0 22px 22px !important;
+  }
+  body.gamer-mode .top-logo,
+  body.sdc-mobile-pro .top-logo{
+    width:40px !important;
+    height:40px !important;
+    min-width:40px !important;
+    border-radius:15px !important;
+  }
+  body.gamer-mode .top-title h1,
+  body.sdc-mobile-pro .top-title h1{
+    font-size:15px !important;
+    letter-spacing:.035em !important;
+  }
+  body.gamer-mode .top-title p,
+  body.sdc-mobile-pro .top-title p,
+  body.gamer-mode .v51-top-badge,
+  body.sdc-mobile-pro .v51-top-badge{
+    display:none !important;
+  }
+  body.gamer-mode .sync-status,
+  body.sdc-mobile-pro .sync-status,
+  body.gamer-mode .logout-icon-btn,
+  body.sdc-mobile-pro .logout-icon-btn{
+    width:40px !important;
+    min-width:40px !important;
+    height:40px !important;
+    border-radius:15px !important;
+  }
+
+  body.gamer-mode .hero,
+  body.sdc-mobile-pro .hero{
+    margin-top:8px !important;
+    padding:16px !important;
+    border-radius:27px !important;
+  }
+  body.gamer-mode .private-hero-head,
+  body.sdc-mobile-pro .private-hero-head{
+    grid-template-columns:1fr !important;
+    gap:13px !important;
+  }
+  body.gamer-mode .v51-kicker,
+  body.sdc-mobile-pro .v51-kicker{
+    font-size:9px !important;
+    padding:6px 9px !important;
+  }
+  body.gamer-mode .hero h2,
+  body.sdc-mobile-pro .hero h2{
+    font-size:30px !important;
+    line-height:1.01 !important;
+    letter-spacing:-.042em !important;
+    margin:9px 0 6px !important;
+  }
+  body.gamer-mode .hero p,
+  body.sdc-mobile-pro .hero p{
+    font-size:13.2px !important;
+    line-height:1.38 !important;
+  }
+  body.gamer-mode .v51-hero-actions,
+  body.sdc-mobile-pro .v51-hero-actions{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    width:100% !important;
+  }
+  body.gamer-mode .v51-hero-actions button,
+  body.sdc-mobile-pro .v51-hero-actions button{
+    min-width:0 !important;
+    min-height:46px !important;
+    font-size:12px !important;
+    padding:0 10px !important;
+  }
+  body.gamer-mode .v51-hero-actions button:first-child,
+  body.sdc-mobile-pro .v51-hero-actions button:first-child{
+    grid-column:1/-1 !important;
+    min-height:50px !important;
+  }
+
+  body.gamer-mode .stats,
+  body.sdc-mobile-pro .stats{
+    display:flex !important;
+    gap:9px !important;
+    overflow-x:auto !important;
+    padding:1px 2px 6px !important;
+    margin-left:-2px !important;
+    margin-right:-2px !important;
+    scroll-snap-type:x proximity !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  body.gamer-mode .stats::-webkit-scrollbar,
+  body.sdc-mobile-pro .stats::-webkit-scrollbar,
+  body.gamer-mode .quick-grid::-webkit-scrollbar,
+  body.sdc-mobile-pro .quick-grid::-webkit-scrollbar,
+  body.gamer-mode .alert-grid::-webkit-scrollbar,
+  body.sdc-mobile-pro .alert-grid::-webkit-scrollbar,
+  body.gamer-mode .category-grid::-webkit-scrollbar,
+  body.sdc-mobile-pro .category-grid::-webkit-scrollbar{display:none;}
+  body.gamer-mode .stat,
+  body.sdc-mobile-pro .stat{
+    flex:0 0 134px !important;
+    min-height:66px !important;
+    padding:12px !important;
+    border-radius:20px !important;
+    scroll-snap-align:start !important;
+  }
+  body.gamer-mode .stat b,
+  body.sdc-mobile-pro .stat b{
+    font-size:18px !important;
+    white-space:nowrap !important;
+  }
+  body.gamer-mode .stat span,
+  body.sdc-mobile-pro .stat span{
+    font-size:9px !important;
+  }
+
+  body.gamer-mode .quick-grid,
+  body.sdc-mobile-pro .quick-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:9px !important;
+  }
+  body.gamer-mode .quick-btn,
+  body.sdc-mobile-pro .quick-btn{
+    display:grid !important;
+    grid-template-columns:34px minmax(0,1fr) !important;
+    align-items:center !important;
+    column-gap:10px !important;
+    min-height:72px !important;
+    padding:11px !important;
+    border-radius:21px !important;
+  }
+  body.gamer-mode .quick-btn::before,
+  body.sdc-mobile-pro .quick-btn::before{
+    width:34px !important;
+    height:34px !important;
+    margin:0 !important;
+    border-radius:13px !important;
+    font-size:14px !important;
+  }
+  body.gamer-mode .quick-btn b,
+  body.sdc-mobile-pro .quick-btn b{
+    font-size:13.5px !important;
+    line-height:1.05 !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+  body.gamer-mode .quick-btn small,
+  body.sdc-mobile-pro .quick-btn small{
+    margin-top:3px !important;
+    font-size:9.8px !important;
+    line-height:1.15 !important;
+    display:-webkit-box !important;
+    -webkit-line-clamp:2 !important;
+    -webkit-box-orient:vertical !important;
+    overflow:hidden !important;
+  }
+
+  body.gamer-mode .alert-grid,
+  body.sdc-mobile-pro .alert-grid{
+    display:flex !important;
+    gap:9px !important;
+    overflow-x:auto !important;
+    padding:1px 2px 7px !important;
+    scroll-snap-type:x mandatory !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  body.gamer-mode .alert-card,
+  body.sdc-mobile-pro .alert-card{
+    flex:0 0 214px !important;
+    min-height:72px !important;
+    border-radius:21px !important;
+    scroll-snap-align:start !important;
+  }
+  body.gamer-mode .alert-card .btn,
+  body.sdc-mobile-pro .alert-card .btn{
+    min-width:70px !important;
+  }
+
+  body.gamer-mode .view-mode-panel,
+  body.sdc-mobile-pro .view-mode-panel{
+    grid-template-columns:1fr !important;
+    gap:10px !important;
+    padding:13px !important;
+    border-radius:24px !important;
+  }
+  body.gamer-mode .view-mode-buttons,
+  body.sdc-mobile-pro .view-mode-buttons{
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    width:100% !important;
+    gap:6px !important;
+  }
+  body.gamer-mode .view-mode-buttons button,
+  body.sdc-mobile-pro .view-mode-buttons button{
+    padding:10px 4px !important;
+    font-size:10px !important;
+  }
+
+  body.gamer-mode .search-panel,
+  body.sdc-mobile-pro .search-panel{
+    top:64px !important;
+    margin:10px 0 12px !important;
+    padding:10px !important;
+    border-radius:22px !important;
+  }
+  body.gamer-mode .search-title,
+  body.sdc-mobile-pro .search-title{
+    gap:8px !important;
+    margin-bottom:8px !important;
+  }
+  body.gamer-mode .search-title span,
+  body.sdc-mobile-pro .search-title span{
+    max-width:150px !important;
+    text-align:right !important;
+    line-height:1.1 !important;
+  }
+  body.gamer-mode .searchbar,
+  body.sdc-mobile-pro .searchbar{
+    height:52px !important;
+    border-radius:18px !important;
+  }
+
+  body.gamer-mode .category-gallery,
+  body.sdc-mobile-pro .category-gallery{
+    padding:13px !important;
+    border-radius:24px !important;
+  }
+  body.gamer-mode .category-head,
+  body.sdc-mobile-pro .category-head{
+    align-items:flex-start !important;
+    gap:10px !important;
+  }
+  body.gamer-mode .category-head h2,
+  body.sdc-mobile-pro .category-head h2,
+  body.gamer-mode .section-head h2,
+  body.sdc-mobile-pro .section-head h2{
+    font-size:20px !important;
+  }
+  body.gamer-mode .category-grid,
+  body.sdc-mobile-pro .category-grid{
+    display:flex !important;
+    gap:9px !important;
+    overflow-x:auto !important;
+    scroll-snap-type:x mandatory !important;
+    padding:1px 2px 5px !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  body.gamer-mode .category-card,
+  body.sdc-mobile-pro .category-card{
+    flex:0 0 112px !important;
+    min-width:112px !important;
+    min-height:106px !important;
+    padding:11px 9px !important;
+    scroll-snap-align:start !important;
+  }
+
+  body.gamer-mode #inventario .section-head,
+  body.sdc-mobile-pro #inventario .section-head{
+    grid-template-columns:1fr !important;
+    gap:10px !important;
+    margin-bottom:12px !important;
+  }
+  body.gamer-mode .inventory-head-actions,
+  body.sdc-mobile-pro .inventory-head-actions{
+    display:grid !important;
+    grid-template-columns:1fr auto !important;
+    width:100% !important;
+    gap:8px !important;
+  }
+  body.gamer-mode .inventory-new-btn,
+  body.sdc-mobile-pro .inventory-new-btn{
+    min-height:42px !important;
+    border-radius:16px !important;
+    font-size:12px !important;
+  }
+  body.gamer-mode .layout-toggle,
+  body.sdc-mobile-pro .layout-toggle{
+    grid-column:1/-1 !important;
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    width:100% !important;
+  }
+  body.gamer-mode .layout-toggle button,
+  body.sdc-mobile-pro .layout-toggle button{
+    min-height:38px !important;
+    font-size:10.5px !important;
+  }
+  body.gamer-mode .count-pill,
+  body.sdc-mobile-pro .count-pill{
+    justify-self:end !important;
+    min-height:42px !important;
+    border-radius:16px !important;
+  }
+
+  body.gamer-mode .grid.two-col,
+  body.sdc-mobile-pro .grid.two-col,
+  body.gamer-mode .grid.one-col,
+  body.sdc-mobile-pro .grid.one-col{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+  }
+  body.gamer-mode .product-card-v49,
+  body.sdc-mobile-pro .product-card-v49,
+  body.gamer-mode .grid.one-col .product-card-v49,
+  body.sdc-mobile-pro .grid.one-col .product-card-v49{
+    display:grid !important;
+    grid-template-columns:116px minmax(0,1fr) !important;
+    border-radius:24px !important;
+  }
+  body.gamer-mode .v49-card-photo,
+  body.sdc-mobile-pro .v49-card-photo,
+  body.gamer-mode .grid.one-col .v49-card-photo,
+  body.sdc-mobile-pro .grid.one-col .v49-card-photo{
+    height:100% !important;
+    min-height:154px !important;
+    aspect-ratio:auto !important;
+    border-radius:24px 16px 16px 24px !important;
+  }
+  body.gamer-mode .v49-card-body,
+  body.sdc-mobile-pro .v49-card-body,
+  body.gamer-mode .grid.one-col .v49-card-body,
+  body.sdc-mobile-pro .grid.one-col .v49-card-body{
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+    min-width:0 !important;
+    padding:11px !important;
+  }
+  body.gamer-mode .v51-product-meta,
+  body.sdc-mobile-pro .v51-product-meta{
+    margin-bottom:6px !important;
+  }
+  body.gamer-mode .v51-product-meta span,
+  body.sdc-mobile-pro .v51-product-meta span{
+    height:22px !important;
+    padding:0 7px !important;
+    font-size:8.5px !important;
+  }
+  body.gamer-mode .v49-price,
+  body.sdc-mobile-pro .v49-price{
+    font-size:20px !important;
+    margin-bottom:6px !important;
+  }
+  body.gamer-mode .product-card-v49 h3,
+  body.sdc-mobile-pro .product-card-v49 h3{
+    min-height:auto !important;
+    margin-bottom:8px !important;
+    font-size:13.7px !important;
+    line-height:1.18 !important;
+    -webkit-line-clamp:2 !important;
+  }
+  body.gamer-mode .v51-product-desc,
+  body.sdc-mobile-pro .v51-product-desc{
+    display:none !important;
+  }
+  body.gamer-mode .v49-card-actions,
+  body.sdc-mobile-pro .v49-card-actions,
+  body.gamer-mode .grid.one-col .v49-card-actions,
+  body.sdc-mobile-pro .grid.one-col .v49-card-actions{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:7px !important;
+  }
+  body.gamer-mode .v49-card-actions button,
+  body.sdc-mobile-pro .v49-card-actions button,
+  body.gamer-mode .grid.one-col .v49-card-actions button,
+  body.sdc-mobile-pro .grid.one-col .v49-card-actions button{
+    min-height:36px !important;
+    padding:0 5px !important;
+    font-size:10px !important;
+  }
+
+  body.gamer-mode .modal-backdrop,
+  body.sdc-mobile-pro .modal-backdrop{
+    padding:7px !important;
+    align-items:flex-end !important;
+  }
+  body.gamer-mode .modal,
+  body.sdc-mobile-pro .modal{
+    border-radius:28px 28px 0 0 !important;
+    max-height:94dvh !important;
+  }
+  body.gamer-mode .modal-body,
+  body.sdc-mobile-pro .modal-body{
+    padding:12px !important;
+  }
+  body.gamer-mode .quote-actions,
+  body.sdc-mobile-pro .quote-actions{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+
+  body.gamer-mode .bottom-nav,
+  body.sdc-mobile-pro .bottom-nav{
+    width:calc(100vw - 18px) !important;
+    height:72px !important;
+    padding:7px !important;
+    border-radius:24px !important;
+  }
+  body.gamer-mode .nav-btn,
+  body.sdc-mobile-pro .nav-btn{
+    min-height:52px !important;
+    border-radius:18px !important;
+    padding:5px 2px !important;
+  }
+  body.gamer-mode .nav-btn i,
+  body.sdc-mobile-pro .nav-btn i{
+    font-size:17px !important;
+    margin-bottom:3px !important;
+  }
+  body.gamer-mode .nav-btn span,
+  body.sdc-mobile-pro .nav-btn span{
+    font-size:10px !important;
+  }
+}
+
+@media (max-width: 390px){
+  body.gamer-mode .app,
+  body.sdc-mobile-pro .app{
+    padding-left:8px !important;
+    padding-right:8px !important;
+  }
+  body.gamer-mode .hero h2,
+  body.sdc-mobile-pro .hero h2{
+    font-size:28px !important;
+  }
+  body.gamer-mode .quick-grid,
+  body.sdc-mobile-pro .quick-grid{
+    gap:8px !important;
+  }
+  body.gamer-mode .quick-btn,
+  body.sdc-mobile-pro .quick-btn{
+    grid-template-columns:32px minmax(0,1fr) !important;
+    column-gap:8px !important;
+    min-height:70px !important;
+    padding:10px !important;
+  }
+  body.gamer-mode .quick-btn::before,
+  body.sdc-mobile-pro .quick-btn::before{
+    width:32px !important;
+    height:32px !important;
+  }
+  body.gamer-mode .quick-btn b,
+  body.sdc-mobile-pro .quick-btn b{
+    font-size:12.5px !important;
+  }
+  body.gamer-mode .quick-btn small,
+  body.sdc-mobile-pro .quick-btn small{
+    font-size:9px !important;
+  }
+  body.gamer-mode .product-card-v49,
+  body.sdc-mobile-pro .product-card-v49,
+  body.gamer-mode .grid.one-col .product-card-v49,
+  body.sdc-mobile-pro .grid.one-col .product-card-v49{
+    grid-template-columns:106px minmax(0,1fr) !important;
+  }
+  body.gamer-mode .v49-card-photo,
+  body.sdc-mobile-pro .v49-card-photo,
+  body.gamer-mode .grid.one-col .v49-card-photo,
+  body.sdc-mobile-pro .grid.one-col .v49-card-photo{
+    min-height:150px !important;
+  }
+  body.gamer-mode .v51-product-meta span:last-child,
+  body.sdc-mobile-pro .v51-product-meta span:last-child{
+    display:none !important;
+  }
+  body.gamer-mode .v49-card-actions button,
+  body.sdc-mobile-pro .v49-card-actions button{
+    font-size:9.4px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
+}
+body.gamer-mode .quick-btn[data-v52-icon]::before,
+body.sdc-mobile-pro .quick-btn[data-v52-icon]::before{
+  content:attr(data-v52-icon) !important;
+}

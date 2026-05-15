@@ -10,7 +10,7 @@ window.SDC_CONFIG = {
   sheetId: '1A3unHNlFBrbi2GNmD7NOEk_JlWciEE2PE5Wxx4-X0ZY',
   productSheet: 'productos_pos',
   autoSheetSync: true,
-  webAppUrl: 'https://script.google.com/macros/s/AKfycbzpDU58SprO2SG4uW7pfXOwnvu7ICIFpsGbxz9-Cmvd58CgWHVHFklJOzxTwEpcVZRa/exec'
+  webAppUrl: 'https://script.google.com/macros/s/AKfycbxp46Vad-z_S1SD6AIxO4_HS2ZcEDFKBmCJsamQvGf4g-o2a_83w1OJcyg5rtB0rFCM/exec'
 };
 
 window.SDC_DEPARTMENTS = [

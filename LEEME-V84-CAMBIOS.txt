@@ -1,0 +1,27 @@
+SD COMAYAGUA POS · V84
+
+Mejora agregada:
+
+1) Notificaciones en barra inferior
+- Se agregó el botón Alertas en la barra inferior.
+- Muestra un contador rojo con el total de problemas detectados.
+- Al tocarlo abre directamente el panel de Notificaciones.
+
+2) Centro de alertas más completo
+- Ahora cuenta bajo stock, agotados, sin costo, ganancia baja y productos sin imagen.
+- El panel superior muestra el total de alertas o “Todo limpio”.
+- Se agregó tarjeta de “Agotados” y “Sin imagen”.
+
+3) Corrección importante
+- El botón “Ganancia baja” llamaba una función que no existía.
+- Se agregó el modal de Ganancia baja con lista de productos, utilidad por unidad y botón Editar.
+
+4) Ajuste visual móvil
+- La barra inferior ahora soporta 6 botones sin romperse.
+- El botón activo usa gradiente suave y el contador de alertas queda visible.
+
+Archivo clave modificado:
+js/app.js
+css/sdc-v83-user-improvements.css
+index.html
+index_mobile.html

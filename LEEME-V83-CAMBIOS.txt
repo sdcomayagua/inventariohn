@@ -1,0 +1,31 @@
+SD COMAYAGUA POS · V83
+
+Cambios aplicados:
+
+1) Panel rápido limpio
+- Ya no aparecen los 12 botones en columna.
+- Ahora hay dos pestañas: Opciones y Notificaciones.
+- Cada pestaña se mueve horizontalmente, mostrando pocas tarjetas a la vez.
+
+2) Estilo visual
+- Se quitó el modo Gamer como opción visible.
+- Ahora las opciones son Negro, Azul y Rojo.
+- Negro queda como estilo predeterminado al abrir la página.
+
+3) Nuevo / Editar producto
+- El botón principal ahora dice “Guardar y sincronizar”.
+- Se quitó el botón extra “Sheets” del editor para evitar confusión.
+- Al guardar, intenta guardar localmente y después confirmar Google Sheets.
+- La nota del editor aclara que no crea un archivo nuevo en Drive; actualiza la pestaña productos_pos del Sheet conectado.
+
+4) Imágenes del producto
+- El botón “Galería” ahora dice “Subir”.
+- Ya no muestra el texto feo data:image/jpeg;base64 en grande.
+- Muestra una vista previa clara de la foto subida.
+
+5) Google Sheets
+- Se agregó google-apps-script-sdc.gs por si el Apps Script actual no está guardando.
+- Si al guardar no aparece en la hoja, pega ese script en Extensiones → Apps Script, despliega como Aplicación web y pega la URL /exec en js/data.js.
+
+Archivo importante para la URL de Sheets:
+js/data.js

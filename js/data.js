@@ -14,10 +14,11 @@ window.SDC_CONFIG = {
 };
 
 window.SDC_DEPARTMENTS = [
-  'Atlántida','Colón','Comayagua','Copán','Cortés','Choluteca','El Paraíso','Francisco Morazán','Gracias a Dios','Intibucá','Islas de la Bahía','La Paz','Lempira','Ocotepeque','Olancho','Santa Bárbara','Valle','Yoro'
+  'Por Definir','Atlántida','Colón','Comayagua','Copán','Cortés','Choluteca','El Paraíso','Francisco Morazán','Gracias a Dios','Intibucá','Islas de la Bahía','La Paz','Lempira','Ocotepeque','Olancho','Santa Bárbara','Valle','Yoro'
 ];
 
 window.SDC_MUNICIPALITIES = {
+  'Por Definir':['Por Definir'],
   'Atlántida':['La Ceiba','El Porvenir','Esparta','Jutiapa','La Masica','San Francisco','Tela','Arizona'],
   'Colón':['Trujillo','Balfate','Iriona','Limón','Sabá','Santa Fe','Santa Rosa de Aguán','Sonaguera','Tocoa','Bonito Oriental'],
   'Comayagua':['Comayagua','Ajuterique','El Rosario','Esquías','Humuya','La Libertad','Lamaní','La Trinidad','Lejamaní','Meámbar','Minas de Oro','Ojos de Agua','San Jerónimo','San José de Comayagua','San José del Potrero','San Luis','San Sebastián','Siguatepeque','Villa de San Antonio','Las Lajas','Taulabé'],

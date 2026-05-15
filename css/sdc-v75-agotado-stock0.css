@@ -1,0 +1,152 @@
+/* =========================================================
+   SDC V75 · Productos agotados + stock 0 en editor
+   - Los productos con stock 0 se ven grises y claramente agotados.
+   - Refuerza que el stock 0 sea válido en edición.
+   ========================================================= */
+
+body.sdc-v61-clean .product-card.is-out,
+body.sdc-v61-clean .product-card.is-agotado{
+  background:linear-gradient(180deg,#f4f6f8 0%,#edf1f5 100%)!important;
+  border-color:#cbd5df!important;
+  box-shadow:0 6px 16px rgba(15,23,42,.045)!important;
+}
+body.sdc-v61-clean .product-card.is-out::after,
+body.sdc-v61-clean .product-card.is-agotado::after{
+  content:'SIN STOCK'!important;
+  position:absolute!important;
+  right:42px!important;
+  bottom:10px!important;
+  padding:5px 9px!important;
+  border-radius:999px!important;
+  background:#d9e0e8!important;
+  color:#5c6775!important;
+  border:1px solid #c3ceda!important;
+  font-size:9px!important;
+  line-height:1!important;
+  letter-spacing:.08em!important;
+  font-weight:950!important;
+  pointer-events:none!important;
+}
+body.sdc-v61-clean .product-card.is-out:hover,
+body.sdc-v61-clean .product-card.is-agotado:hover{
+  transform:none!important;
+  border-color:#b9c5d2!important;
+  box-shadow:0 8px 18px rgba(15,23,42,.065)!important;
+}
+body.sdc-v61-clean .product-card.is-out .v49-card-photo,
+body.sdc-v61-clean .product-card.is-agotado .v49-card-photo{
+  background:#d8dee6!important;
+  border-color:#c0cad6!important;
+}
+body.sdc-v61-clean .product-card.is-out .v49-card-photo img,
+body.sdc-v61-clean .product-card.is-agotado .v49-card-photo img{
+  filter:grayscale(1) saturate(.55) contrast(.92)!important;
+  opacity:.58!important;
+}
+body.sdc-v61-clean .product-card.is-out .v49-card-body h3,
+body.sdc-v61-clean .product-card.is-agotado .v49-card-body h3,
+body.sdc-v61-clean .product-card.is-out .product-card h3,
+body.sdc-v61-clean .product-card.is-agotado .product-card h3{
+  color:#687384!important;
+}
+body.sdc-v61-clean .product-card.is-out .v49-price,
+body.sdc-v61-clean .product-card.is-out .v49-price.is-out,
+body.sdc-v61-clean .product-card.is-agotado .v49-price{
+  color:#7a8594!important;
+  text-decoration:line-through!important;
+  text-decoration-thickness:2px!important;
+  text-decoration-color:#a5afbc!important;
+}
+body.sdc-v61-clean .product-card.is-out .v51-product-meta span,
+body.sdc-v61-clean .product-card.is-agotado .v51-product-meta span{
+  background:#e8edf2!important;
+  color:#7a8594!important;
+  border-color:#ced7e2!important;
+}
+body.sdc-v61-clean .product-card.is-out .stock-badge.out,
+body.sdc-v61-clean .product-card.is-agotado .stock-badge.out,
+body.sdc-v61-clean .stock-badge.out{
+  background:#475569!important;
+  border-color:#475569!important;
+  color:#fff!important;
+  box-shadow:0 8px 16px rgba(71,85,105,.20)!important;
+}
+body.sdc-v61-clean .product-card.is-out .stock-badge.out i,
+body.sdc-v61-clean .product-card.is-agotado .stock-badge.out i,
+body.sdc-v61-clean .stock-badge.out i{
+  background:#cbd5e1!important;
+}
+body.sdc-v61-clean .v74-stock-line.out,
+body.sdc-v61-clean .product-card.is-out .v74-stock-line,
+body.sdc-v61-clean .product-card.is-agotado .v74-stock-line{
+  color:#64748b!important;
+  font-weight:950!important;
+}
+body.sdc-v61-clean .v74-stock-line.out::before,
+body.sdc-v61-clean .product-card.is-out .v74-stock-line::before,
+body.sdc-v61-clean .product-card.is-agotado .v74-stock-line::before{
+  background:#64748b!important;
+}
+body.sdc-v61-clean .product-card.is-out .v74-card-chevron,
+body.sdc-v61-clean .product-card.is-agotado .v74-card-chevron{
+  color:#94a3b8!important;
+}
+
+/* Detalle del producto agotado */
+body.sdc-v61-clean .v49-product-detail.is-out .v49-detail-hero{
+  background:#f3f6f9!important;
+  border:1px solid #d1dbe6!important;
+  border-radius:22px!important;
+  padding:10px!important;
+}
+body.sdc-v61-clean .v49-product-detail.is-out .v49-detail-image img{
+  filter:grayscale(1) saturate(.55)!important;
+  opacity:.68!important;
+}
+body.sdc-v61-clean .v49-product-detail.is-out .v53-modal-sell,
+body.sdc-v61-clean .v49-product-detail.is-out button[disabled]{
+  background:#d5dde7!important;
+  color:#687384!important;
+  border-color:#c3ceda!important;
+  cursor:not-allowed!important;
+  box-shadow:none!important;
+}
+
+/* Editor: deja claro que 0 es un valor correcto para agotar producto */
+body.sdc-v61-clean #pStock{
+  font-weight:950!important;
+}
+body.sdc-v61-clean #pStock::placeholder{
+  color:#8a95a6!important;
+  opacity:1!important;
+}
+body.sdc-v61-clean label:has(#pStock) .label::after{
+  content:' · 0 = agotado'!important;
+  color:#64748b!important;
+  font-weight:850!important;
+  text-transform:none!important;
+  letter-spacing:.02em!important;
+}
+
+/* Selectores de producto: cuando aparezcan agotados, también se sienten desactivados */
+body.sdc-v61-clean .picker-item.is-out,
+body.sdc-v61-clean .picker-item[data-stock-status="out"]{
+  background:#f2f5f8!important;
+  border-color:#d2dce7!important;
+  color:#64748b!important;
+}
+body.sdc-v61-clean .picker-item.is-out img,
+body.sdc-v61-clean .picker-item[data-stock-status="out"] img{
+  filter:grayscale(1)!important;
+  opacity:.62!important;
+}
+
+@media(max-width:420px){
+  body.sdc-v61-clean .product-card.is-out::after,
+  body.sdc-v61-clean .product-card.is-agotado::after{
+    right:34px!important;
+    bottom:8px!important;
+    font-size:8px!important;
+    padding:4px 7px!important;
+  }
+}

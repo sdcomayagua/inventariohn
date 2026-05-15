@@ -1,0 +1,30 @@
+SD COMAYAGUA · Cambios aplicados V80
+
+1) Guardar producto
+- El editor queda con un solo botón principal: "Guardar producto".
+- Se desactivó el botón extra "Sheets" que agregaba el parche V70 dentro del modal.
+- Al tocar "Guardar producto", primero guarda localmente y luego envía el producto a Google Sheets con action=upsertProduct.
+- Se expone window.SDC_saveProductToSheets por si se necesita llamar el guardado desde otro parche.
+
+2) Google Sheets / Apps Script
+- El Sheet_ID configurado sigue siendo: 1A3unHNlFBrbi2GNmD7NOEk_JlWciEE2PE5Wxx4-X0ZY
+- Se mantuvo la URL webAppUrl existente en js/data.js.
+- sheetPost ahora intenta POST normal y, si GitHub Pages/Apps Script bloquea la lectura por CORS, reintenta en mode=no-cors para que el envío llegue.
+- Se incluyó AppsScript_CODE_GS_actualizado.txt. Copie ese contenido en Apps Script y vuelva a implementar como Web App si su implementación actual no está actualizada.
+
+3) Imagen subida
+- Las imágenes subidas desde galería se comprimen automáticamente antes de guardarse, para evitar que Google Sheets rechace celdas demasiado grandes.
+- Si una imagen sigue pesada, la página muestra aviso y pide usar una imagen más liviana o un enlace.
+
+4) Ficha para cliente / captura
+- Se agregó css/sdc-v80-product-sync-fix.css.
+- La imagen del producto ahora usa object-fit: contain para conservar proporción real y evitar que se vea jalada/estirada.
+- Se retocaron las tarjetas inferiores de precio, nota y footer para verse más limpias en la captura.
+
+Archivos modificados:
+- js/app.js
+- js/sdc-v70-sheets-imagen-fix.js
+- css/sdc-v80-product-sync-fix.css
+- index.html
+- index_mobile.html
+- AppsScript_CODE_GS_actualizado.txt

@@ -10,6 +10,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="SDC POS">
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="Panel POS móvil de SD Comayagua para inventario, cotizaciones y ventas rápidas.">
+  <meta name="format-detection" content="telephone=no">
   <link rel="manifest" href="manifest.webmanifest?v=87-home-sync-fix">
   <title>SD Comayagua · POS V87</title>
   <link rel="icon" href="assets/logo-sdc.png?v=87-home-sync-fix">
@@ -38,7 +40,8 @@
   <link rel="stylesheet" href="css/sdc-v87-home-sync-fix.css?v=87-home-sync-fix">
 </head>
 <body class="sdc-v60-pos sdc-v61-clean sdc-theme-black">
-  <div id="app">
+  <a class="skip-link" href="#app">Saltar al contenido</a>
+  <main id="app" role="main" tabindex="-1">
     <section class="boot-loading" data-sdc-loading="1">
       <div class="boot-loading-card">
         <img src="assets/logo-sdc.png" alt="SD Comayagua">
@@ -46,7 +49,7 @@
         <p>Cargando panel móvil.</p>
       </div>
     </section>
-  </div>
+  </main>
   <div id="modalRoot"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <button id="goTop" class="go-top" aria-label="Subir">↑</button>
@@ -73,6 +76,6 @@
   <script defer src="js/sdc-v70-sheets-imagen-fix.js?v=87-home-sync-fix"></script>
   <script async src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script async src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="js/mobile-polish.js"></script>
+  <script defer src="js/mobile-polish.js?v=87-home-sync-fix"></script>
 </body>
 </html>

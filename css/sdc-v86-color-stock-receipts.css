@@ -1,0 +1,187 @@
+/* =========================================================
+   SDC V86 · stock por color + recibos verticales + móvil limpio
+   ========================================================= */
+
+/* Selector de estilo visual: una sola fila clara, sin botones fantasma */
+body.sdc-v61-clean .sdc-v60-theme-panel{
+  margin:10px 10px 12px!important;
+  padding:12px!important;
+  border-radius:20px!important;
+  border:1px solid rgba(12,31,50,.10)!important;
+  background:linear-gradient(180deg,#ffffff,#f7fbff)!important;
+  box-shadow:0 14px 32px rgba(6,21,34,.08)!important;
+}
+body.sdc-v61-clean .sdc-v60-theme-title{
+  margin:0 0 9px!important;
+  text-align:left!important;
+  font-size:12px!important;
+  line-height:1!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+  color:#64748b!important;
+  font-weight:950!important;
+}
+body.sdc-v61-clean .sdc-v60-theme-buttons{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+body.sdc-v61-clean .sdc-v60-theme-buttons button{
+  min-width:0!important;
+  min-height:44px!important;
+  height:44px!important;
+  padding:0 8px!important;
+  border-radius:15px!important;
+  border:1px solid #d9e5f2!important;
+  background:#fff!important;
+  color:#0f2437!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  font-size:12.5px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  box-shadow:none!important;
+  transform:none!important;
+  -webkit-tap-highlight-color:transparent!important;
+  touch-action:manipulation!important;
+}
+body.sdc-v61-clean .sdc-v60-theme-buttons .theme-dot{
+  width:14px!important;height:14px!important;border-radius:999px!important;display:inline-block!important;font-size:0!important;flex:0 0 14px!important;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.65),0 0 0 1px rgba(2,13,24,.10)!important;
+}
+body.sdc-v61-clean .sdc-v60-theme-buttons [data-v60-theme="black"] .theme-dot{background:#061522!important;}
+body.sdc-v61-clean .sdc-v60-theme-buttons [data-v60-theme="blue"] .theme-dot{background:#1d4ed8!important;}
+body.sdc-v61-clean .sdc-v60-theme-buttons [data-v60-theme="red"] .theme-dot{background:#b91c2b!important;}
+body.sdc-v61-clean.sdc-theme-black .sdc-v60-theme-buttons [data-v60-theme="black"],
+body.sdc-v61-clean.sdc-theme-blue .sdc-v60-theme-buttons [data-v60-theme="blue"],
+body.sdc-v61-clean.sdc-theme-red .sdc-v60-theme-buttons [data-v60-theme="red"]{
+  background:#061522!important;color:#fff!important;border-color:#061522!important;box-shadow:0 10px 22px rgba(6,21,34,.16)!important;
+}
+body.sdc-v61-clean.sdc-theme-blue .sdc-v60-theme-buttons [data-v60-theme="blue"]{background:#153f83!important;border-color:#153f83!important;}
+body.sdc-v61-clean.sdc-theme-red .sdc-v60-theme-buttons [data-v60-theme="red"]{background:#941425!important;border-color:#941425!important;}
+
+/* Categorías centradas en móvil, porque al parecer alinear texto sigue siendo una batalla histórica */
+body.sdc-v61-clean .category-current{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;
+  min-height:48px!important;padding:10px 14px!important;text-align:left!important;
+}
+body.sdc-v61-clean .category-current b,
+body.sdc-v61-clean #categoryCurrentTitle{
+  display:flex!important;align-items:center!important;line-height:1.05!important;margin:0!important;padding:0!important;
+}
+body.sdc-v61-clean .category-grid .category-card,
+body.sdc-v61-clean .category-card{
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  text-align:center!important;gap:7px!important;line-height:1.08!important;
+}
+body.sdc-v61-clean .category-card b{
+  display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;
+  min-height:32px!important;margin:0!important;padding:0!important;line-height:1.06!important;
+}
+body.sdc-v61-clean .category-card small{margin:0!important;line-height:1.05!important;}
+
+/* Editor de colores */
+.color-editor-box-v86{
+  border:1px solid #d9e7f3!important;background:#f7fbff!important;border-radius:18px!important;padding:12px!important;
+}
+.color-help-v86{
+  margin:6px 0 10px!important;padding:10px 12px!important;border-radius:14px!important;background:#eef6ff!important;color:#31485f!important;
+  font-size:12.5px!important;line-height:1.35!important;font-weight:750!important;
+}
+.color-help-v86 b{color:#0b2133!important;}
+.color-rows-v86{display:grid!important;gap:8px!important;}
+.color-row-v86{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 92px 38px!important;gap:8px!important;align-items:end!important;
+  padding:9px!important;border-radius:14px!important;background:#fff!important;border:1px solid #dfe9f3!important;
+}
+.color-row-v86 label{margin:0!important;display:grid!important;gap:5px!important;}
+.color-row-v86 small{font-size:11px!important;color:#64748b!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;}
+.color-row-v86 .input{height:38px!important;min-height:38px!important;border-radius:11px!important;}
+.color-delete-btn{height:38px!important;width:38px!important;border-radius:12px!important;padding:0!important;font-size:22px!important;line-height:1!important;}
+#colorStockHint b{color:#0b7a3a!important;}
+@media(max-width:460px){
+  .color-row-v86{grid-template-columns:minmax(0,1fr) 82px 36px!important;gap:7px!important;padding:8px!important;}
+  .color-row-v86 .input{font-size:13px!important;padding-left:9px!important;padding-right:9px!important;}
+}
+
+/* Stock por color en tarjetas, detalle y carrito */
+.stock-colors-v86{display:block!important;margin-top:4px!important;color:#45627c!important;font-weight:850!important;line-height:1.25!important;}
+.color-stock-chips-v86{display:flex!important;flex-wrap:wrap!important;gap:7px!important;margin-top:8px!important;}
+.color-stock-chips-v86 span{
+  display:inline-flex!important;align-items:center!important;gap:8px!important;padding:7px 10px!important;border-radius:999px!important;
+  background:#eef6ff!important;border:1px solid #d4e5f7!important;color:#102436!important;font-weight:900!important;
+}
+.color-stock-chips-v86 em{font-style:normal!important;background:#102436!important;color:#fff!important;border-radius:999px!important;padding:2px 7px!important;font-size:11px!important;}
+.v86-color-client{margin-top:12px!important;padding:12px!important;border-radius:18px!important;background:#f7fbff!important;border:1px solid #d9e7f3!important;}
+.v86-color-client>b{display:block!important;color:#07131a!important;margin-bottom:4px!important;}
+.v86-color-client small{display:block!important;margin-top:8px!important;color:#64748b!important;font-weight:800!important;}
+.cart-color-select-v86{display:grid!important;grid-template-columns:52px minmax(0,1fr)!important;align-items:center!important;gap:8px!important;margin-top:8px!important;}
+.cart-color-select-v86 span{font-size:11px!important;text-transform:uppercase!important;letter-spacing:.06em!important;color:#64748b!important;font-weight:950!important;}
+.cart-color-select-v86 select,
+.quick-color-box-v86 select{
+  width:100%!important;min-height:38px!important;border-radius:12px!important;border:1px solid #d7e5f0!important;background:#fff!important;color:#07131a!important;
+  padding:0 10px!important;font-weight:900!important;outline:none!important;
+}
+.color-available-v86{display:block!important;margin-top:5px!important;color:#0b7a3a!important;font-weight:900!important;}
+.item-color-pill-v86{
+  display:inline-flex!important;vertical-align:middle!important;margin-left:5px!important;padding:3px 8px!important;border-radius:999px!important;
+  background:#eaf3ff!important;color:#0b63ce!important;font-style:normal!important;font-size:11px!important;font-weight:950!important;
+}
+.quick-color-box-v86{margin:10px 0!important;}
+.quick-color-box-v86 label{display:grid!important;gap:6px!important;}
+
+/* Recibo vertical más corto y menos horizontal */
+body.sdc-v61-clean .receipt-client-pro.receipt-client-v32{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin-bottom:10px!important;
+}
+body.sdc-v61-clean .receipt-client-pro.receipt-client-v32 article{
+  min-width:0!important;min-height:58px!important;padding:10px 12px!important;border-radius:16px!important;
+}
+body.sdc-v61-clean .receipt-client-pro.receipt-client-v32 article.wide{grid-column:1/-1!important;}
+body.sdc-v61-clean .receipt-client-pro.receipt-client-v32 b{font-size:14px!important;line-height:1.08!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+body.sdc-v61-clean .receipt-process-pro{margin-bottom:10px!important;padding:12px!important;border-radius:18px!important;}
+body.sdc-v61-clean .receipt-products-pro{margin-bottom:10px!important;border-radius:18px!important;}
+body.sdc-v61-clean .receipt-title-pro{min-height:44px!important;padding:0 12px!important;}
+body.sdc-v61-clean .receipt-item-pro{
+  grid-template-columns:26px 54px minmax(0,1fr)!important;gap:8px!important;align-items:center!important;padding:8px 10px!important;
+}
+body.sdc-v61-clean .receipt-item-pro strong{
+  grid-column:3!important;justify-self:start!important;margin-top:3px!important;font-size:16px!important;color:#061522!important;
+}
+body.sdc-v61-clean .receipt-item-thumb{width:54px!important;height:54px!important;border-radius:13px!important;}
+body.sdc-v61-clean .receipt-item-info b{font-size:15px!important;line-height:1.05!important;}
+body.sdc-v61-clean .receipt-item-info span{font-size:12px!important;line-height:1.2!important;white-space:normal!important;}
+body.sdc-v61-clean .receipt-summary-pro{border-radius:18px!important;margin-bottom:10px!important;}
+body.sdc-v61-clean .receipt-summary-pro>div{min-height:42px!important;padding:0 13px!important;}
+body.sdc-v61-clean .receipt-summary-pro .grand{min-height:58px!important;}
+body.sdc-v61-clean .receipt-summary-pro .grand b{font-size:30px!important;}
+body.sdc-v61-clean .receipt-footer-pro{min-height:auto!important;padding:12px!important;border-radius:18px!important;gap:10px!important;}
+
+/* Recibo corto: producto y precio apilados, menos sábana horizontal */
+.short-receipt-v72 .short-line.item,
+.short-receipt .short-line.item{
+  display:grid!important;grid-template-columns:1fr!important;gap:4px!important;align-items:start!important;padding:8px 0!important;
+}
+.short-receipt-v72 .short-line.item span,
+.short-receipt .short-line.item span{display:block!important;min-width:0!important;line-height:1.15!important;}
+.short-receipt-v72 .short-line.item span small,
+.short-receipt .short-line.item span small{display:block!important;margin-top:2px!important;color:#60758a!important;font-size:11px!important;font-weight:850!important;}
+.short-receipt-v72 .short-line.item b,
+.short-receipt .short-line.item b{display:block!important;text-align:left!important;font-size:17px!important;line-height:1!important;}
+.shortReceiptExportHost .short-receipt{width:410px!important;max-width:410px!important;}
+
+@media(max-width:540px){
+  body.sdc-v61-clean .receipt-inner-pro{padding:12px!important;}
+  body.sdc-v61-clean .receipt-header-pro{grid-template-columns:1fr!important;gap:8px!important;}
+  body.sdc-v61-clean .receipt-total-pro{min-height:auto!important;padding:12px!important;}
+  body.sdc-v61-clean .receipt-total-pro b{font-size:34px!important;}
+  body.sdc-v61-clean .receipt-client-pro.receipt-client-v32{grid-template-columns:1fr 1fr!important;gap:7px!important;}
+  body.sdc-v61-clean .receipt-client-pro.receipt-client-v32 span{font-size:10px!important;}
+  body.sdc-v61-clean .receipt-client-pro.receipt-client-v32 b{font-size:12.5px!important;}
+  body.sdc-v61-clean .receipt-item-pro{grid-template-columns:22px 48px minmax(0,1fr)!important;padding:7px 8px!important;}
+  body.sdc-v61-clean .receipt-item-thumb{width:48px!important;height:48px!important;}
+  body.sdc-v61-clean .receipt-item-pro strong{font-size:15px!important;}
+  .cart-row .cart-info{min-width:0!important;}
+}

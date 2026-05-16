@@ -1,0 +1,80 @@
+/* =========================================================
+   SDC V69 · Fuente Gamer
+   Scope: solo ajuste visual de fuente y peso tipográfico.
+   Mantiene el fix de scroll horizontal en Categorías.
+   No modifica lógica, datos, Caja, Gastos ni otros módulos.
+   ========================================================= */
+
+:root{
+  --font-gamer:"Chakra Petch","Barlow","Segoe UI",Roboto,Arial,sans-serif;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea{
+  font-family:var(--font-gamer)!important;
+}
+
+body.sdc-v61-clean{
+  font-family:var(--font-gamer)!important;
+  font-weight:500!important;
+  letter-spacing:.005em!important;
+}
+
+/* Evita letras demasiado negras/pesadas con Chakra Petch */
+body.sdc-v61-clean h1,
+body.sdc-v61-clean h2,
+body.sdc-v61-clean h3,
+body.sdc-v61-clean h4,
+body.sdc-v61-clean b,
+body.sdc-v61-clean strong{
+  font-family:var(--font-gamer)!important;
+  font-weight:700!important;
+}
+
+body.sdc-v61-clean p,
+body.sdc-v61-clean span,
+body.sdc-v61-clean small,
+body.sdc-v61-clean label,
+body.sdc-v61-clean input,
+body.sdc-v61-clean select,
+body.sdc-v61-clean textarea{
+  font-family:var(--font-gamer)!important;
+  font-weight:500!important;
+}
+
+body.sdc-v61-clean button,
+body.sdc-v61-clean .btn,
+body.sdc-v61-clean .tab-btn,
+body.sdc-v61-clean .nav-btn,
+body.sdc-v61-clean .action-btn,
+body.sdc-v61-clean .logout-btn,
+body.sdc-v61-clean .sync-status{
+  font-family:var(--font-gamer)!important;
+  font-weight:600!important;
+}
+
+/* Títulos principales: estilo gamer/tecnológico sin usar 900/950 */
+body.sdc-v61-clean .top-title h1,
+body.sdc-v61-clean .section-head h2,
+body.sdc-v61-clean .modal h2,
+body.sdc-v61-clean .modal h3,
+body.sdc-v61-clean .panel-title,
+body.sdc-v61-clean .card-title{
+  font-family:var(--font-gamer)!important;
+  font-weight:700!important;
+  letter-spacing:.02em!important;
+}
+
+/* Datos numéricos: alineación visual estable */
+body.sdc-v61-clean .price,
+body.sdc-v61-clean .total,
+body.sdc-v61-clean .amount,
+body.sdc-v61-clean .money,
+body.sdc-v61-clean [data-money],
+body.sdc-v61-clean b{
+  font-variant-numeric:tabular-nums!important;
+}

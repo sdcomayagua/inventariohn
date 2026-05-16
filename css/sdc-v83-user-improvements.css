@@ -502,7 +502,6 @@ body.sdc-v61-clean .skip-link{
   transition:transform .2s ease!important;
 }
 body.sdc-v61-clean .skip-link:focus-visible{transform:translateY(0)!important;}
-
 body.sdc-v61-clean :where(button,[role="button"],a,input,select,textarea):focus-visible{
   outline:3px solid #2563eb!important;
   outline-offset:2px!important;

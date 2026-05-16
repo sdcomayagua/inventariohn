@@ -1,0 +1,207 @@
+/* =========================================================
+   SDC V76 · Estilos visuales premium: Rojo / Azul / Gamer
+   - Selector más limpio, compacto y fácil de tocar.
+   - Nuevo tema Gamer con acento neón morado.
+   ========================================================= */
+
+body.sdc-theme-gamer{
+  --sdc-accent:#7c3aed;
+  --sdc-accent-2:#4c1d95;
+  --sdc-accent-soft:#f5f3ff;
+  --sdc-accent-ring:rgba(124,58,237,.22);
+  --sdc-navy:#06111f;
+  --sdc-navy-2:#111827;
+}
+
+body.sdc-v61-clean .sdc-v60-theme-panel{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:12px!important;
+  min-height:auto!important;
+  margin:0 0 12px!important;
+  padding:12px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f7f9fc 100%)!important;
+  border:1px solid var(--sdc-line)!important;
+  border-radius:24px!important;
+  box-shadow:0 14px 34px rgba(6,21,34,.075)!important;
+  overflow:hidden!important;
+}
+
+body.sdc-v61-clean .sdc-v60-theme-panel::before{
+  content:''!important;
+  position:absolute!important;
+  inset:0!important;
+  background:radial-gradient(circle at 10% 0%,var(--sdc-accent-ring),transparent 34%)!important;
+  opacity:.75!important;
+  pointer-events:none!important;
+}
+
+body.sdc-v61-clean .sdc-v60-theme-title{
+  position:relative!important;
+  z-index:1!important;
+  margin:0!important;
+  color:var(--sdc-muted)!important;
+  font-size:12px!important;
+  line-height:1.1!important;
+  letter-spacing:.16em!important;
+  text-transform:uppercase!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+}
+
+body.sdc-v61-clean .sdc-v60-theme-buttons{
+  position:relative!important;
+  z-index:1!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+  width:100%!important;
+}
+
+body.sdc-v61-clean .sdc-v60-theme-buttons button{
+  position:relative!important;
+  min-height:48px!important;
+  height:auto!important;
+  padding:8px 10px!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.78)!important;
+  color:var(--sdc-ink)!important;
+  border:1px solid var(--sdc-line)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px rgba(6,21,34,.045)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  font-size:15px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  overflow:hidden!important;
+}
+
+body.sdc-v61-clean .sdc-v60-theme-buttons button::after{
+  content:''!important;
+  position:absolute!important;
+  inset:auto 10px 7px 10px!important;
+  height:3px!important;
+  border-radius:999px!important;
+  background:transparent!important;
+  opacity:.9!important;
+}
+
+body.sdc-v61-clean .sdc-v60-theme-buttons .theme-dot{
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+  border-radius:999px!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:12px!important;
+  line-height:1!important;
+  background:#eef2f7!important;
+  color:#64748b!important;
+  border:1px solid #d7e0ea!important;
+}
+
+body.sdc-v61-clean .sdc-v60-theme-buttons [data-v60-theme="red"] .theme-dot{
+  background:#fff1f3!important;
+  color:#be123c!important;
+  border-color:#fecdd3!important;
+}
+body.sdc-v61-clean .sdc-v60-theme-buttons [data-v60-theme="blue"] .theme-dot{
+  background:#eff6ff!important;
+  color:#1d4ed8!important;
+  border-color:#bfdbfe!important;
+}
+body.sdc-v61-clean .sdc-v60-theme-buttons [data-v60-theme="gamer"] .theme-dot{
+  background:#f5f3ff!important;
+  color:#7c3aed!important;
+  border-color:#ddd6fe!important;
+}
+
+body.sdc-v61-clean.sdc-theme-red .sdc-v60-theme-buttons [data-v60-theme="red"],
+body.sdc-v61-clean.sdc-theme-blue .sdc-v60-theme-buttons [data-v60-theme="blue"],
+body.sdc-v61-clean.sdc-theme-gamer .sdc-v60-theme-buttons [data-v60-theme="gamer"]{
+  background:linear-gradient(135deg,var(--sdc-accent) 0%,var(--sdc-accent-2) 100%)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 12px 22px var(--sdc-accent-ring)!important;
+  transform:translateY(-1px)!important;
+}
+
+body.sdc-v61-clean.sdc-theme-red .sdc-v60-theme-buttons [data-v60-theme="red"]::after,
+body.sdc-v61-clean.sdc-theme-blue .sdc-v60-theme-buttons [data-v60-theme="blue"]::after,
+body.sdc-v61-clean.sdc-theme-gamer .sdc-v60-theme-buttons [data-v60-theme="gamer"]::after{
+  background:rgba(255,255,255,.78)!important;
+}
+
+body.sdc-v61-clean.sdc-theme-red .sdc-v60-theme-buttons [data-v60-theme="red"] .theme-dot,
+body.sdc-v61-clean.sdc-theme-blue .sdc-v60-theme-buttons [data-v60-theme="blue"] .theme-dot,
+body.sdc-v61-clean.sdc-theme-gamer .sdc-v60-theme-buttons [data-v60-theme="gamer"] .theme-dot{
+  background:rgba(255,255,255,.18)!important;
+  color:#fff!important;
+  border-color:rgba(255,255,255,.30)!important;
+}
+
+body.sdc-v61-clean .sdc-v60-theme-buttons button:active{
+  transform:scale(.985)!important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .topbar,
+body.sdc-v61-clean.sdc-theme-gamer .inventory-titlebar-v74{
+  background:linear-gradient(135deg,#06111f 0%,#111827 52%,#2e1065 100%)!important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .inventory-titlebar-v74,
+body.sdc-v61-clean.sdc-theme-gamer .topbar{
+  border-bottom-color:#7c3aed!important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .count-pill,
+body.sdc-v61-clean.sdc-theme-gamer .stock-badge:not(.out){
+  box-shadow:0 10px 22px rgba(124,58,237,.18)!important;
+}
+
+@media(max-width:520px){
+  body.sdc-v61-clean .sdc-v60-theme-panel{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  body.sdc-v61-clean .sdc-v60-theme-title{
+    margin-left:2px!important;
+  }
+  body.sdc-v61-clean .sdc-v60-theme-buttons button{
+    min-height:45px!important;
+    padding:7px 8px!important;
+    font-size:14px!important;
+    gap:6px!important;
+  }
+  body.sdc-v61-clean .sdc-v60-theme-buttons .theme-dot{
+    width:20px!important;
+    height:20px!important;
+    min-width:20px!important;
+    font-size:11px!important;
+  }
+}
+
+@media(min-width:900px){
+  body.sdc-v61-clean .sdc-v60-theme-panel{
+    grid-template-columns:auto minmax(360px,520px) minmax(0,1fr)!important;
+    padding:14px 16px!important;
+    border-radius:26px!important;
+  }
+  body.sdc-v61-clean .sdc-v60-theme-buttons{
+    grid-template-columns:repeat(3,150px)!important;
+    justify-content:start!important;
+  }
+  body.sdc-v61-clean .sdc-v60-theme-buttons button{
+    min-height:46px!important;
+  }
+}
+
+@media(min-width:1260px){
+  body.sdc-v61-clean .sdc-v60-theme-panel{
+    grid-template-columns:auto minmax(420px,540px) minmax(0,1fr)!important;
+  }
+}

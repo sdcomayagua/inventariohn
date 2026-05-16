@@ -1,0 +1,90 @@
+/* ═══════════════════════════════════════════════════════
+   SDC V80 · Fix imagen estirada + polish general
+   ════════════════════════════════════════════════════════ */
+
+/* ── Imagen de producto: nunca estirar ──────────────────── */
+/* Vista detalle */
+.v49-detail-image img,
+.v49-detail-image > img {
+  object-fit: contain !important;
+  object-position: center center !important;
+  background: var(--sdc-soft, #f2f4f8) !important;
+}
+
+/* Cards de inventario */
+.product-thumb img,
+.product-card img,
+.catalog-card img,
+.inv-card img,
+.product-img img,
+[data-product-image] img {
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+
+/* Vista cotización / whatsapp preview */
+.doc-product-img img,
+.quote-product-img img,
+.cotizacion-img img,
+.receipt-img img {
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+
+/* Galería / imagen subida en el editor */
+.image-row img,
+.gallery-preview img,
+.image-preview img {
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+
+/* Fondo gris suave en el contenedor para que contain se vea bien */
+.v49-detail-image {
+  background: var(--sdc-soft, #f2f4f8) !important;
+}
+
+/* ── Botón SHEETS en el editor de producto ─────────────── */
+/* Que se vea limpio y diferente del Guardar */
+.sdc-v70-modal-sheet-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-top: 8px !important;
+  padding-top: 10px !important;
+  border-top: 1px solid var(--sdc-line, #e0e4ea) !important;
+  flex-wrap: wrap !important;
+}
+
+.sdc-v70-sheets-btn {
+  min-width: 120px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  padding: 8px 16px !important;
+}
+
+.sdc-v70-mini-note {
+  font-size: 11px !important;
+  color: var(--sdc-muted, #6b7a90) !important;
+  flex: 1 !important;
+  min-width: 120px !important;
+}
+
+/* ── Modal de producto: separar bien los botones de acción ─ */
+.product-form-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  padding: 16px !important;
+}
+
+/* ── Polish del producto card en inventario ─────────────── */
+/* Hace que la imagen no rompa el layout cuando es base64 muy grande */
+.product-thumb,
+.product-card .thumb,
+.inv-card .thumb {
+  overflow: hidden !important;
+  background: var(--sdc-soft, #f2f4f8) !important;
+  flex-shrink: 0 !important;
+}

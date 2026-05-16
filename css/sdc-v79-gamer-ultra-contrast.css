@@ -1,0 +1,446 @@
+/* =========================================================
+   SDC V79 · GAMER ULTRA CONTRAST
+   - Quita el rosado/fucsia del modo Gamer.
+   - Mejora legibilidad completa en cotización, editor, recibos y documentos.
+   - Mantiene el estilo gamer pero con cyan, verde neón y amarillo.
+   ========================================================= */
+
+body.sdc-theme-gamer{
+  --sdc-accent:#00e5ff!important;
+  --sdc-accent-2:#39ff88!important;
+  --sdc-accent-soft:rgba(0,229,255,.13)!important;
+  --sdc-accent-ring:rgba(0,229,255,.38)!important;
+  --gamer-red:#00e5ff!important;
+  --gamer-cyan:#00e5ff!important;
+  --gamer-green:#39ff88!important;
+  --gamer-gold:#ffd166!important;
+  --gamer-red-line:rgba(0,229,255,.36)!important;
+}
+
+/* 1) Base gamer sin rosado */
+body.sdc-v61-clean.sdc-theme-gamer,
+html:has(body.sdc-theme-gamer){
+  background:
+    radial-gradient(circle at 12% -8%,rgba(0,229,255,.22),transparent 30%),
+    radial-gradient(circle at 90% 0%,rgba(57,255,136,.12),transparent 30%),
+    linear-gradient(135deg,#020617 0%,#030712 45%,#06111f 100%)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer #app.app::before{
+  background-image:
+    linear-gradient(rgba(0,229,255,.13) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(57,255,136,.08) 1px,transparent 1px)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .topbar,
+body.sdc-v61-clean.sdc-theme-gamer .inventory-titlebar-v74,
+body.sdc-v61-clean.sdc-theme-gamer .modal-head,
+body.sdc-v61-clean.sdc-theme-gamer .quote-head{
+  border-bottom-color:#00e5ff!important;
+  box-shadow:0 20px 44px rgba(0,0,0,.42),0 0 38px rgba(0,229,255,.16)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .top-title h1,
+body.sdc-v61-clean.sdc-theme-gamer .inventory-titlebar-v74 h2,
+body.sdc-v61-clean.sdc-theme-gamer .modal-head h3,
+body.sdc-v61-clean.sdc-theme-gamer .quote-head h3{
+  color:#f8feff!important;
+  text-shadow:0 0 14px rgba(0,229,255,.50),0 0 24px rgba(57,255,136,.14)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .topbar::after{color:rgba(57,255,136,.62)!important;}
+body.sdc-v61-clean.sdc-theme-gamer .topbar::before,
+body.sdc-v61-clean.sdc-theme-gamer .inventory-titlebar-v74::before{
+  background:
+    linear-gradient(90deg,transparent,rgba(0,229,255,.12),transparent),
+    radial-gradient(circle at 88% 0%,rgba(57,255,136,.12),transparent 32%),
+    repeating-linear-gradient(115deg,transparent 0 16px,rgba(255,255,255,.045) 16px 17px)!important;
+}
+
+/* 2) Botones y acentos principales: cyan/verde, no rosado */
+body.sdc-v61-clean.sdc-theme-gamer .btn:not(.secondary):not(.ghost):not(.small),
+body.sdc-v61-clean.sdc-theme-gamer .v51-hero-actions button,
+body.sdc-v61-clean.sdc-theme-gamer .inventory-new-btn-v74,
+body.sdc-v61-clean.sdc-theme-gamer .category-list-btn,
+body.sdc-v61-clean.sdc-theme-gamer .save-doc,
+body.sdc-v61-clean.sdc-theme-gamer .main-wide,
+body.sdc-v61-clean.sdc-theme-gamer .to-sale{
+  background:linear-gradient(135deg,#00e5ff 0%,#39ff88 100%)!important;
+  color:#020617!important;
+  border:1px solid rgba(0,229,255,.58)!important;
+  box-shadow:0 0 0 1px rgba(57,255,136,.18),0 14px 30px rgba(0,229,255,.18)!important;
+  text-shadow:none!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .btn.secondary,
+body.sdc-v61-clean.sdc-theme-gamer .quick-btn,
+body.sdc-v61-clean.sdc-theme-gamer .alert-card-v72,
+body.sdc-v61-clean.sdc-theme-gamer .stat,
+body.sdc-v61-clean.sdc-theme-gamer .sheets-head-btn,
+body.sdc-v61-clean.sdc-theme-gamer .count-pill{
+  background:linear-gradient(180deg,rgba(15,32,54,.96),rgba(7,17,31,.96))!important;
+  color:#eaf7ff!important;
+  border:1px solid rgba(0,229,255,.28)!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.24),0 0 20px rgba(0,229,255,.08)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .count-pill,
+body.sdc-v61-clean.sdc-theme-gamer .stat:last-child{
+  background:linear-gradient(135deg,rgba(0,229,255,.16),rgba(7,17,31,.96))!important;
+  border-color:rgba(57,255,136,.38)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .stat:last-child b,
+body.sdc-v61-clean.sdc-theme-gamer .v49-price,
+body.sdc-v61-clean.sdc-theme-gamer .v49-detail-main b,
+body.sdc-v61-clean.sdc-theme-gamer .product-card .v49-price{
+  color:#00e5ff!important;
+  text-shadow:0 0 12px rgba(0,229,255,.35)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .category-card.active,
+body.sdc-v61-clean.sdc-theme-gamer .view-mode-buttons button.active,
+body.sdc-v61-clean.sdc-theme-gamer .nav-btn.active,
+body.sdc-v61-clean.sdc-theme-gamer .chip.active,
+body.sdc-v61-clean.sdc-theme-gamer .cat-mini.active{
+  background:linear-gradient(135deg,#00e5ff 0%,#39ff88 100%)!important;
+  color:#020617!important;
+  border-color:rgba(57,255,136,.52)!important;
+  box-shadow:0 0 20px rgba(0,229,255,.18)!important;
+  text-shadow:none!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .category-head > span,
+body.sdc-v61-clean.sdc-theme-gamer .found-pill,
+body.sdc-v61-clean.sdc-theme-gamer #pickerCounter,
+body.sdc-v61-clean.sdc-theme-gamer .selected-count-pill,
+body.sdc-v61-clean.sdc-theme-gamer .quote-status{
+  background:rgba(0,229,255,.12)!important;
+  color:#9ff7ff!important;
+  border-color:rgba(0,229,255,.34)!important;
+}
+
+/* 3) Productos gamer más limpios y sin barra rosada */
+body.sdc-v61-clean.sdc-theme-gamer .product-card,
+body.sdc-v61-clean.sdc-theme-gamer .product-card-v49,
+body.sdc-v61-clean.sdc-theme-gamer .product-card.compact,
+body.sdc-v61-clean.sdc-theme-gamer .product-card.wide{
+  background:linear-gradient(135deg,rgba(7,17,31,.98),rgba(11,22,39,.96))!important;
+  border:1px solid rgba(0,229,255,.30)!important;
+  box-shadow:0 12px 24px rgba(0,0,0,.30), inset 4px 0 0 rgba(0,229,255,.86)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .product-card:hover{
+  border-color:rgba(57,255,136,.64)!important;
+  box-shadow:0 16px 32px rgba(0,0,0,.38),0 0 26px rgba(0,229,255,.18), inset 4px 0 0 rgba(57,255,136,.90)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .v51-product-meta span,
+body.sdc-v61-clean.sdc-theme-gamer .code-pill,
+body.sdc-v61-clean.sdc-theme-gamer .tag-pill{
+  background:rgba(0,229,255,.10)!important;
+  color:#c9f7ff!important;
+  border-color:rgba(0,229,255,.26)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .v74-stock-line{color:#39ff88!important;}
+body.sdc-v61-clean.sdc-theme-gamer .v74-card-chevron{color:#39ff88!important;}
+
+/* 4) Cotización previa: todo legible en modo gamer */
+body.sdc-v61-clean.sdc-theme-gamer .quote-body,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .card-box,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .calc-card,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .current-card,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .picker-card,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .gift-card-box{
+  background:linear-gradient(180deg,rgba(7,17,31,.98),rgba(11,22,39,.96))!important;
+  color:#eaf7ff!important;
+  border-color:rgba(0,229,255,.28)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .quote-body h4,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .picker-head-compact b,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .current-card-head h4,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .gift-head h4,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .label{
+  color:#f8feff!important;
+  text-shadow:none!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .quote-jumpbar{
+  border-bottom:1px solid rgba(0,229,255,.20)!important;
+  padding-bottom:10px!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .quote-jumpbar button{
+  background:linear-gradient(180deg,#0f2036,#07111f)!important;
+  color:#eaf7ff!important;
+  border:1px solid rgba(0,229,255,.36)!important;
+  box-shadow:0 10px 22px rgba(0,0,0,.20)!important;
+  text-shadow:none!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .quote-jumpbar button:hover{
+  background:linear-gradient(135deg,rgba(0,229,255,.18),rgba(57,255,136,.10))!important;
+  color:#fff!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .chip,
+body.sdc-v61-clean.sdc-theme-gamer .quote-category-strip .chip,
+body.sdc-v61-clean.sdc-theme-gamer .qty-presets .chip{
+  background:linear-gradient(180deg,#0f2036,#07111f)!important;
+  color:#eaf7ff!important;
+  border:1px solid rgba(0,229,255,.30)!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .searchbar,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .input,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body .select,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body input,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body select,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body textarea{
+  background:#020617!important;
+  color:#eaf7ff!important;
+  -webkit-text-fill-color:#eaf7ff!important;
+  border-color:rgba(0,229,255,.34)!important;
+  text-shadow:none!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .quote-body input::placeholder,
+body.sdc-v61-clean.sdc-theme-gamer .quote-body textarea::placeholder{
+  color:#8da6bc!important;
+  -webkit-text-fill-color:#8da6bc!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .cart-row.cart-row-v24,
+body.sdc-v61-clean.sdc-theme-gamer .gift-row,
+body.sdc-v61-clean.sdc-theme-gamer .picker-item,
+body.sdc-v61-clean.sdc-theme-gamer .gift-picker-item{
+  background:linear-gradient(180deg,#0f2036,#07111f)!important;
+  color:#eaf7ff!important;
+  border:1px solid rgba(0,229,255,.28)!important;
+  box-shadow:0 12px 24px rgba(0,0,0,.18)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .cart-row.cart-row-v24 .cart-info b,
+body.sdc-v61-clean.sdc-theme-gamer .picker-item b,
+body.sdc-v61-clean.sdc-theme-gamer .gift-picker-item b{
+  color:#f8feff!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .cart-row.cart-row-v24 .cart-info span,
+body.sdc-v61-clean.sdc-theme-gamer .picker-item span,
+body.sdc-v61-clean.sdc-theme-gamer .gift-picker-item span{
+  color:#b9d6ea!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .cart-row.cart-row-v24 .qtybox button{
+  background:linear-gradient(135deg,#00e5ff,#39ff88)!important;
+  color:#020617!important;
+  border-color:rgba(57,255,136,.56)!important;
+  box-shadow:0 0 18px rgba(0,229,255,.18)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .cart-row.cart-row-v24 .qtybox input{
+  background:#020617!important;
+  color:#f8feff!important;
+  -webkit-text-fill-color:#f8feff!important;
+  border-color:rgba(0,229,255,.38)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .cart-row.cart-row-v24 .remove-item,
+body.sdc-v61-clean.sdc-theme-gamer .btn.danger,
+body.sdc-v61-clean.sdc-theme-gamer .danger,
+body.sdc-v61-clean.sdc-theme-gamer #deleteProduct{
+  background:linear-gradient(135deg,#f59e0b,#f97316)!important;
+  color:#020617!important;
+  border-color:rgba(245,158,11,.62)!important;
+  box-shadow:0 12px 26px rgba(245,158,11,.18)!important;
+  text-shadow:none!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .promo-applied,
+body.sdc-v61-clean.sdc-theme-gamer .promo-applied-v26,
+body.sdc-v61-clean.sdc-theme-gamer .offer-applied,
+body.sdc-v61-clean.sdc-theme-gamer [data-v49-offer]{
+  background:rgba(0,229,255,.10)!important;
+  color:#9ff7ff!important;
+  border:1px solid rgba(0,229,255,.34)!important;
+  text-shadow:none!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer #totalsMini,
+body.sdc-v61-clean.sdc-theme-gamer .totals-mini,
+body.sdc-v61-clean.sdc-theme-gamer .summary-box,
+body.sdc-v61-clean.sdc-theme-gamer .total-box{
+  background:#020617!important;
+  color:#eaf7ff!important;
+  border:1px solid rgba(0,229,255,.34)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer #totalsMini .summary-row,
+body.sdc-v61-clean.sdc-theme-gamer #totalsMini .summary-total{
+  color:#eaf7ff!important;
+  border-bottom-color:rgba(0,229,255,.18)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer #totalsMini .summary-row b,
+body.sdc-v61-clean.sdc-theme-gamer #totalsMini .summary-total b{
+  color:#eaf7ff!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer #totalsMini .summary-total,
+body.sdc-v61-clean.sdc-theme-gamer #totalsMini .grand,
+body.sdc-v61-clean.sdc-theme-gamer .totals-mini .grand{
+  background:linear-gradient(135deg,#00e5ff,#39ff88)!important;
+  color:#020617!important;
+  border-bottom:0!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer #totalsMini .summary-total b,
+body.sdc-v61-clean.sdc-theme-gamer #totalsMini .grand b,
+body.sdc-v61-clean.sdc-theme-gamer .totals-mini .grand b{
+  color:#020617!important;
+}
+
+/* 5) Vista previa / imagen descargada de cotización: siempre clara, con texto oscuro */
+body.sdc-v61-clean.sdc-theme-gamer .preview-card{
+  background:linear-gradient(180deg,#07111f,#020617)!important;
+  border:1px solid rgba(0,229,255,.30)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .doc-wrap.compact-doc,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-pro-v4,
+body.sdc-v61-clean.sdc-theme-gamer #printableDoc,
+body.sdc-v61-clean.sdc-theme-gamer .short-receipt{
+  background:#ffffff!important;
+  color:#06111f!important;
+  border:1px solid #bdefff!important;
+  box-shadow:none!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .doc-wrap.compact-doc *,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-pro-v4 *,
+body.sdc-v61-clean.sdc-theme-gamer #printableDoc *,
+body.sdc-v61-clean.sdc-theme-gamer .short-receipt *{
+  text-shadow:none!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-inner-pro,
+body.sdc-v61-clean.sdc-theme-gamer .short-receipt,
+body.sdc-v61-clean.sdc-theme-gamer .short-receipt-screen,
+body.sdc-v61-clean.sdc-theme-gamer .short-receipt-screen-v72{
+  background:#ffffff!important;
+  color:#06111f!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-band-pro,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-title-pro,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-summary-pro .grand,
+body.sdc-v61-clean.sdc-theme-gamer .short-line.grand{
+  background:#020617!important;
+  color:#ffffff!important;
+  border-color:#020617!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-band-pro{
+  border-bottom:4px solid #00e5ff!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-band-pro span,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-band-pro b,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-title-pro span,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-title-pro b,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-summary-pro .grand span,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-summary-pro .grand b,
+body.sdc-v61-clean.sdc-theme-gamer .short-line.grand span,
+body.sdc-v61-clean.sdc-theme-gamer .short-line.grand b{
+  color:#ffffff!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-band-pro b{
+  background:#e0fbff!important;
+  color:#0369a1!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-total-pro,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-client-pro article,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-process-pro,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-footer-pro,
+body.sdc-v61-clean.sdc-theme-gamer .short-receipt>small{
+  background:#f1f7fb!important;
+  border:1px solid #bdefff!important;
+  color:#06111f!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-products-pro,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-summary-pro,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-item-pro{
+  background:#ffffff!important;
+  border-color:#bdefff!important;
+  color:#06111f!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-brand-pro small,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-total-pro span,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-client-pro article span,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-process-pro span,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-summary-pro span,
+body.sdc-v61-clean.sdc-theme-gamer .short-date-time{
+  color:#64748b!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-brand-pro h2,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-brand-pro p,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-client-pro article b,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-process-pro b,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-process-pro p,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-item-info b,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-summary-pro b,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-note-text,
+body.sdc-v61-clean.sdc-theme-gamer .short-brand h2,
+body.sdc-v61-clean.sdc-theme-gamer .short-client-name,
+body.sdc-v61-clean.sdc-theme-gamer .short-line span{
+  color:#06111f!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-brand-pro em,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-total-pro b,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-item-pro strong,
+body.sdc-v61-clean.sdc-theme-gamer .short-line b,
+body.sdc-v61-clean.sdc-theme-gamer .short-receipt>small,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-whatsapp-pill{
+  color:#0284c7!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-item-info span,
+body.sdc-v61-clean.sdc-theme-gamer .short-line.item span em{
+  color:#475569!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-item-index{
+  background:#e0fbff!important;
+  color:#0369a1!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-logo-box,
+body.sdc-v61-clean.sdc-theme-gamer .short-logo-box,
+body.sdc-v61-clean.sdc-theme-gamer .receipt-logo-inline,
+body.sdc-v61-clean.sdc-theme-gamer .doc-logo{
+  background:#ffffff!important;
+  border-color:#bdefff!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .receipt-whatsapp-pill{
+  background:#ffffff!important;
+  border-color:#bdefff!important;
+}
+
+/* 6) Editor de producto: contraste alto y ayuda sin rosado */
+body.sdc-v61-clean.sdc-theme-gamer .product-editor,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .card-box,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .span2:not(label),
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .promo-editor-box,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .image-row-upload,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .promo-row{
+  background:linear-gradient(180deg,rgba(7,17,31,.98),rgba(11,22,39,.96))!important;
+  color:#eaf7ff!important;
+  border-color:rgba(0,229,255,.32)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .promo-help{
+  background:rgba(0,229,255,.10)!important;
+  color:#dffbff!important;
+  border:1px dashed rgba(0,229,255,.42)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .promo-help b{color:#ffffff!important;}
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .label,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .row-index,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .promo-row-title strong,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .promo-field small,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .hint,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor small{
+  color:#c9f7ff!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .chip{
+  background:linear-gradient(180deg,#0f2036,#07111f)!important;
+  color:#eaf7ff!important;
+  border-color:rgba(0,229,255,.30)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .input,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .select,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor .textarea,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor input,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor textarea{
+  background:#f8fcff!important;
+  color:#06111f!important;
+  -webkit-text-fill-color:#06111f!important;
+  border-color:rgba(0,229,255,.54)!important;
+}
+body.sdc-v61-clean.sdc-theme-gamer .product-editor input::placeholder,
+body.sdc-v61-clean.sdc-theme-gamer .product-editor textarea::placeholder{
+  color:#66788a!important;
+  -webkit-text-fill-color:#66788a!important;
+}
+
+/* 7) Capturas/exportaciones ocultas: documento limpio aunque estén fuera del modal */
+body.sdc-v61-clean.sdc-theme-gamer .shortReceiptExportHost .short-receipt,
+body.sdc-v61-clean.sdc-theme-gamer .docExportHost .doc-wrap,
+body.sdc-v61-clean.sdc-theme-gamer .productPhotoExportHost .productPhotoClean,
+body.sdc-v61-clean.sdc-theme-gamer .productPhotoExportHost [data-export="product-photo-clean"]{
+  color:#06111f!important;
+}

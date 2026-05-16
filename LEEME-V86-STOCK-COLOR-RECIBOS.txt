@@ -1,0 +1,34 @@
+SD COMAYAGUA POS V86 - CAMBIOS PRINCIPALES
+
+1) Stock por color
+- En Nuevo Producto y Editar Producto aparece la sección "Colores y cantidades".
+- Ejemplo: Gris 7, Amarillo 3, Anaranjado 10.
+- Si se agregan colores, el stock general se calcula automáticamente.
+- Se guarda localmente y también se envía a Google Sheets como colors/colores.
+- Si Google Sheets todavía no tiene columna de colores, la app conserva los colores locales al sincronizar.
+
+2) Venta y cotización con color
+- Al agregar un producto con colores, la lista permite elegir el color en el carrito.
+- Venta rápida también muestra selector de color.
+- Los regalos incluidos también pueden llevar color.
+- Al finalizar venta, descuenta del color correcto.
+- Si no hay suficiente stock del color elegido, muestra alerta con disponibilidad.
+
+3) Recibos y cotizaciones
+- La imagen de recibo para venta ahora se genera vertical desde la vista previa, no horizontal.
+- En el recibo, Teléfono queda junto a Ubicación y Pago junto a Entrega.
+- Las líneas de producto muestran color cuando aplica.
+- Recibo corto queda más vertical y compacto.
+
+4) Interfaz móvil
+- Arreglado conflicto de temas Negro/Azul/Rojo: ahora usan la misma llave y no se pisan entre scripts.
+- El selector de estilo visual se rediseñó para móvil.
+- Se agregó CSS para centrar mejor textos de categorías.
+
+5) CSV / Excel
+- Exportar productos ahora incluye columna colores.
+- Plantilla CSV incluye ejemplo de colores.
+- Importar productos acepta columnas: colores, colors, colorStock, stockColores, variantesColor.
+
+IMPORTANTE
+- Para que Google Sheets guarde colores como columna visible, la hoja debe tener una columna llamada "colores" o el Apps Script debe guardar campos extra del producto. Si no existe, la app igual trabaja localmente con colores y no borra esos datos en la sincronización.

@@ -478,3 +478,25 @@ body.sdc-v61-clean .topbar-v87 .logout-icon-btn{
   body.sdc-v61-clean .topbar-v87{min-height:74px!important;padding:9px 9px!important;}
   body.sdc-v61-clean .top-badge-v88{padding:3px 7px!important;font-size:9px!important;}
 }
+
+/* V88.1 · detalle profesional de estado en encabezado */
+body.sdc-v61-clean .top-meta-v88{
+  display:block!important;
+  color:rgba(191,219,254,.92)!important;
+  font-size:10px!important;
+  line-height:1.1!important;
+  font-weight:850!important;
+  letter-spacing:.04em!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+body.sdc-v61-clean .topbar-v87 .sync-label{
+  font-size:10px!important;
+  color:#0f172a!important;
+  font-weight:900!important;
+}
+@media (max-width:420px){
+  body.sdc-v61-clean .top-meta-v88{display:none!important;}
+}
+

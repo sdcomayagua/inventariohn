@@ -423,3 +423,79 @@ body.sdc-v61-clean .sheets-doctor-actions-v87 .btn{
   body.sdc-v61-clean .home-actions-grid-v87 button span{font-size:16px!important;}
   body.sdc-v61-clean .home-actions-grid-v87 button small{font-size:10.5px!important;}
 }
+
+/* V88 · Encabezado más profesional */
+body.sdc-v61-clean .topbar-v87{
+  grid-template-columns:56px minmax(0,1fr) 52px 52px!important;
+  min-height:78px!important;
+  padding:10px 11px!important;
+  gap:10px!important;
+  border-radius:24px!important;
+  border:1px solid rgba(148,163,184,.24)!important;
+  background:
+    radial-gradient(130% 120% at 0% 0%,rgba(37,99,235,.16) 0%,transparent 42%),
+    linear-gradient(135deg,#071728 0%,#0c253b 55%,#07111f 100%)!important;
+  box-shadow:0 16px 34px rgba(2,8,23,.30)!important;
+}
+body.sdc-v61-clean .topbar-v87 .top-logo{
+  border:1px solid rgba(255,255,255,.26)!important;
+  background:rgba(255,255,255,.10)!important;
+}
+body.sdc-v61-clean .top-title-v87{gap:5px!important;}
+body.sdc-v61-clean .top-title-row-v88{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-width:0!important;
+}
+body.sdc-v61-clean .top-title-v87 h1{
+  font-size:clamp(17px,4.9vw,24px)!important;
+  letter-spacing:.02em!important;
+  line-height:1!important;
+}
+body.sdc-v61-clean .top-badge-v88{
+  flex:0 0 auto!important;
+  padding:4px 9px!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.14)!important;
+  border:1px solid rgba(255,255,255,.28)!important;
+  color:#dbeafe!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+body.sdc-v61-clean .top-title-v87 small{
+  color:rgba(226,232,240,.86)!important;
+  font-size:10.5px!important;
+  letter-spacing:.09em!important;
+}
+body.sdc-v61-clean .topbar-v87 .sync-status,
+body.sdc-v61-clean .topbar-v87 .logout-icon-btn{
+  border-color:rgba(148,163,184,.55)!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f1f5f9 100%)!important;
+}
+@media (max-width:420px){
+  body.sdc-v61-clean .topbar-v87{min-height:74px!important;padding:9px 9px!important;}
+  body.sdc-v61-clean .top-badge-v88{padding:3px 7px!important;font-size:9px!important;}
+}
+
+/* V88.1 · detalle profesional de estado en encabezado */
+body.sdc-v61-clean .top-meta-v88{
+  display:block!important;
+  color:rgba(191,219,254,.92)!important;
+  font-size:10px!important;
+  line-height:1.1!important;
+  font-weight:850!important;
+  letter-spacing:.04em!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+body.sdc-v61-clean .topbar-v87 .sync-label{
+  font-size:10px!important;
+  color:#0f172a!important;
+  font-weight:900!important;
+}
+@media (max-width:420px){
+  body.sdc-v61-clean .top-meta-v88{display:none!important;}
+}

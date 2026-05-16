@@ -485,3 +485,13 @@ body.sdc-v61-clean .low-profit-row-v84 span{
   body.sdc-v61-clean .bottom-nav-v84 .nav-btn span{font-size:9.5px!important;}
   body.sdc-v61-clean .nav-alert-badge-v84{top:4px!important;right:5px!important;min-width:18px!important;height:18px!important;font-size:9px!important;}
 }
+
+/* Accesibilidad base */
+body.sdc-v61-clean :where(button,[role="button"],a,input,select,textarea):focus-visible{
+  outline:3px solid #2563eb!important;
+  outline-offset:2px!important;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
+}

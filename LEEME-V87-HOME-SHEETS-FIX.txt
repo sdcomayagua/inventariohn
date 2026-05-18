@@ -1,0 +1,42 @@
+SD COMAYAGUA POS · V87 HOME + GOOGLE SHEETS VERIFICADO
+
+CAMBIOS EN ESTA VERSIÓN
+
+1) Pantalla de inicio mejorada
+- La barra superior se ve más limpia y menos apretada.
+- El selector Negro / Azul / Rojo ahora queda como tarjeta compacta de Apariencia.
+- Los botones Vender / Cotizar / Producto ahora son una tarjeta de acciones principales más profesional.
+- Las estadísticas quedan más ordenadas y legibles en móvil.
+- El editor de producto tiene botones finales más claros.
+
+2) Google Sheets corregido con verificación real
+- Antes podía pasar esto: Apps Script respondía OK, pero el producto no aparecía en la hoja.
+- Ahora, después de guardar, la app verifica leyendo el producto por código en la pestaña productos_pos.
+- Si no aparece, ya no te engaña con un falso éxito: muestra error y pide actualizar Apps Script.
+
+3) Nuevo botón para subir inventario local a Sheets
+- Panel rápido → Subir A Sheets.
+- Diagnóstico Google Sheets → Subir inventario local.
+- Esto sirve cuando el celular tiene productos guardados, pero Google Sheets está vacío.
+
+PASO OBLIGATORIO PARA QUE SHEETS GUARDE DE VERDAD
+
+1) Abre tu Google Sheets.
+2) Extensiones → Apps Script.
+3) Borra el código viejo o reemplázalo completo.
+4) Pega TODO el archivo:
+   google-apps-script-sdc-v87.gs
+5) Guarda.
+6) Implementar → Administrar implementaciones.
+7) Toca el lápiz de editar.
+8) Selecciona NUEVA VERSIÓN.
+9) Ejecutar como: Tú.
+10) Acceso: Cualquier persona con el enlace.
+11) Implementar.
+12) Copia la URL /exec nueva si cambia y pégala en js/data.js e index.html/index_mobile.html.
+
+IMPORTANTE
+- Si solo subes el ZIP a GitHub/hosting pero NO actualizas Apps Script, el botón puede seguir sin llenar Google Sheets.
+- La pestaña usada por la app es productos_pos.
+- Si la pestaña no existe, el Apps Script V87 la crea automáticamente.
+- Si faltan columnas como colores, imagen, galeria, descripcion, etc., el Apps Script las agrega automáticamente.

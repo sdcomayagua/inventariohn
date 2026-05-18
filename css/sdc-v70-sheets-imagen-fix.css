@@ -1,0 +1,236 @@
+/* =========================================================
+   SDC V70 · Sheets + Fix de imagen estirada
+   - Botón Sheets en edición / tarjetas de producto (ADMIN)
+   - Imágenes de producto sin deformarse
+   - Estilo visual consistente con el panel SDC
+   ========================================================= */
+
+:root{
+  --sdc-v70-sheets-blue:#2167d8;
+  --sdc-v70-sheets-blue-dark:#154da8;
+  --sdc-v70-sheets-green:#18a058;
+  --sdc-v70-sheets-line:rgba(13,34,58,.12);
+}
+
+/* Botones Sheets agregados por el fix */
+.sdc-v70-sheets-btn{
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  border:0!important;
+  border-radius:14px!important;
+  background:linear-gradient(135deg,var(--sdc-v70-sheets-blue),var(--sdc-v70-sheets-blue-dark))!important;
+  color:#fff!important;
+  font-family:var(--font-gamer,"Chakra Petch","Barlow","Segoe UI",Roboto,Arial,sans-serif)!important;
+  font-weight:700!important;
+  letter-spacing:.035em!important;
+  text-transform:uppercase!important;
+  padding:11px 14px!important;
+  min-height:42px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  cursor:pointer!important;
+  box-shadow:0 10px 24px rgba(33,103,216,.25)!important;
+  transition:transform .14s ease,box-shadow .14s ease,filter .14s ease!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+}
+
+.sdc-v70-sheets-btn:hover{
+  filter:brightness(1.04)!important;
+  transform:translateY(-1px)!important;
+  box-shadow:0 14px 30px rgba(33,103,216,.32)!important;
+}
+
+.sdc-v70-sheets-btn:active{
+  transform:translateY(0) scale(.98)!important;
+}
+
+.sdc-v70-sheets-btn.is-loading{
+  opacity:.72!important;
+  pointer-events:none!important;
+}
+
+.sdc-v70-sheets-btn.is-ok{
+  background:linear-gradient(135deg,var(--sdc-v70-sheets-green),#0f7d42)!important;
+}
+
+.sdc-v70-sheets-btn.is-error{
+  background:linear-gradient(135deg,#d12d2d,#8f1717)!important;
+}
+
+.sdc-v70-sheets-card-slot{
+  margin-top:10px!important;
+  display:flex!important;
+  width:100%!important;
+}
+
+.sdc-v70-sheets-card-slot .sdc-v70-sheets-btn{
+  width:100%!important;
+  min-height:40px!important;
+  border-radius:12px!important;
+  font-size:12px!important;
+}
+
+.sdc-v70-modal-sheet-row{
+  display:flex!important;
+  gap:10px!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  margin-top:12px!important;
+  padding-top:12px!important;
+  border-top:1px solid var(--sdc-v70-sheets-line)!important;
+}
+
+.sdc-v70-mini-note{
+  color:#607089!important;
+  font-size:11.5px!important;
+  font-weight:600!important;
+  letter-spacing:.01em!important;
+  margin-right:auto!important;
+}
+
+/* Evita que las imágenes subidas desde galería se estiren.
+   Se apunta a contextos de producto/cotización/admin para no romper logos ni íconos. */
+body.sdc-v61-clean .product-card img,
+body.sdc-v61-clean .producto-card img,
+body.sdc-v61-clean .admin-product-card img,
+body.sdc-v61-clean .product-image img,
+body.sdc-v61-clean .product-img img,
+body.sdc-v61-clean .product-photo img,
+body.sdc-v61-clean .product-cover img,
+body.sdc-v61-clean .gallery-preview img,
+body.sdc-v61-clean .image-preview img,
+body.sdc-v61-clean .preview-image img,
+body.sdc-v61-clean .modal img[src^="data:image"],
+body.sdc-v61-clean .modal img[src^="blob:"],
+body.sdc-v61-clean .modal img[src*="uploads/"],
+body.sdc-v61-clean .quote-card img,
+body.sdc-v61-clean .cotizacion img,
+body.sdc-v61-clean [data-product-image] img,
+body.sdc-v61-clean [data-sdc-product-image] img{
+  object-fit:contain!important;
+  object-position:center center!important;
+  aspect-ratio:auto!important;
+  max-width:100%!important;
+  max-height:100%!important;
+}
+
+/* En previews y cajas cerradas conserva el marco, pero sin deformar la foto. */
+body.sdc-v61-clean .gallery-preview,
+body.sdc-v61-clean .image-preview,
+body.sdc-v61-clean .preview-image,
+body.sdc-v61-clean .product-image,
+body.sdc-v61-clean .product-img,
+body.sdc-v61-clean .product-photo,
+body.sdc-v61-clean [data-product-image],
+body.sdc-v61-clean [data-sdc-product-image]{
+  overflow:hidden!important;
+  background:#f5f7fb!important;
+}
+
+/* Imagen grande de cotización/exportación: que no se deforme al generar la imagen. */
+body.sdc-v61-clean .quote-card img,
+body.sdc-v61-clean .cotizacion img,
+body.sdc-v61-clean .quotation img,
+body.sdc-v61-clean .quote-preview img,
+body.sdc-v61-clean .capture-area img,
+body.sdc-v61-clean [data-html2canvas-ignore="false"] img{
+  image-rendering:auto!important;
+  transform:none!important;
+}
+
+/* Si algún contenedor usa background-image para una foto de galería, no se estira. */
+body.sdc-v61-clean .sdc-v70-bg-contain{
+  background-size:contain!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-color:#f5f7fb!important;
+}
+
+@media (max-width:680px){
+  .sdc-v70-modal-sheet-row{
+    justify-content:stretch!important;
+  }
+  .sdc-v70-mini-note{
+    width:100%!important;
+    margin-right:0!important;
+  }
+  .sdc-v70-modal-sheet-row .sdc-v70-sheets-btn{
+    flex:1 1 100%!important;
+    width:100%!important;
+  }
+}
+
+/* =====================================================
+   V71 — Botón Sheets en cabecera de Productos + fix scrollbar categorías
+   ===================================================== */
+
+/* Título de Productos con botón Sheets al lado */
+body.sdc-v61-clean .inventory-head-title-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-bottom: 6px !important;
+}
+
+body.sdc-v61-clean .sheets-head-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 6px 12px !important;
+  border-radius: 999px !important;
+  background: #e8f5ee !important;
+  border: 1px solid #a8d8bc !important;
+  color: #1a7d4a !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  transition: background .15s, border-color .15s !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+body.sdc-v61-clean .sheets-head-btn:hover,
+body.sdc-v61-clean .sheets-head-btn:focus {
+  background: #c6edd8 !important;
+  border-color: #1a7d4a !important;
+  text-decoration: none !important;
+}
+
+body.sdc-v61-clean .sheets-head-btn .sheets-icon {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0 !important;
+  border-radius: 3px !important;
+}
+
+/* Tema oscuro / gamer: ajustar colores del botón Sheets */
+body.sdc-theme-red .sheets-head-btn,
+body.sdc-gamer .sheets-head-btn {
+  background: rgba(26,125,74,.18) !important;
+  border-color: rgba(26,125,74,.45) !important;
+  color: #5ddba0 !important;
+}
+
+body.sdc-theme-red .sheets-head-btn:hover,
+body.sdc-gamer .sheets-head-btn:hover {
+  background: rgba(26,125,74,.32) !important;
+}
+
+/* Scrollbar de categorías — más visible y sin recorte */
+body.sdc-v61-clean .category-grid::-webkit-scrollbar {
+  height: 5px !important;
+  display: block !important;
+}
+body.sdc-v61-clean .category-grid::-webkit-scrollbar-track {
+  background: var(--sdc-line, #e5eaf0) !important;
+  border-radius: 999px !important;
+}
+body.sdc-v61-clean .category-grid::-webkit-scrollbar-thumb {
+  background: var(--sdc-accent, #1d7dff) !important;
+  border-radius: 999px !important;
+}

@@ -1,0 +1,31 @@
+SD COMAYAGUA POS · V85 FIX GOOGLE SHEETS
+
+Qué se corrigió:
+1) Se dejó configurado el Sheet ID:
+   1A3unHNlFBrbi2GNmD7NOEk_JlWciEE2PE5Wxx4-X0ZY
+
+2) Se dejó configurada la URL /exec de Apps Script:
+   https://script.google.com/macros/s/AKfycbxp46Vad-z_S1SD6AIxO4_HS2ZcEDFKBmCJsamQvGf4g-o2a_83w1OJcyg5rtB0rFCM/exec
+
+3) Se corrigió el caché del navegador:
+   index.html e index_mobile.html ahora cargan JS/CSS con v=85-sheets-sync-fix.
+   Esto evita que el celular siga usando js/data.js viejo.
+
+4) Se mejoró la lectura de Google Sheets:
+   Ahora la app intenta leer por JSONP primero, que funciona mejor con Apps Script en móviles.
+
+5) Se agregó botón:
+   Panel rápido → Probar Sheets
+   Sirve para diagnosticar si Apps Script responde, si lee el Sheet ID y cuántos productos encuentra.
+
+PASO OBLIGATORIO EN APPS SCRIPT:
+- Abre tu Apps Script.
+- Pega el archivo google-apps-script-sdc.gs completo.
+- Guarda.
+- Implementar → Administrar implementaciones → Editar lápiz.
+- Elige Nueva versión.
+- Ejecutar como: Tú.
+- Acceso: Cualquier persona con el enlace.
+- Implementar.
+
+Si solo subes el ZIP pero no actualizas Apps Script, puede seguir fallando. Sí, Google convirtió guardar productos en una prueba de paciencia.

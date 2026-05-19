@@ -1,4 +1,4 @@
-/* SDC V97: separar INICIO y PRODUCTOS sin tocar la lógica principal del POS. */
+/* SDC V98: separar INICIO y PRODUCTOS + organizar ADMIN / CLIENTE / CAPTURA. */
 (function(){
   'use strict';
   const KEY='sdc_v97_page';
@@ -82,11 +82,45 @@
     },120);
   }
 
+  function ensureProductModePanel(){
+    const panel=document.querySelector('.view-mode-panel');
+    if(!panel) return;
+    panel.classList.add('sdc-product-mode-card-v98');
+    if(!panel.querySelector('.sdc-product-mode-head-v98')){
+      panel.insertAdjacentHTML('afterbegin', `<div class="sdc-product-mode-head-v98">
+        <div><b>Modo de productos</b><span>Administra cómo quieres ver el inventario.</span></div>
+      </div>`);
+    }
+    const copy=panel.querySelector('.view-mode-copy');
+    if(copy) copy.setAttribute('aria-hidden','true');
+    panel.querySelectorAll('[data-action="cardAdmin"]').forEach(btn=>{btn.innerHTML='<i>⚙️</i><span>Admin</span><small>Editar y costos</small>';});
+    panel.querySelectorAll('[data-action="cardClient"]').forEach(btn=>{btn.innerHTML='<i>👁️</i><span>Cliente</span><small>Vista para mostrar</small>';});
+    panel.querySelectorAll('[data-action="captureClean"]').forEach(btn=>{
+      if(btn.classList.contains('capture-live')) btn.innerHTML='<i>↩</i><span>Salir</span><small>Volver al panel</small>';
+      else btn.innerHTML='<i>📸</i><span>Captura</span><small>Pantalla limpia</small>';
+    });
+    panel.querySelectorAll('[data-action="categoryGoList"]').forEach(btn=>{btn.innerHTML='<i>▦</i><span>Ver todo</span><small>Lista completa</small>';});
+  }
+
+  function ensureProductsTitle(){
+    const inv=document.getElementById('inventario');
+    if(!inv) return;
+    if(document.querySelector('[data-sdc-products-title]')) return;
+    const mode=document.querySelector('.view-mode-panel');
+    const target=mode || inv;
+    target.insertAdjacentHTML(mode?'beforebegin':'beforebegin', `<section class="sdc-products-title-v98 no-print" data-sdc-products-title="1">
+      <div><b>Productos</b><span>Admin, cliente y captura están aquí.</span></div>
+      <button type="button" data-action="newProduct">+ Producto</button>
+    </section>`);
+  }
+
   function applyPageState(opts={}){
     const page=currentPage();
     document.body.dataset.sdcPage=page;
-    document.body.classList.add('sdc-v97-pages');
+    document.body.classList.add('sdc-v97-pages','sdc-v98-product-tabs');
     ensureTabs();
+    ensureProductsTitle();
+    ensureProductModePanel();
     updateTabs();
     updateBottomNav();
     if(page==='productos' && opts.focusSearch) focusProductSearch();

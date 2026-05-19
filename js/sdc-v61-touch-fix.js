@@ -1,21 +1,15 @@
 (function(){
   'use strict';
   const KEY='sdc_v83_theme';
-  const THEMES=['black','blue','red'];
-  function theme(){
-    const t=localStorage.getItem(KEY);
-    return THEMES.includes(t)?t:'black';
-  }
+  function theme(){ return 'light'; }
   function applyTheme(){
-    const t=theme();
-    document.body.classList.add('sdc-v60-pos','sdc-v61-clean');
-    document.body.classList.toggle('sdc-theme-black', t==='black');
-    document.body.classList.toggle('sdc-theme-red', t==='red');
-    document.body.classList.toggle('sdc-theme-blue', t==='blue');
-    document.body.classList.remove('sdc-theme-gamer');
-    document.body.classList.remove('sdc-theme-dark','sdc-v57-dark','sdc-v57-light','dark-mode','pro-dark-mode','pro-white-mode');
+    localStorage.setItem(KEY,'light');
+    document.documentElement.setAttribute('data-theme','light');
+    document.body.classList.add('sdc-v60-pos','sdc-v61-clean','sdc-v95-light-default','sdc-theme-light');
+    document.body.classList.remove('sdc-theme-black','sdc-theme-red','sdc-theme-blue','sdc-theme-gamer','sdc-theme-dark','sdc-v57-dark','sdc-v57-light','dark-mode','pro-dark-mode','pro-white-mode');
     const meta=document.querySelector('meta[name="theme-color"]');
-    if(meta) meta.setAttribute('content', t==='blue'?'#153f83':(t==='red'?'#941425':'#061522'));
+    if(meta) meta.setAttribute('content','#f4f7fb');
+    document.querySelectorAll('[data-v60-theme-panel],.sdc-v60-theme-panel').forEach(el=>el.remove());
   }
   function modalExists(){
     const root=document.getElementById('modalRoot');
@@ -45,7 +39,6 @@
     const active=grid && grid.querySelector('.category-card.active');
     if(!grid || !active) return;
     const cards=[...grid.querySelectorAll('.category-card')];
-    // Si está en "Todos", se deja al inicio; en cualquier otra categoría se centra.
     if(cards.indexOf(active)<=0){ grid.scrollTo({left:0,behavior:'auto'}); return; }
     const left=active.offsetLeft - (grid.clientWidth-active.clientWidth)/2;
     grid.scrollTo({left:Math.max(0,left),behavior:'smooth'});
@@ -55,6 +48,11 @@
     applyTheme();
     document.documentElement.style.setProperty('overflow-x','hidden','important');
     document.body.style.setProperty('overflow-x','hidden','important');
+    const app=document.getElementById('app');
+    if(app){
+      app.style.setProperty('max-width','100vw','important');
+      app.style.setProperty('overflow-x','hidden','important');
+    }
     if(!modalExists()){
       unlockPageScroll();
     }else{
@@ -86,7 +84,6 @@
   document.addEventListener('touchstart', schedule, {passive:true,capture:true});
   const mo=new MutationObserver(schedule);
   mo.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']});
-  // Exponer una reparación manual por si algún navegador móvil deja clases bloqueadas en caché.
   window.SDCV61FixScroll=fixScroll;
   applyTheme();
   setTimeout(schedule,0);

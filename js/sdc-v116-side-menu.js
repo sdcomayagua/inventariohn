@@ -3,7 +3,7 @@
   const STORE_KEY='sdc_control_ventas_v90';
   const LOGO='assets/logo-sdc.png';
   function ensureCss(){
-    ['css/sdc-v117-final-polish.css?v=119-actions','css/sdc-v118-quote-sale-whatsapp.css?v=119-actions','css/sdc-v119-actions-not-floating.css?v=119-actions'].forEach(href=>{
+    ['css/sdc-v117-final-polish.css?v=120-actions','css/sdc-v118-quote-sale-whatsapp.css?v=120-actions','css/sdc-v119-actions-not-floating.css?v=120-actions','css/sdc-v120-actions-real-end.css?v=120-actions'].forEach(href=>{
       const clean=href.split('?')[0];
       if(document.querySelector('link[href*="'+clean+'"]')) return;
       const link=document.createElement('link');

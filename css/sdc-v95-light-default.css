@@ -1,21 +1,21 @@
-/* SDC V95: modo claro predeterminado + inicio limpio sin panel derecho. */
+/* SDC V96: inicio limpio, responsive real, sin recortes y sin textos innecesarios. */
 :root{
   color-scheme:light;
   --sdc-bg:#f4f7fb;
-  --sdc-bg-2:#eef4fb;
   --sdc-card:#ffffff;
-  --sdc-card-soft:#f8fbff;
-  --sdc-text:#102033;
+  --sdc-soft:#eef6ff;
+  --sdc-text:#0f172a;
   --sdc-muted:#64748b;
   --sdc-line:#dbe7f3;
   --sdc-blue:#0b63ce;
-  --sdc-blue-2:#1282e6;
   --sdc-green:#10b981;
-  --sdc-shadow:0 18px 45px rgba(15,35,55,.10);
+  --sdc-shadow:0 16px 36px rgba(15,35,55,.10);
 }
 
-html,
-body{
+html,body{
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:hidden!important;
   background:var(--sdc-bg)!important;
   color:var(--sdc-text)!important;
 }
@@ -27,13 +27,18 @@ body.sdc-v61-clean.sdc-theme-light{
   color:var(--sdc-text)!important;
 }
 
-body.sdc-v95-light-default *{
+body.sdc-v95-light-default *,
+body.sdc-theme-light *{
+  box-sizing:border-box!important;
   text-shadow:none!important;
 }
 
-body.sdc-v95-light-default .boot-loading,
 body.sdc-v95-light-default .app,
-body.sdc-v95-light-default main#app{
+body.sdc-v95-light-default main#app,
+body.sdc-v95-light-default #app{
+  width:100%!important;
+  max-width:100vw!important;
+  overflow-x:hidden!important;
   background:transparent!important;
   color:var(--sdc-text)!important;
 }
@@ -47,109 +52,199 @@ body.sdc-v95-light-default .sdc-v60-theme-buttons{
   display:none!important;
 }
 
-/* Encabezado claro */
+/* Encabezado claro y compacto */
 body.sdc-v95-light-default .topbar,
 body.sdc-v95-light-default .topbar-v87{
-  background:rgba(255,255,255,.94)!important;
+  width:min(100% - 24px,1760px)!important;
+  max-width:calc(100vw - 24px)!important;
+  margin:16px auto 14px!important;
+  background:rgba(255,255,255,.96)!important;
   color:var(--sdc-text)!important;
   border:1px solid rgba(203,213,225,.72)!important;
   box-shadow:0 12px 32px rgba(15,35,55,.08)!important;
   backdrop-filter:blur(14px)!important;
+  border-radius:26px!important;
 }
 body.sdc-v95-light-default .top-title h1,
 body.sdc-v95-light-default .top-title small,
-body.sdc-v95-light-default .top-meta-v88{
-  color:var(--sdc-text)!important;
-}
+body.sdc-v95-light-default .top-meta-v88{color:var(--sdc-text)!important;}
 body.sdc-v95-light-default .top-title small,
-body.sdc-v95-light-default .top-meta-v88{
-  color:var(--sdc-muted)!important;
-}
+body.sdc-v95-light-default .top-meta-v88{color:var(--sdc-muted)!important;}
 
-/* Inicio en modo claro */
+/* HERO: sin texto, sin panel derecho, sin desbordarse */
 body.sdc-v95-light-default .home-hero-v94,
 body.sdc-v95-light-default.sdc-v61-clean .home-hero-v94{
-  background:
-    radial-gradient(circle at 8% 0%,rgba(14,165,233,.14),transparent 32%),
-    radial-gradient(circle at 92% 8%,rgba(16,185,129,.12),transparent 30%),
-    linear-gradient(135deg,#ffffff 0%,#eef6ff 100%)!important;
+  width:min(100% - 24px,1760px)!important;
+  max-width:calc(100vw - 24px)!important;
+  margin:0 auto 18px!important;
+  padding:18px!important;
+  overflow:hidden!important;
+  background:linear-gradient(135deg,#f7fbff 0%,#eaf6ff 100%)!important;
   border:1px solid #d7e8fb!important;
-  box-shadow:0 22px 54px rgba(15,35,55,.12)!important;
+  border-radius:28px!important;
+  box-shadow:0 18px 42px rgba(15,35,55,.10)!important;
   color:var(--sdc-text)!important;
 }
 body.sdc-v95-light-default .home-glow-v94{display:none!important;}
 body.sdc-v95-light-default .home-hero-shell-v94,
 body.sdc-v95-light-default.sdc-v61-clean .home-hero-shell-v94{
+  width:100%!important;
+  max-width:100%!important;
+  display:grid!important;
   grid-template-columns:1fr!important;
   gap:12px!important;
+  overflow:hidden!important;
 }
-
-/* Quitar el panel derecho: Acciones rápidas / Trabajo del día */
 body.sdc-v95-light-default .home-actions-card-v94,
 body.sdc-v95-light-default .home-actions-card-v87,
 body.sdc-v95-light-default .home-actions-head-v94,
 body.sdc-v95-light-default .home-actions-grid-v94{
   display:none!important;
 }
-
-/* Quitar textos innecesarios del inicio */
 body.sdc-v95-light-default .home-kicker-v94,
 body.sdc-v95-light-default .home-brand-card-v94 h2,
 body.sdc-v95-light-default .home-brand-card-v94 p,
 body.sdc-v95-light-default .home-sync-row-v94{
   display:none!important;
 }
-
 body.sdc-v95-light-default .home-brand-card-v94,
 body.sdc-v95-light-default.sdc-v61-clean .home-brand-card-v94{
-  background:rgba(255,255,255,.92)!important;
-  border:1px solid #d7e8fb!important;
-  box-shadow:var(--sdc-shadow)!important;
-  border-radius:30px!important;
+  width:100%!important;
+  max-width:100%!important;
   min-height:0!important;
-  color:var(--sdc-text)!important;
-  padding:18px!important;
-}
-body.sdc-v95-light-default .home-primary-actions-v94{
-  margin-top:0!important;
-}
-body.sdc-v95-light-default .home-primary-actions-v94 button{
-  box-shadow:0 16px 34px rgba(15,35,55,.11)!important;
-  color:#082033!important;
-}
-body.sdc-v95-light-default .home-action-main-v94{
-  background:linear-gradient(135deg,#0b63ce,#20c997)!important;
-  color:#fff!important;
-}
-body.sdc-v95-light-default .home-action-main-v94 small,
-body.sdc-v95-light-default .home-action-main-v94 span{color:#fff!important;}
-body.sdc-v95-light-default .home-action-soft-v94{
-  background:linear-gradient(135deg,#fff7ed,#fde68a)!important;
-  color:#102033!important;
-}
-
-/* Métricas claras debajo del inicio */
-body.sdc-v95-light-default .home-stats-v94,
-body.sdc-v95-light-default.sdc-v61-clean .home-stats-v94{
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  padding:0!important;
   background:transparent!important;
   border:0!important;
   box-shadow:none!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+}
+
+/* Botones principales legibles y ajustados */
+body.sdc-v95-light-default .home-primary-actions-v94{
+  width:100%!important;
+  max-width:100%!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+  margin:0!important;
+  overflow:hidden!important;
+}
+body.sdc-v95-light-default .home-primary-actions-v94 button{
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  min-height:76px!important;
+  padding:16px!important;
+  border:0!important;
+  border-radius:22px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  overflow:hidden!important;
+  white-space:normal!important;
+  box-shadow:0 14px 30px rgba(15,35,55,.10)!important;
+}
+body.sdc-v95-light-default .home-primary-actions-v94 i{
+  flex:0 0 44px!important;
+  width:44px!important;
+  height:44px!important;
+  border-radius:16px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:rgba(255,255,255,.38)!important;
+  font-style:normal!important;
+}
+body.sdc-v95-light-default .home-primary-actions-v94 span{
+  display:block!important;
+  font-size:20px!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  overflow:visible!important;
+  white-space:normal!important;
+}
+body.sdc-v95-light-default .home-primary-actions-v94 small{
+  display:none!important;
+}
+body.sdc-v95-light-default .home-action-main-v94{
+  background:linear-gradient(135deg,#0b63ce,#10b981)!important;
+  color:#fff!important;
+}
+body.sdc-v95-light-default .home-action-main-v94 span{color:#fff!important;}
+body.sdc-v95-light-default .home-action-soft-v94{
+  background:linear-gradient(135deg,#fff8db,#fde68a)!important;
+  color:#102033!important;
+}
+
+/* Métricas: nunca cortadas */
+body.sdc-v95-light-default .home-stats-v94,
+body.sdc-v95-light-default.sdc-v61-clean .home-stats-v94{
+  width:100%!important;
+  max-width:100%!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
   padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
 }
 body.sdc-v95-light-default .home-stats-v94 .stat,
 body.sdc-v95-light-default.sdc-v61-clean .home-stats-v94 .stat{
-  background:rgba(255,255,255,.94)!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  min-height:88px!important;
+  padding:16px!important;
+  border-radius:18px!important;
+  background:#fff!important;
   border:1px solid #dbe7f3!important;
-  box-shadow:0 12px 28px rgba(15,35,55,.08)!important;
+  box-shadow:0 10px 24px rgba(15,35,55,.07)!important;
   color:var(--sdc-text)!important;
+  overflow:hidden!important;
 }
-body.sdc-v95-light-default .home-stats-v94 .stat b{color:#0f172a!important;}
-body.sdc-v95-light-default .home-stats-v94 .stat span{color:#64748b!important;}
+body.sdc-v95-light-default .home-stats-v94 .stat b{
+  display:block!important;
+  max-width:100%!important;
+  color:#0f172a!important;
+  font-size:clamp(24px,2.2vw,38px)!important;
+  line-height:1!important;
+  letter-spacing:-.035em!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+body.sdc-v95-light-default .home-stats-v94 .stat span{
+  display:block!important;
+  margin-top:8px!important;
+  color:#64748b!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  letter-spacing:.06em!important;
+  line-height:1.1!important;
+  text-transform:uppercase!important;
+}
 body.sdc-v95-light-default .home-stats-v94 .stat.featured{
   grid-column:1/-1!important;
-  background:linear-gradient(135deg,#ecfdf5,#eaf4ff)!important;
-  border-color:#c7f2dc!important;
+  min-height:92px!important;
+  background:linear-gradient(135deg,#ecfdf5,#eef7ff)!important;
+  border-color:#bbf7d0!important;
+}
+body.sdc-v95-light-default .home-stats-v94 .stat.featured b,
+body.sdc-v95-light-default .home-stats-v94 .stat.featured span{
+  color:#0f172a!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+
+/* Ocultar bloque inferior que llena pantalla y se mira mal */
+body.sdc-v95-light-default .home-tools-v83,
+body.sdc-v95-light-default .quick-panel-v72,
+body.sdc-v95-light-default .quick-v22{
+  display:none!important;
 }
 
 /* Paneles generales claros */
@@ -161,16 +256,10 @@ body.sdc-v95-light-default .section-head,
 body.sdc-v95-light-default .product-card,
 body.sdc-v95-light-default .modal,
 body.sdc-v95-light-default .sheet-modal{
-  background:rgba(255,255,255,.94)!important;
+  background:rgba(255,255,255,.96)!important;
   color:var(--sdc-text)!important;
   border-color:#dbe7f3!important;
-  box-shadow:0 14px 32px rgba(15,35,55,.08)!important;
-}
-body.sdc-v95-light-default .quick small,
-body.sdc-v95-light-default .quick span,
-body.sdc-v95-light-default .category-head span,
-body.sdc-v95-light-default .section-head span{
-  color:var(--sdc-muted)!important;
+  box-shadow:0 12px 28px rgba(15,35,55,.07)!important;
 }
 body.sdc-v95-light-default input,
 body.sdc-v95-light-default select,
@@ -179,8 +268,6 @@ body.sdc-v95-light-default textarea{
   color:var(--sdc-text)!important;
   border-color:#dbe7f3!important;
 }
-
-/* Navegación inferior en claro */
 body.sdc-v95-light-default .bottom-nav,
 body.sdc-v95-light-default .bottom-nav-v84{
   background:rgba(255,255,255,.96)!important;
@@ -191,10 +278,70 @@ body.sdc-v95-light-default .bottom-nav button,
 body.sdc-v95-light-default .bottom-nav a{color:#334155!important;}
 
 @media(max-width:760px){
-  body.sdc-v95-light-default .home-hero-v94{padding:10px!important;}
-  body.sdc-v95-light-default .home-brand-card-v94{border-radius:24px!important;padding:12px!important;}
-  body.sdc-v95-light-default .home-primary-actions-v94{grid-template-columns:1fr 1fr!important;gap:8px!important;}
-  body.sdc-v95-light-default .home-primary-actions-v94 button{min-height:68px!important;}
-  body.sdc-v95-light-default .home-stats-v94{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
-  body.sdc-v95-light-default .home-stats-v94 .stat.featured{grid-column:1/-1!important;}
+  body.sdc-v95-light-default .topbar,
+  body.sdc-v95-light-default .topbar-v87{
+    width:calc(100vw - 20px)!important;
+    max-width:calc(100vw - 20px)!important;
+    margin:10px auto!important;
+    border-radius:22px!important;
+  }
+  body.sdc-v95-light-default .top-title{min-width:0!important;overflow:hidden!important;}
+  body.sdc-v95-light-default .top-title h1,
+  body.sdc-v95-light-default .top-title small,
+  body.sdc-v95-light-default .top-meta-v88{
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  body.sdc-v95-light-default .home-hero-v94{
+    width:calc(100vw - 20px)!important;
+    max-width:calc(100vw - 20px)!important;
+    margin:0 auto 14px!important;
+    padding:12px!important;
+    border-radius:24px!important;
+  }
+  body.sdc-v95-light-default .home-primary-actions-v94{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  body.sdc-v95-light-default .home-primary-actions-v94 button{
+    min-height:68px!important;
+    padding:14px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v95-light-default .home-primary-actions-v94 i{
+    flex-basis:40px!important;
+    width:40px!important;
+    height:40px!important;
+  }
+  body.sdc-v95-light-default .home-primary-actions-v94 span{
+    font-size:21px!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94{
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat{
+    min-height:82px!important;
+    padding:14px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat b{
+    font-size:28px!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat span{
+    font-size:12px!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured{
+    grid-column:1/-1!important;
+    min-height:84px!important;
+  }
+}
+
+@media(max-width:390px){
+  body.sdc-v95-light-default .home-hero-v94,
+  body.sdc-v95-light-default .topbar{width:calc(100vw - 14px)!important;max-width:calc(100vw - 14px)!important;}
+  body.sdc-v95-light-default .home-stats-v94 .stat b{font-size:24px!important;}
+  body.sdc-v95-light-default .home-primary-actions-v94 span{font-size:19px!important;}
 }

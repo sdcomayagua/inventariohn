@@ -62,19 +62,12 @@
     const formula = v.match(/=\s*IMAGE\s*\(\s*["']([^"']+)["']/i);
     if(formula) v = formula[1];
 
-    // Si vienen varias URLs en una celda, usar la primera válida.
-    const parts = v.split(/\s*(?:\r?\n|\||,\s*https?:\/\/|;\s*https?:\/\/)\s*/).map((part, idx)=>{
-      if(idx > 0 && !/^https?:\/\//i.test(part) && /\./.test(part)) return 'https://' + part;
-      return part;
-    }).filter(Boolean);
+    const parts = v.split(/\s*(?:\r?\n|\||;|,\s*(?=https?:\/\/))\s*/).filter(Boolean);
     if(parts.length > 1) v = parts.find(x=>/^(https?:|data:image|blob:|assets\/|img\/|images\/)/i.test(x)) || parts[0];
 
     const id = driveId(v);
     if(id) return `https://drive.google.com/uc?export=view&id=${encodeURIComponent(id)}`;
-
-    // Dropbox/OneDrive enlaces compartidos básicos.
     if(/dropbox\.com/i.test(v)) return v.replace(/[?&]dl=0/i,'?raw=1');
-
     return v;
   }
 
@@ -136,6 +129,26 @@
     return [];
   }
 
+  function sheetJsonp(params){
+    return new Promise((resolve,reject)=>{
+      const cb = 'sdcV112Cb_' + Date.now() + '_' + Math.floor(Math.random()*99999);
+      const script = document.createElement('script');
+      const url = new URL(WEB_APP_URL);
+      Object.entries(Object.assign({}, params, {callback:cb, _:Date.now()})).forEach(([k,v])=>url.searchParams.set(k, v));
+      const timer = setTimeout(()=>cleanup(()=>reject(new Error('Tiempo agotado leyendo Google Sheets.'))), 14000);
+      function cleanup(done){
+        clearTimeout(timer);
+        try{ delete window[cb]; }catch(e){ window[cb] = undefined; }
+        script.remove();
+        if(done) done();
+      }
+      window[cb] = data => cleanup(()=>resolve(data));
+      script.onerror = () => cleanup(()=>reject(new Error('Apps Script no respondió por JSONP.')));
+      script.src = url.toString();
+      document.head.appendChild(script);
+    });
+  }
+
   async function readJSON(res){
     const txt = await res.text();
     try{ return JSON.parse(txt); }catch(e){
@@ -148,9 +161,21 @@
   async function requestProducts(){
     const actions = ['products','getProducts','listProducts','syncInventory'];
     let lastError = null;
+
+    // Primero JSONP: funciona mejor en GitHub Pages + Apps Script porque evita CORS.
     for(const action of actions){
       try{
-        const url = `${WEB_APP_URL}?action=${encodeURIComponent(action)}&sheet=${encodeURIComponent(PRODUCT_SHEET)}&sheetId=${encodeURIComponent(SHEET_ID)}&t=${Date.now()}`;
+        const data = await sheetJsonp({action, only:'productos', sheet:PRODUCT_SHEET, productSheet:PRODUCT_SHEET, sheetId:SHEET_ID});
+        if(data && data.ok === false) throw new Error(data.error || 'Apps Script respondió con error.');
+        const rows = productArrayFromPayload(data);
+        if(rows.length) return rows;
+      }catch(err){ lastError = err; }
+    }
+
+    // Segundo intento: fetch GET directo.
+    for(const action of actions){
+      try{
+        const url = `${WEB_APP_URL}?action=${encodeURIComponent(action)}&only=productos&sheet=${encodeURIComponent(PRODUCT_SHEET)}&productSheet=${encodeURIComponent(PRODUCT_SHEET)}&sheetId=${encodeURIComponent(SHEET_ID)}&t=${Date.now()}`;
         const res = await fetch(url, {method:'GET', cache:'no-store', redirect:'follow'});
         if(!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await readJSON(res);
@@ -158,6 +183,8 @@
         if(rows.length) return rows;
       }catch(err){ lastError = err; }
     }
+
+    // Último intento: POST JSON.
     for(const action of actions){
       try{
         const res = await fetch(WEB_APP_URL, {
@@ -165,7 +192,7 @@
           cache:'no-store',
           redirect:'follow',
           headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body:JSON.stringify({action, sheet:PRODUCT_SHEET, sheetId:SHEET_ID})
+          body:JSON.stringify({action, only:'productos', sheet:PRODUCT_SHEET, productSheet:PRODUCT_SHEET, sheetId:SHEET_ID})
         });
         if(!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await readJSON(res);
@@ -234,12 +261,13 @@
       const src = img.getAttribute('src') || '';
       const fixed = normalizeImageUrl(src);
       if(fixed && fixed !== src) img.setAttribute('src', fixed);
-      if(!img.getAttribute('onerror')){
-        img.onerror = function(){
-          this.onerror = null;
+      if(!img.dataset.sdcV112Error){
+        img.dataset.sdcV112Error = '1';
+        img.addEventListener('error', function(){
+          if(this.classList.contains('sdc-img-fallback')) return;
           this.src = 'assets/logo-sdc.png';
           this.classList.add('sdc-img-fallback');
-        };
+        });
       }
     });
   }
@@ -258,7 +286,8 @@
     const last = Number(localStorage.getItem(SYNC_STAMP_KEY) || 0);
     const age = Date.now() - last;
     if(last && age < 1000 * 60 * 10) return;
-    setTimeout(()=>syncNow({reload:false}), 1200);
+    // Sin recargar automáticamente para que el panel no se quede “actualizando”.
+    setTimeout(()=>syncNow({reload:false}), 1300);
   }
 
   function boot(){

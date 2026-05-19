@@ -1,7 +1,7 @@
-/* SDC V103: botón ACTUALIZAR que borra caché y carga la última versión. */
+/* SDC V105: botón ACTUALIZAR abajo, junto a INICIO / PRODUCTOS. */
 (function(){
   'use strict';
-  const VERSION='103-hard-refresh';
+  const VERSION='105-refresh-bottom-tab';
   const STAMP='sdc_refresh_stamp';
 
   function toast(msg){
@@ -17,20 +17,22 @@
   }
 
   function buttonHTML(){
-    return `<button type="button" class="btn small secondary sdc-refresh-btn-v103" data-sdc-hard-refresh="1" title="Actualizar sistema y borrar caché" aria-label="Actualizar sistema y borrar caché">
-      <span class="sdc-refresh-icon-v103">↻</span>
+    return `<button type="button" class="sdc-refresh-tab-v105" data-sdc-hard-refresh="1" title="Actualizar sistema y borrar caché" aria-label="Actualizar sistema y borrar caché">
+      <i class="sdc-refresh-icon-v103">↻</i>
       <span class="sdc-refresh-text-v103">Actualizar</span>
     </button>`;
   }
 
+  function removeTopButtons(){
+    document.querySelectorAll('.topbar [data-sdc-hard-refresh], .topbar-v87 [data-sdc-hard-refresh]').forEach(btn=>btn.remove());
+  }
+
   function ensureButton(){
-    const top=document.querySelector('.topbar');
-    if(!top || top.querySelector('[data-sdc-hard-refresh]')) return;
-    const logout=top.querySelector('[data-action="lock"]');
-    const sync=top.querySelector('[data-action="sync"]');
-    const anchor=logout || sync;
-    if(anchor) anchor.insertAdjacentHTML('beforebegin',buttonHTML());
-    else top.insertAdjacentHTML('beforeend',buttonHTML());
+    removeTopButtons();
+    const tabs=document.querySelector('[data-sdc-page-tabs]');
+    if(!tabs) return;
+    if(tabs.querySelector('[data-sdc-hard-refresh]')) return;
+    tabs.insertAdjacentHTML('beforeend',buttonHTML());
   }
 
   async function clearBrowserCaches(){
@@ -52,13 +54,11 @@
 
   function cleanLocalRuntimeCache(){
     try{
-      const keepPrefixes=['sdc_','SDC'];
       const keepExact=new Set([
         'sdc_v83_theme','sdc_v97_page','sdc_inventory_layout','sdc_card_view'
       ]);
       Object.keys(localStorage).forEach(key=>{
         if(keepExact.has(key)) return;
-        // Mantener datos del negocio; solo quitar marcas de cache/version/boot.
         if(/cache|version|stamp|boot|assets|build|refresh/i.test(key)) localStorage.removeItem(key);
       });
       Object.keys(sessionStorage).forEach(key=>sessionStorage.removeItem(key));
@@ -73,13 +73,13 @@
       btn.disabled=true;
       btn.classList.add('is-updating');
       const text=btn.querySelector('.sdc-refresh-text-v103');
-      if(text) text.textContent='Actualizando...';
+      if(text) text.textContent='Actualizando';
     }
     toast('Actualizando sistema y borrando caché...');
     await clearBrowserCaches();
     cleanLocalRuntimeCache();
     const url=new URL(window.location.href);
-    url.searchParams.set('v','103');
+    url.searchParams.set('v','105');
     url.searchParams.set('t',Date.now().toString());
     window.location.replace(url.toString());
   }

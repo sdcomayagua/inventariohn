@@ -1,7 +1,7 @@
-/* SDC V105: botón ACTUALIZAR abajo, junto a INICIO / PRODUCTOS. */
+/* SDC V105: mover ACTUALIZAR y SINCRONIZAR abajo, fuera del encabezado. */
 (function(){
   'use strict';
-  const VERSION='105-refresh-bottom-tab';
+  const VERSION='105-refresh-utility-row';
   const STAMP='sdc_refresh_stamp';
 
   function toast(msg){
@@ -16,23 +16,30 @@
     }
   }
 
-  function buttonHTML(){
-    return `<button type="button" class="sdc-refresh-tab-v105" data-sdc-hard-refresh="1" title="Actualizar sistema y borrar caché" aria-label="Actualizar sistema y borrar caché">
-      <i class="sdc-refresh-icon-v103">↻</i>
-      <span class="sdc-refresh-text-v103">Actualizar</span>
-    </button>`;
+  function utilityHTML(){
+    return `<nav class="sdc-utility-tabs-v105 no-print" data-sdc-utility-tabs="1" aria-label="Acciones del sistema">
+      <button type="button" class="sdc-sync-tab-v105" data-action="sync" data-sdc-utility-sync="1" title="Sincronizar catálogo">
+        <i>↻</i><span>Sincronizar</span>
+      </button>
+      <button type="button" class="sdc-refresh-tab-v105" data-sdc-hard-refresh="1" title="Actualizar sistema y borrar caché" aria-label="Actualizar sistema y borrar caché">
+        <i class="sdc-refresh-icon-v103">↻</i><span class="sdc-refresh-text-v103">Actualizar</span>
+      </button>
+    </nav>`;
   }
 
-  function removeTopButtons(){
-    document.querySelectorAll('.topbar [data-sdc-hard-refresh], .topbar-v87 [data-sdc-hard-refresh]').forEach(btn=>btn.remove());
+  function cleanOldButtons(){
+    document.querySelectorAll('.topbar [data-sdc-hard-refresh], .topbar-v87 [data-sdc-hard-refresh], [data-sdc-page-tabs] [data-sdc-hard-refresh]').forEach(btn=>btn.remove());
+    document.querySelectorAll('[data-sdc-utility-tabs]').forEach((row,idx)=>{ if(idx>0) row.remove(); });
   }
 
   function ensureButton(){
-    removeTopButtons();
+    cleanOldButtons();
     const tabs=document.querySelector('[data-sdc-page-tabs]');
     if(!tabs) return;
-    if(tabs.querySelector('[data-sdc-hard-refresh]')) return;
-    tabs.insertAdjacentHTML('beforeend',buttonHTML());
+    let row=document.querySelector('[data-sdc-utility-tabs]');
+    if(!row){
+      tabs.insertAdjacentHTML('afterend',utilityHTML());
+    }
   }
 
   async function clearBrowserCaches(){

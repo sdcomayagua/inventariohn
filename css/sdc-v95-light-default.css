@@ -277,6 +277,75 @@ body.sdc-v95-light-default .bottom-nav-v84{
 body.sdc-v95-light-default .bottom-nav button,
 body.sdc-v95-light-default .bottom-nav a{color:#334155!important;}
 
+/* V97: dividir la interfaz en INICIO y PRODUCTOS */
+body.sdc-v97-pages .sdc-page-tabs-v97{
+  width:min(100% - 24px,1760px)!important;
+  max-width:calc(100vw - 24px)!important;
+  margin:0 auto 14px!important;
+  padding:8px!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  background:#fff!important;
+  border:1px solid #dbe7f3!important;
+  border-radius:22px!important;
+  box-shadow:0 12px 28px rgba(15,35,55,.07)!important;
+}
+body.sdc-v97-pages .sdc-page-tabs-v97 button{
+  min-height:54px!important;
+  border:0!important;
+  border-radius:16px!important;
+  background:#f3f7fb!important;
+  color:#334155!important;
+  font-weight:950!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  cursor:pointer!important;
+}
+body.sdc-v97-pages .sdc-page-tabs-v97 button.active{
+  background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+  color:#fff!important;
+  box-shadow:0 12px 24px rgba(11,99,206,.20)!important;
+}
+body.sdc-v97-pages .sdc-page-tabs-v97 i{
+  font-style:normal!important;
+  font-size:18px!important;
+}
+
+body.sdc-v97-pages[data-sdc-page="inicio"] .view-mode-panel,
+body.sdc-v97-pages[data-sdc-page="inicio"] .search-panel,
+body.sdc-v97-pages[data-sdc-page="inicio"] .category-gallery,
+body.sdc-v97-pages[data-sdc-page="inicio"] #inventario,
+body.sdc-v97-pages[data-sdc-page="inicio"] .sdc-page-footer{
+  display:none!important;
+}
+body.sdc-v97-pages[data-sdc-page="productos"] .home-hero-v94,
+body.sdc-v97-pages[data-sdc-page="productos"] .home-tools-v83,
+body.sdc-v97-pages[data-sdc-page="productos"] .quick-panel-v72{
+  display:none!important;
+}
+body.sdc-v97-pages[data-sdc-page="productos"] .view-mode-panel,
+body.sdc-v97-pages[data-sdc-page="productos"] .search-panel,
+body.sdc-v97-pages[data-sdc-page="productos"] .category-gallery,
+body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
+  width:min(100% - 24px,1760px)!important;
+  max-width:calc(100vw - 24px)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+body.sdc-v97-pages[data-sdc-page="productos"] .view-mode-panel{
+  margin-top:0!important;
+}
+body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
+  padding-bottom:98px!important;
+}
+body.sdc-v97-pages[data-sdc-page="inicio"] .bottom-nav [data-action="focusSearch"] span{font-size:0!important;}
+body.sdc-v97-pages[data-sdc-page="inicio"] .bottom-nav [data-action="focusSearch"] span::after{content:'Productos';font-size:12px!important;}
+
 @media(max-width:760px){
   body.sdc-v95-light-default .topbar,
   body.sdc-v95-light-default .topbar-v87{
@@ -337,11 +406,35 @@ body.sdc-v95-light-default .bottom-nav a{color:#334155!important;}
     grid-column:1/-1!important;
     min-height:84px!important;
   }
+  body.sdc-v97-pages .sdc-page-tabs-v97,
+  body.sdc-v97-pages[data-sdc-page="productos"] .view-mode-panel,
+  body.sdc-v97-pages[data-sdc-page="productos"] .search-panel,
+  body.sdc-v97-pages[data-sdc-page="productos"] .category-gallery,
+  body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
+    width:calc(100vw - 20px)!important;
+    max-width:calc(100vw - 20px)!important;
+  }
+  body.sdc-v97-pages .sdc-page-tabs-v97{
+    margin-bottom:12px!important;
+    border-radius:20px!important;
+  }
+  body.sdc-v97-pages .sdc-page-tabs-v97 button{
+    min-height:50px!important;
+    font-size:13px!important;
+  }
 }
 
 @media(max-width:390px){
   body.sdc-v95-light-default .home-hero-v94,
-  body.sdc-v95-light-default .topbar{width:calc(100vw - 14px)!important;max-width:calc(100vw - 14px)!important;}
+  body.sdc-v95-light-default .topbar,
+  body.sdc-v97-pages .sdc-page-tabs-v97,
+  body.sdc-v97-pages[data-sdc-page="productos"] .view-mode-panel,
+  body.sdc-v97-pages[data-sdc-page="productos"] .search-panel,
+  body.sdc-v97-pages[data-sdc-page="productos"] .category-gallery,
+  body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
+    width:calc(100vw - 14px)!important;
+    max-width:calc(100vw - 14px)!important;
+  }
   body.sdc-v95-light-default .home-stats-v94 .stat b{font-size:24px!important;}
   body.sdc-v95-light-default .home-primary-actions-v94 span{font-size:19px!important;}
 }

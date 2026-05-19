@@ -1,0 +1,221 @@
+/* SDC V104: corrección final móvil: topbar limpio, sin botones partidos y sin panel Admin/Cliente/Captura. */
+
+html,body{
+  overflow-x:hidden!important;
+}
+
+body.sdc-v95-light-default .topbar,
+body.sdc-v95-light-default .topbar-v87{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  flex-wrap:nowrap!important;
+  overflow:hidden!important;
+}
+
+body.sdc-v95-light-default .topbar .brand,
+body.sdc-v95-light-default .topbar-v87 .brand,
+body.sdc-v95-light-default .topbar-left,
+body.sdc-v95-light-default .brand-block,
+body.sdc-v95-light-default .top-title{
+  min-width:0!important;
+  flex:1 1 auto!important;
+  overflow:hidden!important;
+}
+
+body.sdc-v95-light-default .topbar h1,
+body.sdc-v95-light-default .topbar small,
+body.sdc-v95-light-default .topbar .top-meta-v88,
+body.sdc-v95-light-default .topbar-v87 h1,
+body.sdc-v95-light-default .topbar-v87 small,
+body.sdc-v95-light-default .topbar-v87 .top-meta-v88{
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+
+body.sdc-v95-light-default .topbar-actions,
+body.sdc-v95-light-default .actions,
+body.sdc-v95-light-default .top-actions,
+body.sdc-v95-light-default .topbar .right,
+body.sdc-v95-light-default .topbar-v87 .right{
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  flex-wrap:nowrap!important;
+  max-width:48%!important;
+}
+
+body.sdc-v95-light-default .topbar button,
+body.sdc-v95-light-default .topbar-v87 button,
+body.sdc-v95-light-default .sdc-refresh-btn-v103{
+  flex:0 0 48px!important;
+  width:48px!important;
+  min-width:48px!important;
+  max-width:48px!important;
+  height:48px!important;
+  min-height:48px!important;
+  padding:0!important;
+  border-radius:17px!important;
+}
+
+body.sdc-v95-light-default .sdc-refresh-btn-v103 .sdc-refresh-text-v103,
+body.sdc-v95-light-default .topbar button span:not(.sdc-refresh-icon-v103),
+body.sdc-v95-light-default .topbar-v87 button span:not(.sdc-refresh-icon-v103){
+  display:none!important;
+}
+
+body.sdc-v95-light-default .sdc-refresh-btn-v103 .sdc-refresh-icon-v103{
+  width:100%!important;
+  height:100%!important;
+  background:transparent!important;
+  font-size:24px!important;
+}
+
+/* Evita que el botón de salir se baje a otra línea. */
+body.sdc-v95-light-default [data-action="lock"],
+body.sdc-v95-light-default [data-action="logout"]{
+  order:99!important;
+}
+
+/* Si el topbar no tiene contenedor de acciones, fuerza a que los últimos botones queden alineados. */
+body.sdc-v95-light-default .topbar > button,
+body.sdc-v95-light-default .topbar-v87 > button{
+  margin-left:0!important;
+}
+
+/* Quitar definitivamente Vista de productos/Admin/Cliente/Captura de PRODUCTOS. */
+body.sdc-v97-pages[data-sdc-page="productos"] .view-mode-panel,
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-product-mode-card-v98,
+body.sdc-v98-product-tabs[data-sdc-page="productos"] .view-mode-panel,
+body.sdc-v98-product-tabs[data-sdc-page="productos"] .sdc-product-mode-card-v98,
+body.sdc-v100-polish[data-sdc-page="productos"] .view-mode-panel,
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-card-v98{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-products-title-v98{
+  margin-top:0!important;
+  margin-bottom:10px!important;
+}
+
+body.sdc-v97-pages[data-sdc-page="productos"] .search-panel,
+body.sdc-v97-pages[data-sdc-page="productos"] .category-gallery,
+body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
+  margin-top:0!important;
+}
+
+/* Bottom nav más compacto y sin tapar contenido. */
+body.sdc-v95-light-default .bottom-nav,
+body.sdc-v95-light-default .bottom-nav-v84{
+  width:calc(100vw - 22px)!important;
+  max-width:520px!important;
+  left:50%!important;
+  right:auto!important;
+  transform:translateX(-50%)!important;
+  bottom:10px!important;
+  padding:8px!important;
+  border-radius:24px!important;
+  overflow:visible!important;
+}
+
+body.sdc-v95-light-default .bottom-nav button,
+body.sdc-v95-light-default .bottom-nav-v84 button{
+  min-width:0!important;
+  height:58px!important;
+  border-radius:18px!important;
+  padding:6px 4px!important;
+}
+
+body.sdc-v95-light-default .bottom-nav button span,
+body.sdc-v95-light-default .bottom-nav-v84 button span{
+  font-size:11px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+
+body.sdc-v95-light-default #app,
+body.sdc-v95-light-default main#app{
+  padding-bottom:100px!important;
+}
+
+@media(max-width:760px){
+  body.sdc-v95-light-default .topbar,
+  body.sdc-v95-light-default .topbar-v87{
+    width:calc(100vw - 16px)!important;
+    max-width:calc(100vw - 16px)!important;
+    margin:8px auto 10px!important;
+    padding:10px!important;
+    border-radius:22px!important;
+  }
+
+  body.sdc-v95-light-default .topbar img,
+  body.sdc-v95-light-default .topbar-v87 img,
+  body.sdc-v95-light-default .brand img{
+    width:48px!important;
+    height:48px!important;
+    min-width:48px!important;
+  }
+
+  body.sdc-v95-light-default .topbar h1,
+  body.sdc-v95-light-default .topbar-v87 h1{
+    font-size:22px!important;
+    line-height:1!important;
+  }
+
+  body.sdc-v95-light-default .topbar small,
+  body.sdc-v95-light-default .topbar .top-meta-v88,
+  body.sdc-v95-light-default .topbar-v87 small,
+  body.sdc-v95-light-default .topbar-v87 .top-meta-v88{
+    font-size:10px!important;
+  }
+
+  body.sdc-v95-light-default .topbar-actions,
+  body.sdc-v95-light-default .actions,
+  body.sdc-v95-light-default .top-actions,
+  body.sdc-v95-light-default .topbar .right,
+  body.sdc-v95-light-default .topbar-v87 .right{
+    gap:6px!important;
+    max-width:150px!important;
+  }
+
+  body.sdc-v95-light-default .topbar button,
+  body.sdc-v95-light-default .topbar-v87 button,
+  body.sdc-v95-light-default .sdc-refresh-btn-v103{
+    flex-basis:44px!important;
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    border-radius:16px!important;
+  }
+}
+
+@media(max-width:380px){
+  body.sdc-v95-light-default .topbar button,
+  body.sdc-v95-light-default .topbar-v87 button,
+  body.sdc-v95-light-default .sdc-refresh-btn-v103{
+    flex-basis:40px!important;
+    width:40px!important;
+    min-width:40px!important;
+    max-width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+  }
+
+  body.sdc-v95-light-default .topbar h1,
+  body.sdc-v95-light-default .topbar-v87 h1{
+    font-size:19px!important;
+  }
+}

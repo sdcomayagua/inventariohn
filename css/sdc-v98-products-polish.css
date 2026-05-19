@@ -221,6 +221,81 @@ body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-v98 button[d
   transform:scale(.98)!important;
 }
 
+/* SDC V101: repaso final de espaciado y alineación en PRODUCTOS. */
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-page-tabs-v97{
+  margin-bottom:10px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-v98,
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-card-v98,
+body.sdc-v100-polish[data-sdc-page="productos"] .search-panel,
+body.sdc-v100-polish[data-sdc-page="productos"] .category-gallery,
+body.sdc-v100-polish[data-sdc-page="productos"] #inventario .section-head{
+  margin-top:0!important;
+  margin-bottom:12px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-v98{
+  border-radius:26px!important;
+  background:
+    radial-gradient(circle at 0% 0%,rgba(11,99,206,.09),transparent 30%),
+    linear-gradient(135deg,#fff 0%,#eef7ff 100%)!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-card-v98{
+  padding:16px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-head-v98{
+  padding:0 2px 10px!important;
+  margin-bottom:10px!important;
+  border-bottom:1px solid #edf2f7!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-card-v98 .view-mode-buttons button{
+  min-height:78px!important;
+  transition:transform .14s ease, box-shadow .14s ease!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-card-v98 .view-mode-buttons button:active{
+  transform:scale(.985)!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .search-panel{
+  padding:14px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .search-title{
+  margin-bottom:10px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .searchbar{
+  min-height:54px!important;
+  border-radius:18px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .category-gallery{
+  padding:14px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .category-head{
+  margin-bottom:10px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] #inventario .section-head{
+  padding:14px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .inventory-toolbar-v74{
+  gap:10px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .inventory-new-btn-v74{
+  border-radius:16px!important;
+  min-height:50px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .inventory-inline-search-v74,
+body.sdc-v100-polish[data-sdc-page="productos"] .inventory-cat-select-v74{
+  border-radius:16px!important;
+  min-height:50px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .grid,
+body.sdc-v100-polish[data-sdc-page="productos"] .inventory-content .grid{
+  gap:12px!important;
+}
+body.sdc-v100-polish[data-sdc-page="productos"] .product-card{
+  border:1px solid #dbe7f3!important;
+  background:#fff!important;
+  box-shadow:0 12px 28px rgba(15,35,55,.06)!important;
+  overflow:hidden!important;
+}
+
 @media(max-width:760px){
   body.sdc-v98-product-tabs .sdc-products-title-v98,
   body.sdc-v98-product-tabs .sdc-product-mode-card-v98,
@@ -263,6 +338,25 @@ body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-v98 button[d
     min-height:60px!important;
     border-radius:18px!important;
     font-size:16px!important;
+  }
+  body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-v98,
+  body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-card-v98,
+  body.sdc-v100-polish[data-sdc-page="productos"] .search-panel,
+  body.sdc-v100-polish[data-sdc-page="productos"] .category-gallery,
+  body.sdc-v100-polish[data-sdc-page="productos"] #inventario .section-head{
+    margin-bottom:10px!important;
+  }
+  body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-card-v98{
+    padding:12px!important;
+  }
+  body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-head-v98{
+    padding-bottom:8px!important;
+  }
+  body.sdc-v100-polish[data-sdc-page="productos"] .search-panel,
+  body.sdc-v100-polish[data-sdc-page="productos"] .category-gallery,
+  body.sdc-v100-polish[data-sdc-page="productos"] #inventario .section-head{
+    padding:12px!important;
+    border-radius:22px!important;
   }
 }
 

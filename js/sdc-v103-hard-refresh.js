@@ -1,7 +1,7 @@
-/* SDC V105: mover ACTUALIZAR y SINCRONIZAR abajo, fuera del encabezado. */
+/* SDC V108: ACTUALIZAR y SINCRONIZAR arriba del encabezado, bonitos y discretos. */
 (function(){
   'use strict';
-  const VERSION='105-refresh-utility-row';
+  const VERSION='108-refresh-top-tools';
   const STAMP='sdc_refresh_stamp';
 
   function toast(msg){
@@ -17,7 +17,7 @@
   }
 
   function utilityHTML(){
-    return `<nav class="sdc-utility-tabs-v105 no-print" data-sdc-utility-tabs="1" aria-label="Acciones del sistema">
+    return `<nav class="sdc-utility-tabs-v105 sdc-top-tools-v108 no-print" data-sdc-utility-tabs="1" aria-label="Acciones del sistema">
       <button type="button" class="sdc-sync-tab-v105" data-action="sync" data-sdc-utility-sync="1" title="Sincronizar catálogo">
         <i>↻</i><span>Sincronizar</span>
       </button>
@@ -34,11 +34,14 @@
 
   function ensureButton(){
     cleanOldButtons();
-    const tabs=document.querySelector('[data-sdc-page-tabs]');
-    if(!tabs) return;
+    const top=document.querySelector('.topbar,.topbar-v87');
+    if(!top) return;
     let row=document.querySelector('[data-sdc-utility-tabs]');
     if(!row){
-      tabs.insertAdjacentHTML('afterend',utilityHTML());
+      top.insertAdjacentHTML('beforebegin',utilityHTML());
+    }else if(row.nextElementSibling!==top){
+      top.parentNode.insertBefore(row, top);
+      row.classList.add('sdc-top-tools-v108');
     }
   }
 
@@ -61,9 +64,7 @@
 
   function cleanLocalRuntimeCache(){
     try{
-      const keepExact=new Set([
-        'sdc_v83_theme','sdc_v97_page','sdc_inventory_layout','sdc_card_view'
-      ]);
+      const keepExact=new Set(['sdc_v83_theme','sdc_v97_page','sdc_inventory_layout','sdc_card_view']);
       Object.keys(localStorage).forEach(key=>{
         if(keepExact.has(key)) return;
         if(/cache|version|stamp|boot|assets|build|refresh/i.test(key)) localStorage.removeItem(key);
@@ -86,7 +87,7 @@
     await clearBrowserCaches();
     cleanLocalRuntimeCache();
     const url=new URL(window.location.href);
-    url.searchParams.set('v','105');
+    url.searchParams.set('v','108');
     url.searchParams.set('t',Date.now().toString());
     window.location.replace(url.toString());
   }

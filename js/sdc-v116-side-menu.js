@@ -2,6 +2,16 @@
   'use strict';
   const STORE_KEY='sdc_control_ventas_v90';
   const LOGO='assets/logo-sdc.png';
+  function ensureCss(){
+    ['css/sdc-v117-final-polish.css?v=119-actions','css/sdc-v118-quote-sale-whatsapp.css?v=119-actions','css/sdc-v119-actions-not-floating.css?v=119-actions'].forEach(href=>{
+      const clean=href.split('?')[0];
+      if(document.querySelector('link[href*="'+clean+'"]')) return;
+      const link=document.createElement('link');
+      link.rel='stylesheet';
+      link.href=href;
+      document.head.appendChild(link);
+    });
+  }
   function read(){try{return window.SDCStore?window.SDCStore.load():JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}catch(e){return {products:[],sales:[],quotes:[],expenses:[]}}}
   function n(v){return Number(v)||0}
   function money(v){return 'Lps. '+n(v).toLocaleString('es-HN',{maximumFractionDigits:0})}
@@ -22,6 +32,6 @@
   function quotes(){const s=read(),q=s.quotes||[];const rows=q.slice(0,50).map(x=>'<div class="sdc-list-row-v116"><div><b>'+esc(x.client||'Cliente')+'</b><span>'+esc(x.id||'Cotización')+' · '+new Date(x.date||Date.now()).toLocaleString('es-HN')+'</span></div><em class="sdc-pill-v116">'+money(totalSale(x))+'</em></div>').join('');modal('Cotizaciones','<div class="sdc-list-v116">'+(rows||'<div class="sdc-empty-v116">No hay cotizaciones guardadas.</div>')+'</div>')}
   function ensure(){if(document.querySelector('[data-sdc-menu-open]'))return;document.body.insertAdjacentHTML('beforeend','<button class="sdc-menu-fab-v116 no-print" type="button" data-sdc-menu-open>☰</button><div class="sdc-menu-backdrop-v116 no-print" data-sdc-menu-close></div><aside class="sdc-menu-drawer-v116 no-print"><div class="sdc-menu-head-v116"><div class="sdc-menu-brand-v116"><img src="'+LOGO+'" alt="SD"><div><b>SD Comayagua</b><span>Menú rápido</span></div></div><button class="sdc-menu-close-v116" data-sdc-menu-close>×</button></div><div class="sdc-menu-grid-v116"><button class="sdc-menu-item-v116 primary" data-a="inicio"><i>⌂</i><span>Inicio</span><small>Panel</small></button><button class="sdc-menu-item-v116 primary" data-a="productos"><i>▦</i><span>Productos</span><small>Catálogo</small></button><button class="sdc-menu-item-v116" data-a="vender"><i>⚡</i><span>Vender</span><small>Recibo</small></button><button class="sdc-menu-item-v116" data-a="cotizar"><i>▧</i><span>Cotizar</span><small>Cotización</small></button><button class="sdc-menu-item-v116" data-a="ganancias"><i>$</i><span>Ganancias</span><small>Utilidad</small></button><button class="sdc-menu-item-v116" data-a="recibos"><i>▤</i><span>Recibos</span><small>Caja</small></button><button class="sdc-menu-item-v116" data-a="alertas"><i>!</i><span>Alertas</span><small>Inventario</small></button><button class="sdc-menu-item-v116" data-a="cotizaciones"><i>☷</i><span>Cotizaciones</span><small>Guardadas</small></button><button class="sdc-menu-item-v116" data-a="nuevo"><i>+</i><span>Producto</span><small>Agregar</small></button></div><p class="sdc-menu-note-v116">Este menú reemplaza la barra inferior para que no estorbe en capturas.</p></aside>')}
   function bind(){document.addEventListener('click',e=>{if(e.target.closest('[data-sdc-menu-open]')){e.preventDefault();open();return}if(e.target.closest('[data-sdc-menu-close]')){e.preventDefault();close();return}const a=e.target.closest('[data-a]')?.dataset.a;if(!a)return;e.preventDefault();if(a==='inicio')go('inicio');if(a==='productos')go('productos');if(a==='vender')clickText(['vender ahora','vender']);if(a==='cotizar')clickText(['cotizar']);if(a==='ganancias')gains();if(a==='recibos')receipts();if(a==='alertas')alerts();if(a==='cotizaciones')quotes();if(a==='nuevo'){go('productos');setTimeout(()=>clickText(['nuevo producto','+ producto']),250)}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){close();removeModal()}})}
-  function boot(){ensure();bind()}
+  function boot(){ensureCss();ensure();bind()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();

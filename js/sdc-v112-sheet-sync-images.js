@@ -1,4 +1,4 @@
-/* SDC V112: sincronización fuerte con Google Sheets + corrección de fotos. */
+/* SDC V113: sincronización fuerte con Google Sheets + fotos visibles + TOMAR FOTO / GALERIA. */
 (function(){
   'use strict';
 
@@ -26,9 +26,14 @@
     return Number.isFinite(n) ? n : 0;
   }
 
+  function isEmptyImageValue(v){
+    const s = text(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+    return !s || ['sin imagen','sin foto','sin galeria','sin galería','no imagen','no foto','no aplica','n/a','na','null','undefined','sin enlace','sin url','sin galeria'].includes(s);
+  }
+
   function firstValue(obj, keys, fallback=''){
     for(const key of keys){
-      if(obj && obj[key] !== undefined && obj[key] !== null && text(obj[key]) !== '') return obj[key];
+      if(obj && obj[key] !== undefined && obj[key] !== null && !isEmptyImageValue(obj[key])) return obj[key];
     }
     return fallback;
   }
@@ -55,9 +60,8 @@
   }
 
   function normalizeImageUrl(value){
-    let v = text(value);
-    if(!v) return '';
-    if(/^sin imagen$/i.test(v) || /^no imagen$/i.test(v) || /^null$/i.test(v) || /^undefined$/i.test(v)) return '';
+    let v = text(value).replace(/&amp;/g,'&');
+    if(isEmptyImageValue(v)) return '';
 
     const formula = v.match(/=\s*IMAGE\s*\(\s*["']([^"']+)["']/i);
     if(formula) v = formula[1];
@@ -73,7 +77,7 @@
 
   function normalizeGallery(value){
     const raw = text(value);
-    if(!raw) return '';
+    if(isEmptyImageValue(raw)) return '';
     return raw.split(/\s*(?:\r?\n|\||;)\s*/).map(normalizeImageUrl).filter(Boolean).join('\n');
   }
 
@@ -162,7 +166,6 @@
     const actions = ['products','getProducts','listProducts','syncInventory'];
     let lastError = null;
 
-    // Primero JSONP: funciona mejor en GitHub Pages + Apps Script porque evita CORS.
     for(const action of actions){
       try{
         const data = await sheetJsonp({action, only:'productos', sheet:PRODUCT_SHEET, productSheet:PRODUCT_SHEET, sheetId:SHEET_ID});
@@ -172,7 +175,6 @@
       }catch(err){ lastError = err; }
     }
 
-    // Segundo intento: fetch GET directo.
     for(const action of actions){
       try{
         const url = `${WEB_APP_URL}?action=${encodeURIComponent(action)}&only=productos&sheet=${encodeURIComponent(PRODUCT_SHEET)}&productSheet=${encodeURIComponent(PRODUCT_SHEET)}&sheetId=${encodeURIComponent(SHEET_ID)}&t=${Date.now()}`;
@@ -184,7 +186,6 @@
       }catch(err){ lastError = err; }
     }
 
-    // Último intento: POST JSON.
     for(const action of actions){
       try{
         const res = await fetch(WEB_APP_URL, {
@@ -205,7 +206,7 @@
 
   function toast(message, type='info'){
     const el = document.getElementById('toast');
-    if(!el){ console.log('[SDC V112]', message); return; }
+    if(!el){ console.log('[SDC V113]', message); return; }
     el.textContent = message;
     el.classList.add('show');
     if(type === 'ok') el.style.background = '#0f7d42';
@@ -230,6 +231,25 @@
     return state.products.length;
   }
 
+  function normalizeSavedProducts(){
+    if(!window.SDCStore) return;
+    try{
+      const state = window.SDCStore.load();
+      let changed = false;
+      state.products = (state.products || []).map((p,i)=>{
+        const before = JSON.stringify({image:p.image,gallery:p.gallery});
+        const out = Object.assign({}, p, {
+          image: normalizeImageUrl(p.image || p.imagen || p.foto || ''),
+          gallery: normalizeGallery(p.gallery || p.galeria || p.imagenes || p.fotos || '')
+        });
+        if(JSON.stringify({image:out.image,gallery:out.gallery}) !== before) changed = true;
+        return out;
+      });
+      state.settings = Object.assign({}, state.settings || {}, window.SDC_CONFIG);
+      if(changed) window.SDCStore.save(state);
+    }catch(err){ console.warn('[SDC V113] No se pudo normalizar productos guardados', err); }
+  }
+
   async function syncNow(opts={}){
     const buttons = document.querySelectorAll('[data-action="sync"],[data-sdc-utility-sync]');
     buttons.forEach(b=>{ b.classList.add('is-updating'); b.disabled = true; });
@@ -241,14 +261,14 @@
       if(opts.reload !== false){
         setTimeout(()=>{
           const u = new URL(location.href);
-          u.searchParams.set('v','112');
+          u.searchParams.set('v','113');
           u.searchParams.set('sync',Date.now());
           location.replace(u.toString());
         }, 650);
       }
       return count;
     }catch(err){
-      console.error('[SDC V112] Sync failed', err);
+      console.error('[SDC V113] Sync failed', err);
       toast('No se pudo sincronizar. Revisa permisos del Apps Script y que productos_pos exista.', 'error');
       return 0;
     }finally{
@@ -261,14 +281,80 @@
       const src = img.getAttribute('src') || '';
       const fixed = normalizeImageUrl(src);
       if(fixed && fixed !== src) img.setAttribute('src', fixed);
+      const live = img.getAttribute('src') || '';
+      if(/^https?:\/\//i.test(live) && img.getAttribute('crossorigin')){
+        img.removeAttribute('crossorigin');
+        try{ img.crossOrigin = null; }catch(e){}
+        img.setAttribute('referrerpolicy','no-referrer');
+        if(!img.dataset.sdcV113Reloaded){
+          img.dataset.sdcV113Reloaded = '1';
+          img.src = live;
+        }
+      }
       if(!img.dataset.sdcV112Error){
         img.dataset.sdcV112Error = '1';
         img.addEventListener('error', function(){
           if(this.classList.contains('sdc-img-fallback')) return;
+          const original = this.getAttribute('src') || '';
+          const retry = normalizeImageUrl(original);
+          if(retry && retry !== original){ this.src = retry; return; }
           this.src = 'assets/logo-sdc.png';
           this.classList.add('sdc-img-fallback');
         });
       }
+    });
+  }
+
+  function injectPhotoStyles(){
+    if(document.getElementById('sdc-v113-photo-style')) return;
+    const style = document.createElement('style');
+    style.id = 'sdc-v113-photo-style';
+    style.textContent = `
+      .sdc-photo-actions-v113{display:grid!important;grid-template-columns:1fr 1fr auto!important;gap:8px!important;align-items:center!important;width:100%!important}
+      .sdc-photo-choice-v113{min-height:42px!important;border-radius:14px!important;font-weight:950!important;letter-spacing:.03em!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;white-space:nowrap!important}
+      .sdc-photo-choice-v113.sdc-camera-v113{background:linear-gradient(135deg,#0b63ce,#10b981)!important;color:#fff!important;border:0!important;box-shadow:0 10px 22px rgba(11,99,206,.16)!important}
+      .sdc-photo-choice-v113.sdc-gallery-v113{background:#f3f8fd!important;color:#0f172a!important;border:1px solid #dbe7f3!important}
+      .sdc-v113-hidden-upload{display:none!important}
+      @media(max-width:430px){.sdc-photo-actions-v113{grid-template-columns:1fr 1fr!important}.sdc-photo-actions-v113 .btn.ghost{grid-column:1/-1!important}.sdc-photo-choice-v113{font-size:12px!important;padding:0 8px!important}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function patchPhotoUploadButtons(){
+    injectPhotoStyles();
+    document.querySelectorAll('.image-row-actions-v83').forEach(actions=>{
+      if(actions.dataset.sdcV113PhotoPatched === '1') return;
+      const originalLabel = actions.querySelector('.upload-image-btn');
+      const input = originalLabel && originalLabel.querySelector('input[type="file"][data-upload-image]');
+      if(!originalLabel || !input) return;
+      actions.dataset.sdcV113PhotoPatched = '1';
+      actions.classList.add('sdc-photo-actions-v113');
+      originalLabel.classList.add('sdc-v113-hidden-upload');
+
+      const camera = document.createElement('button');
+      camera.type = 'button';
+      camera.className = 'btn small sdc-photo-choice-v113 sdc-camera-v113';
+      camera.innerHTML = '<span aria-hidden="true">📷</span><span>TOMAR FOTO</span>';
+      camera.addEventListener('click', ev=>{
+        ev.preventDefault();
+        input.setAttribute('accept','image/*');
+        input.setAttribute('capture','environment');
+        input.click();
+      });
+
+      const gallery = document.createElement('button');
+      gallery.type = 'button';
+      gallery.className = 'btn small secondary sdc-photo-choice-v113 sdc-gallery-v113';
+      gallery.innerHTML = '<span aria-hidden="true">🖼️</span><span>GALERIA</span>';
+      gallery.addEventListener('click', ev=>{
+        ev.preventDefault();
+        input.setAttribute('accept','image/*');
+        input.removeAttribute('capture');
+        input.click();
+      });
+
+      actions.insertBefore(camera, originalLabel);
+      actions.insertBefore(gallery, originalLabel);
     });
   }
 
@@ -286,18 +372,22 @@
     const last = Number(localStorage.getItem(SYNC_STAMP_KEY) || 0);
     const age = Date.now() - last;
     if(last && age < 1000 * 60 * 10) return;
-    // Sin recargar automáticamente para que el panel no se quede “actualizando”.
     setTimeout(()=>syncNow({reload:false}), 1300);
   }
 
   function boot(){
+    normalizeSavedProducts();
     bindSyncButtons();
     patchBrokenImages();
+    patchPhotoUploadButtons();
     autoSyncOnce();
-    new MutationObserver(()=>patchBrokenImages()).observe(document.documentElement,{childList:true,subtree:true});
+    new MutationObserver(()=>{
+      patchBrokenImages();
+      patchPhotoUploadButtons();
+    }).observe(document.documentElement,{childList:true,subtree:true});
   }
 
-  window.SDCSheetsV112 = { syncNow, normalizeImageUrl, normalizeProduct, requestProducts };
+  window.SDCSheetsV112 = { syncNow, normalizeImageUrl, normalizeProduct, requestProducts, patchPhotoUploadButtons };
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, {once:true});
   else boot();
 })();

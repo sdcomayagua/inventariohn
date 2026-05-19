@@ -3,7 +3,7 @@
   const STORE_KEY='sdc_control_ventas_v90';
   const LOGO='assets/logo-sdc.png';
   function ensureCss(){
-    ['css/sdc-v117-final-polish.css?v=120-actions','css/sdc-v118-quote-sale-whatsapp.css?v=120-actions','css/sdc-v119-actions-not-floating.css?v=120-actions','css/sdc-v120-actions-real-end.css?v=120-actions'].forEach(href=>{
+    ['css/sdc-v117-final-polish.css?v=124-s24','css/sdc-v118-quote-sale-whatsapp.css?v=124-s24','css/sdc-v119-actions-not-floating.css?v=124-s24','css/sdc-v120-actions-real-end.css?v=124-s24','css/sdc-v121-menu-position.css?v=124-s24','css/sdc-v122-stats-clean.css?v=124-s24','css/sdc-v123-stats-431-fix.css?v=124-s24','css/sdc-v124-s24-ultra.css?v=124-s24'].forEach(href=>{
       const clean=href.split('?')[0];
       if(document.querySelector('link[href*="'+clean+'"]')) return;
       const link=document.createElement('link');

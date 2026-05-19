@@ -1,7 +1,7 @@
 /* =========================================================
-   SDC V110 FINAL UI
+   SDC V111 FINAL CLEAN UI
    Limpieza definitiva: sin barra inferior, header profesional,
-   utilidades arriba del header, tabs limpios y móvil sin recortes.
+   utilidades arriba del header como botones bonitos y discretos.
    ========================================================= */
 
 :root{
@@ -58,53 +58,70 @@ body.sdc-v95-light-default .app-bottom-nav{
   overflow:hidden!important;
 }
 
-/* Fila superior: Sincronizar / Actualizar arriba del encabezado */
+/* Herramientas superiores: bonitas, pequeñas y limpias */
 body.sdc-v95-light-default .sdc-utility-tabs-v105,
 body.sdc-v95-light-default .sdc-top-tools-v108{
   width:calc(100% - 18px)!important;
   max-width:600px!important;
-  margin:4px auto 8px!important;
-  padding:0!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-end!important;
-  gap:8px!important;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
+  margin:6px auto 8px!important;
+  padding:5px!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+  background:rgba(255,255,255,.78)!important;
+  border:1px solid rgba(219,231,243,.85)!important;
+  border-radius:18px!important;
+  box-shadow:0 8px 20px rgba(15,35,55,.045)!important;
+  backdrop-filter:blur(12px)!important;
 }
 
 body.sdc-v95-light-default .sdc-utility-tabs-v105 button,
 body.sdc-v95-light-default .sdc-top-tools-v108 button{
-  width:auto!important;
+  width:100%!important;
   min-width:0!important;
-  height:34px!important;
-  min-height:34px!important;
+  height:42px!important;
+  min-height:42px!important;
   padding:0 12px!important;
-  border-radius:999px!important;
-  border:1px solid rgba(203,213,225,.9)!important;
-  background:rgba(255,255,255,.72)!important;
-  color:#475569!important;
-  box-shadow:0 6px 16px rgba(15,35,55,.045)!important;
+  border-radius:14px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#334155!important;
+  box-shadow:none!important;
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
-  gap:7px!important;
-  font-size:10px!important;
+  gap:8px!important;
+  font-size:11px!important;
   line-height:1!important;
-  font-weight:900!important;
-  letter-spacing:.055em!important;
+  font-weight:950!important;
+  letter-spacing:.06em!important;
   text-transform:uppercase!important;
 }
 body.sdc-v95-light-default .sdc-utility-tabs-v105 button i,
 body.sdc-v95-light-default .sdc-top-tools-v108 button i{
+  width:24px!important;
+  height:24px!important;
+  border-radius:9px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#eef6ff!important;
+  color:var(--sdc-blue)!important;
   font-style:normal!important;
   font-size:14px!important;
   line-height:1!important;
-  opacity:.78!important;
+  opacity:1!important;
+}
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button:first-child,
+body.sdc-v95-light-default .sdc-top-tools-v108 button:first-child{
+  background:#f8fbff!important;
+}
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button:last-child,
+body.sdc-v95-light-default .sdc-top-tools-v108 button:last-child{
+  background:linear-gradient(135deg,#f8fbff,#eef7ff)!important;
+  color:#0f172a!important;
 }
 body.sdc-v95-light-default .sdc-utility-tabs-v105 button:active,
-body.sdc-v95-light-default .sdc-top-tools-v108 button:active{transform:scale(.98)!important;}
+body.sdc-v95-light-default .sdc-top-tools-v108 button:active{transform:scale(.985)!important;}
 body.sdc-v95-light-default .sdc-utility-tabs-v105 button.is-updating i,
 body.sdc-v95-light-default .sdc-top-tools-v108 button.is-updating i{animation:sdcSpin110 .8s linear infinite!important;}
 @keyframes sdcSpin110{to{transform:rotate(360deg)}}
@@ -295,7 +312,7 @@ body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
 }
 
 @media(max-width:390px){
-  body.sdc-v95-light-default .sdc-utility-tabs-v105 button{font-size:9px!important;padding:0 9px!important;}
+  body.sdc-v95-light-default .sdc-utility-tabs-v105 button{font-size:10px!important;padding:0 9px!important;}
   body.sdc-v97-pages .sdc-page-tabs-v97 button{font-size:12px!important;}
   body.sdc-v95-light-default .top-title h1,
   body.sdc-v95-light-default .topbar h1,

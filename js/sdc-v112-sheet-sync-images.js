@@ -1,0 +1,274 @@
+/* SDC V112: sincronización fuerte con Google Sheets + corrección de fotos. */
+(function(){
+  'use strict';
+
+  const SHEET_ID = '1A3unHNlFBrbi2GNmD7NOEk_JlWciEE2PE5Wxx4-X0ZY';
+  const PRODUCT_SHEET = 'productos_pos';
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxp46Vad-z_S1SD6AIxO4_HS2ZcEDFKBmCJsamQvGf4g-o2a_83w1OJcyg5rtB0rFCM/exec';
+  const SYNC_STAMP_KEY = 'sdc_v112_last_sheet_sync';
+
+  window.SDC_CONFIG = Object.assign({}, window.SDC_CONFIG || {}, {
+    sheetId: SHEET_ID,
+    productSheet: PRODUCT_SHEET,
+    webAppUrl: WEB_APP_URL,
+    autoSheetSync: true
+  });
+
+  function text(v){
+    if(v === null || v === undefined) return '';
+    if(Array.isArray(v)) return v.map(text).filter(Boolean).join('\n');
+    if(typeof v === 'object') return Object.values(v).map(text).filter(Boolean).join('\n');
+    return String(v).trim();
+  }
+
+  function number(v){
+    const n = Number(String(v ?? '').replace(/[^0-9.-]/g,''));
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function firstValue(obj, keys, fallback=''){
+    for(const key of keys){
+      if(obj && obj[key] !== undefined && obj[key] !== null && text(obj[key]) !== '') return obj[key];
+    }
+    return fallback;
+  }
+
+  function parseJSONField(row){
+    const raw = row && (row.json || row.JSON || row.data || row.datos);
+    if(!raw || typeof raw !== 'string') return {};
+    try{
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    }catch(e){ return {}; }
+  }
+
+  function driveId(value){
+    const v = text(value);
+    if(!v) return '';
+    let m = v.match(/drive\.google\.com\/file\/d\/([^/]+)/i);
+    if(m) return m[1];
+    m = v.match(/[?&]id=([^&]+)/i);
+    if(m && /drive\.google\.com/i.test(v)) return m[1];
+    m = v.match(/uc\?[^\s]*id=([^&]+)/i);
+    if(m) return m[1];
+    return '';
+  }
+
+  function normalizeImageUrl(value){
+    let v = text(value);
+    if(!v) return '';
+    if(/^sin imagen$/i.test(v) || /^no imagen$/i.test(v) || /^null$/i.test(v) || /^undefined$/i.test(v)) return '';
+
+    const formula = v.match(/=\s*IMAGE\s*\(\s*["']([^"']+)["']/i);
+    if(formula) v = formula[1];
+
+    // Si vienen varias URLs en una celda, usar la primera válida.
+    const parts = v.split(/\s*(?:\r?\n|\||,\s*https?:\/\/|;\s*https?:\/\/)\s*/).map((part, idx)=>{
+      if(idx > 0 && !/^https?:\/\//i.test(part) && /\./.test(part)) return 'https://' + part;
+      return part;
+    }).filter(Boolean);
+    if(parts.length > 1) v = parts.find(x=>/^(https?:|data:image|blob:|assets\/|img\/|images\/)/i.test(x)) || parts[0];
+
+    const id = driveId(v);
+    if(id) return `https://drive.google.com/uc?export=view&id=${encodeURIComponent(id)}`;
+
+    // Dropbox/OneDrive enlaces compartidos básicos.
+    if(/dropbox\.com/i.test(v)) return v.replace(/[?&]dl=0/i,'?raw=1');
+
+    return v;
+  }
+
+  function normalizeGallery(value){
+    const raw = text(value);
+    if(!raw) return '';
+    return raw.split(/\s*(?:\r?\n|\||;)\s*/).map(normalizeImageUrl).filter(Boolean).join('\n');
+  }
+
+  function colorRowsTotal(raw){
+    const s = text(raw);
+    if(!s) return 0;
+    let total = 0;
+    s.split(/\s*(?:\r?\n|\||;|,)\s*/).forEach(part=>{
+      const m = part.match(/(?:=|:|x|-)\s*([0-9]+(?:[.,][0-9]+)?)/i) || part.match(/^([0-9]+(?:[.,][0-9]+)?)/);
+      if(m) total += number(m[1]);
+    });
+    return total;
+  }
+
+  function normalizeProduct(row, index){
+    const json = parseJSONField(row);
+    const src = Object.assign({}, json, row || {});
+    const colors = text(firstValue(src,['colors','colores','colorStock','stockColores','variantesColor','variantes_color'],''));
+    const colorStock = colorRowsTotal(colors);
+    const image = normalizeImageUrl(firstValue(src,[
+      'image','imagen','foto','photo','picture','thumbnail','thumb','imageUrl','imagenUrl','fotoUrl','urlImagen','img','src'
+    ],''));
+    const gallery = normalizeGallery(firstValue(src,['gallery','galeria','imagenes','fotos','images','galeriaUrl','galleryUrl'],''));
+    return {
+      id: text(firstValue(src,['id','codigo','code','sku'],`SDC-${String(index+1).padStart(3,'0')}`)),
+      name: text(firstValue(src,['name','nombre','producto','title','titulo'],'Producto sin nombre')),
+      categories: text(firstValue(src,['categories','category','categoria','categorias','etiquetas'],'General')),
+      brand: text(firstValue(src,['brand','marca'],'')),
+      price: number(firstValue(src,['price','precio','precio_venta','venta'],0)),
+      cost: number(firstValue(src,['cost','costo','costo_compra','compra'],0)),
+      stock: colorStock || number(firstValue(src,['stock','cantidad','existencia','inventario'],0)),
+      colors: colors,
+      image: image,
+      gallery: gallery,
+      description: text(firstValue(src,['description','descripcion','detalle','descripcion_larga'],'')),
+      promos: text(firstValue(src,['promos','promociones','preciosCantidad','precios_cantidad','mayoreo','ofertas'],'')),
+      active: !(src.active === false || src.activo === false || String(src.active ?? src.activo ?? '1').trim() === '0'),
+      updatedAt: text(firstValue(src,['updatedAt','updated_at','fecha_actualizacion','updated'],''))
+    };
+  }
+
+  function productArrayFromPayload(payload){
+    if(Array.isArray(payload)) return payload;
+    if(!payload || typeof payload !== 'object') return [];
+    const candidates = [payload.products, payload.productos, payload.items, payload.data, payload.rows, payload.result, payload.catalogo];
+    for(const c of candidates){
+      if(Array.isArray(c)) return c;
+      if(c && typeof c === 'object'){
+        const nested = productArrayFromPayload(c);
+        if(nested.length) return nested;
+      }
+    }
+    return [];
+  }
+
+  async function readJSON(res){
+    const txt = await res.text();
+    try{ return JSON.parse(txt); }catch(e){
+      const m = txt.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+      if(m) return JSON.parse(m[0]);
+      throw new Error('Respuesta no es JSON válido');
+    }
+  }
+
+  async function requestProducts(){
+    const actions = ['products','getProducts','listProducts','syncInventory'];
+    let lastError = null;
+    for(const action of actions){
+      try{
+        const url = `${WEB_APP_URL}?action=${encodeURIComponent(action)}&sheet=${encodeURIComponent(PRODUCT_SHEET)}&sheetId=${encodeURIComponent(SHEET_ID)}&t=${Date.now()}`;
+        const res = await fetch(url, {method:'GET', cache:'no-store', redirect:'follow'});
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await readJSON(res);
+        const rows = productArrayFromPayload(data);
+        if(rows.length) return rows;
+      }catch(err){ lastError = err; }
+    }
+    for(const action of actions){
+      try{
+        const res = await fetch(WEB_APP_URL, {
+          method:'POST',
+          cache:'no-store',
+          redirect:'follow',
+          headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify({action, sheet:PRODUCT_SHEET, sheetId:SHEET_ID})
+        });
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await readJSON(res);
+        const rows = productArrayFromPayload(data);
+        if(rows.length) return rows;
+      }catch(err){ lastError = err; }
+    }
+    throw lastError || new Error('No se pudo leer productos_pos');
+  }
+
+  function toast(message, type='info'){
+    const el = document.getElementById('toast');
+    if(!el){ console.log('[SDC V112]', message); return; }
+    el.textContent = message;
+    el.classList.add('show');
+    if(type === 'ok') el.style.background = '#0f7d42';
+    if(type === 'error') el.style.background = '#8f1717';
+    clearTimeout(el._sdc112Toast);
+    el._sdc112Toast = setTimeout(()=>{ el.classList.remove('show'); el.style.background=''; }, 3200);
+  }
+
+  function saveProducts(products){
+    if(!window.SDCStore) throw new Error('SDCStore no está listo');
+    const state = window.SDCStore.load();
+    state.products = products.map(normalizeProduct).filter(p=>p.name && p.name !== 'Producto sin nombre');
+    state.settings = Object.assign({}, state.settings || {}, window.SDC_CONFIG, {
+      sheetId:SHEET_ID,
+      productSheet:PRODUCT_SHEET,
+      webAppUrl:WEB_APP_URL,
+      autoSheetSync:true,
+      lastSheetSync:new Date().toISOString()
+    });
+    window.SDCStore.save(state);
+    localStorage.setItem(SYNC_STAMP_KEY, String(Date.now()));
+    return state.products.length;
+  }
+
+  async function syncNow(opts={}){
+    const buttons = document.querySelectorAll('[data-action="sync"],[data-sdc-utility-sync]');
+    buttons.forEach(b=>{ b.classList.add('is-updating'); b.disabled = true; });
+    try{
+      toast('Sincronizando productos y fotos desde Google Sheets...');
+      const rows = await requestProducts();
+      const count = saveProducts(rows);
+      toast(`✅ Sincronizado: ${count} productos desde Google Sheets.`, 'ok');
+      if(opts.reload !== false){
+        setTimeout(()=>{
+          const u = new URL(location.href);
+          u.searchParams.set('v','112');
+          u.searchParams.set('sync',Date.now());
+          location.replace(u.toString());
+        }, 650);
+      }
+      return count;
+    }catch(err){
+      console.error('[SDC V112] Sync failed', err);
+      toast('No se pudo sincronizar. Revisa permisos del Apps Script y que productos_pos exista.', 'error');
+      return 0;
+    }finally{
+      buttons.forEach(b=>{ b.classList.remove('is-updating'); b.disabled = false; });
+    }
+  }
+
+  function patchBrokenImages(){
+    document.querySelectorAll('img').forEach(img=>{
+      const src = img.getAttribute('src') || '';
+      const fixed = normalizeImageUrl(src);
+      if(fixed && fixed !== src) img.setAttribute('src', fixed);
+      if(!img.getAttribute('onerror')){
+        img.onerror = function(){
+          this.onerror = null;
+          this.src = 'assets/logo-sdc.png';
+          this.classList.add('sdc-img-fallback');
+        };
+      }
+    });
+  }
+
+  function bindSyncButtons(){
+    document.addEventListener('click', ev=>{
+      const btn = ev.target.closest('[data-action="sync"],[data-sdc-utility-sync]');
+      if(!btn) return;
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      syncNow({reload:true});
+    }, true);
+  }
+
+  function autoSyncOnce(){
+    const last = Number(localStorage.getItem(SYNC_STAMP_KEY) || 0);
+    const age = Date.now() - last;
+    if(last && age < 1000 * 60 * 10) return;
+    setTimeout(()=>syncNow({reload:false}), 1200);
+  }
+
+  function boot(){
+    bindSyncButtons();
+    patchBrokenImages();
+    autoSyncOnce();
+    new MutationObserver(()=>patchBrokenImages()).observe(document.documentElement,{childList:true,subtree:true});
+  }
+
+  window.SDCSheetsV112 = { syncNow, normalizeImageUrl, normalizeProduct, requestProducts };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, {once:true});
+  else boot();
+})();

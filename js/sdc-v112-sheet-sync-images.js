@@ -1,4 +1,4 @@
-/* SDC V113: sincronización fuerte con Google Sheets + fotos visibles + TOMAR FOTO / GALERIA. */
+/* SDC V114: sincronización fuerte + fotos + botones foto + tarjetas de resumen corregidas. */
 (function(){
   'use strict';
 
@@ -62,13 +62,10 @@
   function normalizeImageUrl(value){
     let v = text(value).replace(/&amp;/g,'&');
     if(isEmptyImageValue(v)) return '';
-
     const formula = v.match(/=\s*IMAGE\s*\(\s*["']([^"']+)["']/i);
     if(formula) v = formula[1];
-
     const parts = v.split(/\s*(?:\r?\n|\||;|,\s*(?=https?:\/\/))\s*/).filter(Boolean);
     if(parts.length > 1) v = parts.find(x=>/^(https?:|data:image|blob:|assets\/|img\/|images\/)/i.test(x)) || parts[0];
-
     const id = driveId(v);
     if(id) return `https://drive.google.com/uc?export=view&id=${encodeURIComponent(id)}`;
     if(/dropbox\.com/i.test(v)) return v.replace(/[?&]dl=0/i,'?raw=1');
@@ -135,7 +132,7 @@
 
   function sheetJsonp(params){
     return new Promise((resolve,reject)=>{
-      const cb = 'sdcV112Cb_' + Date.now() + '_' + Math.floor(Math.random()*99999);
+      const cb = 'sdcV114Cb_' + Date.now() + '_' + Math.floor(Math.random()*99999);
       const script = document.createElement('script');
       const url = new URL(WEB_APP_URL);
       Object.entries(Object.assign({}, params, {callback:cb, _:Date.now()})).forEach(([k,v])=>url.searchParams.set(k, v));
@@ -165,7 +162,6 @@
   async function requestProducts(){
     const actions = ['products','getProducts','listProducts','syncInventory'];
     let lastError = null;
-
     for(const action of actions){
       try{
         const data = await sheetJsonp({action, only:'productos', sheet:PRODUCT_SHEET, productSheet:PRODUCT_SHEET, sheetId:SHEET_ID});
@@ -174,7 +170,6 @@
         if(rows.length) return rows;
       }catch(err){ lastError = err; }
     }
-
     for(const action of actions){
       try{
         const url = `${WEB_APP_URL}?action=${encodeURIComponent(action)}&only=productos&sheet=${encodeURIComponent(PRODUCT_SHEET)}&productSheet=${encodeURIComponent(PRODUCT_SHEET)}&sheetId=${encodeURIComponent(SHEET_ID)}&t=${Date.now()}`;
@@ -185,14 +180,10 @@
         if(rows.length) return rows;
       }catch(err){ lastError = err; }
     }
-
     for(const action of actions){
       try{
         const res = await fetch(WEB_APP_URL, {
-          method:'POST',
-          cache:'no-store',
-          redirect:'follow',
-          headers:{'Content-Type':'text/plain;charset=utf-8'},
+          method:'POST', cache:'no-store', redirect:'follow', headers:{'Content-Type':'text/plain;charset=utf-8'},
           body:JSON.stringify({action, only:'productos', sheet:PRODUCT_SHEET, productSheet:PRODUCT_SHEET, sheetId:SHEET_ID})
         });
         if(!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -206,7 +197,7 @@
 
   function toast(message, type='info'){
     const el = document.getElementById('toast');
-    if(!el){ console.log('[SDC V113]', message); return; }
+    if(!el){ console.log('[SDC V114]', message); return; }
     el.textContent = message;
     el.classList.add('show');
     if(type === 'ok') el.style.background = '#0f7d42';
@@ -220,11 +211,7 @@
     const state = window.SDCStore.load();
     state.products = products.map(normalizeProduct).filter(p=>p.name && p.name !== 'Producto sin nombre');
     state.settings = Object.assign({}, state.settings || {}, window.SDC_CONFIG, {
-      sheetId:SHEET_ID,
-      productSheet:PRODUCT_SHEET,
-      webAppUrl:WEB_APP_URL,
-      autoSheetSync:true,
-      lastSheetSync:new Date().toISOString()
+      sheetId:SHEET_ID, productSheet:PRODUCT_SHEET, webAppUrl:WEB_APP_URL, autoSheetSync:true, lastSheetSync:new Date().toISOString()
     });
     window.SDCStore.save(state);
     localStorage.setItem(SYNC_STAMP_KEY, String(Date.now()));
@@ -236,7 +223,7 @@
     try{
       const state = window.SDCStore.load();
       let changed = false;
-      state.products = (state.products || []).map((p,i)=>{
+      state.products = (state.products || []).map((p)=>{
         const before = JSON.stringify({image:p.image,gallery:p.gallery});
         const out = Object.assign({}, p, {
           image: normalizeImageUrl(p.image || p.imagen || p.foto || ''),
@@ -247,7 +234,7 @@
       });
       state.settings = Object.assign({}, state.settings || {}, window.SDC_CONFIG);
       if(changed) window.SDCStore.save(state);
-    }catch(err){ console.warn('[SDC V113] No se pudo normalizar productos guardados', err); }
+    }catch(err){ console.warn('[SDC V114] No se pudo normalizar productos guardados', err); }
   }
 
   async function syncNow(opts={}){
@@ -261,14 +248,14 @@
       if(opts.reload !== false){
         setTimeout(()=>{
           const u = new URL(location.href);
-          u.searchParams.set('v','113');
+          u.searchParams.set('v','114');
           u.searchParams.set('sync',Date.now());
           location.replace(u.toString());
         }, 650);
       }
       return count;
     }catch(err){
-      console.error('[SDC V113] Sync failed', err);
+      console.error('[SDC V114] Sync failed', err);
       toast('No se pudo sincronizar. Revisa permisos del Apps Script y que productos_pos exista.', 'error');
       return 0;
     }finally{
@@ -286,10 +273,7 @@
         img.removeAttribute('crossorigin');
         try{ img.crossOrigin = null; }catch(e){}
         img.setAttribute('referrerpolicy','no-referrer');
-        if(!img.dataset.sdcV113Reloaded){
-          img.dataset.sdcV113Reloaded = '1';
-          img.src = live;
-        }
+        if(!img.dataset.sdcV113Reloaded){ img.dataset.sdcV113Reloaded = '1'; img.src = live; }
       }
       if(!img.dataset.sdcV112Error){
         img.dataset.sdcV112Error = '1';
@@ -306,16 +290,22 @@
   }
 
   function injectPhotoStyles(){
-    if(document.getElementById('sdc-v113-photo-style')) return;
+    if(document.getElementById('sdc-v114-ui-style')) return;
     const style = document.createElement('style');
-    style.id = 'sdc-v113-photo-style';
+    style.id = 'sdc-v114-ui-style';
     style.textContent = `
       .sdc-photo-actions-v113{display:grid!important;grid-template-columns:1fr 1fr auto!important;gap:8px!important;align-items:center!important;width:100%!important}
       .sdc-photo-choice-v113{min-height:42px!important;border-radius:14px!important;font-weight:950!important;letter-spacing:.03em!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;white-space:nowrap!important}
       .sdc-photo-choice-v113.sdc-camera-v113{background:linear-gradient(135deg,#0b63ce,#10b981)!important;color:#fff!important;border:0!important;box-shadow:0 10px 22px rgba(11,99,206,.16)!important}
       .sdc-photo-choice-v113.sdc-gallery-v113{background:#f3f8fd!important;color:#0f172a!important;border:1px solid #dbe7f3!important}
       .sdc-v113-hidden-upload{display:none!important}
-      @media(max-width:430px){.sdc-photo-actions-v113{grid-template-columns:1fr 1fr!important}.sdc-photo-actions-v113 .btn.ghost{grid-column:1/-1!important}.sdc-photo-choice-v113{font-size:12px!important;padding:0 8px!important}}
+      body.sdc-v95-light-default .home-stats-v94,body.sdc-v95-light-default .stats.home-stats-v94{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;width:100%!important;overflow:visible!important}
+      body.sdc-v95-light-default .home-stats-v94 .stat{min-width:0!important;width:100%!important;min-height:92px!important;padding:15px!important;border-radius:20px!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;background:#fff!important;color:#0f172a!important}
+      body.sdc-v95-light-default .home-stats-v94 .stat b,body.sdc-v95-light-default .home-stats-v94 .stat strong{display:block!important;max-width:100%!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(22px,6vw,30px)!important;line-height:1.05!important;letter-spacing:-.02em!important;color:#0f172a!important}
+      body.sdc-v95-light-default .home-stats-v94 .stat span{display:block!important;max-width:100%!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;font-size:11px!important;line-height:1.15!important;letter-spacing:.065em!important;color:#64748b!important;font-weight:950!important;margin-top:8px!important}
+      body.sdc-v95-light-default .home-stats-v94 .stat.featured{grid-column:1/-1!important;min-height:94px!important;background:linear-gradient(135deg,#04233d,#0b63ce)!important;color:#fff!important}
+      body.sdc-v95-light-default .home-stats-v94 .stat.featured b,body.sdc-v95-light-default .home-stats-v94 .stat.featured strong,body.sdc-v95-light-default .home-stats-v94 .stat.featured span{color:#fff!important}
+      @media(max-width:430px){.sdc-photo-actions-v113{grid-template-columns:1fr 1fr!important}.sdc-photo-actions-v113 .btn.ghost{grid-column:1/-1!important}.sdc-photo-choice-v113{font-size:12px!important;padding:0 8px!important}body.sdc-v95-light-default .home-stats-v94 .stat{min-height:88px!important;padding:13px!important}body.sdc-v95-light-default .home-stats-v94 .stat b{font-size:clamp(21px,7vw,28px)!important}body.sdc-v95-light-default .home-stats-v94 .stat span{font-size:10.5px!important}}
     `;
     document.head.appendChild(style);
   }
@@ -330,29 +320,12 @@
       actions.dataset.sdcV113PhotoPatched = '1';
       actions.classList.add('sdc-photo-actions-v113');
       originalLabel.classList.add('sdc-v113-hidden-upload');
-
       const camera = document.createElement('button');
-      camera.type = 'button';
-      camera.className = 'btn small sdc-photo-choice-v113 sdc-camera-v113';
-      camera.innerHTML = '<span aria-hidden="true">📷</span><span>TOMAR FOTO</span>';
-      camera.addEventListener('click', ev=>{
-        ev.preventDefault();
-        input.setAttribute('accept','image/*');
-        input.setAttribute('capture','environment');
-        input.click();
-      });
-
+      camera.type = 'button'; camera.className = 'btn small sdc-photo-choice-v113 sdc-camera-v113'; camera.innerHTML = '<span aria-hidden="true">📷</span><span>TOMAR FOTO</span>';
+      camera.addEventListener('click', ev=>{ ev.preventDefault(); input.setAttribute('accept','image/*'); input.setAttribute('capture','environment'); input.click(); });
       const gallery = document.createElement('button');
-      gallery.type = 'button';
-      gallery.className = 'btn small secondary sdc-photo-choice-v113 sdc-gallery-v113';
-      gallery.innerHTML = '<span aria-hidden="true">🖼️</span><span>GALERIA</span>';
-      gallery.addEventListener('click', ev=>{
-        ev.preventDefault();
-        input.setAttribute('accept','image/*');
-        input.removeAttribute('capture');
-        input.click();
-      });
-
+      gallery.type = 'button'; gallery.className = 'btn small secondary sdc-photo-choice-v113 sdc-gallery-v113'; gallery.innerHTML = '<span aria-hidden="true">🖼️</span><span>GALERIA</span>';
+      gallery.addEventListener('click', ev=>{ ev.preventDefault(); input.setAttribute('accept','image/*'); input.removeAttribute('capture'); input.click(); });
       actions.insertBefore(camera, originalLabel);
       actions.insertBefore(gallery, originalLabel);
     });
@@ -362,9 +335,7 @@
     document.addEventListener('click', ev=>{
       const btn = ev.target.closest('[data-action="sync"],[data-sdc-utility-sync]');
       if(!btn) return;
-      ev.preventDefault();
-      ev.stopImmediatePropagation();
-      syncNow({reload:true});
+      ev.preventDefault(); ev.stopImmediatePropagation(); syncNow({reload:true});
     }, true);
   }
 
@@ -376,15 +347,8 @@
   }
 
   function boot(){
-    normalizeSavedProducts();
-    bindSyncButtons();
-    patchBrokenImages();
-    patchPhotoUploadButtons();
-    autoSyncOnce();
-    new MutationObserver(()=>{
-      patchBrokenImages();
-      patchPhotoUploadButtons();
-    }).observe(document.documentElement,{childList:true,subtree:true});
+    normalizeSavedProducts(); bindSyncButtons(); patchBrokenImages(); injectPhotoStyles(); patchPhotoUploadButtons(); autoSyncOnce();
+    new MutationObserver(()=>{ patchBrokenImages(); injectPhotoStyles(); patchPhotoUploadButtons(); }).observe(document.documentElement,{childList:true,subtree:true});
   }
 
   window.SDCSheetsV112 = { syncNow, normalizeImageUrl, normalizeProduct, requestProducts, patchPhotoUploadButtons };

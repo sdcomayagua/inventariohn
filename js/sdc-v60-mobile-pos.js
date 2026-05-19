@@ -1,68 +1,41 @@
 (function(){
   'use strict';
   const KEY='sdc_v83_theme';
-  const THEMES=['black','blue','red'];
-  const LABEL={black:'Negro',blue:'Azul',red:'Rojo'};
-  const ICON={black:'',blue:'',red:''};
+  const THEMES=['light'];
+  const LABEL={light:'Claro'};
   let busy=false;
 
   function getTheme(){
-    const saved=localStorage.getItem(KEY);
-    return THEMES.includes(saved)?saved:'black';
+    return 'light';
+  }
+  function removeThemePanel(){
+    document.querySelectorAll('[data-v60-theme-panel],.sdc-v60-theme-panel').forEach(panel=>panel.remove());
   }
   function setTheme(theme, silent){
-    const clean=THEMES.includes(theme)?theme:'black';
-    document.body.classList.add('sdc-v60-pos','sdc-v61-clean');
-    document.body.classList.toggle('sdc-theme-black', clean==='black');
-    document.body.classList.toggle('sdc-theme-blue', clean==='blue');
-    document.body.classList.toggle('sdc-theme-red', clean==='red');
-    document.body.classList.remove('sdc-theme-gamer');
-    document.body.classList.remove('sdc-theme-dark','sdc-v57-dark','pro-dark-mode','dark-mode');
+    const clean='light';
+    document.body.classList.add('sdc-v60-pos','sdc-v61-clean','sdc-v95-light-default','sdc-theme-light');
+    document.body.classList.remove(
+      'sdc-theme-black','sdc-theme-blue','sdc-theme-red','sdc-theme-gamer',
+      'sdc-theme-dark','sdc-v57-dark','sdc-v57-light','pro-dark-mode','pro-white-mode','dark-mode'
+    );
+    document.documentElement.setAttribute('data-theme','light');
     localStorage.setItem(KEY, clean);
     const meta=document.querySelector('meta[name="theme-color"]');
-    if(meta) meta.setAttribute('content', clean==='blue'?'#153f83':(clean==='red'?'#941425':'#061522'));
-    updateThemePanel();
+    if(meta) meta.setAttribute('content','#f4f7fb');
+    removeThemePanel();
     if(!silent && window.dispatchEvent){
       try{window.dispatchEvent(new CustomEvent('sdc:v60-theme',{detail:{theme:clean}}));}catch(e){}
     }
   }
-  function panelHTML(){
-    const t=getTheme();
-    return `<section class="sdc-v60-theme-panel sdc-v60-theme-panel-v87 no-print" data-v60-theme-panel="1">
-      <div class="sdc-v60-theme-title sdc-v60-theme-title-v87"><span>Apariencia</span><em>${LABEL[t]}</em></div>
-      <div class="sdc-v60-theme-buttons sdc-v60-theme-buttons-v87" role="group" aria-label="Apariencia del panel">
-        ${THEMES.map(name=>`<button type="button" data-v60-theme="${name}" aria-pressed="${t===name}"><span class="theme-dot" aria-hidden="true">${ICON[name]}</span><span>${LABEL[name]}</span><small>${name==='black'?'Principal':name==='blue'?'Azul': 'Rojo'}</small></button>`).join('')}
-      </div>
-    </section>`;
-  }
-  function updateThemePanel(){
-    const t=getTheme();
-    document.querySelectorAll('[data-v60-theme]').forEach(btn=>{
-      btn.setAttribute('aria-pressed', String(btn.dataset.v60Theme===t));
-    });
-    const badge=document.querySelector('.sdc-v60-theme-title-v87 em');
-    if(badge) badge.textContent=LABEL[t] || 'Negro';
-  }
-  function ensurePanel(){
-    const app=document.getElementById('app');
-    const top=document.querySelector('.topbar');
-    if(!app || !top) return;
-    let panel=document.querySelector('[data-v60-theme-panel]');
-    if(!panel){
-      top.insertAdjacentHTML('afterend', panelHTML());
-      panel=document.querySelector('[data-v60-theme-panel]');
-      panel?.addEventListener('click', e=>{
-        const btn=e.target.closest('[data-v60-theme]');
-        if(!btn) return;
-        setTheme(btn.dataset.v60Theme);
-        // Sin barra/toast al cambiar modo visual; el botón activo ya confirma el cambio.
-      });
-    }
-    updateThemePanel();
-  }
+  function panelHTML(){ return ''; }
+  function updateThemePanel(){ removeThemePanel(); }
+  function ensurePanel(){ removeThemePanel(); }
   function cleanTextNodes(){
     // Quita textos de marketing heredados si algún script viejo los vuelve a pintar.
     const bad=[
+      /ventas,\s*cotizaciones\s+e\s+inventario\s+sin\s+enredos\.?/ig,
+      /cat[aá]logo\s+2026\s+cargado,?\s*acciones\s+grandes\s+para\s+m[oó]vil\s+y\s+sincronizaci[oó]n\s+directa\s+con\s+Apps\s+Script\.?/ig,
+      /panel\s+conectado\s+a\s+Google\s+Sheets/ig,
       /vende\s+r[aá]pido/ig,
       /desde\s+tu\s+celular/ig,
       /sin\s+pantallas\s+complicadas/ig,
@@ -79,8 +52,8 @@
     });
   }
   function purgeOldClasses(){
-    document.body.classList.add('sdc-v60-pos','sdc-v61-clean');
-    document.body.classList.remove('sdc-v57-dark','sdc-v57-light','dark-mode','pro-white-mode','pro-dark-mode');
+    document.body.classList.add('sdc-v60-pos','sdc-v61-clean','sdc-v95-light-default','sdc-theme-light');
+    document.body.classList.remove('sdc-theme-black','sdc-theme-blue','sdc-theme-red','sdc-v57-dark','sdc-v57-light','dark-mode','pro-white-mode','pro-dark-mode');
     document.documentElement.style.setProperty('overflow-x','hidden','important');
     document.body.style.setProperty('overflow-x','hidden','important');
     if(!document.body.classList.contains('modal-open')){

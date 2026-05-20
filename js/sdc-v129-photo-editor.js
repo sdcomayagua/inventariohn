@@ -1,4 +1,4 @@
-/* SDC V134: editor de imágenes + recibos/cotizaciones + desktop + S24 Ultra + botones al final. */
+/* SDC V135: editor de imágenes + carga final de CSS/JS para desktop, S24 Ultra y menú estable. */
 (function(){
   'use strict';
   if(window.SDCV129PhotoEditor) return;
@@ -6,11 +6,11 @@
 
   function ensureCss(){
     const files = [
-      'css/sdc-v130-receipts-clean.css?v=134-final-ui',
-      'css/sdc-v131-s24-ui-final.css?v=134-final-ui',
-      'css/sdc-v132-actions-bottom-final.css?v=134-final-ui',
-      'css/sdc-v133-desktop-final.css?v=134-final-ui',
-      'css/sdc-v134-large-mobile-final.css?v=134-final-ui'
+      'css/sdc-v130-receipts-clean.css?v=135-final',
+      'css/sdc-v131-s24-ui-final.css?v=135-final',
+      'css/sdc-v132-actions-bottom-final.css?v=135-final',
+      'css/sdc-v133-desktop-final.css?v=135-final',
+      'css/sdc-v134-large-mobile-final.css?v=135-final'
     ];
     files.forEach(href=>{
       const clean = href.split('?')[0];
@@ -19,6 +19,20 @@
       link.rel = 'stylesheet';
       link.href = href;
       document.head.appendChild(link);
+    });
+  }
+
+  function ensureScripts(){
+    const scripts = [
+      'js/sdc-v135-menu-actions-final.js?v=135-final'
+    ];
+    scripts.forEach(src=>{
+      const clean = src.split('?')[0];
+      if(document.querySelector('script[src*="'+clean+'"]')) return;
+      const s = document.createElement('script');
+      s.defer = true;
+      s.src = src;
+      document.body.appendChild(s);
     });
   }
 
@@ -110,6 +124,7 @@
 
   function boot(){
     ensureCss();
+    ensureScripts();
     enhanceEditor();
     const root=document.getElementById('modalRoot');
     if(root){
@@ -117,7 +132,7 @@
       new MutationObserver(()=>{
         if(scheduled) return;
         scheduled=true;
-        setTimeout(()=>{scheduled=false;ensureCss();enhanceEditor();},100);
+        setTimeout(()=>{scheduled=false;ensureCss();ensureScripts();enhanceEditor();},100);
       }).observe(root,{childList:true,subtree:true});
     }
   }

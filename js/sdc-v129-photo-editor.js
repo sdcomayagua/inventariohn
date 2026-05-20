@@ -1,4 +1,4 @@
-/* SDC V135: editor de imágenes + carga final de CSS/JS para desktop, S24 Ultra y menú estable. */
+/* SDC V136: editor de imágenes + carga final de CSS/JS para desktop, S24 Ultra, logo, recibos y menú estable. */
 (function(){
   'use strict';
   if(window.SDCV129PhotoEditor) return;
@@ -6,11 +6,12 @@
 
   function ensureCss(){
     const files = [
-      'css/sdc-v130-receipts-clean.css?v=135-final',
-      'css/sdc-v131-s24-ui-final.css?v=135-final',
-      'css/sdc-v132-actions-bottom-final.css?v=135-final',
-      'css/sdc-v133-desktop-final.css?v=135-final',
-      'css/sdc-v134-large-mobile-final.css?v=135-final'
+      'css/sdc-v130-receipts-clean.css?v=136-logo-fix',
+      'css/sdc-v131-s24-ui-final.css?v=136-logo-fix',
+      'css/sdc-v132-actions-bottom-final.css?v=136-logo-fix',
+      'css/sdc-v133-desktop-final.css?v=136-logo-fix',
+      'css/sdc-v134-large-mobile-final.css?v=136-logo-fix',
+      'css/sdc-v136-logo-receipt-mobile-fix.css?v=136-logo-fix'
     ];
     files.forEach(href=>{
       const clean = href.split('?')[0];
@@ -24,7 +25,7 @@
 
   function ensureScripts(){
     const scripts = [
-      'js/sdc-v135-menu-actions-final.js?v=135-final'
+      'js/sdc-v135-menu-actions-final.js?v=136-logo-fix'
     ];
     scripts.forEach(src=>{
       const clean = src.split('?')[0];

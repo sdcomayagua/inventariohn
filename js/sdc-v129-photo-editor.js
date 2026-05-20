@@ -1,4 +1,4 @@
-/* SDC V130: editor de imágenes + carga automática de recibos/cotizaciones limpios. */
+/* SDC V131: editor de imágenes + carga automática de recibos/cotizaciones + UI S24 Ultra. */
 (function(){
   'use strict';
   if(window.SDCV129PhotoEditor) return;
@@ -6,7 +6,8 @@
 
   function ensureCss(){
     const files = [
-      'css/sdc-v130-receipts-clean.css?v=130-receipts-clean'
+      'css/sdc-v130-receipts-clean.css?v=131-s24-final',
+      'css/sdc-v131-s24-ui-final.css?v=131-s24-final'
     ];
     files.forEach(href=>{
       const clean = href.split('?')[0];

@@ -1,0 +1,409 @@
+/* SDC V133: arreglo final para computadora / pantallas grandes */
+
+/* Computadora: centrar todo el sistema y evitar que quede pegado a la izquierda */
+@media(min-width: 900px){
+  html,body{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+    background:#eef5fb!important;
+  }
+
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default main#app{
+    width:min(1240px, calc(100vw - 56px))!important;
+    max-width:1240px!important;
+    margin:0 auto!important;
+    padding:24px 0 48px!important;
+    overflow:visible!important;
+  }
+
+  /* Header grande, centrado y con buen ancho */
+  body.sdc-v95-light-default .brand-card,
+  body.sdc-v95-light-default .app-header,
+  body.sdc-v95-light-default .main-header,
+  body.sdc-v95-light-default .top-brand-card,
+  body.sdc-v95-light-default .sdc-header-card{
+    width:100%!important;
+    max-width:100%!important;
+    min-height:96px!important;
+    margin:0 0 18px!important;
+    padding:18px 22px!important;
+    border-radius:24px!important;
+    display:grid!important;
+    grid-template-columns:72px minmax(0,1fr)!important;
+    gap:18px!important;
+    align-items:center!important;
+    background:#fff!important;
+    border:1px solid #dbe7f3!important;
+    box-shadow:0 10px 24px rgba(15,35,55,.055)!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v95-light-default .brand-card img,
+  body.sdc-v95-light-default .app-header img,
+  body.sdc-v95-light-default .main-header img,
+  body.sdc-v95-light-default .top-brand-card img,
+  body.sdc-v95-light-default .sdc-header-card img{
+    width:66px!important;
+    height:66px!important;
+    border-radius:18px!important;
+    object-fit:contain!important;
+  }
+  body.sdc-v95-light-default .brand-card h1,
+  body.sdc-v95-light-default .app-header h1,
+  body.sdc-v95-light-default .main-header h1,
+  body.sdc-v95-light-default .top-brand-card h1,
+  body.sdc-v95-light-default .sdc-header-card h1{
+    font-size:32px!important;
+    line-height:.95!important;
+    letter-spacing:-.025em!important;
+    margin:0!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  body.sdc-v95-light-default .brand-card p,
+  body.sdc-v95-light-default .app-header p,
+  body.sdc-v95-light-default .main-header p,
+  body.sdc-v95-light-default .top-brand-card p,
+  body.sdc-v95-light-default .sdc-header-card p{
+    font-size:13px!important;
+    line-height:1.15!important;
+    color:#64748b!important;
+    font-weight:950!important;
+    letter-spacing:.08em!important;
+    margin:7px 0 0!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  /* Fila superior: botones de sincronización y pestañas con el mismo ancho */
+  body.sdc-v95-light-default .top-actions-v103,
+  body.sdc-v95-light-default .sync-actions-v103,
+  body.sdc-v95-light-default .header-actions-v103,
+  body.sdc-v95-light-default .quick-sync-row,
+  body.sdc-v95-light-default .sync-row,
+  body.sdc-v95-light-default .page-tabs-v97,
+  body.sdc-v95-light-default .sdc-page-tabs,
+  body.sdc-v95-light-default .home-products-tabs{
+    position:static!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin:0 0 18px!important;
+    padding:8px!important;
+    border-radius:22px!important;
+    background:#fff!important;
+    border:1px solid #dbe7f3!important;
+    box-shadow:0 10px 24px rgba(15,35,55,.045)!important;
+    display:grid!important;
+    gap:8px!important;
+  }
+  body.sdc-v95-light-default .top-actions-v103,
+  body.sdc-v95-light-default .sync-actions-v103,
+  body.sdc-v95-light-default .header-actions-v103,
+  body.sdc-v95-light-default .quick-sync-row,
+  body.sdc-v95-light-default .sync-row{
+    grid-template-columns:1fr 1fr!important;
+  }
+  body.sdc-v95-light-default .page-tabs-v97,
+  body.sdc-v95-light-default .sdc-page-tabs,
+  body.sdc-v95-light-default .home-products-tabs{
+    grid-template-columns:1fr 1fr!important;
+  }
+  body.sdc-v95-light-default .top-actions-v103 button,
+  body.sdc-v95-light-default .sync-actions-v103 button,
+  body.sdc-v95-light-default .header-actions-v103 button,
+  body.sdc-v95-light-default .quick-sync-row button,
+  body.sdc-v95-light-default .sync-row button,
+  body.sdc-v95-light-default .page-tabs-v97 button,
+  body.sdc-v95-light-default .sdc-page-tabs button,
+  body.sdc-v95-light-default .home-products-tabs button{
+    min-height:56px!important;
+    border-radius:17px!important;
+    font-size:14px!important;
+    line-height:1!important;
+    font-weight:950!important;
+    letter-spacing:.04em!important;
+    text-transform:uppercase!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    box-shadow:none!important;
+  }
+
+  /* Inicio en computadora: ancho correcto */
+  body.sdc-v95-light-default .home-hero-v94{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0 0 24px!important;
+    padding:18px!important;
+    border-radius:28px!important;
+    background:#eef7ff!important;
+    border:1px solid #dbe7f3!important;
+    overflow:visible!important;
+    box-shadow:0 12px 30px rgba(15,35,55,.055)!important;
+  }
+  body.sdc-v95-light-default .home-section-title,
+  body.sdc-v95-light-default .home-title-pill,
+  body.sdc-v95-light-default .home-hero-v94 h2{
+    width:100%!important;
+    min-height:64px!important;
+    margin:0 0 14px!important;
+    border-radius:20px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+    color:#fff!important;
+    font-size:24px!important;
+    letter-spacing:.08em!important;
+    text-transform:uppercase!important;
+    font-weight:950!important;
+  }
+  body.sdc-v95-light-default .home-primary-actions-v94{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:14px!important;
+    margin:0 0 14px!important;
+  }
+  body.sdc-v95-light-default .home-primary-actions-v94 button{
+    width:100%!important;
+    min-height:112px!important;
+    border-radius:24px!important;
+    padding:22px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:18px!important;
+    font-size:26px!important;
+    line-height:1!important;
+    font-weight:950!important;
+    text-align:left!important;
+  }
+
+  /* Estadísticas: 4 tarjetas iguales en computadora */
+  body.sdc-v95-light-default .home-stats-v94,
+  body.sdc-v95-light-default .stats.home-stats-v94,
+  body.sdc-v95-light-default .home-hero-v94 .stats,
+  body.sdc-v95-light-default .stats-grid,
+  body.sdc-v95-light-default .dashboard-stats{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:14px!important;
+    margin:14px 0!important;
+    overflow:visible!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat,
+  body.sdc-v95-light-default .stats-grid .stat,
+  body.sdc-v95-light-default .dashboard-stats .stat{
+    width:100%!important;
+    min-width:0!important;
+    min-height:106px!important;
+    height:auto!important;
+    max-height:none!important;
+    padding:18px!important;
+    border-radius:22px!important;
+    background:#fff!important;
+    border:1px solid #dbe7f3!important;
+    box-shadow:0 8px 18px rgba(15,35,55,.05)!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    gap:9px!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat span,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat span,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat span,
+  body.sdc-v95-light-default .stats-grid .stat span,
+  body.sdc-v95-light-default .dashboard-stats .stat span{
+    color:#64748b!important;
+    font-size:12px!important;
+    line-height:1.1!important;
+    font-weight:950!important;
+    letter-spacing:.07em!important;
+    text-transform:uppercase!important;
+    white-space:normal!important;
+    overflow:visible!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat b,
+  body.sdc-v95-light-default .home-stats-v94 .stat strong,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat b,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat strong,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat b,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat strong,
+  body.sdc-v95-light-default .stats-grid .stat b,
+  body.sdc-v95-light-default .stats-grid .stat strong,
+  body.sdc-v95-light-default .dashboard-stats .stat b,
+  body.sdc-v95-light-default .dashboard-stats .stat strong{
+    color:#0f172a!important;
+    font-size:34px!important;
+    line-height:1!important;
+    font-weight:950!important;
+    letter-spacing:-.04em!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    max-width:100%!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat.featured,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat.featured,
+  body.sdc-v95-light-default .stats-grid .stat.featured,
+  body.sdc-v95-light-default .dashboard-stats .stat.featured{
+    grid-column:1/-1!important;
+    min-height:112px!important;
+    background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+    border:0!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured span,
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured b,
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured strong,
+  body.sdc-v95-light-default .stats .stat.featured span,
+  body.sdc-v95-light-default .stats .stat.featured b,
+  body.sdc-v95-light-default .stats .stat.featured strong{
+    color:#fff!important;
+  }
+
+  /* Tarjeta pequeña de productos del inicio: que no quede como una isla perdida */
+  body.sdc-v95-light-default .home-products-card,
+  body.sdc-v95-light-default .products-shortcut,
+  body.sdc-v95-light-default .products-intro,
+  body.sdc-v95-light-default .panel.products-intro{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0 0 24px!important;
+    border-radius:22px!important;
+  }
+
+  /* Productos: ocupar todo el ancho de escritorio */
+  body.sdc-v95-light-default .products-panel,
+  body.sdc-v95-light-default .products-section,
+  body.sdc-v95-light-default .product-list-panel,
+  body.sdc-v95-light-default .catalog-panel,
+  body.sdc-v95-light-default .panel.products,
+  body.sdc-v95-light-default .products-view,
+  body.sdc-v95-light-default .catalog-view{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0 0 24px!important;
+    padding:18px!important;
+    border-radius:26px!important;
+    background:#fff!important;
+    border:1px solid #dbe7f3!important;
+    overflow:visible!important;
+    box-shadow:0 12px 30px rgba(15,35,55,.055)!important;
+  }
+  body.sdc-v95-light-default .products-panel .panel-head,
+  body.sdc-v95-light-default .product-list-panel .panel-head,
+  body.sdc-v95-light-default .catalog-panel .panel-head,
+  body.sdc-v95-light-default .products-head,
+  body.sdc-v95-light-default .products-toolbar-head{
+    background:#07131a!important;
+    color:#fff!important;
+    border-radius:20px!important;
+    padding:22px!important;
+    margin:0 0 16px!important;
+    border-bottom:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:14px!important;
+  }
+  body.sdc-v95-light-default .products-panel h2,
+  body.sdc-v95-light-default .product-list-panel h2,
+  body.sdc-v95-light-default .catalog-panel h2,
+  body.sdc-v95-light-default .products-head h2{
+    color:inherit!important;
+    font-size:40px!important;
+    line-height:1!important;
+    margin:0!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  body.sdc-v95-light-default .products-toolbar,
+  body.sdc-v95-light-default .catalog-toolbar,
+  body.sdc-v95-light-default .toolbar.products-toolbar{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:220px minmax(260px,1fr) 220px!important;
+    gap:12px!important;
+    align-items:center!important;
+    margin:0 0 18px!important;
+  }
+  body.sdc-v95-light-default .products-toolbar button,
+  body.sdc-v95-light-default .catalog-toolbar button,
+  body.sdc-v95-light-default .toolbar.products-toolbar button,
+  body.sdc-v95-light-default .products-toolbar input,
+  body.sdc-v95-light-default .catalog-toolbar input,
+  body.sdc-v95-light-default .toolbar.products-toolbar input,
+  body.sdc-v95-light-default .products-toolbar select,
+  body.sdc-v95-light-default .catalog-toolbar select,
+  body.sdc-v95-light-default .toolbar.products-toolbar select{
+    min-height:58px!important;
+    border-radius:17px!important;
+    font-size:14px!important;
+    font-weight:850!important;
+  }
+
+  body.sdc-v95-light-default .btn.danger,
+  body.sdc-v95-light-default .danger,
+  body.sdc-v95-light-default button.danger{
+    background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+    color:#fff!important;
+    border:0!important;
+  }
+
+  body.sdc-v95-light-default .products-grid,
+  body.sdc-v95-light-default .catalog-grid,
+  body.sdc-v95-light-default .product-grid,
+  body.sdc-v95-light-default #productsGrid{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:16px!important;
+    overflow:visible!important;
+  }
+  body.sdc-v95-light-default .product-card,
+  body.sdc-v95-light-default .product-item,
+  body.sdc-v95-light-default .catalog-card{
+    width:100%!important;
+    min-width:0!important;
+    min-height:220px!important;
+    border-radius:22px!important;
+    padding:14px!important;
+    background:#fff!important;
+    border:1px solid #dbe7f3!important;
+    box-shadow:0 8px 18px rgba(15,35,55,.045)!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v95-light-default .product-card img,
+  body.sdc-v95-light-default .product-item img,
+  body.sdc-v95-light-default .catalog-card img{
+    width:112px!important;
+    height:112px!important;
+    border-radius:18px!important;
+    object-fit:cover!important;
+  }
+}
+
+@media(min-width:900px) and (max-width:1180px){
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default main#app{
+    width:calc(100vw - 36px)!important;
+  }
+  body.sdc-v95-light-default .products-grid,
+  body.sdc-v95-light-default .catalog-grid,
+  body.sdc-v95-light-default .product-grid,
+  body.sdc-v95-light-default #productsGrid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}

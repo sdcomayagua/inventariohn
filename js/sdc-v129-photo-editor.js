@@ -1,4 +1,4 @@
-/* SDC V132: editor de imágenes + recibos/cotizaciones + UI S24 Ultra + botones al final. */
+/* SDC V134: editor de imágenes + recibos/cotizaciones + desktop + S24 Ultra + botones al final. */
 (function(){
   'use strict';
   if(window.SDCV129PhotoEditor) return;
@@ -6,9 +6,11 @@
 
   function ensureCss(){
     const files = [
-      'css/sdc-v130-receipts-clean.css?v=132-actions-bottom',
-      'css/sdc-v131-s24-ui-final.css?v=132-actions-bottom',
-      'css/sdc-v132-actions-bottom-final.css?v=132-actions-bottom'
+      'css/sdc-v130-receipts-clean.css?v=134-final-ui',
+      'css/sdc-v131-s24-ui-final.css?v=134-final-ui',
+      'css/sdc-v132-actions-bottom-final.css?v=134-final-ui',
+      'css/sdc-v133-desktop-final.css?v=134-final-ui',
+      'css/sdc-v134-large-mobile-final.css?v=134-final-ui'
     ];
     files.forEach(href=>{
       const clean = href.split('?')[0];

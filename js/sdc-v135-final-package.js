@@ -1,10 +1,10 @@
-/* SDC V135 FINAL PACKAGE: cargador único de UI final, escritorio, móvil, recibos, menú y acciones. */
+/* SDC V136 FINAL PACKAGE: cargador único de UI final, escritorio, móvil, recibos, logo, menú y acciones. */
 (function(){
   'use strict';
   if(window.SDCV135FinalPackage) return;
   window.SDCV135FinalPackage = true;
 
-  const VERSION = '135-final-package';
+  const VERSION = '136-logo-receipt-mobile-fix';
 
   function addCss(path){
     if(document.querySelector('link[href*="'+path+'"]')) return;
@@ -24,7 +24,10 @@
 
   function setVersion(){
     document.documentElement.setAttribute('data-sdc-version', VERSION);
-    document.body?.classList.add('sdc-v135-final-package');
+    if(document.body){
+      document.body.classList.add('sdc-v136-final-package');
+      document.body.classList.add('sdc-v135-final-package');
+    }
   }
 
   function loadPackage(){
@@ -35,6 +38,7 @@
     addCss('css/sdc-v132-actions-bottom-final.css');
     addCss('css/sdc-v133-desktop-final.css');
     addCss('css/sdc-v134-large-mobile-final.css');
+    addCss('css/sdc-v136-logo-receipt-mobile-fix.css');
 
     addScript('js/sdc-v135-menu-actions-final.js');
     setVersion();

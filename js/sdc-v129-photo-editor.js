@@ -1,8 +1,22 @@
-/* SDC V129: editor de imágenes profesional para producto. Tomar foto / Galería / Quitar. */
+/* SDC V130: editor de imágenes + carga automática de recibos/cotizaciones limpios. */
 (function(){
   'use strict';
   if(window.SDCV129PhotoEditor) return;
   window.SDCV129PhotoEditor = true;
+
+  function ensureCss(){
+    const files = [
+      'css/sdc-v130-receipts-clean.css?v=130-receipts-clean'
+    ];
+    files.forEach(href=>{
+      const clean = href.split('?')[0];
+      if(document.querySelector('link[href*="'+clean+'"]')) return;
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      document.head.appendChild(link);
+    });
+  }
 
   function toast(msg){
     const el=document.getElementById('toast');
@@ -91,6 +105,7 @@
   }
 
   function boot(){
+    ensureCss();
     enhanceEditor();
     const root=document.getElementById('modalRoot');
     if(root){
@@ -98,7 +113,7 @@
       new MutationObserver(()=>{
         if(scheduled) return;
         scheduled=true;
-        setTimeout(()=>{scheduled=false;enhanceEditor();},100);
+        setTimeout(()=>{scheduled=false;ensureCss();enhanceEditor();},100);
       }).observe(root,{childList:true,subtree:true});
     }
   }

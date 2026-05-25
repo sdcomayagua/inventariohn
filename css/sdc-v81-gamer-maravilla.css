@@ -1,0 +1,351 @@
+/* ═══════════════════════════════════════════════════════════════
+   SDC V81 · GAMER MARAVILLA
+   — Elimina todos los fondos blancos/grises en modo Gamer.
+   — Hace el detalle de producto 100% oscuro con glow neón.
+   — Botones de acción espectaculares: Cotizar, Vender, WhatsApp, Editar.
+   — Inventario: cards totalmente integradas al tema oscuro.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1) HERO del producto: oscuro con borde neón ──────────── */
+body.sdc-v61-clean.sdc-theme-gamer .v49-detail-hero {
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(0,229,255,.13) 0%, transparent 55%),
+    radial-gradient(ellipse at 100% 100%, rgba(57,255,136,.09) 0%, transparent 55%),
+    linear-gradient(160deg, #071221 0%, #050e1a 50%, #020914 100%) !important;
+  border: 1px solid rgba(0,229,255,.48) !important;
+  box-shadow:
+    0 0 0 1px rgba(57,255,136,.14),
+    0 20px 48px rgba(0,0,0,.52),
+    0 0 36px rgba(0,229,255,.10),
+    inset 0 1px 0 rgba(0,229,255,.16) !important;
+  color: #eaf7ff !important;
+}
+
+/* Subtítulo (categoría · código) */
+body.sdc-v61-clean.sdc-theme-gamer .v49-detail-main small {
+  color: rgba(0,229,255,.72) !important;
+  font-weight: 900 !important;
+  letter-spacing: .06em !important;
+  text-shadow: 0 0 8px rgba(0,229,255,.28) !important;
+}
+
+/* Precio principal */
+body.sdc-v61-clean.sdc-theme-gamer .v49-detail-main b {
+  color: #00e5ff !important;
+  font-size: clamp(28px, 6vw, 38px) !important;
+  text-shadow:
+    0 0 18px rgba(0,229,255,.55),
+    0 0 38px rgba(57,255,136,.20) !important;
+}
+
+/* Descripción corta */
+body.sdc-v61-clean.sdc-theme-gamer .v49-detail-main p {
+  color: #b8d8ea !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+
+/* Imagen: fondo oscuro, sin blanco */
+body.sdc-v61-clean.sdc-theme-gamer .v49-detail-image {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0,229,255,.08), transparent 70%),
+    #050e1a !important;
+  border: 1px solid rgba(0,229,255,.32) !important;
+  box-shadow:
+    inset 0 0 24px rgba(0,229,255,.06),
+    0 0 18px rgba(0,229,255,.10) !important;
+}
+
+/* ── 2) TABS Cliente / Admin / Captura ────────────────────── */
+body.sdc-v61-clean.sdc-theme-gamer .v49-tabbar {
+  background: linear-gradient(180deg, #07111f 0%, #020914 100%) !important;
+  border: 1px solid rgba(0,229,255,.38) !important;
+  box-shadow:
+    0 0 0 1px rgba(57,255,136,.10),
+    0 16px 32px rgba(0,0,0,.32),
+    0 0 28px rgba(0,229,255,.08) !important;
+  border-radius: 18px !important;
+  padding: 5px !important;
+  gap: 5px !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-tabbar button {
+  background: transparent !important;
+  color: rgba(180,215,235,.70) !important;
+  border: 1px solid transparent !important;
+  font-weight: 800 !important;
+  letter-spacing: .05em !important;
+  text-shadow: none !important;
+  border-radius: 14px !important;
+  transition: background .18s, color .18s !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-tabbar button.active {
+  background: linear-gradient(135deg, rgba(0,229,255,.18) 0%, rgba(57,255,136,.12) 100%) !important;
+  color: #f0feff !important;
+  border: 1px solid rgba(0,229,255,.52) !important;
+  box-shadow:
+    0 0 0 1px rgba(57,255,136,.16),
+    0 0 22px rgba(0,229,255,.18),
+    inset 0 1px 0 rgba(255,255,255,.08) !important;
+  text-shadow: 0 0 10px rgba(0,229,255,.40) !important;
+}
+
+/* ── 3) PANEL del tab (contenido cliente/admin/captura) ───── */
+body.sdc-v61-clean.sdc-theme-gamer .v49-tab {
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(0,229,255,.07) 0%, transparent 50%),
+    linear-gradient(180deg, #071221 0%, #030c17 100%) !important;
+  color: #eaf7ff !important;
+  border: 1px solid rgba(0,229,255,.26) !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,.28) !important;
+}
+
+/* ── 4) BLOQUE CANTIDAD ───────────────────────────────────── */
+body.sdc-v61-clean.sdc-theme-gamer .v49-qty-line {
+  background: transparent !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-qty-wrap {
+  background: linear-gradient(135deg, #07111f, #0b1a2e) !important;
+  border: 1px solid rgba(0,229,255,.34) !important;
+  box-shadow: 0 0 18px rgba(0,229,255,.08) !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-qty-wrap span {
+  color: rgba(0,229,255,.80) !important;
+  font-weight: 900 !important;
+  letter-spacing: .08em !important;
+  text-shadow: 0 0 8px rgba(0,229,255,.24) !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-qty-stepper b {
+  background: #020a12 !important;
+  color: #f0feff !important;
+  border: 1px solid rgba(0,229,255,.40) !important;
+  font-size: 22px !important;
+  text-shadow: 0 0 8px rgba(0,229,255,.28) !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-qty-stepper button {
+  background: linear-gradient(135deg, rgba(0,229,255,.16), rgba(57,255,136,.10)) !important;
+  color: #f0feff !important;
+  border: 1px solid rgba(0,229,255,.36) !important;
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  box-shadow: 0 0 16px rgba(0,229,255,.12) !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-qty-stepper button:active {
+  background: linear-gradient(135deg, #00e5ff, #39ff88) !important;
+  color: #020914 !important;
+}
+
+/* ── 5) BADGE OFERTA ──────────────────────────────────────── */
+body.sdc-v61-clean.sdc-theme-gamer [data-v49-offer] {
+  background: linear-gradient(90deg, rgba(0,229,255,.12), rgba(57,255,136,.08)) !important;
+  color: #39ff88 !important;
+  border: 1px solid rgba(57,255,136,.38) !important;
+  box-shadow: 0 0 20px rgba(57,255,136,.14), inset 0 0 12px rgba(57,255,136,.06) !important;
+  font-weight: 900 !important;
+  text-shadow: 0 0 10px rgba(57,255,136,.40) !important;
+}
+
+/* ── 6) TARJETAS DE PRECIO (Depósito / Recibir / Local) ───── */
+body.sdc-v61-clean.sdc-theme-gamer .v49-price-cards > div,
+body.sdc-v61-clean.sdc-theme-gamer .v49-admin-grid > div {
+  background: linear-gradient(160deg, #07111f 0%, #040c18 100%) !important;
+  border: 1px solid rgba(0,229,255,.22) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.28), 0 0 12px rgba(0,229,255,.06) !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-price-cards span,
+body.sdc-v61-clean.sdc-theme-gamer .v49-admin-grid span {
+  color: rgba(0,229,255,.65) !important;
+  font-weight: 800 !important;
+  letter-spacing: .04em !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-price-cards b,
+body.sdc-v61-clean.sdc-theme-gamer .v49-admin-grid b {
+  color: #f0feff !important;
+  font-size: clamp(17px, 3.5vw, 24px) !important;
+  text-shadow: 0 0 8px rgba(0,229,255,.18) !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-price-cards small,
+body.sdc-v61-clean.sdc-theme-gamer .v49-admin-grid small {
+  color: rgba(180,215,235,.55) !important;
+}
+
+/* ── 7) BENEFICIOS: ya no blanco, todo oscuro ─────────────── */
+body.sdc-v61-clean.sdc-theme-gamer .v49-benefits {
+  background:
+    radial-gradient(ellipse at 0% 100%, rgba(57,255,136,.07) 0%, transparent 55%),
+    linear-gradient(180deg, #071221 0%, #030c17 100%) !important;
+  color: #eaf7ff !important;
+  border: 1px solid rgba(57,255,136,.24) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.22) !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-benefits b {
+  color: #39ff88 !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  letter-spacing: .04em !important;
+  text-shadow: 0 0 10px rgba(57,255,136,.34) !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-benefits p {
+  color: #c4dde8 !important;
+  font-weight: 700 !important;
+  line-height: 1.5 !important;
+  text-shadow: none !important;
+}
+
+/* ── 8) BOTONES DE ACCIÓN: Cotizar, Vender, WhatsApp, Editar ─
+   Clases reales: v53-modal-quote, v53-modal-sell, v53-modal-whatsapp, v53-modal-edit */
+
+/* Contenedor: grid 2x2 */
+body.sdc-v61-clean.sdc-theme-gamer .v49-tab section,
+body.sdc-v61-clean.sdc-theme-gamer .v49-tab > div:last-child,
+body.sdc-v61-clean.sdc-theme-gamer .v53-sell-actions {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+}
+
+/* Base compartida para los 4 botones de acción */
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-quote,
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-sell,
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-whatsapp,
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-edit {
+  font-weight: 900 !important;
+  font-size: 14px !important;
+  letter-spacing: .06em !important;
+  border-radius: 18px !important;
+  min-height: 54px !important;
+  text-shadow: none !important;
+  text-transform: uppercase !important;
+  transition: transform .14s, box-shadow .18s !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-quote:active,
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-sell:active,
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-whatsapp:active,
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-edit:active {
+  transform: scale(.96) !important;
+}
+
+/* COTIZAR — Azul neón */
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-quote {
+  background: linear-gradient(135deg, #0ea5e9 0%, #00e5ff 100%) !important;
+  color: #020914 !important;
+  border: 1px solid rgba(0,229,255,.64) !important;
+  box-shadow:
+    0 0 0 1px rgba(0,229,255,.20),
+    0 12px 28px rgba(0,229,255,.26),
+    0 0 40px rgba(0,229,255,.14) !important;
+}
+
+/* VENDER — Verde neón */
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-sell {
+  background: linear-gradient(135deg, #22c55e 0%, #39ff88 100%) !important;
+  color: #020914 !important;
+  border: 1px solid rgba(57,255,136,.64) !important;
+  box-shadow:
+    0 0 0 1px rgba(57,255,136,.22),
+    0 12px 28px rgba(57,255,136,.28),
+    0 0 40px rgba(57,255,136,.14) !important;
+}
+
+/* VENDER deshabilitado (agotado) */
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-sell[disabled] {
+  background: linear-gradient(135deg, #1a2a1a, #0d1a0d) !important;
+  color: rgba(180,215,180,.40) !important;
+  border: 1px solid rgba(57,255,136,.18) !important;
+  box-shadow: none !important;
+}
+
+/* WHATSAPP — Verde WA */
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-whatsapp {
+  background: linear-gradient(135deg, #128c4a 0%, #25d366 100%) !important;
+  color: #f0fff4 !important;
+  border: 1px solid rgba(37,211,102,.56) !important;
+  box-shadow:
+    0 0 0 1px rgba(37,211,102,.18),
+    0 12px 28px rgba(37,211,102,.22),
+    0 0 34px rgba(37,211,102,.12) !important;
+}
+
+/* EDITAR — Dorado/ámbar */
+body.sdc-v61-clean.sdc-theme-gamer .v53-modal-edit {
+  background: linear-gradient(135deg, #d97706 0%, #fbbf24 100%) !important;
+  color: #020914 !important;
+  border: 1px solid rgba(251,191,36,.60) !important;
+  box-shadow:
+    0 0 0 1px rgba(251,191,36,.20),
+    0 12px 28px rgba(251,191,36,.24),
+    0 0 34px rgba(251,191,36,.12) !important;
+}
+
+/* ── 9) INVENTARIO: cards sin fondo blanco ────────────────── */
+/* Quitar el fondo blanco que se cuela en algunos cards */
+body.sdc-v61-clean.sdc-theme-gamer .modal-body:not(.quote-body):not(.product-editor) {
+  background: linear-gradient(180deg, #071221, #030c17) !important;
+  color: #eaf7ff !important;
+}
+
+/* ── 10) Stock badge en el hero de producto ───────────────── */
+body.sdc-v61-clean.sdc-theme-gamer .stock-badge {
+  font-weight: 900 !important;
+  letter-spacing: .06em !important;
+  border-radius: 8px !important;
+  font-size: 10px !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .stock-badge.ok,
+body.sdc-v61-clean.sdc-theme-gamer .stock-badge.available,
+body.sdc-v61-clean.sdc-theme-gamer .stock-badge.disponible {
+  background: linear-gradient(135deg, rgba(57,255,136,.22), rgba(34,197,94,.18)) !important;
+  color: #39ff88 !important;
+  border: 1px solid rgba(57,255,136,.46) !important;
+  box-shadow: 0 0 14px rgba(57,255,136,.18) !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .stock-badge.low,
+body.sdc-v61-clean.sdc-theme-gamer .stock-badge.bajo {
+  background: linear-gradient(135deg, rgba(251,191,36,.22), rgba(245,158,11,.16)) !important;
+  color: #fbbf24 !important;
+  border: 1px solid rgba(251,191,36,.46) !important;
+  box-shadow: 0 0 14px rgba(251,191,36,.16) !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .stock-badge.out,
+body.sdc-v61-clean.sdc-theme-gamer .stock-badge.agotado {
+  background: linear-gradient(135deg, rgba(239,68,68,.18), rgba(185,28,43,.14)) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(239,68,68,.40) !important;
+  box-shadow: 0 0 14px rgba(239,68,68,.14) !important;
+}
+
+/* ── 11) Admin grid info cards ────────────────────────────── */
+body.sdc-v61-clean.sdc-theme-gamer .v49-admin-grid {
+  gap: 10px !important;
+}
+
+body.sdc-v61-clean.sdc-theme-gamer .v49-admin-grid > div {
+  border-radius: 14px !important;
+  padding: 14px !important;
+}
+
+/* ── 12) Hn time pill / date pill ─────────────────────────── */
+body.sdc-v61-clean.sdc-theme-gamer .hn-time-pill,
+body.sdc-v61-clean.sdc-theme-gamer .sdc-safe-pill {
+  background: rgba(0,229,255,.10) !important;
+  color: rgba(0,229,255,.80) !important;
+  border: 1px solid rgba(0,229,255,.28) !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: .06em !important;
+}

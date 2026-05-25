@@ -1,0 +1,334 @@
+/* SDC V134: ajuste final para móviles grandes / S24 Ultra / tablets pequeñas */
+
+/* Entre móvil grande y tablet: mantener estructura limpia, no escritorio roto */
+@media(min-width:431px) and (max-width:899px){
+  html,body{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+    background:#eef5fb!important;
+  }
+
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default main#app{
+    width:min(720px, calc(100vw - 24px))!important;
+    max-width:720px!important;
+    margin:0 auto!important;
+    padding:12px 0 34px!important;
+    overflow-x:hidden!important;
+  }
+
+  /* Header centrado y compacto */
+  body.sdc-v95-light-default .brand-card,
+  body.sdc-v95-light-default .app-header,
+  body.sdc-v95-light-default .main-header,
+  body.sdc-v95-light-default .top-brand-card,
+  body.sdc-v95-light-default .sdc-header-card{
+    width:100%!important;
+    min-height:90px!important;
+    margin:0 0 12px!important;
+    padding:14px!important;
+    border-radius:23px!important;
+    display:grid!important;
+    grid-template-columns:62px minmax(0,1fr)!important;
+    gap:13px!important;
+    align-items:center!important;
+    background:#fff!important;
+    border:1px solid #dbe7f3!important;
+    box-shadow:0 8px 18px rgba(15,35,55,.05)!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v95-light-default .brand-card img,
+  body.sdc-v95-light-default .app-header img,
+  body.sdc-v95-light-default .main-header img,
+  body.sdc-v95-light-default .top-brand-card img,
+  body.sdc-v95-light-default .sdc-header-card img{
+    width:58px!important;
+    height:58px!important;
+    border-radius:16px!important;
+    object-fit:contain!important;
+  }
+  body.sdc-v95-light-default .brand-card h1,
+  body.sdc-v95-light-default .app-header h1,
+  body.sdc-v95-light-default .main-header h1,
+  body.sdc-v95-light-default .top-brand-card h1,
+  body.sdc-v95-light-default .sdc-header-card h1{
+    font-size:clamp(24px,5.2vw,32px)!important;
+    line-height:.96!important;
+    letter-spacing:-.03em!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    margin:0!important;
+  }
+  body.sdc-v95-light-default .brand-card p,
+  body.sdc-v95-light-default .app-header p,
+  body.sdc-v95-light-default .main-header p,
+  body.sdc-v95-light-default .top-brand-card p,
+  body.sdc-v95-light-default .sdc-header-card p{
+    font-size:11.5px!important;
+    line-height:1.15!important;
+    letter-spacing:.08em!important;
+    font-weight:950!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    margin:6px 0 0!important;
+    color:#64748b!important;
+  }
+
+  /* Sincronizar / actualizar y tabs: 2 columnas bonitas */
+  body.sdc-v95-light-default .top-actions-v103,
+  body.sdc-v95-light-default .sync-actions-v103,
+  body.sdc-v95-light-default .header-actions-v103,
+  body.sdc-v95-light-default .quick-sync-row,
+  body.sdc-v95-light-default .sync-row,
+  body.sdc-v95-light-default .page-tabs-v97,
+  body.sdc-v95-light-default .sdc-page-tabs,
+  body.sdc-v95-light-default .home-products-tabs{
+    width:100%!important;
+    max-width:100%!important;
+    position:static!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    margin:0 0 12px!important;
+    padding:8px!important;
+    border-radius:22px!important;
+    background:#fff!important;
+    border:1px solid #dbe7f3!important;
+    box-shadow:0 8px 18px rgba(15,35,55,.045)!important;
+  }
+  body.sdc-v95-light-default .top-actions-v103 button,
+  body.sdc-v95-light-default .sync-actions-v103 button,
+  body.sdc-v95-light-default .header-actions-v103 button,
+  body.sdc-v95-light-default .quick-sync-row button,
+  body.sdc-v95-light-default .sync-row button,
+  body.sdc-v95-light-default .page-tabs-v97 button,
+  body.sdc-v95-light-default .sdc-page-tabs button,
+  body.sdc-v95-light-default .home-products-tabs button{
+    min-height:54px!important;
+    border-radius:17px!important;
+    font-size:13px!important;
+    line-height:1!important;
+    font-weight:950!important;
+    letter-spacing:.04em!important;
+    text-transform:uppercase!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    box-shadow:none!important;
+    touch-action:manipulation!important;
+  }
+
+  /* Hero inicio: no muy ancho ni muy cargado */
+  body.sdc-v95-light-default .home-hero-v94{
+    width:100%!important;
+    margin:12px 0 20px!important;
+    padding:14px!important;
+    border-radius:25px!important;
+    background:#eef7ff!important;
+    border:1px solid #dbe7f3!important;
+    box-shadow:0 10px 24px rgba(15,35,55,.055)!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v95-light-default .home-section-title,
+  body.sdc-v95-light-default .home-title-pill,
+  body.sdc-v95-light-default .home-hero-v94 h2{
+    width:100%!important;
+    min-height:58px!important;
+    margin:0 0 12px!important;
+    border-radius:19px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+    color:#fff!important;
+    font-size:22px!important;
+    line-height:1!important;
+    letter-spacing:.08em!important;
+    text-transform:uppercase!important;
+    font-weight:950!important;
+  }
+  body.sdc-v95-light-default .home-primary-actions-v94{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+    width:100%!important;
+    margin:0 0 12px!important;
+  }
+  body.sdc-v95-light-default .home-primary-actions-v94 button{
+    width:100%!important;
+    min-height:88px!important;
+    border-radius:21px!important;
+    padding:15px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:12px!important;
+    font-size:21px!important;
+    line-height:1.05!important;
+    font-weight:950!important;
+    text-align:left!important;
+    white-space:normal!important;
+  }
+
+  /* Estadísticas: 2 columnas en móvil grande, nunca cortadas */
+  body.sdc-v95-light-default .home-stats-v94,
+  body.sdc-v95-light-default .stats.home-stats-v94,
+  body.sdc-v95-light-default .home-hero-v94 .stats,
+  body.sdc-v95-light-default .stats-grid,
+  body.sdc-v95-light-default .dashboard-stats{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+    width:100%!important;
+    margin:12px 0!important;
+    overflow:visible!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat,
+  body.sdc-v95-light-default .stats-grid .stat,
+  body.sdc-v95-light-default .dashboard-stats .stat{
+    width:100%!important;
+    min-width:0!important;
+    min-height:86px!important;
+    height:auto!important;
+    padding:13px!important;
+    border-radius:18px!important;
+    background:#fff!important;
+    border:1px solid #dbe7f3!important;
+    box-shadow:0 7px 16px rgba(15,35,55,.045)!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    align-items:flex-start!important;
+    gap:7px!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat span,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat span,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat span,
+  body.sdc-v95-light-default .stats-grid .stat span,
+  body.sdc-v95-light-default .dashboard-stats .stat span{
+    margin:0!important;
+    color:#64748b!important;
+    font-size:10.5px!important;
+    line-height:1.1!important;
+    font-weight:950!important;
+    letter-spacing:.06em!important;
+    text-transform:uppercase!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-align:left!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat b,
+  body.sdc-v95-light-default .home-stats-v94 .stat strong,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat b,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat strong,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat b,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat strong,
+  body.sdc-v95-light-default .stats-grid .stat b,
+  body.sdc-v95-light-default .stats-grid .stat strong,
+  body.sdc-v95-light-default .dashboard-stats .stat b,
+  body.sdc-v95-light-default .dashboard-stats .stat strong{
+    max-width:100%!important;
+    margin:0!important;
+    color:#0f172a!important;
+    font-size:clamp(24px,5.5vw,30px)!important;
+    line-height:1!important;
+    font-weight:950!important;
+    letter-spacing:-.04em!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat.featured,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat.featured,
+  body.sdc-v95-light-default .stats-grid .stat.featured,
+  body.sdc-v95-light-default .dashboard-stats .stat.featured{
+    grid-column:1/-1!important;
+    min-height:86px!important;
+    background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+    border:0!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured span,
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured b,
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured strong,
+  body.sdc-v95-light-default .stats .stat.featured span,
+  body.sdc-v95-light-default .stats .stat.featured b,
+  body.sdc-v95-light-default .stats .stat.featured strong{color:#fff!important;}
+
+  /* Productos: 2 columnas en móvil grande */
+  body.sdc-v95-light-default .products-panel,
+  body.sdc-v95-light-default .products-section,
+  body.sdc-v95-light-default .product-list-panel,
+  body.sdc-v95-light-default .catalog-panel,
+  body.sdc-v95-light-default .panel.products,
+  body.sdc-v95-light-default .products-view,
+  body.sdc-v95-light-default .catalog-view{
+    width:100%!important;
+    margin:12px 0 20px!important;
+    padding:14px!important;
+    border-radius:24px!important;
+    background:#fff!important;
+    border:1px solid #dbe7f3!important;
+    overflow:hidden!important;
+    box-shadow:0 10px 24px rgba(15,35,55,.055)!important;
+  }
+  body.sdc-v95-light-default .products-grid,
+  body.sdc-v95-light-default .catalog-grid,
+  body.sdc-v95-light-default .product-grid,
+  body.sdc-v95-light-default #productsGrid{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:12px!important;
+    width:100%!important;
+    overflow:visible!important;
+  }
+  body.sdc-v95-light-default .product-card,
+  body.sdc-v95-light-default .product-item,
+  body.sdc-v95-light-default .catalog-card{
+    width:100%!important;
+    min-width:0!important;
+    border-radius:20px!important;
+    padding:12px!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v95-light-default .product-card img,
+  body.sdc-v95-light-default .product-item img,
+  body.sdc-v95-light-default .catalog-card img{
+    width:96px!important;
+    height:96px!important;
+    border-radius:17px!important;
+    object-fit:cover!important;
+  }
+
+  /* Botones finales de modales: 2 columnas legibles */
+  body.sdc-v95-light-default #modalRoot .v49-detail-actions,
+  body.sdc-v95-light-default #modalRoot .quote-actions,
+  body.sdc-v95-light-default #modalRoot .modal-actions,
+  body.sdc-v95-light-default #modalRoot .doc-actions,
+  body.sdc-v95-light-default #modalRoot .share-actions,
+  body.sdc-v95-light-default #modalRoot .product-form-actions{
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+    margin-top:22px!important;
+  }
+}
+
+/* En ancho de teléfono clásico, vuelve a 1 columna para máxima lectura */
+@media(max-width:520px){
+  body.sdc-v95-light-default .home-primary-actions-v94,
+  body.sdc-v95-light-default .home-stats-v94,
+  body.sdc-v95-light-default .stats.home-stats-v94,
+  body.sdc-v95-light-default .home-hero-v94 .stats,
+  body.sdc-v95-light-default .products-grid,
+  body.sdc-v95-light-default .catalog-grid,
+  body.sdc-v95-light-default .product-grid,
+  body.sdc-v95-light-default #productsGrid{
+    grid-template-columns:1fr!important;
+  }
+}

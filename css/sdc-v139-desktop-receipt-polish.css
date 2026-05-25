@@ -1,0 +1,483 @@
+/* SDC V139 · Desktop real + encabezados limpios + recibo horizontal */
+
+:root{
+  --v139-shell-gap:18px;
+  --v139-radius:24px;
+  --v139-radius-sm:18px;
+  --v139-line:#d7e4f1;
+  --v139-shadow:0 16px 36px rgba(15,35,55,.08);
+  --v139-shadow-soft:0 10px 24px rgba(15,35,55,.06);
+  --v139-card:#ffffff;
+  --v139-ink:#091827;
+  --v139-muted:#6c829a;
+  --v139-blue:#0b63ce;
+  --v139-blue-2:#1577e6;
+  --v139-navy:#07131a;
+}
+
+/* 1) Quitar layout viejo en columnas y usar flujo completo en PC/tablet/móvil */
+body.sdc-v95-light-default #app,
+body.sdc-v95-light-default main#app,
+body.sdc-v95-light-default #app.app{
+  display:flex!important;
+  flex-direction:column!important;
+  grid-template-columns:none!important;
+  grid-template-areas:none!important;
+  gap:var(--v139-shell-gap)!important;
+  align-items:stretch!important;
+}
+
+body.sdc-v95-light-default #app.app > *,
+body.sdc-v95-light-default #app > *{
+  grid-area:auto!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+}
+
+/* 2) Encabezado superior más limpio */
+body.sdc-v95-light-default .topbar{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto auto!important;
+  align-items:center!important;
+  gap:14px!important;
+  padding:16px 18px!important;
+}
+body.sdc-v95-light-default .topbar .spacer{display:none!important}
+body.sdc-v95-light-default .top-logo{
+  width:58px!important;
+  height:58px!important;
+  border-radius:18px!important;
+  border:1px solid #dce8f5!important;
+  object-fit:contain!important;
+  background:#fff!important;
+  box-shadow:0 10px 22px rgba(15,35,55,.08)!important;
+}
+body.sdc-v95-light-default .top-title h1{
+  margin:0!important;
+  font-size:40px!important;
+  line-height:.95!important;
+  letter-spacing:.02em!important;
+}
+body.sdc-v95-light-default .top-title-row-v88{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  flex-wrap:wrap!important;
+}
+body.sdc-v95-light-default .top-badge-v88{
+  background:#ecf5ff!important;
+  color:#0b63ce!important;
+  border:1px solid #cfe3fb!important;
+  border-radius:999px!important;
+  padding:6px 10px!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+body.sdc-v95-light-default .sync-status,
+body.sdc-v95-light-default .logout-btn{
+  min-height:46px!important;
+  border-radius:16px!important;
+  padding:0 14px!important;
+  box-shadow:none!important;
+}
+body.sdc-v95-light-default .sync-status .sync-label{
+  font-weight:850!important;
+}
+
+/* 3) Tabs principales más pro */
+body.sdc-v95-light-default .sdc-page-tabs-v97{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:6px!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+  border:1px solid var(--v139-line)!important;
+  border-radius:22px!important;
+  background:rgba(255,255,255,.9)!important;
+  box-shadow:var(--v139-shadow-soft)!important;
+}
+body.sdc-v95-light-default .sdc-page-tabs-v97 button{
+  min-height:56px!important;
+  border-radius:18px!important;
+}
+
+/* 4) INICIO: ya no se ve como dos columnas rotas */
+body.sdc-v95-light-default .home-hero-shell-v94{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:16px!important;
+  align-items:stretch!important;
+}
+body.sdc-v95-light-default .home-brand-card-v94,
+body.sdc-v95-light-default .home-actions-card-v94,
+body.sdc-v95-light-default .home-tools-v83,
+body.sdc-v95-light-default .search-panel,
+body.sdc-v95-light-default .category-gallery,
+body.sdc-v95-light-default #inventario,
+body.sdc-v95-light-default .quick-panel,
+body.sdc-v95-light-default .view-mode-panel{
+  border-radius:26px!important;
+}
+body.sdc-v95-light-default .home-brand-card-v94,
+body.sdc-v95-light-default .home-actions-card-v94{
+  padding:22px!important;
+  box-shadow:var(--v139-shadow)!important;
+}
+body.sdc-v95-light-default .home-brand-card-v94 h2{
+  font-size:44px!important;
+  line-height:1!important;
+  margin-bottom:10px!important;
+}
+body.sdc-v95-light-default .home-brand-card-v94 p{
+  max-width:960px!important;
+}
+body.sdc-v95-light-default .home-primary-actions-v94{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+body.sdc-v95-light-default .home-primary-actions-v94 button{
+  min-height:132px!important;
+  border-radius:24px!important;
+}
+body.sdc-v95-light-default .home-actions-grid-v94{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+body.sdc-v95-light-default .home-actions-grid-v94 button{
+  min-height:92px!important;
+  border-radius:20px!important;
+}
+body.sdc-v95-light-default .home-stats-v94{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+body.sdc-v95-light-default .home-stats-v94 .stat{
+  min-height:132px!important;
+  border-radius:22px!important;
+}
+
+/* 5) PRODUCTOS: eliminar look partido y hacer ancho real */
+body.sdc-v95-light-default[data-sdc-page="productos"] .sdc-products-title-v98{
+  display:none!important;
+}
+body.sdc-v95-light-default[data-sdc-page="productos"] .view-mode-panel{
+  padding:14px!important;
+}
+body.sdc-v95-light-default[data-sdc-page="productos"] .view-mode-panel .view-mode-buttons,
+body.sdc-v95-light-default[data-sdc-page="productos"] .view-mode-panel .capture-active-buttons{
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr))!important;
+}
+body.sdc-v95-light-default .inventory-head-v74{
+  padding:0!important;
+  overflow:hidden!important;
+}
+body.sdc-v95-light-default .inventory-titlebar-v74{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  min-height:150px!important;
+  padding:22px 24px 18px!important;
+  border-radius:26px 26px 0 0!important;
+  box-shadow:none!important;
+  background:
+    radial-gradient(circle at top right,rgba(255,255,255,.18),transparent 26%),
+    linear-gradient(135deg,#07131a 0%,#0a4f9d 44%,#1577e6 100%)!important;
+}
+body.sdc-v95-light-default .inventory-titlebar-v74 h2{
+  font-size:58px!important;
+  line-height:.9!important;
+  letter-spacing:.02em!important;
+  margin:0!important;
+}
+body.sdc-v95-light-default .inventory-head-right{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  gap:10px!important;
+}
+body.sdc-v95-light-default .inventory-head-right > *{
+  width:auto!important;
+}
+body.sdc-v95-light-default .count-pill,
+body.sdc-v95-light-default .firebase-head-btn{
+  min-height:44px!important;
+  padding:0 16px!important;
+  border-radius:999px!important;
+  font-size:14px!important;
+  font-weight:900!important;
+}
+body.sdc-v95-light-default .inventory-toolbar-v74{
+  display:grid!important;
+  grid-template-columns:minmax(170px,220px) minmax(360px,1fr) minmax(230px,300px)!important;
+  gap:14px!important;
+  width:100%!important;
+  padding:18px 20px 20px!important;
+  background:#fff!important;
+  border-top:1px solid #ebf2f9!important;
+}
+body.sdc-v95-light-default .inventory-new-btn-v74,
+body.sdc-v95-light-default .inventory-inline-search-v74,
+body.sdc-v95-light-default .inventory-cat-select-v74{
+  min-height:62px!important;
+  border-radius:18px!important;
+}
+body.sdc-v95-light-default .inventory-inline-search-v74,
+body.sdc-v95-light-default .inventory-cat-select-v74{
+  background:#fff!important;
+  border:1px solid #dbe7f3!important;
+}
+body.sdc-v95-light-default .inventory-inline-search-v74 input,
+body.sdc-v95-light-default .inventory-cat-select-v74 select{
+  font-size:16px!important;
+}
+body.sdc-v95-light-default #inventario .inventory-content{
+  padding-top:18px!important;
+}
+body.sdc-v95-light-default .grid,
+body.sdc-v95-light-default .grid.one-col,
+body.sdc-v95-light-default .grid.two-col,
+body.sdc-v95-light-default .product-grid,
+body.sdc-v95-light-default .products-grid,
+body.sdc-v95-light-default .catalog-grid{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr))!important;
+  gap:18px!important;
+  width:100%!important;
+}
+body.sdc-v95-light-default .product-card{
+  height:100%!important;
+  min-height:240px!important;
+  border-radius:22px!important;
+  box-shadow:var(--v139-shadow-soft)!important;
+}
+
+/* 6) Recibo/cotización horizontal, más corto y más limpio */
+body.sdc-v95-light-default .receipt-pro-v4{
+  width:min(1160px,100%)!important;
+  max-width:100%!important;
+  margin:0 auto!important;
+  border-radius:28px!important;
+  overflow:hidden!important;
+}
+body.sdc-v95-light-default .receipt-band-pro{
+  padding:16px 22px!important;
+}
+body.sdc-v95-light-default .receipt-inner-pro{
+  padding:18px!important;
+}
+@media(min-width:960px){
+  body.sdc-v95-light-default .receipt-inner-pro{
+    display:grid!important;
+    grid-template-columns:minmax(0,1.35fr) minmax(320px,.95fr)!important;
+    gap:16px!important;
+    align-items:start!important;
+  }
+  body.sdc-v95-light-default .receipt-header-pro{
+    grid-column:1/-1!important;
+    margin:0!important;
+  }
+  body.sdc-v95-light-default .receipt-products-pro{
+    grid-column:1/2!important;
+    margin:0!important;
+  }
+  body.sdc-v95-light-default .receipt-client-pro{
+    grid-column:2/3!important;
+    grid-template-columns:1fr!important;
+    margin:0!important;
+  }
+  body.sdc-v95-light-default .receipt-process-pro{
+    display:none!important;
+  }
+  body.sdc-v95-light-default .receipt-summary-pro{
+    grid-column:2/3!important;
+    margin:0!important;
+  }
+  body.sdc-v95-light-default .receipt-footer-pro{
+    grid-column:1/-1!important;
+    margin:0!important;
+  }
+}
+body.sdc-v95-light-default .receipt-header-pro,
+body.sdc-v95-light-default .receipt-client-pro article,
+body.sdc-v95-light-default .receipt-products-pro,
+body.sdc-v95-light-default .receipt-summary-pro,
+body.sdc-v95-light-default .receipt-footer-pro,
+body.sdc-v95-light-default .receipt-process-pro{
+  border-radius:22px!important;
+  box-shadow:none!important;
+}
+body.sdc-v95-light-default .receipt-brand-pro{
+  gap:14px!important;
+}
+body.sdc-v95-light-default .receipt-logo-box{
+  width:88px!important;
+  min-width:88px!important;
+  height:88px!important;
+  border-radius:24px!important;
+}
+body.sdc-v95-light-default .receipt-brand-pro h2{
+  font-size:52px!important;
+  line-height:.95!important;
+}
+body.sdc-v95-light-default .receipt-total-pro b{
+  font-size:76px!important;
+  line-height:.9!important;
+}
+body.sdc-v95-light-default .receipt-client-pro article{
+  padding:14px 16px!important;
+}
+body.sdc-v95-light-default .receipt-title-pro{
+  padding:16px 18px!important;
+}
+body.sdc-v95-light-default .receipt-item-pro{
+  grid-template-columns:34px 58px minmax(0,1fr) auto!important;
+  gap:10px!important;
+  align-items:center!important;
+  min-height:74px!important;
+  padding:10px 14px!important;
+}
+body.sdc-v95-light-default .receipt-item-index{
+  width:34px!important;
+  height:34px!important;
+  font-size:14px!important;
+}
+body.sdc-v95-light-default .receipt-item-thumb{
+  width:58px!important;
+  height:58px!important;
+  border-radius:16px!important;
+}
+body.sdc-v95-light-default .receipt-item-info b{
+  font-size:17px!important;
+  line-height:1.1!important;
+}
+body.sdc-v95-light-default .receipt-item-info span{
+  font-size:13px!important;
+  line-height:1.2!important;
+}
+body.sdc-v95-light-default .receipt-item-pro strong{
+  justify-self:end!important;
+  margin:0!important;
+  font-size:22px!important;
+}
+body.sdc-v95-light-default .receipt-summary-pro > div{
+  min-height:52px!important;
+}
+body.sdc-v95-light-default .receipt-summary-pro .grand{
+  min-height:88px!important;
+}
+body.sdc-v95-light-default .receipt-summary-pro .grand b{
+  font-size:54px!important;
+}
+body.sdc-v95-light-default .receipt-footer-pro{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:12px!important;
+  align-items:center!important;
+}
+body.sdc-v95-light-default .receipt-note-text{
+  font-size:15px!important;
+  line-height:1.35!important;
+}
+body.sdc-v95-light-default .receipt-whatsapp-pill{
+  min-height:50px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 18px!important;
+  border-radius:999px!important;
+  font-size:15px!important;
+}
+
+/* 7) Responsive refinements */
+@media(max-width:1100px){
+  body.sdc-v95-light-default .inventory-titlebar-v74 h2{font-size:46px!important}
+  body.sdc-v95-light-default .home-stats-v94{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:899px){
+  body.sdc-v95-light-default .topbar{
+    grid-template-columns:auto minmax(0,1fr)!important;
+  }
+  body.sdc-v95-light-default .sync-status,
+  body.sdc-v95-light-default .logout-btn{
+    grid-column:auto!important;
+  }
+  body.sdc-v95-light-default .home-primary-actions-v94,
+  body.sdc-v95-light-default .home-actions-grid-v94,
+  body.sdc-v95-light-default .home-stats-v94,
+  body.sdc-v95-light-default .inventory-toolbar-v74{
+    grid-template-columns:1fr 1fr!important;
+  }
+  body.sdc-v95-light-default .inventory-inline-search-v74{
+    grid-column:1/-1!important;
+  }
+  body.sdc-v95-light-default .inventory-titlebar-v74 h2{font-size:42px!important}
+  body.sdc-v95-light-default .grid,
+  body.sdc-v95-light-default .grid.one-col,
+  body.sdc-v95-light-default .grid.two-col{
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr))!important;
+  }
+  body.sdc-v95-light-default .receipt-brand-pro h2{font-size:42px!important}
+  body.sdc-v95-light-default .receipt-total-pro b{font-size:58px!important}
+}
+@media(max-width:640px){
+  body.sdc-v95-light-default .topbar{
+    grid-template-columns:auto minmax(0,1fr)!important;
+    padding:14px 14px 12px!important;
+  }
+  body.sdc-v95-light-default .sync-status,
+  body.sdc-v95-light-default .logout-btn{
+    display:none!important;
+  }
+  body.sdc-v95-light-default .top-title h1{font-size:28px!important}
+  body.sdc-v95-light-default .home-brand-card-v94 h2{font-size:30px!important}
+  body.sdc-v95-light-default .home-primary-actions-v94,
+  body.sdc-v95-light-default .home-actions-grid-v94,
+  body.sdc-v95-light-default .home-stats-v94,
+  body.sdc-v95-light-default .inventory-toolbar-v74{
+    grid-template-columns:1fr!important;
+  }
+  body.sdc-v95-light-default .inventory-titlebar-v74{
+    min-height:auto!important;
+    padding:18px 18px 14px!important;
+  }
+  body.sdc-v95-light-default .inventory-titlebar-v74 h2{font-size:34px!important}
+  body.sdc-v95-light-default .inventory-head-right{
+    align-items:flex-start!important;
+  }
+  body.sdc-v95-light-default .grid,
+  body.sdc-v95-light-default .grid.one-col,
+  body.sdc-v95-light-default .grid.two-col{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body.sdc-v95-light-default .receipt-inner-pro{padding:12px!important}
+  body.sdc-v95-light-default .receipt-header-pro{grid-template-columns:1fr!important}
+  body.sdc-v95-light-default .receipt-brand-pro h2{font-size:30px!important}
+  body.sdc-v95-light-default .receipt-total-pro b{font-size:42px!important}
+  body.sdc-v95-light-default .receipt-item-pro{
+    grid-template-columns:28px 52px minmax(0,1fr)!important;
+  }
+  body.sdc-v95-light-default .receipt-item-pro strong{
+    grid-column:3!important;
+    justify-self:start!important;
+    margin-top:4px!important;
+  }
+  body.sdc-v95-light-default .receipt-footer-pro{
+    grid-template-columns:1fr!important;
+    text-align:center!important;
+  }
+}
+@media(max-width:380px){
+  body.sdc-v95-light-default .grid,
+  body.sdc-v95-light-default .grid.one-col,
+  body.sdc-v95-light-default .grid.two-col{
+    grid-template-columns:1fr!important;
+  }
+}

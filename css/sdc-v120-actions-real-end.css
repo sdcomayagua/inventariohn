@@ -1,0 +1,110 @@
+/* SDC V120: botones de acciones al final real, nunca encima del contenido */
+
+/* Anula cualquier sticky/fixed heredado en TODOS los botones de acción */
+body.sdc-v95-light-default #modalRoot .modal-actions,
+body.sdc-v95-light-default #modalRoot .v49-detail-actions,
+body.sdc-v95-light-default #modalRoot .quote-actions,
+body.sdc-v95-light-default #modalRoot .product-form-actions,
+body.sdc-v95-light-default #modalRoot .v49-capture-buttons,
+body.sdc-v95-light-default #modalRoot .doc-actions,
+body.sdc-v95-light-default #modalRoot .share-actions,
+body.sdc-v95-light-default #modalRoot [class*="actions"]{
+  position:relative!important;
+  inset:auto!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  z-index:1!important;
+  transform:none!important;
+  margin:26px 0 0!important;
+  padding:16px 0 0!important;
+  background:transparent!important;
+  border-top:1px solid #dbe7f3!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+
+/* El cuerpo del modal debe desplazarse completo, no tener acciones pegadas */
+body.sdc-v95-light-default #modalRoot .modal-body,
+body.sdc-v95-light-default #modalRoot .v49-product-detail,
+body.sdc-v95-light-default #modalRoot .quote-body,
+body.sdc-v95-light-default #modalRoot .product-editor{
+  overflow:visible!important;
+  padding-bottom:28px!important;
+}
+
+/* En detalle de producto, las acciones van después del contenido cliente/admin/captura */
+body.sdc-v95-light-default #modalRoot .v49-detail-actions{
+  clear:both!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  width:100%!important;
+}
+body.sdc-v95-light-default #modalRoot .v49-detail-actions .btn,
+body.sdc-v95-light-default #modalRoot .v49-detail-actions button{
+  width:100%!important;
+  min-height:56px!important;
+  border-radius:17px!important;
+  font-size:16px!important;
+  font-weight:950!important;
+}
+
+/* Dar espacio entre la cantidad/precios y los botones para que no parezcan flotantes */
+body.sdc-v95-light-default #modalRoot .v49-tab.active{
+  display:block!important;
+  padding-bottom:14px!important;
+}
+body.sdc-v95-light-default #modalRoot .v49-price-cards,
+body.sdc-v95-light-default #modalRoot .v49-benefits,
+body.sdc-v95-light-default #modalRoot .v86-color-client,
+body.sdc-v95-light-default #modalRoot .v49-admin-grid,
+body.sdc-v95-light-default #modalRoot .v49-capture-note,
+body.sdc-v95-light-default #modalRoot #productShareCard{
+  margin-bottom:14px!important;
+}
+
+/* Cotizar / Vender: las acciones quedan al final del formulario, no flotantes */
+body.sdc-v95-light-default #modalRoot .quote-actions{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:9px!important;
+  width:100%!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-actions .main-wide,
+body.sdc-v95-light-default #modalRoot .quote-actions .save-doc,
+body.sdc-v95-light-default #modalRoot #finishSale{
+  grid-column:1/-1!important;
+}
+
+/* Si algún estilo anterior usa fixed en botones individuales, se fuerza normal */
+body.sdc-v95-light-default #modalRoot button,
+body.sdc-v95-light-default #modalRoot .btn{
+  position:relative!important;
+  top:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  right:auto!important;
+  transform:none!important;
+}
+
+/* Ocultar hamburguesa dentro de cualquier modal para no tapar nada */
+body:has(#modalRoot .modal-head) .sdc-menu-fab-v116,
+body:has(#modalRoot .v49-detail-head) .sdc-menu-fab-v116,
+body:has(#modalRoot .quote-head) .sdc-menu-fab-v116{
+  display:none!important;
+}
+
+@media(max-width:430px){
+  body.sdc-v95-light-default #modalRoot .v49-detail-actions,
+  body.sdc-v95-light-default #modalRoot .quote-actions{
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .v49-detail-actions .btn,
+  body.sdc-v95-light-default #modalRoot .quote-actions .btn{
+    min-height:54px!important;
+    font-size:14px!important;
+  }
+}

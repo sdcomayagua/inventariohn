@@ -1,0 +1,88 @@
+/* SDC V128: ajuste final móvil - sin congelamiento, menú abajo y botones al final */
+
+/* Menú: abajo, liviano, sin blur ni efectos pesados */
+.sdc-menu-fab-v116{
+  position:fixed!important;
+  top:calc(env(safe-area-inset-top,0px) + 10px)!important;
+  right:10px!important;
+  left:auto!important;
+  bottom:auto!important;
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  color:#07131a!important;
+  border:1px solid #dbe7f3!important;
+  box-shadow:0 8px 18px rgba(15,35,55,.12)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:0!important;
+  z-index:9000!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.sdc-menu-fab-v116::before{content:'☰'!important;font-size:24px!important;font-weight:950!important;line-height:1!important;color:#07131a!important}
+.sdc-menu-fab-v116::after{display:none!important}
+body.sdc-menu-open-v116 .sdc-menu-fab-v116{display:none!important}
+.sdc-menu-backdrop-v116{background:rgba(15,23,42,.28)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.sdc-menu-drawer-v116{box-shadow:0 -14px 30px rgba(15,35,55,.16)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;will-change:transform!important}
+
+/* Evitar que el botón del menú tape modales o productos */
+body:has(#modalRoot .modal-head) .sdc-menu-fab-v116,
+body:has(#modalRoot .quote-head) .sdc-menu-fab-v116,
+body:has(#modalRoot .v49-detail-head) .sdc-menu-fab-v116,
+body:has(#modalRoot [role="dialog"]) .sdc-menu-fab-v116{display:none!important}
+
+/* Botones de producto: siempre al final del contenido, no flotantes */
+#modalRoot .v49-detail-actions,
+#modalRoot .quote-actions,
+#modalRoot .modal-actions,
+#modalRoot .doc-actions,
+#modalRoot .share-actions,
+#modalRoot .product-form-actions{
+  position:static!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+  z-index:1!important;
+  margin:22px 0 0!important;
+  padding:14px 0 0!important;
+  border-top:1px solid #dbe7f3!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  pointer-events:auto!important;
+}
+#modalRoot .v49-detail-actions,
+#modalRoot .quote-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;width:100%!important}
+#modalRoot .v49-detail-actions button,
+#modalRoot .quote-actions button,
+#modalRoot .v49-detail-actions .btn,
+#modalRoot .quote-actions .btn{position:relative!important;min-height:54px!important;border-radius:17px!important;font-weight:950!important;pointer-events:auto!important;touch-action:manipulation!important}
+#modalRoot .quote-actions .main-wide,
+#modalRoot .quote-actions .save-doc,
+#modalRoot #finishSale{grid-column:1/-1!important}
+
+/* Estadísticas compactas y legibles en S24 Ultra y móviles */
+@media(max-width:560px){
+  .home-stats-v94,.stats.home-stats-v94,.home-hero-v94 .stats{display:flex!important;flex-direction:column!important;gap:8px!important;width:100%!important;overflow:visible!important}
+  .home-stats-v94 .stat,.stats.home-stats-v94 .stat,.home-hero-v94 .stats .stat{width:100%!important;height:62px!important;min-height:62px!important;max-height:62px!important;aspect-ratio:auto!important;padding:10px 13px!important;border-radius:16px!important;background:#fff!important;border:1px solid #dbe7f3!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;overflow:hidden!important;box-shadow:0 7px 16px rgba(15,35,55,.045)!important}
+  .home-stats-v94 .stat span,.stats.home-stats-v94 .stat span{flex:1 1 auto!important;max-width:58%!important;margin:0!important;color:#64748b!important;font-size:10.5px!important;line-height:1.1!important;font-weight:950!important;letter-spacing:.055em!important;text-transform:uppercase!important;white-space:normal!important;text-align:left!important;overflow:visible!important}
+  .home-stats-v94 .stat b,.home-stats-v94 .stat strong,.stats.home-stats-v94 .stat b,.stats.home-stats-v94 .stat strong{flex:0 1 auto!important;max-width:42%!important;margin:0!important;color:#0f172a!important;font-size:clamp(20px,6vw,25px)!important;line-height:1!important;font-weight:950!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;text-align:right!important}
+  .home-stats-v94 .stat.featured,.stats.home-stats-v94 .stat.featured{height:70px!important;min-height:70px!important;max-height:70px!important;background:linear-gradient(135deg,#07131a,#0b63ce)!important;border:0!important}
+  .home-stats-v94 .stat.featured span,.home-stats-v94 .stat.featured b,.home-stats-v94 .stat.featured strong,.stats .stat.featured span,.stats .stat.featured b,.stats .stat.featured strong{color:#fff!important}
+}
+
+/* Menú abajo: tarjetas más limpias */
+.sdc-menu-grid-v116{gap:9px!important}
+.sdc-menu-item-v116{touch-action:manipulation!important}
+.sdc-menu-item-v116 span{letter-spacing:0!important;text-transform:none!important}
+
+/* Bajar carga visual para móviles */
+@media(max-width:760px){
+  *{transition-duration:.12s!important;animation-duration:.12s!important}
+  .home-hero-v94,.panel,.card-box,.v49-product-detail,.quote-body{box-shadow:0 8px 18px rgba(15,35,55,.06)!important}
+}

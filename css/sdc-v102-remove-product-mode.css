@@ -1,0 +1,51 @@
+/* SDC V102: quitar botones Admin / Cliente / Captura de PRODUCTOS.
+   Esas opciones quedan dentro del botón VER de cada producto. */
+
+body.sdc-v97-pages[data-sdc-page="productos"] .view-mode-panel,
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-product-mode-card-v98,
+body.sdc-v98-product-tabs[data-sdc-page="productos"] .view-mode-panel,
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-card-v98{
+  display:none!important;
+}
+
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-products-title-v98{
+  margin-top:0!important;
+  margin-bottom:12px!important;
+}
+
+body.sdc-v97-pages[data-sdc-page="productos"] .search-panel,
+body.sdc-v97-pages[data-sdc-page="productos"] .category-gallery,
+body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
+  margin-top:0!important;
+}
+
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-v98{
+  padding:16px!important;
+  display:grid!important;
+  grid-template-columns:1fr auto!important;
+  gap:14px!important;
+  align-items:center!important;
+}
+
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-copy-v100 b{
+  font-size:26px!important;
+}
+
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-copy-v100 span{
+  font-size:13px!important;
+}
+
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-v98 button[data-sdc-title-new-product]{
+  min-width:210px!important;
+}
+
+@media(max-width:760px){
+  body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-v98{
+    grid-template-columns:1fr!important;
+    padding:14px!important;
+  }
+  body.sdc-v100-polish[data-sdc-page="productos"] .sdc-products-title-v98 button[data-sdc-title-new-product]{
+    width:100%!important;
+    min-width:0!important;
+  }
+}

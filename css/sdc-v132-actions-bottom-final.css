@@ -1,0 +1,229 @@
+/* SDC V132: botones de navegación y acciones organizados al final, sin tapar contenido */
+
+/* 1) Barra de navegación principal: compacta y pegada abajo solo para Inicio / Productos */
+@media(max-width:760px){
+  body.sdc-v95-light-default .page-tabs-v97,
+  body.sdc-v95-light-default .sdc-page-tabs,
+  body.sdc-v95-light-default .home-products-tabs{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:80!important;
+    width:calc(100% - 16px)!important;
+    max-width:520px!important;
+    margin:14px auto 0!important;
+    padding:8px!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    background:rgba(255,255,255,.98)!important;
+    border:1px solid #dbe7f3!important;
+    border-radius:22px!important;
+    box-shadow:0 -8px 22px rgba(15,35,55,.10)!important;
+  }
+  body.sdc-v95-light-default .page-tabs-v97 button,
+  body.sdc-v95-light-default .sdc-page-tabs button,
+  body.sdc-v95-light-default .home-products-tabs button{
+    min-height:50px!important;
+    border-radius:16px!important;
+    font-size:13px!important;
+    font-weight:950!important;
+    letter-spacing:.04em!important;
+    text-transform:uppercase!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    touch-action:manipulation!important;
+  }
+}
+
+/* 2) Botones dentro de modales: siempre al final del documento, NO flotantes */
+body.sdc-v95-light-default #modalRoot .v49-detail-actions,
+body.sdc-v95-light-default #modalRoot .quote-actions,
+body.sdc-v95-light-default #modalRoot .modal-actions,
+body.sdc-v95-light-default #modalRoot .doc-actions,
+body.sdc-v95-light-default #modalRoot .share-actions,
+body.sdc-v95-light-default #modalRoot .product-form-actions,
+body.sdc-v95-light-default #modalRoot .form-actions,
+body.sdc-v95-light-default #modalRoot .receipt-actions{
+  position:static!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  margin:22px 0 0!important;
+  padding:14px 0 0!important;
+  border-top:1px solid #dbe7f3!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  z-index:1!important;
+  pointer-events:auto!important;
+}
+
+body.sdc-v95-light-default #modalRoot .v49-detail-actions button,
+body.sdc-v95-light-default #modalRoot .quote-actions button,
+body.sdc-v95-light-default #modalRoot .modal-actions button,
+body.sdc-v95-light-default #modalRoot .doc-actions button,
+body.sdc-v95-light-default #modalRoot .share-actions button,
+body.sdc-v95-light-default #modalRoot .product-form-actions button,
+body.sdc-v95-light-default #modalRoot .form-actions button,
+body.sdc-v95-light-default #modalRoot .receipt-actions button,
+body.sdc-v95-light-default #modalRoot .v49-detail-actions .btn,
+body.sdc-v95-light-default #modalRoot .quote-actions .btn{
+  position:relative!important;
+  width:100%!important;
+  min-height:54px!important;
+  border-radius:17px!important;
+  padding:12px 10px!important;
+  font-size:13px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  letter-spacing:.03em!important;
+  white-space:normal!important;
+  text-align:center!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  touch-action:manipulation!important;
+  pointer-events:auto!important;
+  z-index:2!important;
+  box-shadow:none!important;
+}
+
+body.sdc-v95-light-default #modalRoot #finishSale,
+body.sdc-v95-light-default #modalRoot .quote-actions .main-wide,
+body.sdc-v95-light-default #modalRoot .quote-actions .save-doc,
+body.sdc-v95-light-default #modalRoot .product-form-actions .primary,
+body.sdc-v95-light-default #modalRoot .form-actions .primary{
+  grid-column:1/-1!important;
+  min-height:58px!important;
+  font-size:14px!important;
+}
+
+/* 3) En pantalla muy angosta, una columna para que no se corten */
+@media(max-width:380px){
+  body.sdc-v95-light-default #modalRoot .v49-detail-actions,
+  body.sdc-v95-light-default #modalRoot .quote-actions,
+  body.sdc-v95-light-default #modalRoot .modal-actions,
+  body.sdc-v95-light-default #modalRoot .doc-actions,
+  body.sdc-v95-light-default #modalRoot .share-actions,
+  body.sdc-v95-light-default #modalRoot .product-form-actions,
+  body.sdc-v95-light-default #modalRoot .form-actions,
+  body.sdc-v95-light-default #modalRoot .receipt-actions{
+    grid-template-columns:1fr!important;
+  }
+}
+
+/* 4) Botones de WhatsApp / descarga / copiar: azul y legibles, sin rojo pesado */
+body.sdc-v95-light-default #modalRoot #waText,
+body.sdc-v95-light-default #modalRoot #downloadDoc,
+body.sdc-v95-light-default #modalRoot #shortReceipt,
+body.sdc-v95-light-default #modalRoot #copyText,
+body.sdc-v95-light-default #modalRoot #v53WhatsAppProduct{
+  background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+  color:#fff!important;
+  border:0!important;
+}
+body.sdc-v95-light-default #modalRoot #finishSale,
+body.sdc-v95-light-default #modalRoot .save-doc,
+body.sdc-v95-light-default #modalRoot .btn.primary,
+body.sdc-v95-light-default #modalRoot button.primary{
+  background:linear-gradient(135deg,#0b63ce,#10b981)!important;
+  color:#fff!important;
+  border:0!important;
+}
+body.sdc-v95-light-default #modalRoot .btn.danger,
+body.sdc-v95-light-default #modalRoot button.danger{
+  background:#eef5fb!important;
+  color:#07131a!important;
+  border:1px solid #dbe7f3!important;
+}
+
+/* 5) Los modales necesitan espacio abajo para que los botones finales se puedan ver completos */
+@media(max-width:760px){
+  body.sdc-v95-light-default #modalRoot .modal-body,
+  body.sdc-v95-light-default #modalRoot .quote-body,
+  body.sdc-v95-light-default #modalRoot .product-editor,
+  body.sdc-v95-light-default #modalRoot .v49-detail-body{
+    padding-bottom:24px!important;
+    overflow-x:hidden!important;
+  }
+  body.sdc-v95-light-default #modalRoot .modal,
+  body.sdc-v95-light-default #modalRoot .modal-card,
+  body.sdc-v95-light-default #modalRoot [role="dialog"]{
+    max-height:96dvh!important;
+    overflow:auto!important;
+  }
+}
+
+/* 6) Recuadros de ganancias y ventas: lectura prioridad */
+@media(max-width:430px){
+  body.sdc-v95-light-default .sdc-mini-stats-v116,
+  body.sdc-v95-light-default .summary-cards,
+  body.sdc-v95-light-default .sales-stats,
+  body.sdc-v95-light-default .gain-stats{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:9px!important;
+    width:100%!important;
+  }
+  body.sdc-v95-light-default .sdc-mini-stat-v116,
+  body.sdc-v95-light-default .summary-card,
+  body.sdc-v95-light-default .sales-stat,
+  body.sdc-v95-light-default .gain-stat{
+    min-height:64px!important;
+    border-radius:17px!important;
+    padding:12px 14px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:12px!important;
+    background:#fff!important;
+    border:1px solid #dbe7f3!important;
+    box-shadow:none!important;
+  }
+  body.sdc-v95-light-default .sdc-mini-stat-v116 span,
+  body.sdc-v95-light-default .summary-card span,
+  body.sdc-v95-light-default .sales-stat span,
+  body.sdc-v95-light-default .gain-stat span{
+    color:#64748b!important;
+    font-size:11px!important;
+    line-height:1.1!important;
+    font-weight:950!important;
+    letter-spacing:.06em!important;
+    text-transform:uppercase!important;
+  }
+  body.sdc-v95-light-default .sdc-mini-stat-v116 b,
+  body.sdc-v95-light-default .summary-card b,
+  body.sdc-v95-light-default .sales-stat b,
+  body.sdc-v95-light-default .gain-stat b{
+    color:#07131a!important;
+    font-size:24px!important;
+    line-height:1!important;
+    font-weight:950!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    max-width:48%!important;
+    text-align:right!important;
+  }
+}
+
+@media print{
+  body.sdc-v95-light-default .page-tabs-v97,
+  body.sdc-v95-light-default .sdc-page-tabs,
+  body.sdc-v95-light-default .home-products-tabs,
+  body.sdc-v95-light-default #modalRoot .v49-detail-actions,
+  body.sdc-v95-light-default #modalRoot .quote-actions,
+  body.sdc-v95-light-default #modalRoot .modal-actions,
+  body.sdc-v95-light-default #modalRoot .doc-actions,
+  body.sdc-v95-light-default #modalRoot .share-actions,
+  body.sdc-v95-light-default #modalRoot .product-form-actions{
+    display:none!important;
+  }
+}

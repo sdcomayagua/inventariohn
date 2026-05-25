@@ -1,0 +1,166 @@
+/* SDC V117: corrección final de menú, estadísticas, recibos y botones */
+
+/* Menú hamburguesa: arriba, pequeño y sin tapar contenido inferior */
+.sdc-menu-fab-v116{
+  top:12px!important;
+  left:12px!important;
+  bottom:auto!important;
+  width:46px!important;
+  height:46px!important;
+  border-radius:16px!important;
+  font-size:23px!important;
+  background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+  box-shadow:0 12px 28px rgba(7,19,26,.18)!important;
+}
+body.sdc-menu-open-v116 .sdc-menu-fab-v116{opacity:.2!important;pointer-events:none!important}
+@media(max-width:430px){.sdc-menu-fab-v116{top:10px!important;left:10px!important;width:44px!important;height:44px!important;border-radius:15px!important}}
+
+/* Dejar espacio visual para que el menú no caiga encima del primer bloque */
+body.sdc-v95-light-default .sdc-utility-tabs-v105,
+body.sdc-v95-light-default .sdc-top-tools-v108{padding-left:46px!important}
+
+/* Estadísticas: una por fila para que se lean completas */
+body.sdc-v95-light-default .home-stats-v94,
+body.sdc-v95-light-default .stats.home-stats-v94,
+body.sdc-v95-light-default .home-hero-v94 .stats{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:10px!important;
+  width:100%!important;
+  overflow:visible!important;
+}
+body.sdc-v95-light-default .home-stats-v94 .stat,
+body.sdc-v95-light-default .stats .stat{
+  min-height:78px!important;
+  padding:14px 16px!important;
+  border-radius:18px!important;
+  display:grid!important;
+  grid-template-columns:1fr auto!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+body.sdc-v95-light-default .home-stats-v94 .stat b,
+body.sdc-v95-light-default .home-stats-v94 .stat strong,
+body.sdc-v95-light-default .stats .stat b,
+body.sdc-v95-light-default .stats .stat strong{
+  order:2!important;
+  text-align:right!important;
+  font-size:clamp(24px,7vw,34px)!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  max-width:none!important;
+}
+body.sdc-v95-light-default .home-stats-v94 .stat span,
+body.sdc-v95-light-default .stats .stat span{
+  order:1!important;
+  text-align:left!important;
+  font-size:12px!important;
+  line-height:1.15!important;
+  letter-spacing:.06em!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  margin:0!important;
+}
+body.sdc-v95-light-default .home-stats-v94 .stat.featured,
+body.sdc-v95-light-default .stats .stat.featured{grid-column:1!important;min-height:88px!important}
+
+/* Inicio limpio: no mostrar catálogo agregado debajo de la ganancia */
+body.sdc-v97-pages[data-sdc-page="inicio"] .sdc-products-title-v98,
+body.sdc-v97-pages[data-sdc-page="inicio"] .search-panel,
+body.sdc-v97-pages[data-sdc-page="inicio"] .category-gallery,
+body.sdc-v97-pages[data-sdc-page="inicio"] #inventario,
+body.sdc-v97-pages[data-sdc-page="inicio"] .products-panel,
+body.sdc-v97-pages[data-sdc-page="inicio"] .inventory-panel{display:none!important}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-hero-v94{margin-bottom:14px!important;padding-bottom:14px!important}
+
+/* Quitar rojo: botones importantes pasan a azul marino */
+body.sdc-v95-light-default .btn.danger,
+body.sdc-v95-light-default button.danger,
+body.sdc-v95-light-default [class*="danger"],
+body.sdc-v95-light-default .download-current,
+body.sdc-v95-light-default [data-action*="download"],
+body.sdc-v95-light-default [data-action*="delete"]{
+  background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+  color:#fff!important;
+  border-color:#0b63ce!important;
+}
+
+/* Botones del recibo/cotización fijos abajo dentro del modal */
+body.sdc-v95-light-default .modal-body > .modal-actions,
+body.sdc-v95-light-default .modal-actions.import-actions,
+body.sdc-v95-light-default .share-actions,
+body.sdc-v95-light-default .doc-actions{
+  position:sticky!important;
+  bottom:0!important;
+  z-index:30!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.88),#fff)!important;
+  border-top:1px solid #dbe7f3!important;
+  margin:14px -16px -16px!important;
+  padding:12px 16px!important;
+  box-shadow:0 -14px 28px rgba(15,35,55,.08)!important;
+}
+body.sdc-v95-light-default .modal-actions button,
+body.sdc-v95-light-default .share-actions button,
+body.sdc-v95-light-default .doc-actions button{
+  min-height:54px!important;
+  border-radius:16px!important;
+}
+
+/* Recibos/cotizaciones: formato vertical para ver y descargar */
+body.sdc-v95-light-default #printableDoc,
+body.sdc-v95-light-default .doc-wrap,
+body.sdc-v95-light-default .compact-doc{
+  width:min(430px,100%)!important;
+  max-width:430px!important;
+  margin:0 auto!important;
+  border-radius:24px!important;
+  overflow:hidden!important;
+}
+body.sdc-v95-light-default .receipt-header-pro,
+body.sdc-v95-light-default .receipt-brand-pro,
+body.sdc-v95-light-default .receipt-client-pro,
+body.sdc-v95-light-default .receipt-summary-pro,
+body.sdc-v95-light-default .receipt-footer-pro{
+  width:100%!important;
+  max-width:100%!important;
+}
+body.sdc-v95-light-default .receipt-header-pro,
+body.sdc-v95-light-default .receipt-brand-pro{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:12px!important;
+  text-align:center!important;
+}
+body.sdc-v95-light-default .receipt-logo-box{margin:0 auto!important}
+body.sdc-v95-light-default .receipt-total-pro{width:100%!important;text-align:center!important;border-radius:18px!important}
+body.sdc-v95-light-default .receipt-client-pro{grid-template-columns:1fr!important}
+body.sdc-v95-light-default .receipt-summary-pro .grand,
+body.sdc-v95-light-default .receipt-summary-pro div{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important}
+body.sdc-v95-light-default .receipt-footer-pro{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;text-align:center!important}
+
+/* Editor de imágenes: foto arriba, enlace abajo, botones ordenados */
+body.sdc-v95-light-default .image-row-v83{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;align-items:stretch!important}
+body.sdc-v95-light-default .image-preview-v83{width:100%!important;height:190px!important;max-height:210px!important;border-radius:18px!important;object-fit:contain!important;background:#eef5fb!important;margin:0!important}
+body.sdc-v95-light-default .image-row-v83 input{width:100%!important;min-height:54px!important;border-radius:16px!important;font-size:15px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body.sdc-v95-light-default .sdc-photo-actions-v113{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;width:100%!important;grid-column:1/-1!important}
+body.sdc-v95-light-default .sdc-photo-choice-v113{min-height:50px!important;border-radius:16px!important;font-size:13px!important;font-weight:950!important}
+body.sdc-v95-light-default .image-row-actions-v83 .btn.ghost,
+body.sdc-v95-light-default .sdc-photo-actions-v113 .btn.ghost{grid-column:1/-1!important;width:100%!important;min-height:50px!important;border-radius:16px!important;background:#f3f7fb!important;color:#0f172a!important;border:1px solid #dbe7f3!important}
+
+@media(min-width:761px){
+  body.sdc-v95-light-default .home-stats-v94,
+  body.sdc-v95-light-default .stats.home-stats-v94{grid-template-columns:1fr 1fr!important}
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured,
+  body.sdc-v95-light-default .stats .stat.featured{grid-column:1/-1!important}
+}
+
+@media(max-width:430px){
+  body.sdc-v95-light-default .sdc-utility-tabs-v105,
+  body.sdc-v95-light-default .sdc-top-tools-v108{padding-left:44px!important}
+  body.sdc-v95-light-default #printableDoc,
+  body.sdc-v95-light-default .doc-wrap,
+  body.sdc-v95-light-default .compact-doc{max-width:calc(100vw - 22px)!important}
+  body.sdc-v95-light-default .image-preview-v83{height:170px!important}
+}

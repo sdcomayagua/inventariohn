@@ -1,0 +1,151 @@
+/* SDC V122: tarjetas de resumen legibles y profesionales */
+
+/* Convertir PRODUCTOS / UNIDADES / VENTA TOTAL / INVERTIDO en filas limpias */
+body.sdc-v95-light-default .home-stats-v94,
+body.sdc-v95-light-default .stats.home-stats-v94,
+body.sdc-v95-light-default .home-hero-v94 .stats,
+body.sdc-v95-light-default .stats-grid,
+body.sdc-v95-light-default .dashboard-stats{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:10px!important;
+  width:100%!important;
+  max-width:100%!important;
+  overflow:visible!important;
+}
+
+body.sdc-v95-light-default .home-stats-v94 .stat,
+body.sdc-v95-light-default .stats.home-stats-v94 .stat,
+body.sdc-v95-light-default .home-hero-v94 .stats .stat,
+body.sdc-v95-light-default .stats-grid .stat,
+body.sdc-v95-light-default .dashboard-stats .stat{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  min-height:74px!important;
+  padding:14px 16px!important;
+  border-radius:18px!important;
+  background:#ffffff!important;
+  border:1px solid #dbe7f3!important;
+  box-shadow:0 8px 18px rgba(15,35,55,.045)!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:"label value"!important;
+  align-items:center!important;
+  gap:12px!important;
+  overflow:hidden!important;
+  text-align:left!important;
+}
+
+body.sdc-v95-light-default .home-stats-v94 .stat span,
+body.sdc-v95-light-default .stats.home-stats-v94 .stat span,
+body.sdc-v95-light-default .home-hero-v94 .stats .stat span,
+body.sdc-v95-light-default .stats-grid .stat span,
+body.sdc-v95-light-default .dashboard-stats .stat span{
+  grid-area:label!important;
+  order:1!important;
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  color:#64748b!important;
+  font-size:12px!important;
+  line-height:1.15!important;
+  font-weight:950!important;
+  letter-spacing:.07em!important;
+  text-transform:uppercase!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  max-width:100%!important;
+  text-align:left!important;
+}
+
+body.sdc-v95-light-default .home-stats-v94 .stat b,
+body.sdc-v95-light-default .home-stats-v94 .stat strong,
+body.sdc-v95-light-default .stats.home-stats-v94 .stat b,
+body.sdc-v95-light-default .stats.home-stats-v94 .stat strong,
+body.sdc-v95-light-default .home-hero-v94 .stats .stat b,
+body.sdc-v95-light-default .home-hero-v94 .stats .stat strong,
+body.sdc-v95-light-default .stats-grid .stat b,
+body.sdc-v95-light-default .stats-grid .stat strong,
+body.sdc-v95-light-default .dashboard-stats .stat b,
+body.sdc-v95-light-default .dashboard-stats .stat strong{
+  grid-area:value!important;
+  order:2!important;
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  color:#0f172a!important;
+  font-size:clamp(24px,6vw,32px)!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:-.03em!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  max-width:none!important;
+  text-align:right!important;
+}
+
+/* Ganancia estimada destacada, pero legible */
+body.sdc-v95-light-default .home-stats-v94 .stat.featured,
+body.sdc-v95-light-default .stats.home-stats-v94 .stat.featured,
+body.sdc-v95-light-default .home-hero-v94 .stats .stat.featured,
+body.sdc-v95-light-default .stats-grid .stat.featured,
+body.sdc-v95-light-default .dashboard-stats .stat.featured{
+  grid-column:1/-1!important;
+  min-height:82px!important;
+  background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+  border:0!important;
+  box-shadow:0 14px 28px rgba(11,99,206,.14)!important;
+}
+body.sdc-v95-light-default .home-stats-v94 .stat.featured span,
+body.sdc-v95-light-default .home-stats-v94 .stat.featured b,
+body.sdc-v95-light-default .home-stats-v94 .stat.featured strong,
+body.sdc-v95-light-default .stats .stat.featured span,
+body.sdc-v95-light-default .stats .stat.featured b,
+body.sdc-v95-light-default .stats .stat.featured strong{
+  color:#fff!important;
+}
+
+/* Si algún estilo viejo fuerza tarjetas pequeñas, lo anulamos */
+body.sdc-v95-light-default .stat{
+  flex:initial!important;
+  aspect-ratio:auto!important;
+}
+
+@media(min-width:720px){
+  body.sdc-v95-light-default .home-stats-v94,
+  body.sdc-v95-light-default .stats.home-stats-v94,
+  body.sdc-v95-light-default .home-hero-v94 .stats{
+    grid-template-columns:1fr 1fr!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat.featured,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat.featured,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat.featured{
+    grid-column:1/-1!important;
+  }
+}
+
+@media(max-width:430px){
+  body.sdc-v95-light-default .home-stats-v94 .stat,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat{
+    min-height:72px!important;
+    padding:13px 15px!important;
+    border-radius:17px!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat span,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat span,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat span{
+    font-size:11px!important;
+  }
+  body.sdc-v95-light-default .home-stats-v94 .stat b,
+  body.sdc-v95-light-default .home-stats-v94 .stat strong,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat b,
+  body.sdc-v95-light-default .stats.home-stats-v94 .stat strong,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat b,
+  body.sdc-v95-light-default .home-hero-v94 .stats .stat strong{
+    font-size:clamp(23px,7vw,29px)!important;
+  }
+}

@@ -1,0 +1,43 @@
+/* SDC V109: quitar barra inferior porque estorba en móvil.
+   La navegación principal queda arriba con INICIO / PRODUCTOS. */
+
+body.sdc-v95-light-default .bottom-nav,
+body.sdc-v95-light-default .bottom-nav-v84,
+body.sdc-v95-light-default nav.bottom-nav,
+body.sdc-v95-light-default [data-bottom-nav],
+body.sdc-v95-light-default .mobile-bottom-nav,
+body.sdc-v95-light-default .app-bottom-nav{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  width:0!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+body.sdc-v95-light-default #app,
+body.sdc-v95-light-default main#app{
+  padding-bottom:22px!important;
+}
+
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-hero-v94,
+body.sdc-v99-home-clean[data-sdc-page="inicio"].sdc-v61-clean .home-hero-v94{
+  margin-bottom:22px!important;
+}
+
+body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
+  padding-bottom:24px!important;
+}
+
+@media(max-width:760px){
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default main#app{
+    padding-bottom:18px!important;
+  }
+}

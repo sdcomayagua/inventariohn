@@ -1,0 +1,233 @@
+/* SDC V107: encabezado más limpio y utilidades discretas. */
+
+body.sdc-v95-light-default{
+  background:linear-gradient(180deg,#f7fbff 0%,#edf4fb 100%)!important;
+}
+
+/* Encabezado principal: menos pesado, más elegante. */
+body.sdc-v95-light-default .topbar,
+body.sdc-v95-light-default .topbar-v87{
+  width:calc(100% - 18px)!important;
+  max-width:760px!important;
+  min-height:78px!important;
+  margin:10px auto 10px!important;
+  padding:10px 14px!important;
+  border-radius:26px!important;
+  background:linear-gradient(135deg,#ffffff 0%,#f7fbff 100%)!important;
+  border:1px solid #dbe7f3!important;
+  box-shadow:0 12px 28px rgba(15,35,55,.07)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  overflow:hidden!important;
+}
+
+body.sdc-v95-light-default .topbar::before,
+body.sdc-v95-light-default .topbar-v87::before{
+  content:''!important;
+  width:6px!important;
+  height:42px!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,#0b63ce,#10b981)!important;
+  flex:0 0 6px!important;
+}
+
+body.sdc-v95-light-default .topbar img,
+body.sdc-v95-light-default .topbar-v87 img,
+body.sdc-v95-light-default .brand img{
+  width:50px!important;
+  height:50px!important;
+  min-width:50px!important;
+  border-radius:18px!important;
+  box-shadow:0 8px 18px rgba(15,35,55,.08)!important;
+}
+
+body.sdc-v95-light-default .top-title,
+body.sdc-v95-light-default .brand-block,
+body.sdc-v95-light-default .topbar .brand,
+body.sdc-v95-light-default .topbar-v87 .brand{
+  min-width:0!important;
+  flex:1 1 auto!important;
+  overflow:hidden!important;
+}
+
+body.sdc-v95-light-default .top-title h1,
+body.sdc-v95-light-default .topbar h1,
+body.sdc-v95-light-default .topbar-v87 h1{
+  color:#0f172a!important;
+  font-size:clamp(22px,5vw,29px)!important;
+  line-height:1!important;
+  letter-spacing:.015em!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  max-width:100%!important;
+}
+
+body.sdc-v95-light-default .top-title small,
+body.sdc-v95-light-default .topbar small,
+body.sdc-v95-light-default .topbar-v87 small,
+body.sdc-v95-light-default .top-meta-v88{
+  display:block!important;
+  margin-top:6px!important;
+  color:#64748b!important;
+  font-size:11px!important;
+  line-height:1!important;
+  letter-spacing:.08em!important;
+  font-weight:850!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  max-width:100%!important;
+}
+
+/* Ocultar botones del encabezado: quedan abajo en utilidades. */
+body.sdc-v95-light-default .topbar-actions,
+body.sdc-v95-light-default .actions,
+body.sdc-v95-light-default .top-actions,
+body.sdc-v95-light-default .topbar .right,
+body.sdc-v95-light-default .topbar-v87 .right,
+body.sdc-v95-light-default .topbar button,
+body.sdc-v95-light-default .topbar-v87 button,
+body.sdc-v95-light-default .topbar .btn,
+body.sdc-v95-light-default .topbar-v87 .btn,
+body.sdc-v95-light-default .topbar [role="button"],
+body.sdc-v95-light-default .topbar-v87 [role="button"]{
+  display:none!important;
+  visibility:hidden!important;
+  width:0!important;
+  min-width:0!important;
+  height:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+/* Tabs principales con menos caja pesada. */
+body.sdc-v97-pages .sdc-page-tabs-v97{
+  width:calc(100% - 18px)!important;
+  max-width:760px!important;
+  margin:0 auto 8px!important;
+  padding:5px!important;
+  border-radius:22px!important;
+  background:rgba(255,255,255,.92)!important;
+  border:1px solid #dbe7f3!important;
+  box-shadow:0 8px 20px rgba(15,35,55,.055)!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:5px!important;
+}
+
+body.sdc-v97-pages .sdc-page-tabs-v97 button{
+  min-height:50px!important;
+  border-radius:17px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#334155!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+}
+
+body.sdc-v97-pages .sdc-page-tabs-v97 button.active{
+  background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+  color:#fff!important;
+  box-shadow:0 10px 22px rgba(11,99,206,.18)!important;
+}
+
+/* Sincronizar / Actualizar: micro chips discretos, no botones grandes. */
+body.sdc-v95-light-default .sdc-utility-tabs-v105{
+  width:calc(100% - 18px)!important;
+  max-width:760px!important;
+  margin:-2px auto 12px!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button{
+  width:auto!important;
+  min-width:0!important;
+  min-height:32px!important;
+  height:32px!important;
+  padding:0 10px!important;
+  border-radius:999px!important;
+  border:1px solid #d8e4ef!important;
+  background:rgba(255,255,255,.62)!important;
+  color:#64748b!important;
+  box-shadow:none!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:850!important;
+  letter-spacing:.055em!important;
+  text-transform:uppercase!important;
+}
+
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button i{
+  font-style:normal!important;
+  font-size:13px!important;
+  line-height:1!important;
+  opacity:.72!important;
+}
+
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button:active{
+  transform:scale(.98)!important;
+}
+
+/* Un poquito menos de aire en la primera tarjeta para que no se vea suelto. */
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-hero-v94{
+  margin-top:0!important;
+}
+
+@media(max-width:430px){
+  body.sdc-v95-light-default .topbar,
+  body.sdc-v95-light-default .topbar-v87{
+    width:calc(100vw - 14px)!important;
+    min-height:74px!important;
+    padding:9px 11px!important;
+    gap:10px!important;
+    border-radius:22px!important;
+  }
+  body.sdc-v95-light-default .topbar::before,
+  body.sdc-v95-light-default .topbar-v87::before{
+    width:5px!important;
+    height:38px!important;
+    flex-basis:5px!important;
+  }
+  body.sdc-v95-light-default .topbar img,
+  body.sdc-v95-light-default .topbar-v87 img,
+  body.sdc-v95-light-default .brand img{
+    width:46px!important;
+    height:46px!important;
+    min-width:46px!important;
+    border-radius:16px!important;
+  }
+  body.sdc-v95-light-default .top-title h1,
+  body.sdc-v95-light-default .topbar h1,
+  body.sdc-v95-light-default .topbar-v87 h1{
+    font-size:23px!important;
+  }
+  body.sdc-v95-light-default .top-title small,
+  body.sdc-v95-light-default .topbar small,
+  body.sdc-v95-light-default .topbar-v87 small,
+  body.sdc-v95-light-default .top-meta-v88{
+    font-size:10px!important;
+  }
+  body.sdc-v97-pages .sdc-page-tabs-v97,
+  body.sdc-v95-light-default .sdc-utility-tabs-v105{
+    width:calc(100vw - 14px)!important;
+  }
+}

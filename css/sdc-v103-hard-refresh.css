@@ -1,0 +1,64 @@
+/* SDC V103: estilo del botón ACTUALIZAR / limpiar caché */
+body.sdc-v95-light-default .sdc-refresh-btn-v103{
+  min-width:96px!important;
+  height:52px!important;
+  padding:0 14px!important;
+  border-radius:18px!important;
+  border:1px solid #dbe7f3!important;
+  background:linear-gradient(180deg,#ffffff,#f4f8fc)!important;
+  color:#0f172a!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  font-weight:950!important;
+  font-size:13px!important;
+  letter-spacing:.02em!important;
+  box-shadow:0 10px 22px rgba(15,35,55,.08)!important;
+  cursor:pointer!important;
+}
+body.sdc-v95-light-default .sdc-refresh-btn-v103 .sdc-refresh-icon-v103{
+  width:26px!important;
+  height:26px!important;
+  border-radius:10px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  font-size:18px!important;
+  line-height:1!important;
+}
+body.sdc-v95-light-default .sdc-refresh-btn-v103 .sdc-refresh-text-v103{
+  color:#0f172a!important;
+  white-space:nowrap!important;
+}
+body.sdc-v95-light-default .sdc-refresh-btn-v103:active{
+  transform:scale(.98)!important;
+}
+body.sdc-v95-light-default .sdc-refresh-btn-v103.is-updating{
+  opacity:.82!important;
+  pointer-events:none!important;
+}
+body.sdc-v95-light-default .sdc-refresh-btn-v103.is-updating .sdc-refresh-icon-v103{
+  animation:sdcRefreshSpinV103 .85s linear infinite!important;
+}
+@keyframes sdcRefreshSpinV103{to{transform:rotate(360deg)}}
+
+@media(max-width:760px){
+  body.sdc-v95-light-default .sdc-refresh-btn-v103{
+    min-width:52px!important;
+    width:52px!important;
+    height:52px!important;
+    padding:0!important;
+    border-radius:17px!important;
+  }
+  body.sdc-v95-light-default .sdc-refresh-btn-v103 .sdc-refresh-text-v103{
+    display:none!important;
+  }
+  body.sdc-v95-light-default .sdc-refresh-btn-v103 .sdc-refresh-icon-v103{
+    width:30px!important;
+    height:30px!important;
+    background:transparent!important;
+    font-size:24px!important;
+  }
+}

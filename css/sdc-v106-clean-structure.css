@@ -1,0 +1,250 @@
+/* SDC V106: estructura limpia para INICIO / PRODUCTOS en móvil y escritorio. */
+
+body.sdc-v95-light-default{
+  background:linear-gradient(180deg,#f7fbff 0%,#edf4fb 100%)!important;
+}
+
+body.sdc-v95-light-default #app,
+body.sdc-v95-light-default main#app{
+  max-width:560px!important;
+  margin:0 auto!important;
+  padding:8px 0 102px!important;
+}
+
+/* Encabezado: solo marca, sin botones y sin verse apretado. */
+body.sdc-v95-light-default .topbar,
+body.sdc-v95-light-default .topbar-v87{
+  width:calc(100% - 20px)!important;
+  max-width:540px!important;
+  margin:10px auto 10px!important;
+  padding:12px!important;
+  border-radius:24px!important;
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid #dbe7f3!important;
+  box-shadow:0 12px 28px rgba(15,35,55,.07)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+}
+body.sdc-v95-light-default .topbar img,
+body.sdc-v95-light-default .topbar-v87 img,
+body.sdc-v95-light-default .brand img{
+  width:52px!important;
+  height:52px!important;
+  min-width:52px!important;
+  border-radius:18px!important;
+}
+body.sdc-v95-light-default .top-title,
+body.sdc-v95-light-default .brand-block{
+  min-width:0!important;
+  flex:1!important;
+}
+body.sdc-v95-light-default .top-title h1,
+body.sdc-v95-light-default .topbar h1,
+body.sdc-v95-light-default .topbar-v87 h1{
+  font-size:24px!important;
+  line-height:1!important;
+  letter-spacing:.02em!important;
+  color:#0f172a!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+body.sdc-v95-light-default .top-title small,
+body.sdc-v95-light-default .topbar small,
+body.sdc-v95-light-default .topbar-v87 small,
+body.sdc-v95-light-default .top-meta-v88{
+  margin-top:5px!important;
+  color:#64748b!important;
+  font-size:11px!important;
+  letter-spacing:.07em!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+body.sdc-v95-light-default .topbar-actions,
+body.sdc-v95-light-default .actions,
+body.sdc-v95-light-default .top-actions,
+body.sdc-v95-light-default .topbar .right,
+body.sdc-v95-light-default .topbar-v87 .right,
+body.sdc-v95-light-default .topbar button,
+body.sdc-v95-light-default .topbar-v87 button,
+body.sdc-v95-light-default .topbar [role="button"],
+body.sdc-v95-light-default .topbar-v87 [role="button"],
+body.sdc-v95-light-default .topbar .btn,
+body.sdc-v95-light-default .topbar-v87 .btn{
+  display:none!important;
+}
+
+/* Navegación principal más elegante. */
+body.sdc-v97-pages .sdc-page-tabs-v97{
+  width:calc(100% - 20px)!important;
+  max-width:540px!important;
+  margin:0 auto 8px!important;
+  padding:6px!important;
+  border-radius:22px!important;
+  background:#fff!important;
+  border:1px solid #dbe7f3!important;
+  box-shadow:0 10px 22px rgba(15,35,55,.06)!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+}
+body.sdc-v97-pages .sdc-page-tabs-v97 button{
+  min-height:54px!important;
+  border-radius:18px!important;
+  border:0!important;
+  background:#f3f7fb!important;
+  color:#334155!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+}
+body.sdc-v97-pages .sdc-page-tabs-v97 button.active{
+  background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+  color:#fff!important;
+  box-shadow:0 12px 24px rgba(11,99,206,.18)!important;
+}
+
+/* Utilidades: chips pequeños y discretos, no botones grandes. */
+body.sdc-v95-light-default .sdc-utility-tabs-v105{
+  width:calc(100% - 20px)!important;
+  max-width:540px!important;
+  margin:-2px auto 12px!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button{
+  width:auto!important;
+  min-width:0!important;
+  min-height:34px!important;
+  height:34px!important;
+  padding:0 11px!important;
+  border-radius:999px!important;
+  border:1px solid #dbe7f3!important;
+  background:rgba(255,255,255,.58)!important;
+  color:#64748b!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+}
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button i{
+  font-size:14px!important;
+  opacity:.7!important;
+}
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button:active{
+  transform:scale(.98)!important;
+}
+
+/* INICIO: quitar el bloque gigante “INICIO” y convertirlo en una tarjeta limpia. */
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-hero-v94,
+body.sdc-v99-home-clean[data-sdc-page="inicio"].sdc-v61-clean .home-hero-v94{
+  width:calc(100% - 20px)!important;
+  max-width:540px!important;
+  margin:0 auto 96px!important;
+  padding:14px!important;
+  border-radius:26px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f3f8fd 100%)!important;
+  border:1px solid #dbe7f3!important;
+  box-shadow:0 14px 32px rgba(15,35,55,.07)!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-hero-shell-v94::before{
+  content:none!important;
+  display:none!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-hero-shell-v94,
+body.sdc-v99-home-clean[data-sdc-page="inicio"].sdc-v61-clean .home-hero-shell-v94{
+  gap:12px!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-primary-actions-v94{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:10px!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-primary-actions-v94 button{
+  min-height:78px!important;
+  padding:14px!important;
+  border-radius:22px!important;
+  box-shadow:0 12px 26px rgba(15,35,55,.10)!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-primary-actions-v94 i{
+  width:48px!important;
+  height:48px!important;
+  border-radius:18px!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-primary-actions-v94 span{
+  font-size:22px!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-stats-v94,
+body.sdc-v99-home-clean[data-sdc-page="inicio"].sdc-v61-clean .home-stats-v94{
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-stats-v94 .stat,
+body.sdc-v99-home-clean[data-sdc-page="inicio"].sdc-v61-clean .home-stats-v94 .stat{
+  min-height:84px!important;
+  padding:14px!important;
+  border-radius:20px!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-stats-v94 .stat.featured{
+  grid-column:1/-1!important;
+  min-height:88px!important;
+}
+
+/* PRODUCTOS: mantener compacto después de quitar Admin / Cliente / Captura. */
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-products-title-v98,
+body.sdc-v97-pages[data-sdc-page="productos"] .search-panel,
+body.sdc-v97-pages[data-sdc-page="productos"] .category-gallery,
+body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
+  width:calc(100% - 20px)!important;
+  max-width:540px!important;
+}
+body.sdc-v97-pages[data-sdc-page="productos"] .view-mode-panel,
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-product-mode-card-v98{
+  display:none!important;
+}
+
+@media(min-width:761px){
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default main#app,
+  body.sdc-v95-light-default .topbar,
+  body.sdc-v95-light-default .topbar-v87,
+  body.sdc-v97-pages .sdc-page-tabs-v97,
+  body.sdc-v95-light-default .sdc-utility-tabs-v105,
+  body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-hero-v94,
+  body.sdc-v97-pages[data-sdc-page="productos"] .sdc-products-title-v98,
+  body.sdc-v97-pages[data-sdc-page="productos"] .search-panel,
+  body.sdc-v97-pages[data-sdc-page="productos"] .category-gallery,
+  body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
+    max-width:760px!important;
+  }
+  body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-primary-actions-v94{
+    grid-template-columns:1fr 1fr!important;
+  }
+  body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-stats-v94,
+  body.sdc-v99-home-clean[data-sdc-page="inicio"].sdc-v61-clean .home-stats-v94{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+}
+
+@media(max-width:380px){
+  body.sdc-v95-light-default .top-title h1,
+  body.sdc-v95-light-default .topbar h1,
+  body.sdc-v95-light-default .topbar-v87 h1{font-size:21px!important;}
+  body.sdc-v97-pages .sdc-page-tabs-v97 button{font-size:12px!important;}
+  body.sdc-v95-light-default .sdc-utility-tabs-v105 button{font-size:9px!important;padding:0 9px!important;}
+}

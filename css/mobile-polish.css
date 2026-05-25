@@ -1,0 +1,52 @@
+
+/* Tipografía más legible */
+body, html {
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: Arial, sans-serif;
+}
+
+/* Encabezados */
+h1, h2, h3, h4 {
+    font-weight: 600;
+}
+
+/* Botones y enlaces más clicables */
+button, a.button {
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+/* Espaciado general */
+.container, .product-list {
+    padding: 10px;
+    margin: 0 auto;
+}
+
+/* Grids adaptables para categorías/productos */
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+/* Imágenes responsive */
+.product-list img, .category img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Ajuste general para pantallas <768px */
+@media only screen and (max-width: 768px) {
+    nav, header, footer {
+        padding: 10px;
+    }
+    .category-name {
+        font-size: 14px;
+    }
+    h1 {
+        font-size: 20px;
+    }
+}

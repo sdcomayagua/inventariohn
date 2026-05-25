@@ -1,0 +1,320 @@
+/* =========================================================
+   SDC V111 FINAL CLEAN UI
+   Limpieza definitiva: sin barra inferior, header profesional,
+   utilidades arriba del header como botones bonitos y discretos.
+   ========================================================= */
+
+:root{
+  color-scheme:light;
+  --sdc-bg:#eef5fb;
+  --sdc-card:#ffffff;
+  --sdc-soft:#f4f8fc;
+  --sdc-line:#dbe7f3;
+  --sdc-text:#0f172a;
+  --sdc-muted:#64748b;
+  --sdc-blue:#0b63ce;
+  --sdc-green:#10b981;
+  --sdc-shadow:0 12px 28px rgba(15,35,55,.075);
+}
+
+html,body{
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:hidden!important;
+  background:linear-gradient(180deg,#f7fbff 0%,var(--sdc-bg) 100%)!important;
+  color:var(--sdc-text)!important;
+}
+
+body.sdc-v95-light-default *,
+body.sdc-theme-light *{box-sizing:border-box!important;text-shadow:none!important;}
+
+body.sdc-v95-light-default #app,
+body.sdc-v95-light-default main#app{
+  width:100%!important;
+  max-width:620px!important;
+  margin:0 auto!important;
+  padding:8px 0 24px!important;
+  overflow-x:hidden!important;
+}
+
+/* Quitar barra inferior completa: Inicio, Productos, Alertas, Cotizar, Vender, Caja */
+body.sdc-v95-light-default .bottom-nav,
+body.sdc-v95-light-default .bottom-nav-v84,
+body.sdc-v95-light-default nav.bottom-nav,
+body.sdc-v95-light-default [data-bottom-nav],
+body.sdc-v95-light-default .mobile-bottom-nav,
+body.sdc-v95-light-default .app-bottom-nav{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  width:0!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+/* Herramientas superiores: bonitas, pequeñas y limpias */
+body.sdc-v95-light-default .sdc-utility-tabs-v105,
+body.sdc-v95-light-default .sdc-top-tools-v108{
+  width:calc(100% - 18px)!important;
+  max-width:600px!important;
+  margin:6px auto 8px!important;
+  padding:5px!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+  background:rgba(255,255,255,.78)!important;
+  border:1px solid rgba(219,231,243,.85)!important;
+  border-radius:18px!important;
+  box-shadow:0 8px 20px rgba(15,35,55,.045)!important;
+  backdrop-filter:blur(12px)!important;
+}
+
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button,
+body.sdc-v95-light-default .sdc-top-tools-v108 button{
+  width:100%!important;
+  min-width:0!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 12px!important;
+  border-radius:14px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#334155!important;
+  box-shadow:none!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  font-size:11px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase!important;
+}
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button i,
+body.sdc-v95-light-default .sdc-top-tools-v108 button i{
+  width:24px!important;
+  height:24px!important;
+  border-radius:9px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#eef6ff!important;
+  color:var(--sdc-blue)!important;
+  font-style:normal!important;
+  font-size:14px!important;
+  line-height:1!important;
+  opacity:1!important;
+}
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button:first-child,
+body.sdc-v95-light-default .sdc-top-tools-v108 button:first-child{
+  background:#f8fbff!important;
+}
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button:last-child,
+body.sdc-v95-light-default .sdc-top-tools-v108 button:last-child{
+  background:linear-gradient(135deg,#f8fbff,#eef7ff)!important;
+  color:#0f172a!important;
+}
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button:active,
+body.sdc-v95-light-default .sdc-top-tools-v108 button:active{transform:scale(.985)!important;}
+body.sdc-v95-light-default .sdc-utility-tabs-v105 button.is-updating i,
+body.sdc-v95-light-default .sdc-top-tools-v108 button.is-updating i{animation:sdcSpin110 .8s linear infinite!important;}
+@keyframes sdcSpin110{to{transform:rotate(360deg)}}
+
+/* Header: limpio, centrado y sin botones */
+body.sdc-v95-light-default .topbar,
+body.sdc-v95-light-default .topbar-v87{
+  width:calc(100% - 18px)!important;
+  max-width:600px!important;
+  min-height:76px!important;
+  margin:0 auto 10px!important;
+  padding:10px 14px!important;
+  border-radius:24px!important;
+  background:linear-gradient(135deg,#ffffff 0%,#f7fbff 100%)!important;
+  border:1px solid var(--sdc-line)!important;
+  box-shadow:var(--sdc-shadow)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  overflow:hidden!important;
+}
+body.sdc-v95-light-default .topbar::before,
+body.sdc-v95-light-default .topbar-v87::before{
+  content:''!important;
+  width:5px!important;
+  height:40px!important;
+  flex:0 0 5px!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,var(--sdc-blue),var(--sdc-green))!important;
+}
+body.sdc-v95-light-default .topbar img,
+body.sdc-v95-light-default .topbar-v87 img,
+body.sdc-v95-light-default .brand img{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  border-radius:17px!important;
+  box-shadow:0 8px 18px rgba(15,35,55,.08)!important;
+}
+body.sdc-v95-light-default .top-title,
+body.sdc-v95-light-default .brand-block,
+body.sdc-v95-light-default .topbar .brand,
+body.sdc-v95-light-default .topbar-v87 .brand{
+  min-width:0!important;
+  flex:1 1 auto!important;
+  overflow:hidden!important;
+}
+body.sdc-v95-light-default .top-title h1,
+body.sdc-v95-light-default .topbar h1,
+body.sdc-v95-light-default .topbar-v87 h1{
+  color:var(--sdc-text)!important;
+  font-size:clamp(22px,5vw,28px)!important;
+  line-height:1!important;
+  letter-spacing:.01em!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  max-width:100%!important;
+}
+body.sdc-v95-light-default .top-title small,
+body.sdc-v95-light-default .topbar small,
+body.sdc-v95-light-default .topbar-v87 small,
+body.sdc-v95-light-default .top-meta-v88{
+  display:block!important;
+  margin-top:6px!important;
+  color:var(--sdc-muted)!important;
+  font-size:10.5px!important;
+  line-height:1!important;
+  letter-spacing:.075em!important;
+  font-weight:850!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  max-width:100%!important;
+}
+body.sdc-v95-light-default .topbar-actions,
+body.sdc-v95-light-default .actions,
+body.sdc-v95-light-default .top-actions,
+body.sdc-v95-light-default .topbar .right,
+body.sdc-v95-light-default .topbar-v87 .right,
+body.sdc-v95-light-default .topbar button,
+body.sdc-v95-light-default .topbar-v87 button,
+body.sdc-v95-light-default .topbar .btn,
+body.sdc-v95-light-default .topbar-v87 .btn,
+body.sdc-v95-light-default .topbar [role="button"],
+body.sdc-v95-light-default .topbar-v87 [role="button"]{
+  display:none!important;
+  visibility:hidden!important;
+  width:0!important;
+  min-width:0!important;
+  height:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+/* Tabs principales */
+body.sdc-v97-pages .sdc-page-tabs-v97{
+  width:calc(100% - 18px)!important;
+  max-width:600px!important;
+  margin:0 auto 10px!important;
+  padding:5px!important;
+  border-radius:20px!important;
+  background:rgba(255,255,255,.94)!important;
+  border:1px solid var(--sdc-line)!important;
+  box-shadow:0 8px 20px rgba(15,35,55,.055)!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:5px!important;
+}
+body.sdc-v97-pages .sdc-page-tabs-v97 button{
+  min-height:50px!important;
+  border-radius:16px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#334155!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+}
+body.sdc-v97-pages .sdc-page-tabs-v97 button.active{
+  background:linear-gradient(135deg,#07131a,var(--sdc-blue))!important;
+  color:#fff!important;
+  box-shadow:0 10px 22px rgba(11,99,206,.18)!important;
+}
+
+/* Inicio limpio */
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-hero-v94,
+body.sdc-v99-home-clean[data-sdc-page="inicio"].sdc-v61-clean .home-hero-v94{
+  width:calc(100% - 18px)!important;
+  max-width:600px!important;
+  margin:0 auto 18px!important;
+  padding:14px!important;
+  border-radius:24px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f3f8fd 100%)!important;
+  border:1px solid var(--sdc-line)!important;
+  box-shadow:0 14px 32px rgba(15,35,55,.07)!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-hero-shell-v94::before{content:none!important;display:none!important;}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-primary-actions-v94{grid-template-columns:1fr!important;gap:10px!important;}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-primary-actions-v94 button{
+  min-height:78px!important;
+  padding:14px!important;
+  border-radius:21px!important;
+  box-shadow:0 12px 26px rgba(15,35,55,.10)!important;
+}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-stats-v94,
+body.sdc-v99-home-clean[data-sdc-page="inicio"].sdc-v61-clean .home-stats-v94{grid-template-columns:1fr 1fr!important;gap:10px!important;}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-stats-v94 .stat{min-height:84px!important;border-radius:20px!important;}
+body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-stats-v94 .stat.featured{grid-column:1/-1!important;margin-bottom:0!important;}
+
+/* Productos limpio */
+body.sdc-v97-pages[data-sdc-page="productos"] .view-mode-panel,
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-product-mode-card-v98,
+body.sdc-v98-product-tabs[data-sdc-page="productos"] .view-mode-panel,
+body.sdc-v98-product-tabs[data-sdc-page="productos"] .sdc-product-mode-card-v98,
+body.sdc-v100-polish[data-sdc-page="productos"] .view-mode-panel,
+body.sdc-v100-polish[data-sdc-page="productos"] .sdc-product-mode-card-v98{display:none!important;}
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-products-title-v98,
+body.sdc-v97-pages[data-sdc-page="productos"] .search-panel,
+body.sdc-v97-pages[data-sdc-page="productos"] .category-gallery,
+body.sdc-v97-pages[data-sdc-page="productos"] #inventario{
+  width:calc(100% - 18px)!important;
+  max-width:600px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+@media(min-width:761px){
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default main#app,
+  body.sdc-v95-light-default .topbar,
+  body.sdc-v95-light-default .topbar-v87,
+  body.sdc-v95-light-default .sdc-utility-tabs-v105,
+  body.sdc-v97-pages .sdc-page-tabs-v97,
+  body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-hero-v94,
+  body.sdc-v97-pages[data-sdc-page="productos"] .sdc-products-title-v98,
+  body.sdc-v97-pages[data-sdc-page="productos"] .search-panel,
+  body.sdc-v97-pages[data-sdc-page="productos"] .category-gallery,
+  body.sdc-v97-pages[data-sdc-page="productos"] #inventario{max-width:760px!important;}
+  body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-primary-actions-v94{grid-template-columns:1fr 1fr!important;}
+  body.sdc-v99-home-clean[data-sdc-page="inicio"] .home-stats-v94,
+  body.sdc-v99-home-clean[data-sdc-page="inicio"].sdc-v61-clean .home-stats-v94{grid-template-columns:repeat(4,minmax(0,1fr))!important;}
+}
+
+@media(max-width:390px){
+  body.sdc-v95-light-default .sdc-utility-tabs-v105 button{font-size:10px!important;padding:0 9px!important;}
+  body.sdc-v97-pages .sdc-page-tabs-v97 button{font-size:12px!important;}
+  body.sdc-v95-light-default .top-title h1,
+  body.sdc-v95-light-default .topbar h1,
+  body.sdc-v95-light-default .topbar-v87 h1{font-size:21px!important;}
+}

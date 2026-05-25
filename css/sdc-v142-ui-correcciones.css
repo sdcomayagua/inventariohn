@@ -1,0 +1,304 @@
+/* SDC V142 · correcciones visuales solicitadas */
+
+/* 1) Ofertas por cantidad: quitar el rojo pesado */
+body.sdc-v95-light-default .promo-editor-box,
+body.sdc-v95-light-default .promo-row-v49{
+  background:#fff!important;
+  border:1px solid #dbe7f3!important;
+}
+body.sdc-v95-light-default .promo-help{
+  background:linear-gradient(180deg,#f8fbff 0%,#f3f8ff 100%)!important;
+  border:1px dashed #9ec5ff!important;
+  border-radius:18px!important;
+  color:#16324f!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7)!important;
+}
+body.sdc-v95-light-default .promo-help b{
+  color:#0b63ce!important;
+}
+body.sdc-v95-light-default .promo-row-v49 .promo-row-title,
+body.sdc-v95-light-default .promo-row-v49 .promo-unit-preview{
+  background:#f7fbff!important;
+  border:1px solid #dbe7f3!important;
+  border-radius:18px!important;
+}
+body.sdc-v95-light-default .promo-row-v49 .promo-row-title strong,
+body.sdc-v95-light-default .promo-row-v49 .promo-unit-preview b{
+  color:#081423!important;
+}
+body.sdc-v95-light-default .promo-row-v49 .promo-row-title small,
+body.sdc-v95-light-default .promo-row-v49 .promo-unit-preview span,
+body.sdc-v95-light-default .promo-row-v49 .promo-field small{
+  color:#64748b!important;
+}
+body.sdc-v95-light-default .promo-row-v49 .promo-field .input{
+  background:#fff!important;
+  border-color:#dbe7f3!important;
+}
+body.sdc-v95-light-default .promo-row-v49 .promo-delete-btn{
+  background:#f8fbff!important;
+  color:#0f2743!important;
+  border:1px solid #dbe7f3!important;
+}
+
+/* 2) Stock por color: número más limpio y menos tosco */
+body.sdc-v95-light-default .color-stock-chips-v86{
+  gap:9px!important;
+}
+body.sdc-v95-light-default .color-stock-chips-v86 span{
+  gap:8px!important;
+  min-height:48px!important;
+  padding:9px 12px!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  border:1px solid #dbe7f3!important;
+  box-shadow:0 6px 14px rgba(15,35,55,.05)!important;
+}
+body.sdc-v95-light-default .color-stock-chips-v86 b{
+  font-size:16px!important;
+  letter-spacing:.02em!important;
+}
+body.sdc-v95-light-default .color-stock-chips-v86 em{
+  min-width:32px!important;
+  height:32px!important;
+  padding:0 8px!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#0a1a29,#0b63ce)!important;
+  font-size:15px!important;
+  box-shadow:none!important;
+}
+
+/* 3) Tarjeta / foto para cliente: imagen real sin aplastar y tarjetas 2 por fila */
+body.sdc-v95-light-default #productShareCard .productPhotoImageWrap,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoImageWrap{
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f5f8fc 100%)!important;
+}
+body.sdc-v95-light-default #productShareCard .productPhotoImageWrap{
+  padding:14px!important;
+  min-height:300px!important;
+}
+body.sdc-v95-light-default #productShareCard .productPhotoImageWrap img{
+  width:100%!important;
+  height:100%!important;
+  max-height:420px!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  background:transparent!important;
+}
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoImageWrap{
+  height:auto!important;
+  min-height:640px!important;
+  padding:24px!important;
+}
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoImageWrap img{
+  width:100%!important;
+  height:100%!important;
+  max-height:592px!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  background:transparent!important;
+}
+body.sdc-v95-light-default #productShareCard .productPhotoImageWrap strong,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoImageWrap strong{
+  background:#d61f45!important;
+}
+body.sdc-v95-light-default #productShareCard .productPhotoPrices,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoPrices{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+body.sdc-v95-light-default #productShareCard .productPhotoPrices > div,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoPrices > div{
+  min-width:0!important;
+}
+body.sdc-v95-light-default #productShareCard .productPhotoPrices > div:nth-child(3),
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoPrices > div:nth-child(3){
+  grid-column:1 / -1!important;
+}
+body.sdc-v95-light-default #productShareCard .productPhotoPrices b,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoPrices b{
+  color:#c81e41!important;
+}
+body.sdc-v95-light-default #productShareCard .productPhotoPrices small,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoPrices small,
+body.sdc-v95-light-default #productShareCard .productPhotoPrices span,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoPrices span,
+body.sdc-v95-light-default #productShareCard .productPhotoQty span,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoQty span{
+  line-height:1.25!important;
+}
+body.sdc-v95-light-default #productShareCard .productPhotoQty,
+body.sdc-v95-light-default #productShareCard .productPhotoPrices > div,
+body.sdc-v95-light-default #productShareCard .productPhotoNote,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoQty,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoPrices > div,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoNote{
+  background:#fff!important;
+  border:1px solid #dbe7f3!important;
+}
+body.sdc-v95-light-default #productShareCard .productPhotoNote,
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoNote{
+  color:#b11a39!important;
+  background:#f8fbff!important;
+}
+body.sdc-v95-light-default .productPhotoExportHost .productPhotoFooter{
+  font-size:24px!important;
+  letter-spacing:.09em!important;
+}
+
+/* 4) Cotización / recibo: vista previa más limpia, datos compactos y dos por fila */
+body.sdc-v95-light-default #modalRoot .preview-card{
+  background:#fff!important;
+  border:1px solid #dbe7f3!important;
+  border-radius:28px!important;
+  padding:14px!important;
+  overflow:hidden!important;
+}
+body.sdc-v95-light-default #modalRoot #docPreview{
+  display:grid!important;
+  justify-items:center!important;
+  align-items:start!important;
+  width:100%!important;
+  max-width:100%!important;
+  overflow:auto!important;
+  padding:0!important;
+}
+body.sdc-v95-light-default #modalRoot #docPreview .v141-receipt{
+  width:min(100%,760px)!important;
+  max-width:760px!important;
+  margin:0 auto!important;
+}
+body.sdc-v95-light-default .v141-receipt-client{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+body.sdc-v95-light-default .v141-receipt-client article{
+  min-height:100px!important;
+}
+body.sdc-v95-light-default .v141-receipt-client article.wide{
+  grid-column:1 / -1!important;
+}
+body.sdc-v95-light-default .v141-receipt-client b,
+body.sdc-v95-light-default .v141-receipt-process b{
+  font-size:18px!important;
+}
+body.sdc-v95-light-default .v141-receipt-process p{
+  font-size:15px!important;
+}
+body.sdc-v95-light-default .v141-receipt-item{
+  grid-template-columns:48px 82px minmax(0,1fr) auto!important;
+}
+body.sdc-v95-light-default .v141-receipt-item .receipt-item-thumb{
+  object-fit:contain!important;
+  background:#fff!important;
+}
+body.sdc-v95-light-default .v141-receipt-footer .receipt-whatsapp-pill{
+  color:#c81e41!important;
+  border-color:#f2a2b4!important;
+}
+
+/* 5) Botones de cotización / venta: distribuir en 2-3 filas y limpiar el bloque */
+body.sdc-v95-light-default #modalRoot .quote-actions{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:10px!important;
+  padding-top:16px!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-actions .btn{
+  min-height:52px!important;
+}
+body.sdc-v95-light-default #modalRoot #saveQuote,
+body.sdc-v95-light-default #modalRoot #finishSale,
+body.sdc-v95-light-default #modalRoot #toSale{
+  grid-column:span 3!important;
+}
+body.sdc-v95-light-default #modalRoot #backToQuote{
+  background:#f8fbff!important;
+}
+
+/* 6) Ajustes móviles finos */
+@media (max-width: 860px){
+  body.sdc-v95-light-default #modalRoot .quote-actions{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body.sdc-v95-light-default #modalRoot #saveQuote,
+  body.sdc-v95-light-default #modalRoot #finishSale,
+  body.sdc-v95-light-default #modalRoot #toSale{
+    grid-column:1 / -1!important;
+  }
+  body.sdc-v95-light-default #modalRoot #docPreview .v141-receipt{
+    width:100%!important;
+    max-width:100%!important;
+  }
+}
+
+@media (max-width: 700px){
+  body.sdc-v95-light-default .v141-receipt-client{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body.sdc-v95-light-default .v141-receipt-client article,
+  body.sdc-v95-light-default .v141-receipt-client article:nth-child(2n){
+    border-right:1px solid #e4edf7!important;
+  }
+  body.sdc-v95-light-default .v141-receipt-client article:nth-child(2n){
+    border-right:none!important;
+  }
+  body.sdc-v95-light-default .v141-receipt-client article.wide{
+    grid-column:1 / -1!important;
+    border-right:none!important;
+  }
+  body.sdc-v95-light-default .v141-receipt-item{
+    grid-template-columns:40px 68px minmax(0,1fr)!important;
+    gap:10px!important;
+  }
+  body.sdc-v95-light-default .v141-receipt-item strong{
+    grid-column:1 / -1!important;
+    font-size:30px!important;
+  }
+  body.sdc-v95-light-default .v141-receipt-item .receipt-item-thumb{
+    width:68px!important;
+    height:68px!important;
+  }
+  body.sdc-v95-light-default .v141-receipt-item .receipt-item-info b{
+    font-size:17px!important;
+  }
+  body.sdc-v95-light-default .productPhotoExportHost .productPhotoPrices,
+  body.sdc-v95-light-default #productShareCard .productPhotoPrices{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
+
+@media (max-width: 480px){
+  body.sdc-v95-light-default .color-stock-chips-v86 span{
+    min-height:44px!important;
+    padding:8px 11px!important;
+  }
+  body.sdc-v95-light-default .color-stock-chips-v86 b{
+    font-size:14px!important;
+  }
+  body.sdc-v95-light-default .color-stock-chips-v86 em{
+    min-width:28px!important;
+    height:28px!important;
+    font-size:13px!important;
+  }
+  body.sdc-v95-light-default #productShareCard .productPhotoImageWrap{
+    min-height:260px!important;
+  }
+  body.sdc-v95-light-default #productShareCard .productPhotoPrices,
+  body.sdc-v95-light-default .productPhotoExportHost .productPhotoPrices{
+    grid-template-columns:1fr!important;
+  }
+  body.sdc-v95-light-default #productShareCard .productPhotoPrices > div:nth-child(3),
+  body.sdc-v95-light-default .productPhotoExportHost .productPhotoPrices > div:nth-child(3){
+    grid-column:auto!important;
+  }
+  body.sdc-v95-light-default .v141-receipt-client{
+    grid-template-columns:1fr!important;
+  }
+  body.sdc-v95-light-default .v141-receipt-client article,
+  body.sdc-v95-light-default .v141-receipt-client article:nth-child(2n){
+    border-right:none!important;
+  }
+}

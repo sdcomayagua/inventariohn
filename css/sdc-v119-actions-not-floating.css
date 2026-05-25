@@ -1,0 +1,132 @@
+/* SDC V119: acciones SIEMPRE al final del contenido, no flotantes. */
+
+/* Ningún grupo de acciones debe quedarse pegado encima de la pantalla. */
+body.sdc-v95-light-default .modal-actions,
+body.sdc-v95-light-default .quote-actions,
+body.sdc-v95-light-default .product-form-actions,
+body.sdc-v95-light-default .v49-detail-actions,
+body.sdc-v95-light-default .v49-capture-buttons,
+body.sdc-v95-light-default .doc-actions,
+body.sdc-v95-light-default .share-actions,
+body.sdc-v95-light-default .import-actions,
+body.sdc-v95-light-default .premium-actions,
+body.sdc-v95-light-default .compact-actions,
+body.sdc-v95-light-default [class*="actions"]{
+  position:static!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  z-index:auto!important;
+  transform:none!important;
+  margin:16px 0 0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+/* Botones de producto: Cotizar / Vender / WhatsApp / Editar al final, ordenados y sin tapar. */
+body.sdc-v95-light-default .v49-detail-actions{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  width:100%!important;
+  padding-top:14px!important;
+  border-top:1px solid #dbe7f3!important;
+}
+body.sdc-v95-light-default .v49-detail-actions .btn,
+body.sdc-v95-light-default .v49-detail-actions button{
+  width:100%!important;
+  min-height:56px!important;
+  border-radius:17px!important;
+  font-size:16px!important;
+  font-weight:950!important;
+  letter-spacing:.01em!important;
+  box-shadow:0 10px 22px rgba(15,35,55,.08)!important;
+}
+body.sdc-v95-light-default .v49-detail-actions .v53-modal-quote,
+body.sdc-v95-light-default .v49-detail-actions .v53-modal-sell{
+  background:linear-gradient(135deg,#07131a,#0b63ce)!important;
+  color:#fff!important;
+  border:0!important;
+}
+body.sdc-v95-light-default .v49-detail-actions .v53-modal-whatsapp{
+  background:linear-gradient(135deg,#0b63ce,#10b981)!important;
+  color:#fff!important;
+  border:0!important;
+}
+body.sdc-v95-light-default .v49-detail-actions .v53-modal-edit{
+  background:#f4f8fc!important;
+  color:#07131a!important;
+  border:1px solid #dbe7f3!important;
+}
+
+/* Cotizar / vender: acciones al final de la página del modal, no sticky. */
+body.sdc-v95-light-default .quote-actions{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:9px!important;
+  width:100%!important;
+  padding-top:14px!important;
+  border-top:1px solid #dbe7f3!important;
+}
+body.sdc-v95-light-default .quote-actions .btn{
+  width:100%!important;
+  min-height:54px!important;
+  border-radius:16px!important;
+  font-weight:950!important;
+}
+body.sdc-v95-light-default .quote-actions .main-wide,
+body.sdc-v95-light-default .quote-actions .save-doc,
+body.sdc-v95-light-default #finishSale{
+  grid-column:1/-1!important;
+}
+
+/* Formularios y recibos: botones normales al final, no encima del contenido. */
+body.sdc-v95-light-default .product-form-actions,
+body.sdc-v95-light-default .doc-actions,
+body.sdc-v95-light-default .share-actions,
+body.sdc-v95-light-default .import-actions{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:10px!important;
+  width:100%!important;
+}
+body.sdc-v95-light-default .product-form-actions .btn,
+body.sdc-v95-light-default .doc-actions .btn,
+body.sdc-v95-light-default .share-actions .btn,
+body.sdc-v95-light-default .import-actions .btn{
+  min-height:54px!important;
+  border-radius:16px!important;
+}
+
+/* Cuando hay modal abierto, el menú hamburguesa no debe tapar títulos ni contenido. */
+body:has(#modalRoot .modal) .sdc-menu-fab-v116,
+body:has(#modalRoot .modal-card) .sdc-menu-fab-v116,
+body:has(#modalRoot [role="dialog"]) .sdc-menu-fab-v116{
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* Más aire al final para que los botones se vean completos al llegar al fondo. */
+body.sdc-v95-light-default .modal-body,
+body.sdc-v95-light-default .v49-product-detail,
+body.sdc-v95-light-default .quote-body,
+body.sdc-v95-light-default .product-editor{
+  padding-bottom:22px!important;
+}
+
+@media(max-width:430px){
+  body.sdc-v95-light-default .v49-detail-actions,
+  body.sdc-v95-light-default .quote-actions{
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+  }
+  body.sdc-v95-light-default .v49-detail-actions .btn,
+  body.sdc-v95-light-default .quote-actions .btn{
+    min-height:52px!important;
+    font-size:14px!important;
+  }
+}

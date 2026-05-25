@@ -1,0 +1,69 @@
+/* SDC V115: arreglo final visual móvil y escritorio */
+html,body{overflow-x:hidden!important;background:#eef5fb!important}
+body.sdc-v95-light-default *{box-sizing:border-box!important;text-shadow:none!important}
+
+/* Quitar barra inferior y flecha flotante */
+body.sdc-v95-light-default .bottom-nav,
+body.sdc-v95-light-default .bottom-nav-v84,
+body.sdc-v95-light-default nav.bottom-nav,
+body.sdc-v95-light-default [data-bottom-nav],
+body.sdc-v95-light-default .mobile-bottom-nav,
+body.sdc-v95-light-default .app-bottom-nav,
+body.sdc-v95-light-default #goTop,
+body.sdc-v95-light-default .go-top{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;min-height:0!important;max-height:0!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important}
+body.sdc-v95-light-default #app,body.sdc-v95-light-default main#app{padding-bottom:24px!important;max-width:620px!important;margin:0 auto!important}
+
+/* Encabezado */
+body.sdc-v95-light-default .sdc-utility-tabs-v105{width:calc(100% - 18px)!important;max-width:600px!important;margin:6px auto 8px!important}
+body.sdc-v95-light-default .topbar,body.sdc-v95-light-default .topbar-v87{width:calc(100% - 18px)!important;max-width:600px!important;margin:0 auto 10px!important;border-radius:22px!important;min-height:74px!important;padding:10px 12px!important;background:#fff!important;border:1px solid #dbe7f3!important;box-shadow:0 10px 24px rgba(15,35,55,.06)!important;overflow:hidden!important}
+body.sdc-v95-light-default .topbar img,body.sdc-v95-light-default .topbar-v87 img{width:48px!important;height:48px!important;min-width:48px!important;border-radius:16px!important}
+body.sdc-v95-light-default .topbar h1,body.sdc-v95-light-default .topbar-v87 h1{font-size:clamp(22px,5vw,28px)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body.sdc-v95-light-default .topbar small,body.sdc-v95-light-default .topbar-v87 small,body.sdc-v95-light-default .top-meta-v88{font-size:10.5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+
+/* Tabs */
+body.sdc-v97-pages .sdc-page-tabs-v97{width:calc(100% - 18px)!important;max-width:600px!important;margin:0 auto 10px!important;padding:5px!important;border-radius:20px!important}
+body.sdc-v97-pages .sdc-page-tabs-v97 button{min-height:50px!important;border-radius:16px!important;font-size:14px!important}
+
+/* Estadísticas sin cortes */
+body.sdc-v95-light-default .home-stats-v94,body.sdc-v95-light-default .stats.home-stats-v94,body.sdc-v95-light-default .home-hero-v94 .stats{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;width:100%!important;overflow:visible!important}
+body.sdc-v95-light-default .home-stats-v94 .stat,body.sdc-v95-light-default .stats .stat{width:100%!important;min-width:0!important;min-height:92px!important;padding:14px!important;border-radius:20px!important;overflow:hidden!important;background:#fff!important;color:#0f172a!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important}
+body.sdc-v95-light-default .home-stats-v94 .stat b,body.sdc-v95-light-default .home-stats-v94 .stat strong,body.sdc-v95-light-default .stats .stat b,body.sdc-v95-light-default .stats .stat strong{display:block!important;max-width:100%!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(22px,6vw,30px)!important;line-height:1.05!important;letter-spacing:-.03em!important;color:#0f172a!important}
+body.sdc-v95-light-default .home-stats-v94 .stat span,body.sdc-v95-light-default .stats .stat span{display:block!important;max-width:100%!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;font-size:11px!important;line-height:1.15!important;letter-spacing:.05em!important;color:#64748b!important;font-weight:950!important;margin-top:8px!important}
+body.sdc-v95-light-default .home-stats-v94 .stat.featured,body.sdc-v95-light-default .stats .stat.featured{grid-column:1/-1!important;min-height:96px!important;background:linear-gradient(135deg,#04233d,#0b63ce)!important;color:#fff!important}
+body.sdc-v95-light-default .home-stats-v94 .stat.featured b,body.sdc-v95-light-default .home-stats-v94 .stat.featured strong,body.sdc-v95-light-default .home-stats-v94 .stat.featured span,body.sdc-v95-light-default .stats .stat.featured b,body.sdc-v95-light-default .stats .stat.featured strong,body.sdc-v95-light-default .stats .stat.featured span{color:#fff!important}
+
+/* Productos */
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-products-title-v98,body.sdc-v97-pages[data-sdc-page="productos"] .search-panel,body.sdc-v97-pages[data-sdc-page="productos"] .category-gallery,body.sdc-v97-pages[data-sdc-page="productos"] #inventario{width:calc(100% - 18px)!important;max-width:600px!important;margin-left:auto!important;margin-right:auto!important}
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-products-title-v98{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;padding:18px!important;border-radius:22px!important}
+body.sdc-v97-pages[data-sdc-page="productos"] .sdc-products-title-v98 button,body.sdc-v97-pages[data-sdc-page="productos"] [data-sdc-title-new-product]{width:100%!important;min-height:60px!important;border-radius:18px!important;font-size:18px!important;color:#fff!important}
+body.sdc-v97-pages[data-sdc-page="productos"] .view-mode-panel,body.sdc-v97-pages[data-sdc-page="productos"] .sdc-product-mode-card-v98{display:none!important}
+body.sdc-v95-light-default .search-panel{border-radius:22px!important;padding:16px!important}
+body.sdc-v95-light-default input.input,body.sdc-v95-light-default textarea.textarea{font-size:16px!important}
+
+/* Modales */
+body.sdc-v95-light-default .modal,body.sdc-v95-light-default .modal-card,body.sdc-v95-light-default .modal-content{max-width:520px!important;width:calc(100vw - 18px)!important;border-radius:22px!important;overflow:hidden!important}
+body.sdc-v95-light-default .modal-head{padding:18px 20px!important;min-height:auto!important;align-items:center!important}
+body.sdc-v95-light-default .modal-head h3,body.sdc-v95-light-default .modal-head h2{font-size:clamp(28px,8vw,42px)!important;line-height:1!important;letter-spacing:.03em!important;margin:0!important;word-break:normal!important;overflow-wrap:normal!important;max-width:calc(100% - 72px)!important}
+body.sdc-v95-light-default .modal-head .close,body.sdc-v95-light-default .close{width:58px!important;height:58px!important;min-width:58px!important;border-radius:18px!important;font-size:28px!important}
+body.sdc-v95-light-default .modal-body{padding:16px!important}
+body.sdc-v95-light-default .modal-grid{grid-template-columns:1fr!important;gap:12px!important}
+body.sdc-v95-light-default .modal-grid .span2{grid-column:1!important}
+body.sdc-v95-light-default .card-box{border-radius:20px!important;padding:16px!important}
+
+/* Editor fotos */
+.sdc-photo-actions-v113{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;width:100%!important}
+.sdc-photo-choice-v113{min-height:44px!important;border-radius:14px!important;font-weight:950!important;letter-spacing:.02em!important;font-size:13px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important}
+.sdc-photo-choice-v113.sdc-camera-v113{background:linear-gradient(135deg,#0b63ce,#10b981)!important;color:#fff!important;border:0!important}
+.sdc-photo-choice-v113.sdc-gallery-v113{background:#f3f8fd!important;color:#0f172a!important;border:1px solid #dbe7f3!important}
+.sdc-v113-hidden-upload{display:none!important}
+body.sdc-v95-light-default .image-row-v83{display:grid!important;grid-template-columns:110px 1fr!important;gap:12px!important;align-items:center!important;padding:12px!important;border-radius:18px!important}
+body.sdc-v95-light-default .image-preview-v83{width:105px!important;height:105px!important;border-radius:16px!important}
+body.sdc-v95-light-default .image-row-v83 input{font-size:14px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+
+/* Ofertas */
+body.sdc-v95-light-default .promo-editor-box,body.sdc-v95-light-default .promo-row-v26,body.sdc-v95-light-default .promo-row-v49{background:#fff!important;border-color:#dbe7f3!important;border-radius:18px!important}
+body.sdc-v95-light-default .promo-help{background:#fff7f7!important;border:1px dashed #f0b7c0!important;border-radius:16px!important;padding:12px!important;font-size:14px!important;line-height:1.35!important}
+body.sdc-v95-light-default .promo-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;padding:12px!important}
+body.sdc-v95-light-default .promo-row-title,body.sdc-v95-light-default .promo-unit-preview,body.sdc-v95-light-default .promo-delete-btn{grid-column:1/-1!important;width:100%!important}
+
+@media(max-width:430px){body.sdc-v95-light-default #app,body.sdc-v95-light-default main#app{max-width:100%!important}body.sdc-v95-light-default .home-stats-v94 .stat,body.sdc-v95-light-default .stats .stat{min-height:88px!important;padding:13px!important}body.sdc-v95-light-default .home-stats-v94 .stat b,body.sdc-v95-light-default .stats .stat b{font-size:clamp(21px,7vw,28px)!important}body.sdc-v95-light-default .home-stats-v94 .stat span,body.sdc-v95-light-default .stats .stat span{font-size:10.5px!important}body.sdc-v95-light-default .image-row-v83{grid-template-columns:96px 1fr!important}body.sdc-v95-light-default .image-preview-v83{width:92px!important;height:92px!important}}

@@ -1,0 +1,54 @@
+/* SDC V82 · Estado real de guardado y sincronización Sheets */
+.product-save-status{
+  display:none;
+  margin:10px 0 0;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(148,163,184,.22);
+  background:rgba(9,18,32,.72);
+  color:#dbeafe;
+  font-size:.9rem;
+  line-height:1.35;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.product-save-status.active{display:block;}
+.product-save-status.ok{
+  border-color:rgba(34,197,94,.42);
+  background:rgba(6,78,59,.45);
+  color:#bbf7d0;
+}
+.product-save-status.error{
+  border-color:rgba(248,113,113,.46);
+  background:rgba(127,29,29,.42);
+  color:#fecaca;
+}
+.product-save-status.info{
+  border-color:rgba(56,189,248,.34);
+  background:rgba(12,38,64,.58);
+  color:#dbeafe;
+}
+.btn.is-saving,
+.btn.is-saving:disabled{
+  cursor:wait;
+  opacity:.86;
+  filter:saturate(.95);
+}
+.btn.is-saving::before{
+  content:'';
+  width:14px;
+  height:14px;
+  margin-right:8px;
+  display:inline-block;
+  vertical-align:-2px;
+  border:2px solid currentColor;
+  border-right-color:transparent;
+  border-radius:999px;
+  animation:sdcSaveSpin .75s linear infinite;
+}
+@keyframes sdcSaveSpin{to{transform:rotate(360deg)}}
+@media (max-width:640px){
+  .product-save-status{
+    font-size:.86rem;
+    border-radius:12px;
+  }
+}

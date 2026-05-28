@@ -1,0 +1,126 @@
+/* SDC V167 · compacta la cabecera y controles de Productos */
+body.sdc-v95-light-default .inventory-head-v163{
+  padding:12px!important;
+  display:grid!important;
+  gap:10px!important;
+}
+body.sdc-v95-light-default .inventory-head-v163 .inventory-titlebar-v74{
+  min-height:0!important;
+  padding:10px 12px!important;
+  gap:10px!important;
+  border-radius:20px!important;
+}
+body.sdc-v95-light-default .inventory-head-v163 .inventory-kicker-v160{
+  margin-bottom:4px!important;
+  padding:5px 9px!important;
+  font-size:11px!important;
+}
+body.sdc-v95-light-default .inventory-head-v163 h2{
+  font-size:46px!important;
+  line-height:.94!important;
+}
+body.sdc-v95-light-default .inventory-head-v163 .inventory-subtitle-v163{
+  margin-top:4px!important;
+  font-size:11px!important;
+  line-height:1.18!important;
+}
+body.sdc-v95-light-default .inventory-head-v163 .inventory-head-right{
+  gap:6px!important;
+}
+body.sdc-v95-light-default .inventory-head-v163 .firebase-head-btn,
+body.sdc-v95-light-default .inventory-head-v163 .count-pill{
+  min-height:36px!important;
+  padding:7px 12px!important;
+  font-size:12px!important;
+}
+body.sdc-v95-light-default .inventory-toolbar-v163{
+  padding:0!important;
+  gap:8px!important;
+  border-bottom:0!important;
+  background:transparent!important;
+}
+body.sdc-v95-light-default .inventory-inline-search-v74,
+body.sdc-v95-light-default .inventory-cat-select-v74{
+  min-height:52px!important;
+  border-radius:18px!important;
+  padding:0 12px!important;
+}
+body.sdc-v95-light-default .inventory-inline-search-v74 input,
+body.sdc-v95-light-default .inventory-cat-select-v74 select{
+  font-size:14px!important;
+}
+body.sdc-v95-light-default .inventory-client-shot-v163,
+body.sdc-v95-light-default .inventory-client-print-v163,
+body.sdc-v95-light-default .inventory-new-btn-v74{
+  min-height:44px!important;
+  border-radius:16px!important;
+}
+body.sdc-v95-light-default .inventory-client-shot-v163 b,
+body.sdc-v95-light-default .inventory-client-print-v163 b{
+  font-size:11.5px!important;
+}
+body.sdc-v95-light-default .inventory-new-btn-v74{
+  padding:0 16px!important;
+}
+body.sdc-v95-light-default .inventory-content{
+  padding-top:10px!important;
+}
+body.sdc-v95-light-default .inventory-head-v163 + .inventory-content,
+body.sdc-v95-light-default .inventory-head-v163 + .grid{
+  margin-top:0!important;
+}
+
+@media(max-width:900px){
+  body.sdc-v95-light-default .inventory-head-v163{
+    padding:10px!important;
+    gap:8px!important;
+  }
+  body.sdc-v95-light-default .inventory-head-v163 .inventory-titlebar-v74{
+    grid-template-columns:1fr!important;
+    padding:10px!important;
+    gap:8px!important;
+  }
+  body.sdc-v95-light-default .inventory-head-v163 h2{
+    font-size:26px!important;
+  }
+  body.sdc-v95-light-default .inventory-head-v163 .inventory-subtitle-v163{
+    font-size:10.2px!important;
+    max-width:none!important;
+  }
+  body.sdc-v95-light-default .inventory-head-v163 .inventory-head-right{
+    flex-direction:row!important;
+    flex-wrap:wrap!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:7px!important;
+  }
+  body.sdc-v95-light-default .inventory-head-v163 .firebase-head-btn,
+  body.sdc-v95-light-default .inventory-head-v163 .count-pill{
+    min-height:34px!important;
+    padding:6px 10px!important;
+    font-size:11px!important;
+  }
+  body.sdc-v95-light-default .inventory-toolbar-v163{
+    grid-template-columns:1fr 1fr!important;
+    gap:7px!important;
+  }
+  body.sdc-v95-light-default .inventory-inline-search-v74{
+    grid-column:1/-1!important;
+    order:0!important;
+    min-height:50px!important;
+  }
+  body.sdc-v95-light-default .inventory-client-shot-v163,
+  body.sdc-v95-light-default .inventory-client-print-v163,
+  body.sdc-v95-light-default .inventory-cat-select-v74,
+  body.sdc-v95-light-default .inventory-new-btn-v74{
+    min-height:42px!important;
+  }
+  body.sdc-v95-light-default .inventory-client-shot-v163,
+  body.sdc-v95-light-default .inventory-client-print-v163{
+    padding:0 10px!important;
+  }
+  body.sdc-v95-light-default .inventory-new-btn-v74{
+    width:100%!important;
+    justify-content:center!important;
+  }
+}

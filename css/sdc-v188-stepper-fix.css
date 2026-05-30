@@ -1,0 +1,68 @@
+
+/* v188: arreglar stepper de cantidad en cotización */
+body.sdc-v95-light-default .qtybox,
+body.sdc-v95-light-default .cart-row-v24 .qtybox,
+body.sdc-v95-light-default .gift-list .qtybox,
+body.sdc-v95-light-default .v49-qty-stepper{
+  display:grid!important;
+  grid-template-columns:44px minmax(88px,1fr) 44px!important;
+  align-items:center!important;
+  gap:10px!important;
+  width:min(220px,100%)!important;
+  max-width:220px!important;
+  flex-wrap:nowrap!important;
+}
+body.sdc-v95-light-default .qtybox button,
+body.sdc-v95-light-default .v49-qty-stepper button{
+  width:44px!important;
+  min-width:44px!important;
+  height:44px!important;
+  border-radius:14px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  font-size:24px!important;
+  line-height:1!important;
+  font-weight:950!important;
+}
+body.sdc-v95-light-default .qtybox input,
+body.sdc-v95-light-default .v49-qty-stepper input,
+body.sdc-v95-light-default .v49-qty-stepper b,
+body.sdc-v95-light-default .qtybox b{
+  width:100%!important;
+  min-width:0!important;
+  min-height:44px!important;
+  height:44px!important;
+  border-radius:14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  padding:0 8px!important;
+  font-size:19px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  box-sizing:border-box!important;
+}
+body.sdc-v95-light-default .qtybox input{
+  border:1px solid #d7e6f5!important;
+  background:#fff!important;
+  color:#071625!important;
+}
+body.sdc-v95-light-default .cart-row-v24,
+body.sdc-v95-light-default .gift-list .cart-row{
+  align-items:start!important;
+}
+body.sdc-v95-light-default .cart-row-v24 > div:last-child,
+body.sdc-v95-light-default .gift-list .cart-row > div:last-child{
+  justify-self:start!important;
+}
+@media(max-width:560px){
+  body.sdc-v95-light-default .qtybox,
+  body.sdc-v95-light-default .cart-row-v24 .qtybox,
+  body.sdc-v95-light-default .gift-list .qtybox,
+  body.sdc-v95-light-default .v49-qty-stepper{
+    margin-top:6px!important;
+    width:min(210px,100%)!important;
+  }
+}

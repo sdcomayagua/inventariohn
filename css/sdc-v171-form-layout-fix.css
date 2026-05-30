@@ -1,0 +1,206 @@
+/* SDC V171 · corrige filas de formularios que se rompen */
+body.sdc-v95-light-default .modal-body,
+body.sdc-v95-light-default .card-box,
+body.sdc-v95-light-default .promo-editor-box,
+body.sdc-v95-light-default .promo-rows,
+body.sdc-v95-light-default .color-rows-v86,
+body.sdc-v95-light-default .image-rows-v83{
+  min-width:0!important;
+}
+
+body.sdc-v95-light-default .modal-body label,
+body.sdc-v95-light-default .modal-body .label,
+body.sdc-v95-light-default .promo-field,
+body.sdc-v95-light-default .color-row-v86 label,
+body.sdc-v95-light-default .image-row-main-v83{
+  min-width:0!important;
+  max-width:100%!important;
+}
+
+body.sdc-v95-light-default .modal-body input,
+body.sdc-v95-light-default .modal-body select,
+body.sdc-v95-light-default .modal-body textarea,
+body.sdc-v95-light-default .input,
+body.sdc-v95-light-default .select,
+body.sdc-v95-light-default .textarea{
+  max-width:100%!important;
+  min-width:0!important;
+  width:100%!important;
+}
+
+body.sdc-v95-light-default .promo-row-v49{
+  grid-template-columns:minmax(150px,.55fr) minmax(190px,1fr) minmax(190px,1fr) minmax(110px,.45fr) 54px!important;
+  align-items:end!important;
+  gap:10px!important;
+  overflow:hidden!important;
+}
+
+body.sdc-v95-light-default .promo-row-v49 .promo-row-title{
+  min-width:0!important;
+  display:grid!important;
+  gap:4px!important;
+  align-self:center!important;
+}
+body.sdc-v95-light-default .promo-row-v49 .promo-row-title strong,
+body.sdc-v95-light-default .promo-row-v49 .promo-row-title small{
+  display:block!important;
+  line-height:1.15!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+body.sdc-v95-light-default .promo-row-v49 .promo-row-title strong{
+  font-size:14px!important;
+  font-weight:950!important;
+}
+body.sdc-v95-light-default .promo-row-v49 .promo-row-title small{
+  color:#60758c!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+
+body.sdc-v95-light-default .promo-field small,
+body.sdc-v95-light-default .color-row-v86 small,
+body.sdc-v95-light-default .image-row-v83 small{
+  display:block!important;
+  margin-bottom:5px!important;
+  line-height:1.15!important;
+  white-space:normal!important;
+}
+
+body.sdc-v95-light-default .promo-unit-preview{
+  min-height:54px!important;
+  border-radius:17px!important;
+  padding:9px 12px!important;
+  display:grid!important;
+  place-content:center!important;
+  gap:2px!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+body.sdc-v95-light-default .promo-unit-preview span{
+  display:block!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  opacity:.85!important;
+}
+body.sdc-v95-light-default .promo-unit-preview b{
+  display:block!important;
+  font-size:14px!important;
+  line-height:1!important;
+}
+body.sdc-v95-light-default .promo-delete-btn{
+  width:54px!important;
+  min-width:54px!important;
+  height:54px!important;
+  min-height:54px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:18px!important;
+  font-weight:950!important;
+}
+
+/* En tablets/anchos medios no fuerza 5 columnas si no caben */
+@media(max-width:1100px){
+  body.sdc-v95-light-default .promo-row-v49{
+    grid-template-columns:1fr 1fr!important;
+    align-items:end!important;
+  }
+  body.sdc-v95-light-default .promo-row-v49 .promo-row-title,
+  body.sdc-v95-light-default .promo-unit-preview,
+  body.sdc-v95-light-default .promo-delete-btn{
+    grid-column:auto!important;
+  }
+  body.sdc-v95-light-default .promo-delete-btn{
+    width:100%!important;
+    min-width:0!important;
+  }
+}
+
+@media(max-width:700px){
+  body.sdc-v95-light-default .modal-body{
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+
+  body.sdc-v95-light-default .promo-editor-box{
+    padding:12px!important;
+    border-radius:20px!important;
+  }
+
+  body.sdc-v95-light-default .promo-help,
+  body.sdc-v95-light-default .color-help-v86{
+    padding:10px 12px!important;
+    border-radius:15px!important;
+    font-size:12px!important;
+    line-height:1.35!important;
+  }
+
+  body.sdc-v95-light-default .promo-row-v49,
+  body.sdc-v95-light-default .color-row-v86,
+  body.sdc-v95-light-default .image-row-v83{
+    grid-template-columns:1fr!important;
+    gap:9px!important;
+    padding:10px!important;
+    border-radius:18px!important;
+    overflow:visible!important;
+  }
+
+  body.sdc-v95-light-default .promo-row-v49 .promo-row-title{
+    padding:9px 10px!important;
+    border-radius:14px!important;
+    background:#f8fbff!important;
+    border:1px solid #e1eaf4!important;
+  }
+
+  body.sdc-v95-light-default .promo-field small{
+    font-size:11px!important;
+  }
+
+  body.sdc-v95-light-default .promo-unit-preview{
+    width:100%!important;
+    min-height:46px!important;
+    padding:8px 10px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    text-align:left!important;
+  }
+
+  body.sdc-v95-light-default .promo-delete-btn{
+    width:100%!important;
+    min-width:0!important;
+    min-height:44px!important;
+    height:44px!important;
+    border-radius:14px!important;
+  }
+
+  body.sdc-v95-light-default .image-row-v83 .image-preview-v83{
+    width:100%!important;
+  }
+}
+
+/* Protección general: cualquier fila mini nunca debe desbordar */
+@media(max-width:900px){
+  body.sdc-v95-light-default .mini-row,
+  body.sdc-v95-light-default .modal-grid,
+  body.sdc-v95-light-default .quote-grid,
+  body.sdc-v95-light-default .admin-private-grid-v148,
+  body.sdc-v95-light-default .v141-meta-grid,
+  body.sdc-v95-light-default .v141-price-cards,
+  body.sdc-v95-light-default .v141-admin-grid{
+    max-width:100%!important;
+    min-width:0!important;
+  }
+
+  body.sdc-v95-light-default .mini-row > *,
+  body.sdc-v95-light-default .modal-grid > *,
+  body.sdc-v95-light-default .quote-grid > *,
+  body.sdc-v95-light-default .admin-private-grid-v148 > *,
+  body.sdc-v95-light-default .v141-meta-grid > *,
+  body.sdc-v95-light-default .v141-price-cards > *,
+  body.sdc-v95-light-default .v141-admin-grid > *{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+}

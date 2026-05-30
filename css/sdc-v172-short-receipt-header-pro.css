@@ -1,0 +1,148 @@
+/* SDC V172 · encabezado más limpio y profesional para recibo corto */
+body.sdc-v95-light-default .short-receipt-v158{
+  border-radius:24px!important;
+}
+
+body.sdc-v95-light-default .short-brand-v158{
+  display:grid!important;
+  grid-template-columns:60px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:12px 14px!important;
+  min-height:0!important;
+  border-radius:20px!important;
+  background:linear-gradient(180deg,#ffffff,#fbfdff)!important;
+  border:1px solid #d7e3ef!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.045)!important;
+}
+body.sdc-v95-light-default .short-brand-v158::before{
+  height:4px!important;
+  background:linear-gradient(90deg,#07121f 0%, #0b63ce 78%)!important;
+}
+body.sdc-v95-light-default .short-logo-box{
+  width:60px!important;
+  height:60px!important;
+  margin-top:0!important;
+  border-radius:16px!important;
+  display:grid!important;
+  place-items:center!important;
+  align-self:center!important;
+}
+body.sdc-v95-light-default .short-logo-box img{
+  width:44px!important;
+  height:44px!important;
+  object-fit:contain!important;
+}
+body.sdc-v95-light-default .short-copy-v153{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:
+    'kicker kicker'
+    'title title'
+    'meta variant'!important;
+  align-items:end!important;
+  column-gap:10px!important;
+  row-gap:4px!important;
+  min-width:0!important;
+}
+body.sdc-v95-light-default .short-kicker-v158{
+  grid-area:kicker!important;
+  justify-self:start!important;
+  min-height:24px!important;
+  padding:0 9px!important;
+  border-radius:999px!important;
+  background:#f3f7fb!important;
+  border:1px solid #d7e3ef!important;
+  color:#60748b!important;
+  font-size:9.5px!important;
+  letter-spacing:.045em!important;
+}
+body.sdc-v95-light-default .short-brand-v158 h2{
+  grid-area:title!important;
+  margin:0!important;
+  font-size:16px!important;
+  line-height:1!important;
+  letter-spacing:-.03em!important;
+}
+body.sdc-v95-light-default .short-meta.short-meta-v50{
+  grid-area:meta!important;
+  margin:0!important;
+  gap:2px!important;
+  min-width:0!important;
+}
+body.sdc-v95-light-default .short-meta .short-client-name{
+  font-size:13px!important;
+  line-height:1.1!important;
+}
+body.sdc-v95-light-default .short-meta .short-date-time{
+  display:block!important;
+  font-size:10px!important;
+  line-height:1.15!important;
+}
+body.sdc-v95-light-default .short-variant-pill-v158{
+  grid-area:variant!important;
+  align-self:end!important;
+  justify-self:end!important;
+  margin-top:0!important;
+  min-height:34px!important;
+  padding:0 12px!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  white-space:nowrap!important;
+  background:#f8fbff!important;
+}
+body.sdc-v95-light-default .short-highlight-v158{
+  margin-top:10px!important;
+  padding:10px 12px!important;
+  border-radius:14px!important;
+}
+body.sdc-v95-light-default .short-highlight-v158 span{
+  font-size:9.5px!important;
+  letter-spacing:.05em!important;
+}
+body.sdc-v95-light-default .short-highlight-v158 b{
+  font-size:12.5px!important;
+  line-height:1.2!important;
+}
+
+@media(max-width:900px){
+  body.sdc-v95-light-default .short-brand-v158{
+    grid-template-columns:54px minmax(0,1fr)!important;
+    gap:10px!important;
+    padding:11px 12px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v95-light-default .short-logo-box{
+    width:54px!important;
+    height:54px!important;
+    border-radius:15px!important;
+  }
+  body.sdc-v95-light-default .short-logo-box img{
+    width:40px!important;
+    height:40px!important;
+  }
+  body.sdc-v95-light-default .short-copy-v153{
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-areas:
+      'kicker'
+      'title'
+      'meta'
+      'variant'!important;
+    row-gap:4px!important;
+  }
+  body.sdc-v95-light-default .short-brand-v158 h2{
+    font-size:15px!important;
+  }
+  body.sdc-v95-light-default .short-meta .short-client-name{
+    font-size:12.5px!important;
+  }
+  body.sdc-v95-light-default .short-meta .short-date-time{
+    font-size:9.8px!important;
+  }
+  body.sdc-v95-light-default .short-variant-pill-v158{
+    justify-self:start!important;
+    min-height:32px!important;
+    padding:0 11px!important;
+    font-size:11.5px!important;
+  }
+}

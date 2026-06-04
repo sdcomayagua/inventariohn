@@ -1,0 +1,89 @@
+/* =========================================================
+   SD Comayagua · v211 Textos limpios + pulido visual
+   Quita leyendas técnicas visibles y suaviza la parte superior.
+   ========================================================= */
+body.sdc-v95-light-default .sdc210-s24-panel{
+  margin-top:8px!important;
+  padding:13px!important;
+  border-radius:30px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%)!important;
+  border:1px solid #d8e7f6!important;
+  box-shadow:0 16px 38px rgba(7,26,53,.07)!important;
+}
+body.sdc-v95-light-default .sdc210-panel-head span{
+  color:#0b63ce!important;
+  letter-spacing:.12em!important;
+}
+body.sdc-v95-light-default .sdc210-panel-head b{
+  font-size:24px!important;
+}
+body.sdc-v95-light-default .sdc210-mode-pill{
+  min-height:36px!important;
+  padding:0 13px!important;
+  background:#ecfdf5!important;
+  border-color:#bfead4!important;
+  color:#0f8a55!important;
+}
+body.sdc-v95-light-default .sdc210-action-grid{
+  gap:9px!important;
+}
+body.sdc-v95-light-default .sdc210-action-grid button{
+  min-height:62px!important;
+  border-radius:21px!important;
+  box-shadow:0 10px 22px rgba(7,26,53,.04)!important;
+}
+body.sdc-v95-light-default .sdc210-action-grid button.primary{
+  background:linear-gradient(135deg,#071a35 0%,#0b63ce 78%,#0a7cf2 100%)!important;
+}
+body.sdc-v95-light-default .sdc210-mini-metrics article{
+  min-height:68px!important;
+  border-radius:19px!important;
+}
+body.sdc-v95-light-default .sdc210-mini-metrics b{
+  font-size:18px!important;
+}
+
+/* Hero inferior más limpio, sin sensación de texto técnico */
+body.sdc-v95-light-default .sdc209-welcome{
+  border-radius:28px!important;
+  padding:18px!important;
+}
+body.sdc-v95-light-default .sdc209-welcome small{
+  letter-spacing:.13em!important;
+}
+body.sdc-v95-light-default .sdc209-welcome h2{
+  font-size:clamp(32px,9vw,46px)!important;
+  line-height:.88!important;
+  letter-spacing:-.06em!important;
+}
+body.sdc-v95-light-default .sdc209-welcome p{
+  max-width:300px!important;
+  font-size:13px!important;
+  line-height:1.18!important;
+  opacity:.94!important;
+}
+body.sdc-v95-light-default .sdc209-welcome [data-action="sync"]{
+  min-width:86px!important;
+  border-radius:18px!important;
+}
+
+/* Ajuste de barra inferior: menos invasiva visualmente */
+body.sdc-v95-light-default .sdc209-bottom-nav{
+  border-radius:25px!important;
+  padding:7px!important;
+  box-shadow:0 16px 40px rgba(7,26,53,.14)!important;
+}
+body.sdc-v95-light-default .sdc209-bottom-nav button{
+  border-radius:18px!important;
+}
+
+/* Más aire entre bloques principales */
+body.sdc-v95-light-default #app.app > section,
+body.sdc-v95-light-default #app > section{
+  scroll-margin-top:12px!important;
+}
+
+/* Evitar que alguna leyenda de escritorio vieja salga encima */
+body.sdc-v95-light-default.sdc-v190-ready::after{
+  content:"Panel móvil de ventas · ancho cómodo para trabajar"!important;
+}

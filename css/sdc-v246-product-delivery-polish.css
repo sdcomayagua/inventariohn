@@ -1,0 +1,171 @@
+
+/* SD Comayagua · v246 product delivery polish */
+body.sdc-v246-delivery-polish .product-card-v235{overflow:hidden!important;}
+body.sdc-v246-delivery-polish .product-photo-v246{
+  background:linear-gradient(180deg,#f7fbff,#eef5ff)!important;
+  border:1px solid #d7e6f8!important;
+}
+body.sdc-v246-delivery-polish .product-photo-v246 img{
+  object-fit:contain!important;
+  background:#fff!important;
+  padding:8px!important;
+}
+body.sdc-v246-delivery-polish .product-main-price-v246{
+  align-items:center!important;
+  gap:10px!important;
+  flex-wrap:wrap!important;
+}
+body.sdc-v246-delivery-polish .product-main-price-v246 strong{
+  font-size:clamp(28px,2.2vw,38px)!important;
+  line-height:.95!important;
+}
+body.sdc-v246-delivery-polish .product-main-price-v246 em{
+  min-height:34px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 12px!important;
+  border-radius:999px!important;
+  font-style:normal!important;
+  font-weight:900!important;
+}
+body.sdc-v246-delivery-polish .delivery-panel-v246{
+  padding:12px!important;
+  gap:10px!important;
+}
+body.sdc-v246-delivery-polish .delivery-tabs-v245 button{
+  min-height:44px!important;
+  font-size:13px!important;
+}
+body.sdc-v246-delivery-polish .delivery-qty-box-v245{
+  grid-template-columns:42px 78px 42px!important;
+  gap:8px!important;
+}
+body.sdc-v246-delivery-polish .delivery-qty-box-v245 button,
+body.sdc-v246-delivery-polish .delivery-qty-box-v245 input{
+  height:42px!important;
+  border-radius:14px!important;
+  font-size:22px!important;
+  font-weight:950!important;
+  color:#0a356d!important;
+}
+body.sdc-v246-delivery-polish .delivery-qty-box-v245 input{
+  appearance:textfield!important;
+  -moz-appearance:textfield!important;
+  background:#ffffff!important;
+  color:#071f42!important;
+  font-size:19px!important;
+}
+body.sdc-v246-delivery-polish .delivery-qty-box-v245 input::-webkit-outer-spin-button,
+body.sdc-v246-delivery-polish .delivery-qty-box-v245 input::-webkit-inner-spin-button{ -webkit-appearance:none!important; margin:0!important; }
+body.sdc-v246-delivery-polish .delivery-prices-v245 article{
+  padding:12px 12px!important;
+  border-radius:16px!important;
+}
+body.sdc-v246-delivery-polish .delivery-prices-v245 b{
+  font-size:22px!important;
+}
+body.sdc-v246-delivery-polish .product-pills-v235{margin-top:12px!important;}
+
+@media (min-width: 701px){
+  body.sdc-v246-delivery-polish .product-card-v235{
+    grid-template-columns:150px minmax(0,1fr)!important;
+    grid-template-areas:'photo copy' 'actions actions'!important;
+    gap:14px!important;
+    padding:16px!important;
+  }
+  body.sdc-v246-delivery-polish .product-photo-v246{
+    grid-area:photo!important;
+    width:150px!important;
+    height:150px!important;
+    min-width:150px!important;
+    border-radius:20px!important;
+    align-self:start!important;
+  }
+  body.sdc-v246-delivery-polish .product-copy-v246{grid-area:copy!important;}
+  body.sdc-v246-delivery-polish .product-actions-v235{grid-area:actions!important;}
+}
+
+@media (max-width: 700px){
+  body.sdc-v246-delivery-polish .product-card-v235{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-areas:'photo' 'copy' 'actions'!important;
+    gap:12px!important;
+    padding:14px!important;
+    border-radius:24px!important;
+  }
+  body.sdc-v246-delivery-polish .product-photo-v246{
+    grid-area:photo!important;
+    width:100%!important;
+    min-width:0!important;
+    height:210px!important;
+    border-radius:22px!important;
+    display:block!important;
+  }
+  body.sdc-v246-delivery-polish .product-photo-v246 img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:contain!important;
+  }
+  body.sdc-v246-delivery-polish .product-copy-v246{
+    grid-area:copy!important;
+    display:grid!important;
+    gap:10px!important;
+    padding:0!important;
+  }
+  body.sdc-v246-delivery-polish .product-code-row-v246{
+    justify-content:space-between!important;
+    align-items:center!important;
+    margin:0!important;
+  }
+  body.sdc-v246-delivery-polish .product-copy-v246 h3{
+    font-size:24px!important;
+    line-height:1.04!important;
+    margin:0!important;
+  }
+  body.sdc-v246-delivery-polish .product-main-price-v246{
+    justify-content:space-between!important;
+    margin:0!important;
+  }
+  body.sdc-v246-delivery-polish .product-main-price-v246 strong{font-size:26px!important;}
+  body.sdc-v246-delivery-polish .product-main-price-v246 em{font-size:12px!important;}
+  body.sdc-v246-delivery-polish .delivery-panel-v246{
+    border-radius:20px!important;
+    padding:12px!important;
+  }
+  body.sdc-v246-delivery-polish .delivery-tabs-v245 button{
+    min-height:42px!important;
+    font-size:13px!important;
+    border-radius:14px!important;
+  }
+  body.sdc-v246-delivery-polish .delivery-qty-v245{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+    align-items:start!important;
+  }
+  body.sdc-v246-delivery-polish .delivery-qty-v245 > span{font-size:12px!important;}
+  body.sdc-v246-delivery-polish .delivery-qty-box-v245{
+    grid-template-columns:46px minmax(72px,1fr) 46px!important;
+    width:100%!important;
+  }
+  body.sdc-v246-delivery-polish .delivery-qty-box-v245 button,
+  body.sdc-v246-delivery-polish .delivery-qty-box-v245 input{height:44px!important;}
+  body.sdc-v246-delivery-polish .delivery-prices-v245{gap:9px!important;}
+  body.sdc-v246-delivery-polish .delivery-prices-v245 article{padding:12px!important;}
+  body.sdc-v246-delivery-polish .delivery-prices-v245 b{font-size:21px!important;}
+  body.sdc-v246-delivery-polish .delivery-offer-v245{
+    border-radius:16px!important;
+    padding:10px 12px!important;
+    font-size:12px!important;
+    line-height:1.2!important;
+  }
+  body.sdc-v246-delivery-polish .product-pills-v235{
+    gap:8px!important;
+    margin-top:0!important;
+  }
+  body.sdc-v246-delivery-polish .product-actions-v235{
+    grid-area:actions!important;
+    grid-template-columns:1fr 1fr!important;
+  }
+}

@@ -1,0 +1,198 @@
+/* =========================================================
+   SD Comayagua · v200 Quote Flow Fix
+   - Productos ocultos hasta elegir categoría.
+   - Cantidad del detalle se respeta al cotizar/vender.
+   - Lista de productos más corta para no molestar el scroll.
+   ========================================================= */
+
+body.sdc-v95-light-default #modalRoot .picker-card-v176{
+  scroll-margin-top:14px!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-picker-control-v200{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  gap:10px!important;
+  align-items:center!important;
+  margin:10px 0 8px!important;
+  padding:10px!important;
+  border-radius:20px!important;
+  border:1px solid #d9e8f8!important;
+  background:linear-gradient(180deg,#ffffff,#f6fbff)!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-main-v200{
+  min-height:50px!important;
+  min-width:138px!important;
+  border:0!important;
+  border-radius:17px!important;
+  background:linear-gradient(135deg,#071a35,#0b63ce)!important;
+  color:#fff!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:8px 14px!important;
+  box-shadow:0 12px 26px rgba(7,26,53,.16)!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-main-v200 span{
+  display:block!important;
+  color:#dbeafe!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+  letter-spacing:.12em!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-main-v200 b{
+  display:block!important;
+  max-width:124px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:#fff!important;
+  font-size:15px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-main-v200.has-category{
+  background:linear-gradient(135deg,#0b63ce,#0a7cf2)!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-picker-control-v200 small{
+  color:#5f7892!important;
+  font-size:12px!important;
+  line-height:1.18!important;
+  font-weight:850!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-strip-v200{
+  display:none!important;
+  margin:0 0 10px!important;
+  padding:8px!important;
+  max-height:146px!important;
+  overflow:auto!important;
+  border-radius:20px!important;
+  border:1px solid #d9e8f8!important;
+  background:#fff!important;
+  gap:8px!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-strip-v200.is-open{
+  display:flex!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-strip-v200 .chip{
+  flex:0 0 auto!important;
+  min-height:42px!important;
+  border-radius:999px!important;
+  padding:0 14px!important;
+  font-size:12px!important;
+  background:#f4f9ff!important;
+  color:#173459!important;
+  border:1px solid #d7e7f7!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-strip-v200 .chip.active{
+  background:#0b63ce!important;
+  color:#fff!important;
+  border-color:#0b63ce!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-list-v200{
+  max-height:420px!important;
+  overflow:auto!important;
+  padding-right:3px!important;
+  overscroll-behavior:contain!important;
+  border-radius:22px!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-empty-v200{
+  min-height:150px!important;
+  display:grid!important;
+  place-items:center!important;
+  text-align:center!important;
+  padding:22px!important;
+  border:1px dashed #c8d9eb!important;
+  background:#f8fbff!important;
+  border-radius:22px!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-empty-v200 b{
+  color:#07192f!important;
+  font-size:18px!important;
+  line-height:1.05!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-empty-v200 span{
+  max-width:280px!important;
+  color:#647891!important;
+  font-size:13px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-item-v200{
+  grid-template-columns:70px minmax(0,1fr) 102px!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin-bottom:10px!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-item-v200 img{
+  width:70px!important;
+  height:70px!important;
+  border-radius:16px!important;
+  object-fit:cover!important;
+  background:#eef6ff!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-item-v200 b{
+  display:block!important;
+  font-size:14px!important;
+  line-height:1.1!important;
+  color:#07192f!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-item-v200 span{
+  display:block!important;
+  margin-top:4px!important;
+  font-size:11px!important;
+  line-height:1.18!important;
+  color:#5f7892!important;
+  font-weight:850!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-item-v200 .add-pick-btn{
+  min-height:48px!important;
+  border-radius:16px!important;
+  font-size:12px!important;
+  font-weight:950!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-limit-note-v200{
+  padding:12px!important;
+  border-radius:18px!important;
+  background:#fff8e8!important;
+  color:#9a6200!important;
+  border:1px solid #f0d28d!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  text-align:center!important;
+}
+body.sdc-v95-light-default #modalRoot .v163-detail-actions #v49QuoteProduct,
+body.sdc-v95-light-default #modalRoot .v163-detail-actions #v49SellProduct{
+  font-size:11px!important;
+}
+
+@media(max-width:430px){
+  body.sdc-v95-light-default #modalRoot .quote-picker-control-v200{
+    grid-template-columns:1fr!important;
+  }
+  body.sdc-v95-light-default #modalRoot .quote-category-main-v200{
+    width:100%!important;
+  }
+  body.sdc-v95-light-default #modalRoot .quote-category-main-v200 b{
+    max-width:100%!important;
+  }
+  body.sdc-v95-light-default #modalRoot .picker-list-v200{
+    max-height:360px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .picker-item-v200{
+    grid-template-columns:58px minmax(0,1fr) 86px!important;
+    padding:10px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .picker-item-v200 img{
+    width:58px!important;
+    height:58px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .picker-item-v200 .add-pick-btn{
+    min-height:44px!important;
+    padding:6px!important;
+  }
+}

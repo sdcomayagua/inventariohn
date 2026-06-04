@@ -1,0 +1,300 @@
+
+/* =========================================================
+   SD Comayagua · v214 Categoría cuadrada 1:1
+   Corrige descarga recortada y genera una captura cuadrada.
+   ========================================================= */
+
+.categoryShareExportHost-v199{
+  width:1128px!important;
+  padding:24px!important;
+  background:#eef6fd!important;
+}
+
+.categoryShareClean-v199{
+  width:1080px!important;
+  height:1080px!important;
+  max-width:1080px!important;
+  min-height:1080px!important;
+  display:grid!important;
+  grid-template-rows:auto auto 1fr auto!important;
+  gap:16px!important;
+  padding:26px!important;
+  border-radius:36px!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%)!important;
+}
+
+.categoryShareHead-v199{
+  grid-template-columns:1.25fr .9fr!important;
+  gap:14px!important;
+  padding:24px!important;
+  border-radius:30px!important;
+  min-height:178px!important;
+}
+.categoryShareBrand-v199{
+  grid-template-columns:86px minmax(0,1fr)!important;
+  gap:15px!important;
+  align-items:center!important;
+}
+.categoryShareBrand-v199 img{
+  width:86px!important;
+  height:86px!important;
+  border-radius:24px!important;
+  object-fit:contain!important;
+}
+.categoryShareBrand-v199 span{
+  font-size:13px!important;
+  letter-spacing:.18em!important;
+}
+.categoryShareBrand-v199 h2{
+  font-size:58px!important;
+  line-height:.9!important;
+  margin:4px 0 4px!important;
+  letter-spacing:-.055em!important;
+}
+.categoryShareBrand-v199 p{
+  font-size:18px!important;
+  line-height:1.12!important;
+}
+.categoryShareSummary-v199{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:10px!important;
+  align-content:start!important;
+}
+.categoryShareSummary-v199 article,
+.categoryShareSummary-v199 article.wide{
+  grid-column:auto!important;
+  min-height:84px!important;
+  padding:13px!important;
+  border-radius:20px!important;
+}
+.categoryShareSummary-v199 b{
+  font-size:25px!important;
+  line-height:.95!important;
+  letter-spacing:-.03em!important;
+}
+.categoryShareSummary-v199 span{
+  font-size:11px!important;
+  line-height:1.02!important;
+}
+
+.categoryShareNotice-v199{
+  margin:0!important;
+  padding:14px 18px!important;
+  border-radius:20px!important;
+  font-size:18px!important;
+  line-height:1.15!important;
+}
+
+.categoryShareGrid-v199{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+  align-content:start!important;
+}
+
+.categoryShareItem-v199{
+  display:grid!important;
+  grid-template-rows:170px minmax(0,1fr)!important;
+  border-radius:26px!important;
+  overflow:hidden!important;
+  background:#ffffff!important;
+  border:1px solid #d9e7f5!important;
+  box-shadow:0 10px 24px rgba(7,26,53,.06)!important;
+  min-height:0!important;
+}
+.categorySharePhoto-v199{
+  height:170px!important;
+  background:
+    radial-gradient(circle at 84% 14%,rgba(255,255,255,.35),transparent 25%),
+    linear-gradient(135deg,#eff7ff,#dff0ff)!important;
+  overflow:hidden!important;
+}
+.categorySharePhoto-v199 img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  display:block!important;
+}
+.categoryShareStatus-v199{
+  right:10px!important;
+  top:10px!important;
+  font-size:10px!important;
+  padding:7px 10px!important;
+}
+.categoryShareInfo-v199{
+  padding:12px 14px 14px!important;
+  display:grid!important;
+  grid-template-rows:auto auto 1fr auto!important;
+  gap:8px!important;
+  min-height:168px!important;
+}
+.categoryShareInfo-v199 small{
+  font-size:10px!important;
+  line-height:1.1!important;
+}
+.categoryShareInfo-v199 h3{
+  font-size:19px!important;
+  line-height:1.02!important;
+  min-height:58px!important;
+  margin:0!important;
+  letter-spacing:-.032em!important;
+  overflow-wrap:anywhere!important;
+}
+.categorySharePriceRow-v199{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+}
+.categorySharePriceRow-v199 strong{
+  font-size:30px!important;
+  line-height:.9!important;
+  white-space:nowrap!important;
+}
+.categorySharePriceRow-v199 em{
+  font-size:11px!important;
+  padding:6px 9px!important;
+  white-space:nowrap!important;
+}
+.categoryShareMeta-v199{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+}
+.categoryShareMeta-v199 span{
+  font-size:10px!important;
+  line-height:1.1!important;
+  padding:6px 8px!important;
+}
+
+.categoryShareMore-v199{
+  margin-top:8px!important;
+  font-size:14px!important;
+  text-align:center!important;
+}
+
+.categoryShareFooter-v199{
+  margin-top:0!important;
+  padding:16px 18px!important;
+  border-radius:24px!important;
+  grid-template-columns:1fr!important;
+  gap:5px!important;
+  text-align:center!important;
+}
+.categoryShareFooter-v199 b{
+  font-size:22px!important;
+}
+.categoryShareFooter-v199 span{
+  font-size:14px!important;
+}
+
+/* Vista previa dentro del modal */
+body.sdc-v95-light-default #modalRoot .categoryShareClean-v199{
+  width:min(100%,390px)!important;
+  height:auto!important;
+  min-height:auto!important;
+  max-width:390px!important;
+  grid-template-rows:auto auto 1fr auto!important;
+  gap:10px!important;
+  padding:12px!important;
+  border-radius:24px!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareHead-v199{
+  grid-template-columns:1fr!important;
+  min-height:auto!important;
+  gap:10px!important;
+  padding:14px!important;
+  border-radius:18px!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareBrand-v199{
+  grid-template-columns:60px minmax(0,1fr)!important;
+  gap:10px!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareBrand-v199 img{
+  width:60px!important;
+  height:60px!important;
+  border-radius:16px!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareBrand-v199 h2{
+  font-size:28px!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareBrand-v199 p{
+  font-size:12px!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareSummary-v199{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareSummary-v199 article{
+  min-height:56px!important;
+  padding:8px!important;
+  border-radius:14px!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareSummary-v199 b{font-size:15px!important;}
+body.sdc-v95-light-default #modalRoot .categoryShareSummary-v199 span{font-size:7.5px!important;}
+body.sdc-v95-light-default #modalRoot .categoryShareNotice-v199{
+  padding:10px!important;
+  font-size:12px!important;
+  border-radius:14px!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareGrid-v199{
+  grid-template-columns:1fr!important;
+  gap:10px!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareItem-v199{
+  grid-template-rows:160px minmax(0,1fr)!important;
+}
+body.sdc-v95-light-default #modalRoot .categorySharePhoto-v199{height:160px!important;}
+body.sdc-v95-light-default #modalRoot .categoryShareInfo-v199{
+  min-height:auto!important;
+  padding:10px!important;
+}
+body.sdc-v95-light-default #modalRoot .categoryShareInfo-v199 h3{
+  font-size:16px!important;
+  min-height:auto!important;
+}
+body.sdc-v95-light-default #modalRoot .categorySharePriceRow-v199 strong{font-size:24px!important;}
+body.sdc-v95-light-default #modalRoot .categoryShareFooter-v199 b{font-size:15px!important;}
+body.sdc-v95-light-default #modalRoot .categoryShareFooter-v199 span{font-size:11px!important;}
+
+
+/* v215 · Fotos de producto en cuadro 1:1 sin recorte */
+.categoryShareGrid-v199{
+  align-items:start!important;
+}
+.categoryShareItem-v199{
+  grid-template-rows:auto minmax(0,1fr)!important;
+}
+.categorySharePhoto-v199{
+  height:auto!important;
+  aspect-ratio:1 / 1!important;
+  min-height:0!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:10px!important;
+  overflow:hidden!important;
+}
+.categorySharePhoto-v199 img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  border-radius:18px!important;
+  background:#f7fbff!important;
+}
+.categoryShareInfo-v199{
+  min-height:150px!important;
+}
+
+body.sdc-v95-light-default #modalRoot .categoryShareItem-v199{
+  grid-template-rows:auto minmax(0,1fr)!important;
+}
+body.sdc-v95-light-default #modalRoot .categorySharePhoto-v199{
+  height:auto!important;
+  aspect-ratio:1 / 1!important;
+  padding:8px!important;
+}
+body.sdc-v95-light-default #modalRoot .categorySharePhoto-v199 img{
+  object-fit:contain!important;
+}

@@ -1,0 +1,445 @@
+
+/* =========================================================
+   SD Comayagua · v201 Ajustes UI solicitados
+   - Más espacio en botones del detalle.
+   - Regalos incluidos con texto separado.
+   - Categorías de Cotizar/Vender como listado tipo Inicio.
+   - Factura corta comercial rediseñada.
+   ========================================================= */
+
+body.sdc-v95-light-default{
+  --sdc201-blue:#0b63ce;
+  --sdc201-blue2:#0a7cf2;
+  --sdc201-ink:#07192f;
+  --sdc201-muted:#647891;
+  --sdc201-line:#d9e8f8;
+}
+
+/* Imagen 1: botones del detalle con aire abajo */
+body.sdc-v95-light-default #modalRoot .v163-product-detail,
+body.sdc-v95-light-default #modalRoot .v141-product-detail,
+body.sdc-v95-light-default #modalRoot .v49-product-detail{
+  padding-bottom:28px!important;
+}
+body.sdc-v95-light-default #modalRoot .v163-detail-actions,
+body.sdc-v95-light-default #modalRoot .v141-detail-actions,
+body.sdc-v95-light-default #modalRoot .v49-detail-actions{
+  margin:14px 0 18px!important;
+  padding-bottom:10px!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+body.sdc-v95-light-default #modalRoot .v163-detail-actions .btn,
+body.sdc-v95-light-default #modalRoot .v141-detail-actions .btn,
+body.sdc-v95-light-default #modalRoot .v49-detail-actions .btn{
+  min-height:52px!important;
+  border-radius:18px!important;
+  padding:10px 8px!important;
+  font-size:11px!important;
+  line-height:1.08!important;
+  white-space:normal!important;
+}
+body.sdc-v95-light-default #modalRoot #v49QuoteProduct{
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  border:1px solid #cfe3fb!important;
+}
+body.sdc-v95-light-default #modalRoot #v49SellProduct{
+  background:linear-gradient(135deg,#071a35,#0b63ce)!important;
+  color:#fff!important;
+  border:none!important;
+}
+body.sdc-v95-light-default #modalRoot #v53WhatsAppProduct{
+  background:#ecfdf5!important;
+  color:#0f8a55!important;
+  border-color:#cbeedb!important;
+}
+body.sdc-v95-light-default #modalRoot #v169MarkOutProduct{
+  background:#fff0f1!important;
+  color:#c01834!important;
+  border-color:#f3c8d2!important;
+}
+body.sdc-v95-light-default #modalRoot #v49EditProduct{
+  background:#fff!important;
+  color:#314a68!important;
+  border-color:#d9e8f8!important;
+}
+@media(max-width:350px){
+  body.sdc-v95-light-default #modalRoot .v163-detail-actions,
+  body.sdc-v95-light-default #modalRoot .v141-detail-actions,
+  body.sdc-v95-light-default #modalRoot .v49-detail-actions{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+/* Imagen 2: Regalos incluidos con mejor separación */
+body.sdc-v95-light-default #modalRoot .gift-head-v176,
+body.sdc-v95-light-default #modalRoot .gift-title-v176,
+body.sdc-v95-light-default #modalRoot .gift-card-box-v176 .gift-head{
+  align-items:center!important;
+  gap:14px!important;
+}
+body.sdc-v95-light-default #modalRoot .gift-title-v176{
+  display:grid!important;
+  grid-template-columns:52px minmax(0,1fr)!important;
+}
+body.sdc-v95-light-default #modalRoot .gift-title-v176 .sdc-section-icon-v176{
+  width:52px!important;
+  height:52px!important;
+  border-radius:18px!important;
+}
+body.sdc-v95-light-default #modalRoot .gift-title-v176 h4{
+  margin:0 0 5px!important;
+  line-height:1.08!important;
+  letter-spacing:-.02em!important;
+}
+body.sdc-v95-light-default #modalRoot .gift-title-v176 small{
+  display:block!important;
+  margin-top:3px!important;
+  line-height:1.2!important;
+  color:#667f98!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+body.sdc-v95-light-default #modalRoot .gift-card-box-v176 #toggleGiftPicker{
+  margin-top:8px!important;
+  min-height:52px!important;
+}
+
+/* Imagen 3: Categorías del picker en listado bonito, no chips horizontales */
+body.sdc-v95-light-default #modalRoot .quote-picker-control-v200{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:8px!important;
+  margin:12px 0!important;
+  padding:12px!important;
+  border-radius:22px!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-main-v200{
+  width:100%!important;
+  min-height:60px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:10px!important;
+  border-radius:18px!important;
+  background:linear-gradient(135deg,#071a35,#0b63ce)!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-main-v200::before{
+  content:"▦";
+  width:34px!important;
+  height:34px!important;
+  border-radius:13px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:rgba(255,255,255,.16)!important;
+  color:#fff!important;
+  font-size:16px!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-main-v200 span{
+  display:none!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-main-v200 b{
+  max-width:none!important;
+  font-size:16px!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-picker-control-v200 small{
+  display:block!important;
+  text-align:center!important;
+  line-height:1.25!important;
+  font-size:12px!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-list-v201{
+  display:none!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+  max-height:310px!important;
+  overflow:auto!important;
+  padding:10px!important;
+  margin:0 0 12px!important;
+  border-radius:22px!important;
+  border:1px solid #d9e8f8!important;
+  background:#fff!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-category-list-v201.is-open{
+  display:grid!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-cat-card-v201{
+  min-height:88px!important;
+  border-radius:20px!important;
+  border:1px solid #d9e8f8!important;
+  background:linear-gradient(180deg,#ffffff,#f7fbff)!important;
+  color:#07192f!important;
+  display:grid!important;
+  align-content:center!important;
+  justify-items:start!important;
+  gap:4px!important;
+  padding:13px!important;
+  text-align:left!important;
+  box-shadow:0 8px 18px rgba(7,26,53,.04)!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-cat-card-v201 span{
+  font-size:14px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  color:#07192f!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-cat-card-v201 b{
+  font-size:28px!important;
+  line-height:.9!important;
+  color:#0b63ce!important;
+  letter-spacing:-.04em!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-cat-card-v201 small{
+  color:#667f98!important;
+  font-size:11px!important;
+  font-weight:850!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-cat-card-v201.active{
+  background:linear-gradient(135deg,#071a35,#0b63ce)!important;
+  border-color:transparent!important;
+}
+body.sdc-v95-light-default #modalRoot .quote-cat-card-v201.active span,
+body.sdc-v95-light-default #modalRoot .quote-cat-card-v201.active b,
+body.sdc-v95-light-default #modalRoot .quote-cat-card-v201.active small{
+  color:#fff!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-list-v200{
+  max-height:330px!important;
+  padding-right:2px!important;
+}
+body.sdc-v95-light-default #modalRoot .picker-empty-v200{
+  min-height:130px!important;
+}
+
+/* Imagen 4: Factura corta comercial más limpia */
+body.sdc-v95-light-default #modalRoot .short-receipt-preview-wrap{
+  border-radius:26px!important;
+  background:#eef5ff!important;
+  padding:12px!important;
+  border:1px solid #d9e8f8!important;
+}
+body.sdc-v95-light-default #modalRoot .short-receipt-v201,
+body.sdc-v95-light-default #modalRoot .short-receipt{
+  width:100%!important;
+  max-width:720px!important;
+  margin:0 auto!important;
+  padding:14px!important;
+  border-radius:26px!important;
+  border:1px solid #d9e8f8!important;
+  background:#ffffff!important;
+  box-shadow:0 18px 42px rgba(7,26,53,.08)!important;
+  overflow:hidden!important;
+}
+body.sdc-v95-light-default #modalRoot .short-receipt-v201::before,
+body.sdc-v95-light-default #modalRoot .short-receipt::before{
+  content:"";
+  display:block!important;
+  height:6px!important;
+  margin:-14px -14px 14px!important;
+  background:linear-gradient(90deg,#071a35,#0b63ce,#0a7cf2)!important;
+}
+body.sdc-v95-light-default #modalRoot .short-brand-v158,
+body.sdc-v95-light-default #modalRoot .short-brand-v157,
+body.sdc-v95-light-default #modalRoot .short-brand-v156,
+body.sdc-v95-light-default #modalRoot .short-brand-v147{
+  display:grid!important;
+  grid-template-columns:64px minmax(0,1fr)!important;
+  gap:12px!important;
+  align-items:center!important;
+  padding:14px!important;
+  border-radius:22px!important;
+  border:1px solid #dbe8f6!important;
+  background:linear-gradient(180deg,#ffffff,#f7fbff)!important;
+  margin-bottom:12px!important;
+}
+body.sdc-v95-light-default #modalRoot .short-logo-box{
+  width:64px!important;
+  height:64px!important;
+  border-radius:18px!important;
+  border:1px solid #dbe8f6!important;
+  background:#fff!important;
+  display:grid!important;
+  place-items:center!important;
+}
+body.sdc-v95-light-default #modalRoot .short-logo-box > span{
+  display:none!important;
+}
+body.sdc-v95-light-default #modalRoot .short-logo-box img{
+  width:48px!important;
+  height:48px!important;
+  object-fit:contain!important;
+}
+body.sdc-v95-light-default #modalRoot .short-kicker-v158,
+body.sdc-v95-light-default #modalRoot .short-kicker-v157{
+  display:inline-flex!important;
+  width:max-content!important;
+  max-width:100%!important;
+  padding:6px 10px!important;
+  border-radius:999px!important;
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  border:1px solid #cfe3fb!important;
+  font-size:10px!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+body.sdc-v95-light-default #modalRoot .short-copy-v153 h2,
+body.sdc-v95-light-default #modalRoot .short-brand h2{
+  margin:6px 0 2px!important;
+  font-size:25px!important;
+  line-height:.95!important;
+  letter-spacing:-.04em!important;
+  color:#07192f!important;
+}
+body.sdc-v95-light-default #modalRoot .short-meta{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px 10px!important;
+  color:#647891!important;
+  font-weight:900!important;
+}
+body.sdc-v95-light-default #modalRoot .short-variant-pill{
+  display:inline-flex!important;
+  width:max-content!important;
+  margin-top:6px!important;
+  padding:7px 12px!important;
+  border-radius:999px!important;
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  border:1px solid #cfe3fb!important;
+}
+body.sdc-v95-light-default #modalRoot .short-highlight-v158{
+  display:none!important;
+}
+body.sdc-v95-light-default #modalRoot .short-section-title-v158{
+  margin:12px 0 8px!important;
+  padding:10px 12px!important;
+  border-radius:16px!important;
+  background:#071a35!important;
+  color:#fff!important;
+  font-size:12px!important;
+  line-height:1!important;
+  letter-spacing:.12em!important;
+}
+body.sdc-v95-light-default #modalRoot .short-items-v158{
+  display:grid!important;
+  gap:8px!important;
+  margin-bottom:10px!important;
+}
+body.sdc-v95-light-default #modalRoot .short-item-row-v197,
+body.sdc-v95-light-default #modalRoot .short-line.item{
+  border-radius:18px!important;
+  border:1px solid #dbe8f6!important;
+  background:#fff!important;
+  padding:12px!important;
+  box-shadow:0 8px 20px rgba(7,26,53,.035)!important;
+}
+body.sdc-v95-light-default #modalRoot .short-item-copy-v197 strong{
+  font-size:16px!important;
+  line-height:1.1!important;
+  color:#07192f!important;
+}
+body.sdc-v95-light-default #modalRoot .short-item-copy-v197 small{
+  margin-top:3px!important;
+  color:#647891!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+}
+body.sdc-v95-light-default #modalRoot .short-item-total-v197{
+  color:#d61c3b!important;
+  font-size:20px!important;
+  font-weight:950!important;
+}
+body.sdc-v95-light-default #modalRoot .short-summary-v158{
+  display:grid!important;
+  gap:8px!important;
+  padding:10px!important;
+  border-radius:20px!important;
+  background:#f7fbff!important;
+  border:1px solid #dbe8f6!important;
+}
+body.sdc-v95-light-default #modalRoot .summary-row-v158,
+body.sdc-v95-light-default #modalRoot .short-summary-v158 .short-line{
+  min-height:48px!important;
+  padding:0 12px!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  border:1px solid #e2edf8!important;
+}
+body.sdc-v95-light-default #modalRoot .short-summary-v158 .grand,
+body.sdc-v95-light-default #modalRoot .grand-v158{
+  min-height:64px!important;
+  border-radius:19px!important;
+  background:linear-gradient(135deg,#071a35,#0b63ce)!important;
+  color:#fff!important;
+  border:0!important;
+}
+body.sdc-v95-light-default #modalRoot .grand-v158 span,
+body.sdc-v95-light-default #modalRoot .short-summary-v158 .grand span{
+  color:#dbeafe!important;
+}
+body.sdc-v95-light-default #modalRoot .grand-v158 b,
+body.sdc-v95-light-default #modalRoot .short-summary-v158 .grand b{
+  color:#fff!important;
+  font-size:30px!important;
+}
+body.sdc-v95-light-default #modalRoot .short-note-v158{
+  margin-top:10px!important;
+  padding:12px!important;
+  border-radius:18px!important;
+  border:1px dashed #cfe3fb!important;
+  color:#647891!important;
+  background:#fbfdff!important;
+  font-size:12px!important;
+  line-height:1.25!important;
+}
+body.sdc-v95-light-default #modalRoot .short-wa-v158{
+  display:block!important;
+  margin-top:10px!important;
+  padding:12px!important;
+  border-radius:18px!important;
+  background:#071a35!important;
+  color:#fff!important;
+  border:0!important;
+  text-align:center!important;
+  font-size:14px!important;
+  font-weight:950!important;
+}
+
+@media(max-width:430px){
+  body.sdc-v95-light-default #modalRoot .quote-category-list-v201{
+    grid-template-columns:1fr!important;
+    max-height:285px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .short-receipt-v201,
+  body.sdc-v95-light-default #modalRoot .short-receipt{
+    padding:10px!important;
+    border-radius:22px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .short-receipt-v201::before,
+  body.sdc-v95-light-default #modalRoot .short-receipt::before{
+    margin:-10px -10px 10px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .short-brand-v158,
+  body.sdc-v95-light-default #modalRoot .short-brand-v157,
+  body.sdc-v95-light-default #modalRoot .short-brand-v156,
+  body.sdc-v95-light-default #modalRoot .short-brand-v147{
+    grid-template-columns:54px minmax(0,1fr)!important;
+    padding:12px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .short-logo-box{
+    width:54px!important;
+    height:54px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .short-copy-v153 h2,
+  body.sdc-v95-light-default #modalRoot .short-brand h2{
+    font-size:22px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .grand-v158 b,
+  body.sdc-v95-light-default #modalRoot .short-summary-v158 .grand b{
+    font-size:26px!important;
+  }
+}

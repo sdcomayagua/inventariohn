@@ -1,0 +1,90 @@
+/* SD Comayagua · v261 foto de producto más grande en celular */
+
+@media (max-width:700px){
+  body.sdc-v261-foto-producto-grande .product-card-v235{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-areas:'photo' 'copy' 'actions'!important;
+    gap:12px!important;
+    padding:14px!important;
+    border-radius:24px!important;
+    overflow:hidden!important;
+  }
+
+  body.sdc-v261-foto-producto-grande .product-photo-v246{
+    grid-area:photo!important;
+    width:100%!important;
+    min-width:0!important;
+    height:190px!important;
+    border-radius:22px!important;
+    overflow:hidden!important;
+    align-self:start!important;
+    background:linear-gradient(180deg,#eef6ff 0%,#f8fbff 100%)!important;
+    border:1px solid #d8e8f9!important;
+    box-shadow:0 8px 20px rgba(8,31,63,.06)!important;
+  }
+  body.sdc-v261-foto-producto-grande .product-photo-v246 img{
+    width:calc(100% - 22px)!important;
+    height:calc(100% - 22px)!important;
+    margin:11px!important;
+    padding:10px!important;
+    object-fit:contain!important;
+    background:#fff!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v261-foto-producto-grande .product-availability-v178,
+  body.sdc-v261-foto-producto-grande .product-availability-v246{
+    top:10px!important;
+    left:10px!important;
+    padding:5px 9px!important;
+    font-size:10px!important;
+    border-radius:999px!important;
+  }
+
+  body.sdc-v261-foto-producto-grande .product-copy-v246{
+    grid-area:copy!important;
+    min-width:0!important;
+    display:grid!important;
+    gap:9px!important;
+  }
+  body.sdc-v261-foto-producto-grande .product-copy-v246 h3{
+    font-size:20px!important;
+    line-height:1.08!important;
+    margin:0!important;
+    overflow-wrap:anywhere!important;
+  }
+  body.sdc-v261-foto-producto-grande .product-main-price-v246{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    align-items:start!important;
+    padding:12px 14px!important;
+    border-radius:20px!important;
+  }
+  body.sdc-v261-foto-producto-grande .product-main-price-v246 strong{
+    font-size:26px!important;
+    line-height:.95!important;
+  }
+  body.sdc-v261-foto-producto-grande .product-main-price-v246 em{
+    width:fit-content!important;
+    max-width:100%!important;
+    white-space:normal!important;
+    font-size:12px!important;
+    line-height:1.15!important;
+  }
+
+  body.sdc-v261-foto-producto-grande .delivery-panel-v246{
+    padding:13px!important;
+    border-radius:20px!important;
+  }
+  body.sdc-v261-foto-producto-grande .product-actions-v235{
+    grid-area:actions!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+  }
+  body.sdc-v261-foto-producto-grande .product-actions-v235 > button{
+    min-height:44px!important;
+    border-radius:16px!important;
+  }
+}

@@ -1,0 +1,253 @@
+/* SD Comayagua · v274 detalle móvil más parecido a tienda online real */
+
+@media (max-width:700px){
+  body.sdc-v274-detail-store-real #modalRoot .modal-box{
+    width:min(95vw, 448px)!important;
+    max-height:93vh!important;
+    border-radius:32px!important;
+    background:linear-gradient(180deg,#f7fbff 0%,#eef5fc 100%)!important;
+  }
+
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .modal-head{
+    padding:14px 16px 12px!important;
+    background:linear-gradient(135deg,#0a2f63 0%,#145eb9 58%,#44aaff 100%)!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-head-copy h3{
+    font-size:24px!important;
+    margin:6px 0 2px!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-head-copy small{
+    opacity:.92!important;
+  }
+
+  /* Tarjeta hero tipo producto premium */
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v49-detail-hero,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-detail-hero,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-detail-hero{
+    gap:14px!important;
+    padding:16px!important;
+    border-radius:30px!important;
+    background:#fff!important;
+    border:1px solid #d9e6f5!important;
+    box-shadow:0 18px 36px rgba(15,63,120,.08)!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v49-detail-image,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-detail-image,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-detail-image{
+    width:min(100%, 300px)!important;
+    aspect-ratio:1/1!important;
+    border-radius:32px!important;
+    background:linear-gradient(135deg,#103e80 0%,#1b75e9 60%,#6ed8ff 100%)!important;
+    box-shadow:0 20px 42px rgba(18,92,186,.20)!important;
+    padding:0!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v49-detail-image img,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-detail-image img,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-detail-image img{
+    width:calc(100% - 22px)!important;
+    height:calc(100% - 22px)!important;
+    margin:11px!important;
+    padding:12px!important;
+    border-radius:24px!important;
+    object-fit:contain!important;
+    background:#fff!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .stock-badge{
+    top:14px!important;
+    left:14px!important;
+    padding:8px 13px!important;
+    border-radius:999px!important;
+    font-size:11px!important;
+    font-weight:900!important;
+  }
+
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-detail-mainwrap,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-detail-mainwrap{
+    display:grid!important;
+    gap:12px!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v49-detail-main h4,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-detail-main h4,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-detail-main h4{
+    font-size:25px!important;
+    margin:4px 0 6px!important;
+    line-height:1.08!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v49-detail-main small,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-detail-main small,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-detail-main small{
+    font-size:11px!important;
+    text-transform:uppercase!important;
+    letter-spacing:.12em!important;
+    color:#7d8ea1!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-product-facts{
+    gap:8px!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-product-facts span{
+    padding:8px 11px!important;
+    background:#f3f8fd!important;
+    border:1px solid #dde8f4!important;
+    border-radius:999px!important;
+    font-size:11px!important;
+    font-weight:800!important;
+  }
+
+  /* Precio principal tipo tienda */
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-price-box,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-price-box{
+    padding:16px 16px 14px!important;
+    border-radius:24px!important;
+    background:linear-gradient(135deg,#fff8fb 0%,#fff 52%,#fff2f6 100%)!important;
+    border:1px solid #f2dbe3!important;
+    box-shadow:0 16px 28px rgba(232,47,93,.08)!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-price-box span,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-price-box span{
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:6px!important;
+    font-size:10px!important;
+    letter-spacing:.18em!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-price-box span::before,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-price-box span::before{
+    content:'★';
+    font-size:11px;
+    color:#ee2f5b;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-price-box b,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-price-box b{
+    display:block!important;
+    margin-top:4px!important;
+    font-size:34px!important;
+    line-height:1!important;
+    letter-spacing:-.06em!important;
+    color:#eb244f!important;
+  }
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v141-price-box small,
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 .v163-price-box small{
+    display:block!important;
+    margin-top:6px!important;
+    font-size:11px!important;
+    line-height:1.24!important;
+  }
+
+  /* Panel cliente como bloques limpios */
+  body.sdc-v274-detail-store-real #modalRoot .product-detail-modal-v221 [data-panel="cliente"]{
+    gap:14px!important;
+  }
+  body.sdc-v274-detail-store-real .v250-detail-route-switch,
+  body.sdc-v274-detail-store-real .v250-qty-line,
+  body.sdc-v274-detail-store-real .v141-color-card,
+  body.sdc-v274-detail-store-real .v163-color-card,
+  body.sdc-v274-detail-store-real .v164-color-card{
+    background:#fff!important;
+    border:1px solid #dbe7f4!important;
+    box-shadow:0 12px 26px rgba(15,63,120,.05)!important;
+  }
+  body.sdc-v274-detail-store-real .v250-detail-route-switch{
+    padding:6px!important;
+    border-radius:24px!important;
+  }
+  body.sdc-v274-detail-store-real .v250-detail-route-switch button{
+    min-height:50px!important;
+    border-radius:18px!important;
+    font-size:15px!important;
+  }
+  body.sdc-v274-detail-store-real .v250-detail-route-note{
+    margin-top:-2px!important;
+    padding:12px 13px!important;
+    border-radius:18px!important;
+    background:#ffffff!important;
+    border:1px solid #dbe7f4!important;
+  }
+  body.sdc-v274-detail-store-real .v250-qty-line{
+    padding:14px!important;
+    border-radius:24px!important;
+  }
+  body.sdc-v274-detail-store-real .v250-qty-line .v49-qty-stepper{
+    grid-template-columns:60px minmax(0,1fr) 60px!important;
+    gap:8px!important;
+  }
+  body.sdc-v274-detail-store-real .v250-qty-line .v49-qty-stepper button,
+  body.sdc-v274-detail-store-real .v250-qty-line .v49-qty-stepper b{
+    min-height:54px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v274-detail-store-real .v250-qty-line em[data-v49-offer]{
+    border-radius:18px!important;
+  }
+
+  /* Tarjetas de precios más parecidas a e-commerce */
+  body.sdc-v274-detail-store-real .v250-price-cards{
+    display:grid!important;
+    gap:10px!important;
+  }
+  body.sdc-v274-detail-store-real .v250-price-cards .v164-price-option{
+    position:relative!important;
+    min-height:96px!important;
+    padding:14px 14px 14px 16px!important;
+    border-radius:24px!important;
+    border:1px solid #dce7f4!important;
+    box-shadow:0 14px 26px rgba(15,63,120,.06)!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v274-detail-store-real .v250-price-cards .v164-price-option::after{
+    content:'';
+    position:absolute; right:-18px; top:-18px; width:88px; height:88px; border-radius:999px; opacity:.12;
+  }
+  body.sdc-v274-detail-store-real .v250-price-cards .v164-price-option span{
+    font-size:10px!important;
+    letter-spacing:.16em!important;
+  }
+  body.sdc-v274-detail-store-real .v250-price-cards .v164-price-option b{
+    font-size:26px!important;
+  }
+  body.sdc-v274-detail-store-real .v250-price-cards .v164-price-option small{
+    font-size:11px!important;
+    line-height:1.2!important;
+  }
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="local"]{
+    background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%)!important;
+  }
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="local"]::after{background:#0e4e97;}
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="local"] b{color:#0f437f!important;}
+
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="normal"]{
+    background:linear-gradient(135deg,#0b3978 0%,#1b76e8 100%)!important;
+    border-color:#156ddb!important;
+    box-shadow:0 18px 28px rgba(17,85,180,.22)!important;
+  }
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="normal"]::after{background:#ffffff;}
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="normal"] span,
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="normal"] small{color:rgba(255,255,255,.86)!important;}
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="normal"] b{color:#fff!important;}
+
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="cod"]{
+    background:linear-gradient(180deg,#fffdfa 0%,#fff5e5 100%)!important;
+    border-color:#f0cf8f!important;
+  }
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="cod"]::after{background:#d38700;}
+  body.sdc-v274-detail-store-real .v250-price-cards [data-v49-card="cod"] b{color:#c87700!important;}
+
+  body.sdc-v274-detail-store-real .v141-color-card,
+  body.sdc-v274-detail-store-real .v163-color-card,
+  body.sdc-v274-detail-store-real .v164-color-card{
+    border-radius:22px!important;
+    padding:13px!important;
+  }
+
+  body.sdc-v274-detail-store-real .v141-detail-actions,
+  body.sdc-v274-detail-store-real .v163-detail-actions,
+  body.sdc-v274-detail-store-real .v49-detail-actions{
+    gap:9px!important;
+  }
+  body.sdc-v274-detail-store-real .v141-detail-actions .btn,
+  body.sdc-v274-detail-store-real .v163-detail-actions .btn,
+  body.sdc-v274-detail-store-real .v49-detail-actions .btn{
+    min-height:50px!important;
+    border-radius:18px!important;
+    font-size:14px!important;
+  }
+}

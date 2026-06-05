@@ -1,0 +1,199 @@
+/* =========================================================
+   SD Comayagua · v228 Modal Scroll Stable
+   Solución estable para no perder scroll en Producto, Cotización,
+   Cliente, Lista, Vista previa y demás modales largos.
+   ========================================================= */
+
+@media(max-width:760px){
+  /* Fondo del modal: único lugar que debe manejar el desplazamiento vertical */
+  html.modal-open-root,
+  body.sdc-v95-light-default.modal-open,
+  body.sdc-v210-s24.modal-open{
+    overflow:hidden!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+  }
+
+  body.sdc-v95-light-default.modal-open #modalRoot,
+  body.sdc-v210-s24.modal-open #modalRoot{
+    position:fixed!important;
+    inset:0!important;
+    z-index:99999!important;
+    width:100vw!important;
+    height:100dvh!important;
+    overflow:hidden!important;
+  }
+
+  body.sdc-v95-light-default.modal-open #modalRoot .modal-backdrop,
+  body.sdc-v210-s24.modal-open #modalRoot .modal-backdrop{
+    position:fixed!important;
+    inset:0!important;
+    display:block!important;
+    place-items:unset!important;
+    align-items:flex-start!important;
+    justify-content:initial!important;
+    width:100vw!important;
+    height:100dvh!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+    touch-action:pan-y pinch-zoom!important;
+    padding:7px 7px calc(34px + env(safe-area-inset-bottom,0px))!important;
+    scroll-behavior:smooth!important;
+  }
+
+  /* El modal completo crece con su contenido. No cortar altura. */
+  body.sdc-v95-light-default #modalRoot .modal,
+  body.sdc-v210-s24 #modalRoot .modal,
+  body.sdc-v95-light-default #modalRoot .modal.wide,
+  body.sdc-v210-s24 #modalRoot .modal.wide,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176,
+  body.sdc-v95-light-default #modalRoot .modal.product-detail-modal-v221,
+  body.sdc-v210-s24 #modalRoot .modal.product-detail-modal-v221{
+    position:relative!important;
+    display:block!important;
+    width:min(calc(100vw - 14px),540px)!important;
+    max-width:min(calc(100vw - 14px),540px)!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    margin:0 auto 30px!important;
+    transform:none!important;
+    touch-action:pan-y pinch-zoom!important;
+  }
+
+  /* Encabezados no deben convertir el modal en flex bloqueado */
+  body.sdc-v95-light-default #modalRoot .modal .modal-head,
+  body.sdc-v210-s24 #modalRoot .modal .modal-head,
+  body.sdc-v95-light-default #modalRoot .modal .quote-head-v176,
+  body.sdc-v210-s24 #modalRoot .modal .quote-head-v176{
+    position:relative!important;
+    top:auto!important;
+    flex:none!important;
+  }
+
+  /* Cuerpo del modal libre: el scroll no vive aquí, vive en .modal-backdrop */
+  body.sdc-v95-light-default #modalRoot .modal .modal-body,
+  body.sdc-v210-s24 #modalRoot .modal .modal-body,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .quote-body-v176,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .quote-body-v176,
+  body.sdc-v95-light-default #modalRoot .modal.product-detail-modal-v221 .v49-product-detail,
+  body.sdc-v95-light-default #modalRoot .modal.product-detail-modal-v221 .v141-product-detail,
+  body.sdc-v95-light-default #modalRoot .modal.product-detail-modal-v221 .v163-product-detail,
+  body.sdc-v210-s24 #modalRoot .modal.product-detail-modal-v221 .v49-product-detail,
+  body.sdc-v210-s24 #modalRoot .modal.product-detail-modal-v221 .v141-product-detail,
+  body.sdc-v210-s24 #modalRoot .modal.product-detail-modal-v221 .v163-product-detail{
+    display:block!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    overflow-y:visible!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:auto!important;
+    touch-action:pan-y pinch-zoom!important;
+  }
+
+  /* Quitar límites internos que atrapaban el dedo */
+  body.sdc-v95-light-default #modalRoot .modal .quote-grid-v176,
+  body.sdc-v95-light-default #modalRoot .modal .sdc210-wizard-mode,
+  body.sdc-v95-light-default #modalRoot .modal .picker-list,
+  body.sdc-v95-light-default #modalRoot .modal .picker-list-v200,
+  body.sdc-v95-light-default #modalRoot .modal .quote-category-list-v201,
+  body.sdc-v95-light-default #modalRoot .modal .cart-list,
+  body.sdc-v95-light-default #modalRoot .modal .gift-list-v176,
+  body.sdc-v95-light-default #modalRoot .modal .gift-picker-list,
+  body.sdc-v95-light-default #modalRoot .modal #docPreview,
+  body.sdc-v95-light-default #modalRoot .modal .preview-card-v176,
+  body.sdc-v95-light-default #modalRoot .modal .v141-detail-shell,
+  body.sdc-v95-light-default #modalRoot .modal .v163-detail-shell,
+  body.sdc-v95-light-default #modalRoot .modal .v141-tabpanel,
+  body.sdc-v95-light-default #modalRoot .modal .v163-tabpanel,
+  body.sdc-v210-s24 #modalRoot .modal .quote-grid-v176,
+  body.sdc-v210-s24 #modalRoot .modal .sdc210-wizard-mode,
+  body.sdc-v210-s24 #modalRoot .modal .picker-list,
+  body.sdc-v210-s24 #modalRoot .modal .picker-list-v200,
+  body.sdc-v210-s24 #modalRoot .modal .quote-category-list-v201,
+  body.sdc-v210-s24 #modalRoot .modal .cart-list,
+  body.sdc-v210-s24 #modalRoot .modal .gift-list-v176,
+  body.sdc-v210-s24 #modalRoot .modal .gift-picker-list,
+  body.sdc-v210-s24 #modalRoot .modal #docPreview,
+  body.sdc-v210-s24 #modalRoot .modal .preview-card-v176,
+  body.sdc-v210-s24 #modalRoot .modal .v141-detail-shell,
+  body.sdc-v210-s24 #modalRoot .modal .v163-detail-shell,
+  body.sdc-v210-s24 #modalRoot .modal .v141-tabpanel,
+  body.sdc-v210-s24 #modalRoot .modal .v163-tabpanel{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    overflow-y:visible!important;
+    overflow-x:hidden!important;
+    touch-action:pan-y pinch-zoom!important;
+  }
+
+  /* Pero si la lista de categorías está cerrada, debe seguir oculta */
+  body.sdc-v95-light-default #modalRoot .modal .quote-category-list-v201:not(.is-open),
+  body.sdc-v210-s24 #modalRoot .modal .quote-category-list-v201:not(.is-open){
+    display:none!important;
+  }
+  body.sdc-v95-light-default #modalRoot .modal .quote-category-list-v201.is-open,
+  body.sdc-v210-s24 #modalRoot .modal .quote-category-list-v201.is-open{
+    display:grid!important;
+  }
+
+  /* Elementos que antes flotaban y tapaban contenido */
+  body.sdc-v95-light-default #modalRoot .modal .sdc210-smart-cart,
+  body.sdc-v95-light-default #modalRoot .modal .sdc210-step-controls,
+  body.sdc-v95-light-default #modalRoot .modal .quote-actions-v176,
+  body.sdc-v95-light-default #modalRoot .modal .modal-actions,
+  body.sdc-v95-light-default #modalRoot .modal .v141-detail-actions,
+  body.sdc-v95-light-default #modalRoot .modal .v163-detail-actions,
+  body.sdc-v95-light-default #modalRoot .modal .v49-detail-actions,
+  body.sdc-v210-s24 #modalRoot .modal .sdc210-smart-cart,
+  body.sdc-v210-s24 #modalRoot .modal .sdc210-step-controls,
+  body.sdc-v210-s24 #modalRoot .modal .quote-actions-v176,
+  body.sdc-v210-s24 #modalRoot .modal .modal-actions,
+  body.sdc-v210-s24 #modalRoot .modal .v141-detail-actions,
+  body.sdc-v210-s24 #modalRoot .modal .v163-detail-actions,
+  body.sdc-v210-s24 #modalRoot .modal .v49-detail-actions{
+    position:static!important;
+    bottom:auto!important;
+    top:auto!important;
+    left:auto!important;
+    right:auto!important;
+    transform:none!important;
+  }
+
+  /* Detalle de producto: conservar orden natural y que los botones queden al final */
+  body.sdc-v95-light-default #modalRoot .modal.product-detail-modal-v221 .modal-body,
+  body.sdc-v210-s24 #modalRoot .modal.product-detail-modal-v221 .modal-body{
+    display:block!important;
+  }
+
+  body.sdc-v95-light-default #modalRoot .modal.product-detail-modal-v221 .v141-detail-actions,
+  body.sdc-v95-light-default #modalRoot .modal.product-detail-modal-v221 .v163-detail-actions,
+  body.sdc-v95-light-default #modalRoot .modal.product-detail-modal-v221 .v49-detail-actions,
+  body.sdc-v210-s24 #modalRoot .modal.product-detail-modal-v221 .v141-detail-actions,
+  body.sdc-v210-s24 #modalRoot .modal.product-detail-modal-v221 .v163-detail-actions,
+  body.sdc-v210-s24 #modalRoot .modal.product-detail-modal-v221 .v49-detail-actions{
+    margin-top:12px!important;
+  }
+
+  /* Productos: mantener una sola barra de categorías */
+  body.sdc-v95-light-default .products-screen-v178 .category-selector-v195,
+  body.sdc-v95-light-default .products-screen-v189 .category-selector-v195,
+  body.sdc-v95-light-default .products-screen-v190 .category-selector-v195,
+  body.sdc-v210-s24 .products-screen-v178 .category-selector-v195,
+  body.sdc-v210-s24 .products-screen-v189 .category-selector-v195,
+  body.sdc-v210-s24 .products-screen-v190 .category-selector-v195{
+    display:none!important;
+  }
+}

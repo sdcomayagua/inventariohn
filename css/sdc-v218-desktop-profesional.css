@@ -1,0 +1,201 @@
+/* =========================================================
+   SD Comayagua · v218 Escritorio usable
+   En computadora deja de verse como celular dentro de maqueta.
+   Mantiene la experiencia móvil intacta para S24 Ultra.
+   ========================================================= */
+
+@media (min-width: 900px){
+  html,body{
+    min-height:100%!important;
+    overflow-x:hidden!important;
+  }
+  body.sdc-v95-light-default,
+  body.sdc-v95-light-default.sdc-v190-ready,
+  body.sdc-v95-light-default.sdc-v210-s24{
+    display:block!important;
+    align-items:initial!important;
+    justify-content:initial!important;
+    padding:0!important;
+    background:
+      radial-gradient(circle at 10% 0%,rgba(8,119,242,.16),transparent 34%),
+      radial-gradient(circle at 92% 6%,rgba(7,26,53,.10),transparent 30%),
+      linear-gradient(180deg,#f7fbff 0%,#edf6ff 100%)!important;
+  }
+
+  /* Quita marca gigante, nota flotante, notch y marco de celular */
+  body.sdc-v95-light-default::before,
+  body.sdc-v95-light-default::after,
+  body.sdc-v95-light-default.sdc-v190-ready::before,
+  body.sdc-v95-light-default.sdc-v190-ready::after,
+  body.sdc-v95-light-default #app::before,
+  body.sdc-v95-light-default #app::after,
+  body.sdc-v95-light-default #app.app::before,
+  body.sdc-v95-light-default #app.app::after{
+    display:none!important;
+    content:none!important;
+  }
+
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default #app.app,
+  body.sdc-v95-light-default.sdc-v190-ready #app.app,
+  body.sdc-v95-light-default.sdc-v210-s24 #app{
+    width:min(1120px,calc(100vw - 64px))!important;
+    max-width:1120px!important;
+    min-height:100dvh!important;
+    margin:0 auto!important;
+    padding:24px 0 42px!important;
+    gap:18px!important;
+    outline:none!important;
+    outline-offset:0!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+  }
+
+  body.sdc-v95-light-default #app > *,
+  body.sdc-v95-light-default #app.app > *{
+    max-width:100%!important;
+  }
+
+  /* Encabezado y paneles más anchos, sin verse apretados */
+  body.sdc-v95-light-default header.sdc-top-v178,
+  body.sdc-v95-light-default .sdc-top-v178,
+  body.sdc-v95-light-default .sdc210-s24-panel,
+  body.sdc-v95-light-default .sdc209-home,
+  body.sdc-v95-light-default .sdc209-dashboard,
+  body.sdc-v95-light-default .sdc-page-tabs-v97,
+  body.sdc-v95-light-default .catalog-cover-v178,
+  body.sdc-v95-light-default .catalog-control-v178,
+  body.sdc-v95-light-default .home-stats,
+  body.sdc-v95-light-default .stats,
+  body.sdc-v95-light-default .card-box,
+  body.sdc-v95-light-default .panel-card,
+  body.sdc-v95-light-default #inventario{
+    width:100%!important;
+    max-width:100%!important;
+  }
+
+  body.sdc-v95-light-default header.sdc-top-v178,
+  body.sdc-v95-light-default .sdc-top-v178{
+    border-radius:32px!important;
+    padding:28px!important;
+  }
+
+  body.sdc-v95-light-default .sdc210-s24-panel{
+    border-radius:32px!important;
+    padding:18px!important;
+  }
+  body.sdc-v95-light-default .sdc210-action-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  body.sdc-v95-light-default .sdc210-mini-metrics{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+
+  /* Navegación: usa tabs superiores en PC, no barra pegada abajo */
+  body.sdc-v95-light-default .sdc209-bottom-nav,
+  body.sdc-v95-light-default .bottom-nav{
+    display:none!important;
+  }
+  body.sdc-v95-light-default .sdc-page-tabs-v97{
+    position:static!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:12px!important;
+    padding:10px!important;
+    border-radius:28px!important;
+    background:#fff!important;
+    border:1px solid #d8e7f6!important;
+    box-shadow:0 16px 40px rgba(7,26,53,.065)!important;
+  }
+  body.sdc-v95-light-default .sdc-page-tabs-v97 button{
+    min-height:68px!important;
+    border-radius:22px!important;
+  }
+
+  /* Dashboard y métricas más profesionales */
+  body.sdc-v95-light-default .stats,
+  body.sdc-v95-light-default .home-stats,
+  body.sdc-v95-light-default .panel-stats-v150,
+  body.sdc-v95-light-default .sdc209-metrics{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:14px!important;
+  }
+  body.sdc-v95-light-default .stats .stat,
+  body.sdc-v95-light-default .panel-stats-v150 article,
+  body.sdc-v95-light-default .sdc209-metrics article{
+    min-height:130px!important;
+    border-radius:26px!important;
+  }
+
+  /* Catálogo / productos en PC: usa el ancho de pantalla */
+  body.sdc-v95-light-default .grid,
+  body.sdc-v95-light-default .products-grid,
+  body.sdc-v95-light-default .catalog-grid,
+  body.sdc-v95-light-default .product-grid,
+  body.sdc-v95-light-default #productsGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+  body.sdc-v95-light-default .product-card,
+  body.sdc-v95-light-default .product-card-v178,
+  body.sdc-v95-light-default .product-card-v190{
+    border-radius:26px!important;
+  }
+
+  /* Modales amplios en computadora */
+  body.sdc-v95-light-default #modalRoot .modal-backdrop{
+    padding:28px!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+  }
+  body.sdc-v95-light-default #modalRoot .modal,
+  body.sdc-v95-light-default #modalRoot .modal.wide{
+    width:min(1040px,calc(100vw - 56px))!important;
+    max-width:1040px!important;
+    max-height:calc(100dvh - 56px)!important;
+    border-radius:34px!important;
+  }
+  body.sdc-v95-light-default #modalRoot .quote-grid-v176,
+  body.sdc-v95-light-default #modalRoot .modal-grid{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    align-items:start!important;
+  }
+  body.sdc-v95-light-default #modalRoot .picker-list-v200{
+    max-height:520px!important;
+  }
+
+  /* Recibos y preview con buen ancho */
+  body.sdc-v95-light-default #modalRoot .short-receipt-grid-v147,
+  body.sdc-v95-light-default #modalRoot .short-receipt-screen{
+    grid-template-columns:minmax(0,1fr) minmax(0,360px)!important;
+    align-items:start!important;
+  }
+
+  /* Toast centrado y no tapado */
+  body.sdc-v95-light-default #toast,
+  body.sdc-v95-light-default .toast{
+    bottom:28px!important;
+  }
+}
+
+@media (min-width:1280px){
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default #app.app,
+  body.sdc-v95-light-default.sdc-v210-s24 #app{
+    width:min(1240px,calc(100vw - 80px))!important;
+    max-width:1240px!important;
+  }
+  body.sdc-v95-light-default .grid,
+  body.sdc-v95-light-default .products-grid,
+  body.sdc-v95-light-default .catalog-grid,
+  body.sdc-v95-light-default .product-grid,
+  body.sdc-v95-light-default #productsGrid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+
+@media (max-width:899px){
+  /* En celular no toca nada: sigue la versión S24 Ultra. */
+}

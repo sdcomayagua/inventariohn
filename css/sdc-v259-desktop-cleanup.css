@@ -1,0 +1,259 @@
+/* SD Comayagua · v259 limpieza y mejora de escritorio */
+
+@media (min-width:1000px){
+  body.sdc-v259-desktop-cleanup #inventario{
+    display:grid!important;
+    gap:16px!important;
+  }
+
+  body.sdc-v259-desktop-cleanup .products-screen-v178,
+  body.sdc-v259-desktop-cleanup .products-screen-v189,
+  body.sdc-v259-desktop-cleanup .products-screen-v190{
+    gap:14px!important;
+  }
+
+  /* Portada de catálogo más compacta y sin espacios raros */
+  body.sdc-v259-desktop-cleanup .catalog-cover-v178,
+  body.sdc-v259-desktop-cleanup .catalog-cover-v189{
+    min-height:0!important;
+    padding:22px 24px!important;
+    gap:16px!important;
+    grid-template-columns:minmax(0,1.22fr) minmax(420px,.78fr)!important;
+    align-items:start!important;
+    align-content:start!important;
+  }
+  body.sdc-v259-desktop-cleanup .catalog-cover-title-v178,
+  body.sdc-v259-desktop-cleanup .catalog-cover-title-v189{
+    align-content:start!important;
+  }
+  body.sdc-v259-desktop-cleanup .catalog-cover-v178 h2,
+  body.sdc-v259-desktop-cleanup .catalog-cover-v189 h2{
+    margin:4px 0 8px!important;
+    line-height:.88!important;
+  }
+  body.sdc-v259-desktop-cleanup .catalog-cover-v178 p,
+  body.sdc-v259-desktop-cleanup .catalog-cover-v189 p{
+    max-width:56ch!important;
+    margin:0!important;
+  }
+  body.sdc-v259-desktop-cleanup .catalog-mini-summary-v195{
+    align-self:start!important;
+    gap:12px!important;
+  }
+  body.sdc-v259-desktop-cleanup .catalog-mini-summary-v195 > *{
+    min-height:78px!important;
+  }
+
+  /* Barra de categorías superior más ordenada */
+  body.sdc-v259-desktop-cleanup .category-selector-v195,
+  body.sdc-v259-desktop-cleanup .category-selector-v235{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:14px!important;
+    padding:12px 14px!important;
+    border-radius:24px!important;
+    align-items:center!important;
+  }
+  body.sdc-v259-desktop-cleanup .category-primary-v235{
+    display:grid!important;
+    grid-template-columns:auto minmax(0,1fr)!important;
+    gap:12px!important;
+    align-items:center!important;
+    min-width:0!important;
+  }
+  body.sdc-v259-desktop-cleanup .category-open-v195,
+  body.sdc-v259-desktop-cleanup .category-open-v235{
+    min-height:62px!important;
+    border-radius:18px!important;
+    padding:0 22px!important;
+  }
+  body.sdc-v259-desktop-cleanup .category-current-v195,
+  body.sdc-v259-desktop-cleanup .category-current-v235{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    gap:4px!important;
+    min-width:0!important;
+  }
+  body.sdc-v259-desktop-cleanup .category-current-v195 b,
+  body.sdc-v259-desktop-cleanup .category-current-v235 b{
+    font-size:20px!important;
+    line-height:1.05!important;
+  }
+  body.sdc-v259-desktop-cleanup .category-current-v195 small,
+  body.sdc-v259-desktop-cleanup .category-current-v235 small{
+    font-size:12px!important;
+    line-height:1.2!important;
+  }
+  body.sdc-v259-desktop-cleanup .category-mini-actions-v198,
+  body.sdc-v259-desktop-cleanup .category-mini-actions-v235{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(150px,1fr))!important;
+    gap:10px!important;
+    min-width:470px!important;
+  }
+  body.sdc-v259-desktop-cleanup .category-mini-btn-v198{
+    min-height:58px!important;
+    border-radius:18px!important;
+    padding:0 16px!important;
+    font-size:14px!important;
+  }
+
+  /* Herramientas: quitar comportamiento pegajoso que dejaba huecos */
+  body.sdc-v259-desktop-cleanup .catalog-control-v178,
+  body.sdc-v259-desktop-cleanup .catalog-control-v189{
+    position:relative!important;
+    top:auto!important;
+    margin-top:0!important;
+    padding:16px!important;
+    gap:14px!important;
+    border-radius:28px!important;
+  }
+  body.sdc-v259-desktop-cleanup .catalog-control-v178::after,
+  body.sdc-v259-desktop-cleanup .catalog-control-v189::after{
+    display:none!important;
+    content:none!important;
+  }
+  body.sdc-v259-desktop-cleanup .catalog-search-v178,
+  body.sdc-v259-desktop-cleanup .catalog-search-v189,
+  body.sdc-v259-desktop-cleanup .catalog-category-v178,
+  body.sdc-v259-desktop-cleanup .catalog-category-v189,
+  body.sdc-v259-desktop-cleanup .catalog-categories-v235,
+  body.sdc-v259-desktop-cleanup .catalog-add-v178,
+  body.sdc-v259-desktop-cleanup .catalog-add-v189{
+    min-height:60px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v259-desktop-cleanup .catalog-filter-row-v178,
+  body.sdc-v259-desktop-cleanup .catalog-filter-row-v189,
+  body.sdc-v259-desktop-cleanup .catalog-filter-row-v235{
+    gap:12px!important;
+  }
+  body.sdc-v259-desktop-cleanup .catalog-insights-v190,
+  body.sdc-v259-desktop-cleanup .catalog-view-row-v189,
+  body.sdc-v259-desktop-cleanup .catalog-utility-row-v178,
+  body.sdc-v259-desktop-cleanup .catalog-utility-row-v189{
+    gap:12px!important;
+  }
+
+  /* Tarjetas de producto más limpias en PC */
+  body.sdc-v259-desktop-cleanup .inventory-content .grid.two-col,
+  body.sdc-v259-desktop-cleanup .grid.two-col{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:20px!important;
+  }
+  body.sdc-v259-desktop-cleanup .product-card-v235{
+    padding:16px!important;
+    border-radius:28px!important;
+    gap:14px!important;
+    align-content:start!important;
+  }
+  body.sdc-v259-desktop-cleanup .product-photo-v246{
+    height:228px!important;
+    border-radius:24px!important;
+  }
+  body.sdc-v259-desktop-cleanup .product-photo-v246 img{
+    border-radius:18px!important;
+  }
+  body.sdc-v259-desktop-cleanup .product-copy-v246{
+    gap:10px!important;
+  }
+  body.sdc-v259-desktop-cleanup .product-copy-v246 h3{
+    font-size:18px!important;
+    line-height:1.08!important;
+    min-height:2.2em!important;
+  }
+  body.sdc-v259-desktop-cleanup .product-main-price-v246{
+    padding:14px 16px!important;
+    border-radius:20px!important;
+  }
+  body.sdc-v259-desktop-cleanup .product-main-price-v246 strong{
+    font-size:34px!important;
+    line-height:.95!important;
+  }
+  body.sdc-v259-desktop-cleanup .product-main-price-v246 em{
+    font-size:12px!important;
+  }
+  body.sdc-v259-desktop-cleanup .delivery-panel-v246{
+    padding:14px!important;
+    border-radius:22px!important;
+  }
+  body.sdc-v259-desktop-cleanup .delivery-prices-v245 article{
+    padding:14px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v259-desktop-cleanup .product-actions-v235{
+    gap:10px!important;
+  }
+  body.sdc-v259-desktop-cleanup .product-actions-v235 > button{
+    min-height:48px!important;
+    border-radius:16px!important;
+  }
+
+  /* Cotización en escritorio: quitar widgets móviles que afean la vista */
+  body.sdc-v259-desktop-cleanup #modalRoot .sdc210-wizard-tabs,
+  body.sdc-v259-desktop-cleanup #modalRoot .sdc210-step-controls,
+  body.sdc-v259-desktop-cleanup #modalRoot .sdc210-smart-cart{
+    display:none!important;
+  }
+  body.sdc-v259-desktop-cleanup #modalRoot .modal.quote-modal-v176,
+  body.sdc-v259-desktop-cleanup #modalRoot .modal.wide{
+    width:min(1420px,96vw)!important;
+    max-height:calc(100dvh - 24px)!important;
+  }
+  body.sdc-v259-desktop-cleanup #modalRoot .quote-head-v176 h3{
+    font-size:48px!important;
+    line-height:.96!important;
+  }
+  body.sdc-v259-desktop-cleanup #modalRoot .quote-body-v176{
+    gap:16px!important;
+  }
+  body.sdc-v259-desktop-cleanup #modalRoot .quote-jumpbar.quote-steps-v176{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:10px!important;
+    padding:8px!important;
+    border-radius:22px!important;
+    border:1px solid #d8e6f7!important;
+    background:#fff!important;
+  }
+  body.sdc-v259-desktop-cleanup #modalRoot .quote-jumpbar.quote-steps-v176 button{
+    min-height:68px!important;
+    border-radius:18px!important;
+    display:grid!important;
+    gap:6px!important;
+    place-items:center!important;
+  }
+  body.sdc-v259-desktop-cleanup #modalRoot .quote-grid-v176{
+    grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr)!important;
+    gap:14px!important;
+  }
+  body.sdc-v259-desktop-cleanup #modalRoot #pickerCardBox,
+  body.sdc-v259-desktop-cleanup #modalRoot .preview-card-v176,
+  body.sdc-v259-desktop-cleanup #modalRoot #giftCardBox{
+    grid-column:1 / -1!important;
+  }
+  body.sdc-v259-desktop-cleanup #modalRoot .quote-actions-v176{
+    margin-top:2px!important;
+  }
+}
+
+@media (min-width:1000px) and (max-width:1420px){
+  body.sdc-v259-desktop-cleanup .inventory-content .grid.two-col,
+  body.sdc-v259-desktop-cleanup .grid.two-col{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  body.sdc-v259-desktop-cleanup .catalog-cover-v178,
+  body.sdc-v259-desktop-cleanup .catalog-cover-v189{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  body.sdc-v259-desktop-cleanup .category-selector-v195,
+  body.sdc-v259-desktop-cleanup .category-selector-v235{
+    grid-template-columns:1fr!important;
+  }
+  body.sdc-v259-desktop-cleanup .category-mini-actions-v198,
+  body.sdc-v259-desktop-cleanup .category-mini-actions-v235{
+    min-width:0!important;
+  }
+}

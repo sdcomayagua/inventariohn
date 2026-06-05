@@ -1,0 +1,130 @@
+/* =========================================================
+   SD Comayagua · v192 Scroll Rescue
+   Corrige página pegada en móvil: el scroll principal vuelve a ser
+   natural y la barra de herramientas ya no se queda fija estorbando.
+   ========================================================= */
+:root{
+  --sdc192-safe-bottom:calc(96px + env(safe-area-inset-bottom,0px));
+}
+
+html,
+body{
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:auto!important;
+  touch-action:pan-y pinch-zoom!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+
+body.sdc-v95-light-default:not(.modal-open){
+  position:static!important;
+  inset:auto!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  overflow-y:auto!important;
+  touch-action:pan-y pinch-zoom!important;
+}
+
+body.sdc-v95-light-default:not(.modal-open) #app,
+body.sdc-v95-light-default:not(.modal-open) #app.app{
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow:visible!important;
+  contain:none!important;
+  touch-action:pan-y pinch-zoom!important;
+  padding-bottom:var(--sdc192-safe-bottom)!important;
+}
+
+body.sdc-v95-light-default:not(.modal-open) .products-screen-v190,
+body.sdc-v95-light-default:not(.modal-open) .products-screen-v189,
+body.sdc-v95-light-default:not(.modal-open) #inventario,
+body.sdc-v95-light-default:not(.modal-open) .inventory-content,
+body.sdc-v95-light-default:not(.modal-open) .grid,
+body.sdc-v95-light-default:not(.modal-open) .stockout-zone-v180,
+body.sdc-v95-light-default:not(.modal-open) .stockout-grid-v180,
+body.sdc-v95-light-default:not(.modal-open) .panel-v150,
+body.sdc-v95-light-default:not(.modal-open) .home-hero-shell-v94,
+body.sdc-v95-light-default:not(.modal-open) .quote-layout{
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  contain:none!important;
+  touch-action:pan-y pinch-zoom!important;
+}
+
+/* En móvil el buscador deja de quedarse pegado: se mueve con la página. */
+@media(max-width:760px){
+  body.sdc-v95-light-default .catalog-control-v189,
+  body.sdc-v95-light-default.sdc-v190-scrolled .catalog-control-v189{
+    position:relative!important;
+    top:auto!important;
+    z-index:4!important;
+    transform:none!important;
+  }
+
+  body.sdc-v95-light-default .sdc-tabs-v178{
+    position:relative!important;
+    top:auto!important;
+    z-index:5!important;
+  }
+
+  body.sdc-v95-light-default .catalog-cover-v189{
+    margin-bottom:10px!important;
+  }
+
+  body.sdc-v95-light-default .inventory-content{
+    padding-bottom:var(--sdc192-safe-bottom)!important;
+  }
+}
+
+/* La fila horizontal de categorías permite deslizar de lado sin bloquear el scroll vertical. */
+body.sdc-v95-light-default .category-strip-v191,
+body.sdc-v95-light-default .category-chip-v191,
+body.sdc-v95-light-default .category-main-v191{
+  touch-action:pan-x pan-y pinch-zoom!important;
+}
+
+/* Los botones y tarjetas no deben comerse el gesto de bajar/subir. */
+body.sdc-v95-light-default .product-card-v178,
+body.sdc-v95-light-default .product-card-v190,
+body.sdc-v95-light-default .catalog-control-v189 button,
+body.sdc-v95-light-default .catalog-control-v189 input,
+body.sdc-v95-light-default .catalog-control-v189 select{
+  touch-action:pan-y pinch-zoom!important;
+}
+
+/* Si queda una capa visual fija, nunca debe atrapar el dedo. */
+body.sdc-v95-light-default #app.app::after,
+body.sdc-v95-light-default::before,
+body.sdc-v95-light-default::after{
+  pointer-events:none!important;
+}
+
+/* Modales: solo ellos bloquean el fondo y tienen scroll propio. */
+html.modal-open-root,
+body.modal-open{
+  overflow:hidden!important;
+  height:100dvh!important;
+}
+body.sdc-v95-light-default.modal-open .modal-backdrop{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y pinch-zoom!important;
+  align-items:flex-start!important;
+}
+body.sdc-v95-light-default.modal-open .modal{
+  max-height:none!important;
+  height:auto!important;
+  overflow:visible!important;
+  margin:8px auto calc(18px + env(safe-area-inset-bottom,0px))!important;
+}
+body.sdc-v95-light-default.modal-open .modal-body{
+  overflow:visible!important;
+  max-height:none!important;
+}

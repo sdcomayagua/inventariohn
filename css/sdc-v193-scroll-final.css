@@ -1,0 +1,183 @@
+/* =========================================================
+   SD Comayagua · v193 Scroll Final
+   Arreglo fuerte: scroll vertical natural + carruseles horizontales reales.
+   Esta capa va al final para ganar contra estilos antiguos.
+   ========================================================= */
+:root{
+  --sdc193-safe-bottom:calc(118px + env(safe-area-inset-bottom,0px));
+}
+
+html{
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:hidden!important;
+  overflow-y:scroll!important;
+  overscroll-behavior:auto!important;
+  touch-action:pan-x pan-y pinch-zoom!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+body.sdc-v95-light-default:not(.modal-open){
+  position:static!important;
+  inset:auto!important;
+  height:auto!important;
+  min-height:100%!important;
+  max-height:none!important;
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:auto!important;
+  touch-action:pan-x pan-y pinch-zoom!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+
+/* El contenedor principal NO debe ser el que bloquee la página. */
+body.sdc-v95-light-default:not(.modal-open) #app,
+body.sdc-v95-light-default:not(.modal-open) #app.app{
+  position:relative!important;
+  inset:auto!important;
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  overflow:visible!important;
+  contain:none!important;
+  transform:none;
+  touch-action:pan-x pan-y pinch-zoom!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding-bottom:var(--sdc193-safe-bottom)!important;
+}
+
+body.sdc-v95-light-default:not(.modal-open) main,
+body.sdc-v95-light-default:not(.modal-open) section,
+body.sdc-v95-light-default:not(.modal-open) #inventario,
+body.sdc-v95-light-default:not(.modal-open) .products-screen-v178,
+body.sdc-v95-light-default:not(.modal-open) .products-screen-v189,
+body.sdc-v95-light-default:not(.modal-open) .products-screen-v190,
+body.sdc-v95-light-default:not(.modal-open) .inventory-content,
+body.sdc-v95-light-default:not(.modal-open) .grid,
+body.sdc-v95-light-default:not(.modal-open) .panel-v150,
+body.sdc-v95-light-default:not(.modal-open) .panel-table-wrap-v150,
+body.sdc-v95-light-default:not(.modal-open) .home-hero-shell-v94,
+body.sdc-v95-light-default:not(.modal-open) .quote-layout{
+  max-height:none!important;
+  contain:none!important;
+}
+body.sdc-v95-light-default:not(.modal-open) #inventario,
+body.sdc-v95-light-default:not(.modal-open) .products-screen-v178,
+body.sdc-v95-light-default:not(.modal-open) .products-screen-v189,
+body.sdc-v95-light-default:not(.modal-open) .products-screen-v190,
+body.sdc-v95-light-default:not(.modal-open) .inventory-content,
+body.sdc-v95-light-default:not(.modal-open) .grid{
+  height:auto!important;
+  overflow:visible!important;
+}
+
+/* Quita cualquier sticky/fixed que pueda dejar la pantalla “pegada”. */
+@media(max-width:760px){
+  body.sdc-v95-light-default:not(.modal-open) .catalog-control-v189,
+  body.sdc-v95-light-default:not(.modal-open).sdc-v190-scrolled .catalog-control-v189,
+  body.sdc-v95-light-default:not(.modal-open) .sdc-tabs-v178,
+  body.sdc-v95-light-default:not(.modal-open) .inventory-toolbar-v74,
+  body.sdc-v95-light-default:not(.modal-open) .view-mode-panel,
+  body.sdc-v95-light-default:not(.modal-open) .search-panel{
+    position:relative!important;
+    top:auto!important;
+    bottom:auto!important;
+    z-index:auto!important;
+  }
+  body.sdc-v95-light-default:not(.modal-open) .bottom-nav{
+    pointer-events:auto!important;
+  }
+}
+
+/* Carruseles horizontales: categorías, chips y tablas deben moverse de lado. */
+body.sdc-v95-light-default .category-rail-v191{
+  overflow:visible!important;
+}
+body.sdc-v95-light-default .category-strip-v191,
+body.sdc-v95-light-default .quote-category-strip,
+body.sdc-v95-light-default .chips,
+body.sdc-v95-light-default .quick-scroll-v83,
+body.sdc-v95-light-default .alert-scroll-v83,
+body.sdc-v95-light-default .panel-table-wrap-v150{
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-x:contain!important;
+  overscroll-behavior-y:auto!important;
+  touch-action:pan-x pan-y pinch-zoom!important;
+  scrollbar-width:none;
+}
+body.sdc-v95-light-default .category-strip-v191::-webkit-scrollbar,
+body.sdc-v95-light-default .quote-category-strip::-webkit-scrollbar,
+body.sdc-v95-light-default .chips::-webkit-scrollbar,
+body.sdc-v95-light-default .quick-scroll-v83::-webkit-scrollbar,
+body.sdc-v95-light-default .alert-scroll-v83::-webkit-scrollbar{
+  display:none!important;
+}
+body.sdc-v95-light-default .category-strip-v191 > *,
+body.sdc-v95-light-default .quote-category-strip > *,
+body.sdc-v95-light-default .chips > *,
+body.sdc-v95-light-default .quick-scroll-v83 > *,
+body.sdc-v95-light-default .alert-scroll-v83 > *{
+  touch-action:pan-x pan-y pinch-zoom!important;
+}
+body.sdc-v95-light-default .category-strip-v191.is-dragging,
+body.sdc-v95-light-default .quote-category-strip.is-dragging,
+body.sdc-v95-light-default .chips.is-dragging,
+body.sdc-v95-light-default .quick-scroll-v83.is-dragging,
+body.sdc-v95-light-default .alert-scroll-v83.is-dragging{
+  cursor:grabbing!important;
+  scroll-snap-type:none!important;
+  user-select:none!important;
+}
+
+/* Botones/tarjetas: no deben bloquear el gesto de subir/bajar. */
+body.sdc-v95-light-default button,
+body.sdc-v95-light-default a,
+body.sdc-v95-light-default .product-card-v178,
+body.sdc-v95-light-default .product-card-v189,
+body.sdc-v95-light-default .product-card-v190,
+body.sdc-v95-light-default .catalog-tool-v189,
+body.sdc-v95-light-default .catalog-view-row-v189 button,
+body.sdc-v95-light-default .catalog-insights-v190 button,
+body.sdc-v95-light-default .category-main-v191,
+body.sdc-v95-light-default .category-chip-v191{
+  touch-action:pan-x pan-y pinch-zoom!important;
+}
+body.sdc-v95-light-default input,
+body.sdc-v95-light-default textarea,
+body.sdc-v95-light-default select{
+  touch-action:auto!important;
+}
+
+/* Modales: solo el modal bloquea fondo; dentro se puede desplazar. */
+html.modal-open-root,
+body.sdc-v95-light-default.modal-open{
+  overflow:hidden!important;
+  height:100dvh!important;
+}
+body.sdc-v95-light-default.modal-open .modal-backdrop{
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y pinch-zoom!important;
+  align-items:flex-start!important;
+}
+body.sdc-v95-light-default.modal-open .modal{
+  max-height:none!important;
+  height:auto!important;
+  overflow:visible!important;
+  margin:8px auto calc(22px + env(safe-area-inset-bottom,0px))!important;
+}
+
+/* Pequeña protección contra capas decorativas invisibles. */
+body.sdc-v95-light-default::before,
+body.sdc-v95-light-default::after,
+body.sdc-v95-light-default #app.app::before,
+body.sdc-v95-light-default #app.app::after{
+  pointer-events:none!important;
+}

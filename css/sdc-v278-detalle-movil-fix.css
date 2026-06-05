@@ -1,0 +1,128 @@
+/* SD Comayagua · v278 detalle móvil funcional y compacto */
+@media (max-width:700px){
+  /* Quitar marco/adorno alrededor de la foto */
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v49-detail-image,
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v141-detail-image,
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v163-detail-image{
+    width:min(100%,300px)!important;
+    aspect-ratio:1/1!important;
+    padding:0!important;
+    border-radius:22px!important;
+    background:transparent!important;
+    border:none!important;
+    box-shadow:none!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v49-detail-image::before,
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v141-detail-image::before,
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v163-detail-image::before,
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v49-detail-image::after,
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v141-detail-image::after,
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v163-detail-image::after{
+    content:none!important;
+    display:none!important;
+  }
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v49-detail-image img,
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v141-detail-image img,
+  body.sdc-v278-detail-fix #modalRoot .product-detail-modal-v221 .v163-detail-image img{
+    width:100%!important;
+    height:100%!important;
+    margin:0!important;
+    padding:0!important;
+    border-radius:22px!important;
+    object-fit:cover!important;
+    background:#fff!important;
+    box-shadow:none!important;
+  }
+
+  /* Hacer funcional la selección Comayagua / Honduras */
+  body.sdc-v278-detail-fix .v250-price-cards{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:12px!important;
+  }
+  body.sdc-v278-detail-fix .v250-price-cards [hidden]{
+    display:none!important;
+  }
+  body.sdc-v278-detail-fix .v250-price-cards .v164-price-option{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:
+      "label price"
+      "sub price"!important;
+    align-items:center!important;
+    column-gap:10px!important;
+    row-gap:3px!important;
+    min-height:0!important;
+    padding:14px 16px!important;
+    border-radius:20px!important;
+  }
+  body.sdc-v278-detail-fix .v250-price-cards .v164-price-option span{
+    grid-area:label!important;
+    display:block!important;
+    font-size:11px!important;
+    line-height:1.05!important;
+    letter-spacing:.12em!important;
+    text-align:left!important;
+  }
+  body.sdc-v278-detail-fix .v250-price-cards .v164-price-option small{
+    grid-area:sub!important;
+    display:block!important;
+    margin-top:0!important;
+    font-size:12px!important;
+    line-height:1.15!important;
+    text-align:left!important;
+  }
+  body.sdc-v278-detail-fix .v250-price-cards .v164-price-option b{
+    grid-area:price!important;
+    display:block!important;
+    align-self:center!important;
+    justify-self:end!important;
+    margin:0!important;
+    font-size:clamp(22px,7vw,34px)!important;
+    line-height:1!important;
+    letter-spacing:-.04em!important;
+    white-space:nowrap!important;
+    text-align:right!important;
+  }
+  /* estilos claros para que no se mire apretado */
+  body.sdc-v278-detail-fix .v250-price-cards [data-v49-card="local"]{
+    background:linear-gradient(180deg,#ffffff 0%,#f5fbff 100%)!important;
+    border:1px solid #dbe6f5!important;
+    box-shadow:0 10px 20px rgba(15,63,120,.05)!important;
+  }
+  body.sdc-v278-detail-fix .v250-price-cards [data-v49-card="normal"]{
+    background:linear-gradient(135deg,#0d3b7d 0%,#1b76e8 100%)!important;
+    border:1px solid #146ed9!important;
+    box-shadow:0 14px 24px rgba(17,85,180,.18)!important;
+  }
+  body.sdc-v278-detail-fix .v250-price-cards [data-v49-card="normal"] span,
+  body.sdc-v278-detail-fix .v250-price-cards [data-v49-card="normal"] small,
+  body.sdc-v278-detail-fix .v250-price-cards [data-v49-card="normal"] b{
+    color:#fff!important;
+  }
+  body.sdc-v278-detail-fix .v250-price-cards [data-v49-card="cod"]{
+    background:linear-gradient(180deg,#fffdfa 0%,#fff5e8 100%)!important;
+    border:1px solid #f0cf92!important;
+    box-shadow:0 10px 20px rgba(184,127,17,.08)!important;
+  }
+  body.sdc-v278-detail-fix .v250-price-cards [data-v49-card="cod"] b{color:#c67a00!important;}
+
+  body.sdc-v278-detail-fix .v250-detail-route-switch{
+    padding:6px!important;
+    border-radius:22px!important;
+  }
+  body.sdc-v278-detail-fix .v250-detail-route-switch button{
+    min-height:48px!important;
+    font-size:15px!important;
+    border-radius:16px!important;
+  }
+  body.sdc-v278-detail-fix .v250-detail-route-note{
+    font-size:12px!important;
+    line-height:1.28!important;
+  }
+  body.sdc-v278-detail-fix .v250-qty-line{
+    padding:14px!important;
+    border-radius:22px!important;
+  }
+}

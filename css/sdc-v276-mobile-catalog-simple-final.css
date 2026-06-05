@@ -1,0 +1,187 @@
+/* SD Comayagua · v276 FINAL móvil: catálogo sencillo, sin precios ni espacios feos */
+
+@media (max-width:700px){
+  html body.sdc-v276-mobile-simple-final #app,
+  html body.sdc-v276-mobile-simple-final #app.app{
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .inventory-content,
+  html body.sdc-v276-mobile-simple-final .inventory-content .grid.two-col,
+  html body.sdc-v276-mobile-simple-final .grid.two-col{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:12px!important;
+    width:100%!important;
+    justify-items:stretch!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .product-card-v235,
+  html body.sdc-v276-mobile-simple-final article.product-card-v235{
+    position:relative!important;
+    display:grid!important;
+    grid-template-columns:104px minmax(0,1fr)!important;
+    grid-template-areas:'photo copy'!important;
+    gap:12px!important;
+    align-items:center!important;
+    width:100%!important;
+    min-height:132px!important;
+    margin:0!important;
+    padding:14px!important;
+    border-radius:24px!important;
+    overflow:hidden!important;
+    background:#ffffff!important;
+    border:1px solid #dbe7f4!important;
+    box-shadow:0 10px 22px rgba(13,55,107,.07)!important;
+    cursor:pointer!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .product-card-v235::before,
+  html body.sdc-v276-mobile-simple-final .product-card-v235::after{
+    display:none!important;
+    content:none!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .product-card-v235 > .product-photo-v246,
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-photo-v246{
+    grid-area:photo!important;
+    width:104px!important;
+    min-width:104px!important;
+    max-width:104px!important;
+    height:104px!important;
+    min-height:104px!important;
+    max-height:104px!important;
+    border-radius:22px!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+    align-self:center!important;
+    justify-self:start!important;
+    background:linear-gradient(180deg,#f6fbff 0%,#eef6ff 100%)!important;
+    border:1px solid #d8e6f5!important;
+    box-shadow:none!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-photo-v246 img{
+    width:calc(100% - 14px)!important;
+    height:calc(100% - 14px)!important;
+    max-width:none!important;
+    max-height:none!important;
+    margin:7px!important;
+    padding:7px!important;
+    border-radius:16px!important;
+    background:#fff!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    display:block!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-availability-v178{
+    position:absolute!important;
+    top:8px!important;
+    left:8px!important;
+    right:auto!important;
+    bottom:auto!important;
+    min-height:28px!important;
+    padding:6px 10px!important;
+    border-radius:999px!important;
+    font-size:10px!important;
+    line-height:1!important;
+    font-weight:900!important;
+    letter-spacing:.02em!important;
+    box-shadow:0 6px 12px rgba(0,0,0,.07)!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .product-card-v235 > .product-copy-v246,
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-copy-v246{
+    grid-area:copy!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    gap:10px!important;
+    min-width:0!important;
+    width:100%!important;
+    height:auto!important;
+    padding:0!important;
+    margin:0!important;
+    text-align:left!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-copy-v246 h3{
+    display:-webkit-box!important;
+    -webkit-line-clamp:2!important;
+    -webkit-box-orient:vertical!important;
+    overflow:hidden!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+    color:#0a2850!important;
+    font-size:19px!important;
+    line-height:1.08!important;
+    font-weight:950!important;
+    letter-spacing:-.02em!important;
+    text-align:left!important;
+    white-space:normal!important;
+    text-wrap:balance!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-summary-status-v268{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:8px!important;
+    min-height:34px!important;
+    max-width:100%!important;
+    padding:8px 12px!important;
+    border-radius:999px!important;
+    background:rgba(34,197,94,.08)!important;
+    border:1px solid rgba(34,197,94,.22)!important;
+    color:#138a57!important;
+    font-size:12px!important;
+    font-weight:900!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .product-card-v235.is-agotado .product-summary-status-v268,
+  html body.sdc-v276-mobile-simple-final .product-card-v235.is-out .product-summary-status-v268{
+    color:#d33958!important;
+    background:rgba(244,63,94,.08)!important;
+    border-color:rgba(244,63,94,.18)!important;
+  }
+
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-summary-status-v268 i{
+    width:8px!important;
+    height:8px!important;
+    min-width:8px!important;
+    border-radius:50%!important;
+    display:inline-block!important;
+    background:currentColor!important;
+    box-shadow:0 0 0 4px color-mix(in srgb, currentColor 18%, transparent)!important;
+  }
+
+  /* Ocultar TODO lo que estaba cargando la tarjeta en celular */
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-code-row-v246,
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-main-price-v246,
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .delivery-panel-v246,
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-pills-v235,
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-actions-v235,
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-mobile-hint-v269,
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .product-out-note-v180,
+  html body.sdc-v276-mobile-simple-final .product-card-v235 .stockout-ribbon-v181{
+    display:none!important;
+    visibility:hidden!important;
+    width:0!important;
+    height:0!important;
+    min-width:0!important;
+    min-height:0!important;
+    max-width:0!important;
+    max-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+}

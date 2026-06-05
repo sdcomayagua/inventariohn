@@ -1,0 +1,493 @@
+/* =========================================================
+   SD Comayagua · v220 Corrección real de computadora
+   - Evita que la app móvil quede estirada en escritorio
+   - Catálogo en cuadrícula profesional
+   - Cards compactas, verticales y sin espacios vacíos gigantes
+   - No afecta la vista móvil
+   ========================================================= */
+
+@media (min-width: 920px){
+  html, body{
+    width:100%!important;
+    max-width:none!important;
+    overflow-x:hidden!important;
+    background:#eef6ff!important;
+  }
+
+  body.sdc-v95-light-default,
+  body.sdc-v95-light-default.sdc-v190-ready,
+  body.sdc-v95-light-default.sdc-v210-s24{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    background:
+      radial-gradient(circle at 8% 0%,rgba(8,119,242,.16),transparent 34%),
+      radial-gradient(circle at 94% 0%,rgba(7,26,53,.12),transparent 32%),
+      linear-gradient(180deg,#f7fbff 0%,#eef6ff 100%)!important;
+  }
+
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default #app.app,
+  body.sdc-v95-light-default.sdc-v190-ready #app.app,
+  body.sdc-v95-light-default.sdc-v210-s24 #app{
+    width:calc(100vw - 48px)!important;
+    max-width:1880px!important;
+    min-width:0!important;
+    margin:0 auto!important;
+    padding:26px 0 46px!important;
+    gap:18px!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+  }
+
+  /* Hero menos alto y mejor proporcionado para monitor */
+  body.sdc-v95-light-default .sdc-hero-v178{
+    min-height:168px!important;
+    padding:30px 36px!important;
+    border-radius:28px!important;
+    display:grid!important;
+    grid-template-columns:auto minmax(0,1fr) auto!important;
+    gap:20px!important;
+    align-items:center!important;
+  }
+  body.sdc-v95-light-default .sdc-brand-v178{
+    display:flex!important;
+    align-items:center!important;
+    gap:20px!important;
+    min-width:0!important;
+  }
+  body.sdc-v95-light-default .sdc-logo-v178{
+    width:88px!important;
+    height:88px!important;
+    min-width:88px!important;
+    border-radius:22px!important;
+  }
+  body.sdc-v95-light-default .sdc-brand-text-v178 h1{
+    font-size:clamp(42px,4vw,66px)!important;
+    line-height:.88!important;
+    letter-spacing:-.055em!important;
+  }
+  body.sdc-v95-light-default .sdc-brand-text-v178 p{
+    font-size:15px!important;
+    letter-spacing:.06em!important;
+  }
+
+  body.sdc-v95-light-default .sdc-page-tabs-v97{
+    position:static!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:10px!important;
+    padding:8px!important;
+    margin:0!important;
+    border-radius:24px!important;
+    background:#fff!important;
+    border:1px solid #d7e7f7!important;
+    box-shadow:0 12px 32px rgba(7,26,53,.055)!important;
+  }
+  body.sdc-v95-light-default .sdc-page-tabs-v97 button{
+    min-height:58px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v95-light-default .bottom-nav,
+  body.sdc-v95-light-default .sdc209-bottom-nav{
+    display:none!important;
+  }
+
+  /* Bloques del catálogo: más compactos para PC */
+  body.sdc-v95-light-default #inventario,
+  body.sdc-v95-light-default .products-screen-v178,
+  body.sdc-v95-light-default .products-screen-v189,
+  body.sdc-v95-light-default .catalog-cover-v178,
+  body.sdc-v95-light-default .catalog-control-v178,
+  body.sdc-v95-light-default .catalog-control-v189,
+  body.sdc-v95-light-default .category-selector-v195{
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  body.sdc-v95-light-default .products-screen-v178,
+  body.sdc-v95-light-default .products-screen-v189,
+  body.sdc-v95-light-default .products-screen-v190{
+    display:grid!important;
+    gap:14px!important;
+  }
+
+  body.sdc-v95-light-default .catalog-cover-v178,
+  body.sdc-v95-light-default .catalog-cover-v189{
+    min-height:0!important;
+    padding:22px 22px!important;
+    border-radius:26px!important;
+    display:grid!important;
+    grid-template-columns:minmax(300px,.55fr) minmax(360px,1fr)!important;
+    align-items:end!important;
+    gap:18px!important;
+  }
+  body.sdc-v95-light-default .catalog-cover-title-v178 h2,
+  body.sdc-v95-light-default .catalog-cover-title-v189 h2{
+    font-size:clamp(44px,4vw,72px)!important;
+    line-height:.88!important;
+    margin:6px 0!important;
+  }
+  body.sdc-v95-light-default .catalog-cover-title-v178 p,
+  body.sdc-v95-light-default .catalog-cover-title-v189 p{
+    max-width:360px!important;
+    font-size:14px!important;
+  }
+  body.sdc-v95-light-default .catalog-mini-summary-v195{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+  body.sdc-v95-light-default .mini-stat-v195,
+  body.sdc-v95-light-default .mini-cloud-v195{
+    min-height:76px!important;
+    border-radius:18px!important;
+  }
+
+  body.sdc-v95-light-default .category-selector-v195{
+    grid-column:1 / -1!important;
+    display:grid!important;
+    grid-template-columns:auto minmax(0,1fr)!important;
+    gap:14px!important;
+    padding:10px!important;
+    border-radius:22px!important;
+  }
+  body.sdc-v95-light-default .category-current-v195{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(260px,.75fr)!important;
+    gap:8px 14px!important;
+    align-items:center!important;
+  }
+  body.sdc-v95-light-default .category-mini-actions-v198{
+    grid-row:1 / span 2!important;
+    grid-column:2!important;
+    align-self:center!important;
+  }
+
+  body.sdc-v95-light-default .catalog-control-v178,
+  body.sdc-v95-light-default .catalog-control-v189{
+    padding:14px!important;
+    border-radius:26px!important;
+    display:grid!important;
+    grid-template-columns:minmax(360px,1fr) minmax(360px,.52fr)!important;
+    grid-template-areas:
+      "search filters"
+      "insights modes"
+      "tools hint"!important;
+    gap:12px!important;
+    align-items:stretch!important;
+  }
+  body.sdc-v95-light-default .catalog-search-v178,
+  body.sdc-v95-light-default .catalog-search-v189{ grid-area:search!important; min-height:60px!important; }
+  body.sdc-v95-light-default .catalog-filter-row-v178,
+  body.sdc-v95-light-default .catalog-filter-row-v189{ grid-area:filters!important; display:grid!important; grid-template-columns:minmax(0,1fr) 150px!important; gap:10px!important; }
+  body.sdc-v95-light-default .catalog-insights-v190{ grid-area:insights!important; display:grid!important; grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:10px!important; }
+  body.sdc-v95-light-default .catalog-view-row-v189{ grid-area:modes!important; display:grid!important; grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:10px!important; }
+  body.sdc-v95-light-default .catalog-utility-row-v178,
+  body.sdc-v95-light-default .catalog-utility-row-v189{ grid-area:tools!important; display:grid!important; grid-template-columns:1fr 1fr!important; gap:10px!important; }
+  body.sdc-v95-light-default .catalog-control-v189::after{
+    content:"Desliza categorías arriba o busca por nombre/código";
+    grid-area:hint!important;
+    display:grid!important;
+    place-items:center!important;
+    color:#71859c!important;
+    font-weight:900!important;
+    font-size:12px!important;
+  }
+  body.sdc-v95-light-default .catalog-insights-v190 button,
+  body.sdc-v95-light-default .catalog-view-row-v189 button,
+  body.sdc-v95-light-default .catalog-tool-v189,
+  body.sdc-v95-light-default .catalog-category-v189,
+  body.sdc-v95-light-default .catalog-add-v189{
+    min-height:56px!important;
+    border-radius:18px!important;
+  }
+
+  /* La corrección importante: productos en cuadrícula, no filas gigantes */
+  body.sdc-v95-light-default #inventario .inventory-content{
+    margin-top:14px!important;
+    padding:0 0 18px!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+  body.sdc-v95-light-default #inventario .grid,
+  body.sdc-v95-light-default #inventario .grid.two-col,
+  body.sdc-v95-light-default #inventario .grid.one-col,
+  body.sdc-v95-light-default #inventario .stockout-grid-v180,
+  body.sdc-v95-light-default .inventory-content > .grid{
+    display:grid!important;
+    grid-template-columns:repeat(auto-fill,minmax(270px,1fr))!important;
+    gap:18px!important;
+    align-items:stretch!important;
+    width:100%!important;
+  }
+
+  body.sdc-v95-light-default #inventario article.product-card,
+  body.sdc-v95-light-default #inventario .product-card-v178,
+  body.sdc-v95-light-default #inventario .product-card-v190{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-areas:"photo" "copy" "actions"!important;
+    align-content:start!important;
+    gap:12px!important;
+    min-height:0!important;
+    height:100%!important;
+    padding:12px!important;
+    border-radius:24px!important;
+    background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%)!important;
+    border:1px solid #d9e9fb!important;
+    box-shadow:0 14px 34px rgba(7,26,53,.07)!important;
+    overflow:hidden!important;
+    transform:none!important;
+  }
+  body.sdc-v95-light-default #inventario .product-card-v178:hover,
+  body.sdc-v95-light-default #inventario .product-card-v190:hover{
+    transform:translateY(-2px)!important;
+    box-shadow:0 18px 42px rgba(7,26,53,.11)!important;
+    border-color:#b9dcff!important;
+  }
+  body.sdc-v95-light-default #inventario .product-card-v178::before,
+  body.sdc-v95-light-default #inventario .product-card-v190::before{
+    left:0!important;
+    top:0!important;
+    bottom:auto!important;
+    width:100%!important;
+    height:4px!important;
+    border-radius:0!important;
+    background:linear-gradient(90deg,#0877f2,#38c7ff)!important;
+  }
+  body.sdc-v95-light-default #inventario .product-card-v190::after{
+    opacity:.42!important;
+  }
+
+  body.sdc-v95-light-default #inventario .product-photo-v178{
+    grid-area:photo!important;
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    aspect-ratio:1 / 1!important;
+    border-radius:20px!important;
+    padding:0!important;
+    overflow:hidden!important;
+    background:linear-gradient(180deg,#f3f9ff,#eaf5ff)!important;
+    border:1px solid #d8eaff!important;
+    box-shadow:none!important;
+  }
+  body.sdc-v95-light-default #inventario .product-photo-v178 img{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    object-fit:contain!important;
+    padding:8px!important;
+    display:block!important;
+  }
+  body.sdc-v95-light-default #inventario .product-availability-v178{
+    left:9px!important;
+    top:9px!important;
+    right:auto!important;
+    max-width:calc(100% - 18px)!important;
+    min-height:27px!important;
+    padding:0 10px!important;
+    font-size:10px!important;
+    background:rgba(255,255,255,.94)!important;
+    color:#07875c!important;
+    border:1px solid #c8f1dd!important;
+  }
+
+  body.sdc-v95-light-default #inventario .product-copy-v178{
+    grid-area:copy!important;
+    display:grid!important;
+    grid-template-rows:auto minmax(42px,auto) auto auto!important;
+    align-content:start!important;
+    gap:8px!important;
+    min-width:0!important;
+    min-height:138px!important;
+    padding:0!important;
+  }
+  body.sdc-v95-light-default #inventario .product-code-row-v178{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:6px!important;
+    min-height:28px!important;
+  }
+  body.sdc-v95-light-default #inventario .product-code-row-v178 span{
+    max-width:100%!important;
+    min-height:26px!important;
+    padding:0 9px!important;
+    border-radius:999px!important;
+    font-size:10px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  body.sdc-v95-light-default #inventario .product-card-v178 h3,
+  body.sdc-v95-light-default #inventario .product-card-v190 h3,
+  body.sdc-v95-light-default #inventario .product-copy-v178 h3{
+    margin:0!important;
+    min-height:42px!important;
+    font-size:18px!important;
+    line-height:1.08!important;
+    letter-spacing:-.025em!important;
+    color:#07192f!important;
+    display:-webkit-box!important;
+    -webkit-line-clamp:2!important;
+    -webkit-box-orient:vertical!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v95-light-default #inventario .product-price-v178{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:10px!important;
+    min-width:0!important;
+  }
+  body.sdc-v95-light-default #inventario .product-price-v178 strong{
+    font-size:clamp(28px,2.2vw,38px)!important;
+    line-height:.9!important;
+    color:#e11d48!important;
+    white-space:nowrap!important;
+  }
+  body.sdc-v95-light-default #inventario .product-price-v178 em{
+    position:static!important;
+    margin-left:auto!important;
+    min-height:30px!important;
+    padding:0 10px!important;
+    border-radius:999px!important;
+    font-size:11px!important;
+    flex:0 0 auto!important;
+  }
+  body.sdc-v95-light-default #inventario .product-pills-v178{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:6px!important;
+    min-height:28px!important;
+  }
+  body.sdc-v95-light-default #inventario .product-pills-v178 span{
+    max-width:100%!important;
+    min-height:26px!important;
+    padding:0 8px!important;
+    border-radius:999px!important;
+    font-size:10px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  body.sdc-v95-light-default #inventario .product-actions-v178,
+  body.sdc-v95-light-default #inventario .product-actions-v190{
+    grid-area:actions!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  body.sdc-v95-light-default #inventario .product-actions-v178 button,
+  body.sdc-v95-light-default #inventario .product-actions-v190 button{
+    min-width:0!important;
+    min-height:44px!important;
+    border-radius:15px!important;
+    padding:8px 9px!important;
+    font-size:12px!important;
+    line-height:1.05!important;
+    font-weight:950!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    box-shadow:none!important;
+  }
+  body.sdc-v95-light-default #inventario .product-actions-v190 .product-action-admin-v190,
+  body.sdc-v95-light-default #inventario .product-actions-v178 .product-action-admin-v190,
+  body.sdc-v95-light-default #inventario .product-admin-v178{
+    background:#07192f!important;
+    color:#fff!important;
+    border-color:#07192f!important;
+  }
+  body.sdc-v95-light-default #inventario .product-actions-v190 .product-action-quote-v190{
+    background:#eef7ff!important;
+    color:#075fca!important;
+    border-color:#cfe6ff!important;
+  }
+  body.sdc-v95-light-default #inventario .product-actions-v190 .product-action-sell-v190{
+    background:linear-gradient(135deg,#0b63ce,#0877f2)!important;
+    color:#fff!important;
+    border-color:transparent!important;
+    box-shadow:0 10px 22px rgba(8,119,242,.16)!important;
+  }
+  body.sdc-v95-light-default #inventario .product-actions-v190 .product-action-detail-v190{
+    background:#f8fbff!important;
+    color:#173654!important;
+    border-color:#d8e8f8!important;
+  }
+  body.sdc-v95-light-default #inventario .product-actions-v190 .product-action-wa-v190{
+    background:#eefaf4!important;
+    color:#047857!important;
+    border-color:#cfeee0!important;
+  }
+
+  /* Agotados mantienen cuadrícula, pero menos llamativos */
+  body.sdc-v95-light-default #inventario .stockout-zone-v180{
+    margin-top:22px!important;
+  }
+  body.sdc-v95-light-default #inventario .product-card-v178.is-out,
+  body.sdc-v95-light-default #inventario .product-card-v190.is-out,
+  body.sdc-v95-light-default #inventario .product-card-v178.is-agotado,
+  body.sdc-v95-light-default #inventario .product-card-v190.is-agotado{
+    opacity:.66!important;
+    filter:saturate(.75)!important;
+  }
+}
+
+@media (min-width: 1220px){
+  body.sdc-v95-light-default #inventario .grid,
+  body.sdc-v95-light-default #inventario .grid.two-col,
+  body.sdc-v95-light-default #inventario .grid.one-col,
+  body.sdc-v95-light-default #inventario .stockout-grid-v180,
+  body.sdc-v95-light-default .inventory-content > .grid{
+    grid-template-columns:repeat(auto-fill,minmax(285px,1fr))!important;
+  }
+}
+
+@media (min-width: 1600px){
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default #app.app,
+  body.sdc-v95-light-default.sdc-v210-s24 #app{
+    width:calc(100vw - 64px)!important;
+    max-width:1900px!important;
+  }
+  body.sdc-v95-light-default #inventario .grid,
+  body.sdc-v95-light-default #inventario .grid.two-col,
+  body.sdc-v95-light-default #inventario .grid.one-col,
+  body.sdc-v95-light-default #inventario .stockout-grid-v180,
+  body.sdc-v95-light-default .inventory-content > .grid{
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr))!important;
+  }
+}
+
+@media (min-width: 920px) and (max-width: 1180px){
+  body.sdc-v95-light-default #app,
+  body.sdc-v95-light-default #app.app{
+    width:calc(100vw - 28px)!important;
+  }
+  body.sdc-v95-light-default .catalog-cover-v178,
+  body.sdc-v95-light-default .catalog-cover-v189{
+    grid-template-columns:1fr!important;
+  }
+  body.sdc-v95-light-default .catalog-control-v178,
+  body.sdc-v95-light-default .catalog-control-v189{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"search" "filters" "insights" "modes" "tools"!important;
+  }
+  body.sdc-v95-light-default .catalog-control-v189::after{display:none!important;}
+  body.sdc-v95-light-default #inventario .grid,
+  body.sdc-v95-light-default #inventario .grid.two-col,
+  body.sdc-v95-light-default #inventario .grid.one-col,
+  body.sdc-v95-light-default #inventario .stockout-grid-v180,
+  body.sdc-v95-light-default .inventory-content > .grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}

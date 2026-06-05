@@ -1,0 +1,278 @@
+/* SD Comayagua · v258 mobile/product/comparativa polish */
+
+body.sdc-v258-mobile-compare-polish .sdc230-compare-export.sdc230-compare-export-flyer{
+  gap:18px!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-head > div:first-child{
+  padding:24px 28px 24px 30px!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-head h2{
+  margin:0 0 12px!important;
+  line-height:.98!important;
+  letter-spacing:-.042em!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-head p{
+  margin:0!important;
+  line-height:1.34!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-card:nth-child(2){
+  background:linear-gradient(180deg,#fffaf1 0%,#fffefb 100%)!important;
+  border-color:#efd9b7!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-card:nth-child(2) .sdc230-compare-label.cod{
+  background:linear-gradient(180deg,#fff1d8 0%,#ffe7bc 100%)!important;
+  color:#9f6500!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-card:nth-child(2) .short-receipt,
+body.sdc-v258-mobile-compare-polish .sdc230-compare-card:nth-child(2) .sdc208-ticket{
+  background:linear-gradient(180deg,#fffefb 0%,#ffffff 100%)!important;
+  border-color:#eadac0!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-card:nth-child(2) .sdc208-head{
+  background:linear-gradient(180deg,#fff7eb 0%,#ffffff 100%)!important;
+  border-color:#eadac0!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-card:nth-child(2) .sdc208-mode{
+  background:linear-gradient(135deg,#9a5d00 0%,#c47b06 100%)!important;
+  color:#fff!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-card:nth-child(2) .sdc208-meta div,
+body.sdc-v258-mobile-compare-polish .sdc230-compare-card:nth-child(2) .sdc208-summary div{
+  background:#fffaf1!important;
+  border-color:#eadac0!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-card:nth-child(2) .sdc208-grand{
+  background:linear-gradient(135deg,#8c5200 0%,#b86f05 65%,#d28c16 100%)!important;
+  color:#fff!important;
+}
+body.sdc-v258-mobile-compare-polish .sdc230-compare-card:nth-child(2) .sdc208-foot b{
+  background:linear-gradient(135deg,#754700 0%,#9a6100 100%)!important;
+  color:#fff!important;
+}
+
+@media (max-width:700px){
+  body.sdc-v258-mobile-compare-polish #app,
+  body.sdc-v258-mobile-compare-polish #app.app{
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+
+  /* Encabezado: logo mejor centrado y contenido menos apretado */
+  body.sdc-v258-mobile-compare-polish .sdc-hero-v235{
+    padding:16px 16px 18px!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v258-mobile-compare-polish .sdc-brand-v235{
+    grid-template-columns:64px minmax(0,1fr)!important;
+    gap:12px!important;
+    align-items:center!important;
+  }
+  body.sdc-v258-mobile-compare-polish .sdc-logo-v235{
+    width:64px!important;
+    height:64px!important;
+    padding:4px!important;
+    margin-left:2px!important;
+    justify-self:start!important;
+    align-self:center!important;
+  }
+  body.sdc-v258-mobile-compare-polish .sdc-brand-text-v235 h1{
+    font-size:clamp(24px,8vw,34px)!important;
+    line-height:.96!important;
+    margin:0 0 6px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .sdc-brand-text-v235 p{
+    font-size:11px!important;
+    line-height:1.28!important;
+    margin:0!important;
+  }
+
+  /* Catálogo de producto: estructura más limpia y sin salirse del margen */
+  body.sdc-v258-mobile-compare-polish .product-card-v235{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-areas:'photo' 'copy' 'actions'!important;
+    gap:12px!important;
+    padding:14px!important;
+    border-radius:26px!important;
+    overflow:hidden!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-photo-v246{
+    grid-area:photo!important;
+    width:100%!important;
+    min-width:0!important;
+    height:182px!important;
+    border-radius:22px!important;
+    overflow:hidden!important;
+    display:block!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-photo-v246 img{
+    width:calc(100% - 24px)!important;
+    height:calc(100% - 24px)!important;
+    margin:12px!important;
+    padding:10px!important;
+    border-radius:18px!important;
+    background:rgba(255,255,255,.96)!important;
+    object-fit:contain!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-copy-v246{
+    grid-area:copy!important;
+    display:grid!important;
+    gap:10px!important;
+    min-width:0!important;
+    padding:0!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-code-row-v246{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    flex-wrap:wrap!important;
+    gap:8px!important;
+    margin:0!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-code-row-v246 span,
+  body.sdc-v258-mobile-compare-polish .product-code-row-v246 .product-cat-chip-v237{
+    max-width:100%!important;
+    overflow-wrap:anywhere!important;
+    font-size:10px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-copy-v246 h3{
+    font-size:22px!important;
+    line-height:1.08!important;
+    margin:0!important;
+    overflow-wrap:anywhere!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-main-price-v246{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    align-items:start!important;
+    gap:10px!important;
+    padding:14px!important;
+    border-radius:20px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-main-price-v246 strong{
+    font-size:26px!important;
+    line-height:.95!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-main-price-v246 em{
+    width:fit-content!important;
+    max-width:100%!important;
+    min-height:34px!important;
+    white-space:normal!important;
+    line-height:1.15!important;
+    font-size:12px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-panel-v246{
+    padding:14px!important;
+    border-radius:22px!important;
+    gap:12px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-tabs-v245{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    padding:4px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-tabs-v245 button{
+    min-height:48px!important;
+    border-radius:15px!important;
+    font-size:14px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-qty-v245{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-qty-box-v245{
+    grid-template-columns:56px minmax(96px,1fr) 56px!important;
+    gap:10px!important;
+    width:100%!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-qty-box-v245 button,
+  body.sdc-v258-mobile-compare-polish .delivery-qty-box-v245 input{
+    height:50px!important;
+    border-radius:16px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-qty-box-v245 button{
+    font-size:24px!important;
+    line-height:1!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-qty-box-v245 input{
+    font-size:21px!important;
+    line-height:1!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-prices-v245{
+    gap:10px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-prices-v245 article{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:6px 10px!important;
+    padding:14px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-prices-v245 span{
+    font-size:12px!important;
+    line-height:1.08!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-prices-v245 small{
+    font-size:11px!important;
+    line-height:1.22!important;
+  }
+  body.sdc-v258-mobile-compare-polish .delivery-prices-v245 b{
+    font-size:22px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-pills-v235{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:8px!important;
+    margin-top:0!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-pills-v235 > *{
+    max-width:100%!important;
+    overflow-wrap:anywhere!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-actions-v235{
+    grid-area:actions!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+    margin-top:2px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .product-actions-v235 > button{
+    min-height:46px!important;
+    border-radius:16px!important;
+  }
+
+  /* Comparativa: más respiro arriba y color distinto para pago al recibir */
+  body.sdc-v258-mobile-compare-polish .sdc230-compare-export.sdc230-compare-export-flyer{
+    gap:16px!important;
+    padding:20px!important;
+    border-radius:30px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .sdc230-compare-head{
+    grid-template-columns:minmax(0,1fr) 230px!important;
+    gap:12px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .sdc230-compare-head > div:first-child{
+    padding:20px 20px 18px 24px!important;
+    border-radius:24px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .sdc230-compare-head span{
+    margin-bottom:10px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .sdc230-compare-head h2{
+    font-size:36px!important;
+    margin:0 0 10px!important;
+  }
+  body.sdc-v258-mobile-compare-polish .sdc230-compare-head p{
+    font-size:13px!important;
+    line-height:1.3!important;
+  }
+}
+
+@media (max-width:420px){
+  body.sdc-v258-mobile-compare-polish .product-photo-v246{height:168px!important;}
+  body.sdc-v258-mobile-compare-polish .product-copy-v246 h3{font-size:20px!important;}
+  body.sdc-v258-mobile-compare-polish .product-main-price-v246 strong{font-size:24px!important;}
+  body.sdc-v258-mobile-compare-polish .delivery-prices-v245 b{font-size:20px!important;}
+}

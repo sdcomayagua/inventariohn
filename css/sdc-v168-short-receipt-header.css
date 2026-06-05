@@ -1,0 +1,151 @@
+/* SDC V168 · encabezado más elegante para factura corta */
+body.sdc-v95-light-default .short-receipt-v158{
+  background:#fff!important;
+}
+body.sdc-v95-light-default .short-brand-v158{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:56px minmax(0,1fr)!important;
+  gap:12px!important;
+  padding:14px!important;
+  border-radius:22px!important;
+  background:#ffffff!important;
+  border:1px solid #dbe6f1!important;
+  box-shadow:0 8px 24px rgba(15,23,42,.05)!important;
+  overflow:hidden!important;
+}
+body.sdc-v95-light-default .short-brand-v158::before{
+  content:'';
+  position:absolute;
+  left:0; top:0; right:0;
+  height:5px;
+  background:linear-gradient(90deg,#07121f,#0b63ce);
+}
+body.sdc-v95-light-default .short-brand-v158::after{display:none!important;}
+body.sdc-v95-light-default .short-logo-box{
+  width:56px!important;
+  height:56px!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  border:1px solid #dbe6f1!important;
+  box-shadow:none!important;
+  margin-top:8px!important;
+}
+body.sdc-v95-light-default .short-copy-v153{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  min-width:0!important;
+}
+body.sdc-v95-light-default .short-kicker-v158{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:28px!important;
+  padding:0 10px!important;
+  border-radius:999px!important;
+  border:1px solid #d8e5f3!important;
+  background:#f4f8fc!important;
+  color:#4f6480!important;
+  font-size:10px!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase!important;
+  font-weight:950!important;
+}
+body.sdc-v95-light-default .short-brand-v158 h2{
+  margin:8px 0 2px!important;
+  color:#07121f!important;
+  font-size:17px!important;
+  line-height:1.02!important;
+  letter-spacing:-.03em!important;
+}
+body.sdc-v95-light-default .short-meta.short-meta-v50{
+  display:grid!important;
+  gap:2px!important;
+  margin:0!important;
+}
+body.sdc-v95-light-default .short-meta .short-client-name{
+  color:#07121f!important;
+  font-size:15px!important;
+  font-weight:800!important;
+  line-height:1.1!important;
+}
+body.sdc-v95-light-default .short-meta .short-date-time{
+  color:#708297!important;
+  font-size:11px!important;
+  font-style:normal!important;
+  line-height:1.15!important;
+}
+body.sdc-v95-light-default .short-variant-pill-v158{
+  margin-top:10px!important;
+  min-height:40px!important;
+  padding:0 14px!important;
+  border-radius:999px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#f8fbff!important;
+  border:1px solid #d8e5f3!important;
+  color:#0b63ce!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  box-shadow:none!important;
+}
+body.sdc-v95-light-default .short-highlight-v158{
+  margin-top:12px!important;
+  padding:10px 12px!important;
+  border-radius:16px!important;
+  background:#fffaf1!important;
+  border:1px solid #f5ddac!important;
+  display:grid!important;
+  gap:3px!important;
+}
+body.sdc-v95-light-default .short-highlight-v158 span{
+  color:#a16207!important;
+  font-size:10px!important;
+  font-weight:950!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase!important;
+}
+body.sdc-v95-light-default .short-highlight-v158 b{
+  color:#9a5800!important;
+  font-size:13px!important;
+  line-height:1.25!important;
+}
+
+@media(max-width:900px){
+  body.sdc-v95-light-default .short-receipt-v158{padding:12px!important;border-radius:24px!important;}
+  body.sdc-v95-light-default .short-brand-v158{
+    grid-template-columns:54px minmax(0,1fr)!important;
+    gap:10px!important;
+    padding:12px!important;
+    border-radius:20px!important;
+  }
+  body.sdc-v95-light-default .short-logo-box{
+    width:54px!important;
+    height:54px!important;
+    margin-top:6px!important;
+  }
+  body.sdc-v95-light-default .short-kicker-v158{
+    min-height:26px!important;
+    font-size:9.5px!important;
+    padding:0 9px!important;
+  }
+  body.sdc-v95-light-default .short-brand-v158 h2{
+    margin:7px 0 2px!important;
+    font-size:15px!important;
+  }
+  body.sdc-v95-light-default .short-meta .short-client-name{font-size:13px!important;}
+  body.sdc-v95-light-default .short-meta .short-date-time{font-size:10px!important;}
+  body.sdc-v95-light-default .short-variant-pill-v158{
+    min-height:36px!important;
+    font-size:12px!important;
+    padding:0 13px!important;
+  }
+  body.sdc-v95-light-default .short-highlight-v158{
+    margin-top:10px!important;
+    padding:9px 11px!important;
+    border-radius:14px!important;
+  }
+  body.sdc-v95-light-default .short-highlight-v158 b{font-size:12px!important;}
+}

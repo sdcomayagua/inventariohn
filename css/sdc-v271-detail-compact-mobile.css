@@ -1,0 +1,212 @@
+/* SD Comayagua · v271 detalle móvil compacto y más limpio */
+
+@media (max-width:700px){
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .modal-body,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v49-product-detail{
+    gap:10px!important;
+  }
+
+  /* Cabecera del modal más compacta */
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .modal-head{
+    padding:12px 12px 10px!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-head-copy h3{
+    font-size:28px!important;
+    line-height:1.02!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-head-copy small{
+    font-size:11px!important;
+  }
+
+  /* Hero del producto más compacto */
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v49-detail-hero,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-detail-hero,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-detail-hero{
+    grid-template-columns:96px minmax(0,1fr)!important;
+    align-items:start!important;
+    gap:12px!important;
+    padding:12px!important;
+    border-radius:22px!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v49-detail-image,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-detail-image,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-detail-image{
+    min-height:96px!important;
+    height:96px!important;
+    border-radius:20px!important;
+    background:linear-gradient(135deg,#1780f8 0%,#4cbfff 100%)!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v49-detail-image img,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-detail-image img,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-detail-image img{
+    width:calc(100% - 14px)!important;
+    height:calc(100% - 14px)!important;
+    margin:7px!important;
+    padding:6px!important;
+    border-radius:14px!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .stock-badge{
+    top:8px!important;
+    left:8px!important;
+    font-size:10px!important;
+    padding:7px 10px!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-detail-mainwrap,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-detail-mainwrap{
+    gap:10px!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v49-detail-main small,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-detail-main small,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-detail-main small{
+    font-size:11px!important;
+    line-height:1.2!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v49-detail-main h4,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-detail-main h4,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-detail-main h4{
+    font-size:25px!important;
+    line-height:1.02!important;
+    margin:2px 0 4px!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-price-box,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-price-box{
+    padding:12px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-price-box b,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-price-box b{
+    font-size:28px!important;
+    line-height:1!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-price-box small,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-price-box small{
+    font-size:11px!important;
+    line-height:1.2!important;
+  }
+
+  /* Quitar el grid extra que cargaba el modal */
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-meta-grid,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-meta-grid{
+    display:none!important;
+  }
+
+  /* Tabs más finas */
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v49-tabbar,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-tabbar,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-tabbar{
+    padding:5px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v49-tabbar button,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v141-tabbar button,
+  body.sdc-v271-detail-compact #modalRoot .product-detail-modal-v221 .v163-tabbar button{
+    min-height:42px!important;
+    border-radius:14px!important;
+    font-size:12px!important;
+  }
+
+  /* Panel cliente más compacto */
+  body.sdc-v271-detail-compact .v250-detail-route-switch{
+    margin-top:0!important;
+    padding:4px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v271-detail-compact .v250-detail-route-switch button{
+    min-height:42px!important;
+    border-radius:14px!important;
+    font-size:14px!important;
+  }
+  body.sdc-v271-detail-compact .v250-detail-route-note{
+    margin:0!important;
+    padding:10px 12px!important;
+    border-radius:16px!important;
+    font-size:12px!important;
+    line-height:1.25!important;
+  }
+
+  body.sdc-v271-detail-compact .v250-qty-line{
+    padding:12px!important;
+    border-radius:18px!important;
+    gap:10px!important;
+  }
+  body.sdc-v271-detail-compact .v250-qty-line .v49-qty-wrap{
+    gap:8px!important;
+  }
+  body.sdc-v271-detail-compact .v250-qty-line .v49-qty-wrap > span{
+    font-size:11px!important;
+  }
+  body.sdc-v271-detail-compact .v250-qty-line .v49-qty-stepper{
+    grid-template-columns:56px minmax(0,1fr) 56px!important;
+    gap:8px!important;
+  }
+  body.sdc-v271-detail-compact .v250-qty-line .v49-qty-stepper button{
+    min-height:48px!important;
+    width:56px!important;
+    border-radius:16px!important;
+    font-size:18px!important;
+  }
+  body.sdc-v271-detail-compact .v250-qty-line .v49-qty-stepper b{
+    min-height:48px!important;
+    border-radius:16px!important;
+    font-size:19px!important;
+  }
+  body.sdc-v271-detail-compact .v250-qty-line em[data-v49-offer]{
+    padding:10px 12px!important;
+    border-radius:16px!important;
+    font-size:12px!important;
+    line-height:1.22!important;
+  }
+
+  body.sdc-v271-detail-compact .v250-price-cards{
+    grid-template-columns:1fr 1fr!important;
+    grid-template-areas:'local normal' 'cod cod'!important;
+    gap:8px!important;
+  }
+  body.sdc-v271-detail-compact .v250-price-cards [data-v49-card="local"]{grid-area:local!important;}
+  body.sdc-v271-detail-compact .v250-price-cards [data-v49-card="normal"]{grid-area:normal!important;}
+  body.sdc-v271-detail-compact .v250-price-cards [data-v49-card="cod"]{grid-area:cod!important;}
+  body.sdc-v271-detail-compact .v250-price-cards .v164-price-option{
+    min-height:92px!important;
+    padding:12px!important;
+    border-radius:18px!important;
+    gap:3px!important;
+  }
+  body.sdc-v271-detail-compact .v250-price-cards .v164-price-option span{
+    font-size:10px!important;
+    line-height:1.08!important;
+  }
+  body.sdc-v271-detail-compact .v250-price-cards .v164-price-option b{
+    font-size:17px!important;
+    line-height:1!important;
+  }
+  body.sdc-v271-detail-compact .v250-price-cards .v164-price-option small{
+    font-size:10px!important;
+    line-height:1.15!important;
+  }
+
+  body.sdc-v271-detail-compact .v141-color-card,
+  body.sdc-v271-detail-compact .v163-color-card,
+  body.sdc-v271-detail-compact .v164-color-card{
+    padding:12px!important;
+    border-radius:18px!important;
+  }
+
+  body.sdc-v271-detail-compact .v141-detail-actions,
+  body.sdc-v271-detail-compact .v163-detail-actions,
+  body.sdc-v271-detail-compact .v49-detail-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+  }
+  body.sdc-v271-detail-compact .v141-detail-actions .btn,
+  body.sdc-v271-detail-compact .v163-detail-actions .btn,
+  body.sdc-v271-detail-compact .v49-detail-actions .btn{
+    min-height:48px!important;
+    border-radius:16px!important;
+    font-size:14px!important;
+    padding:0 12px!important;
+  }
+  body.sdc-v271-detail-compact .v141-detail-actions .btn:nth-child(5){
+    grid-column:1/2!important;
+  }
+}

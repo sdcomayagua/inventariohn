@@ -1,0 +1,106 @@
+/* SD Comayagua · v289: Forzar buscador y categorías en celular */
+@media (max-width:700px){
+  /* Aunque esté en Captura Limpia, mostrar herramientas básicas */
+  body.sdc-v289-mobile-search-force.capture-clean .catalog-control-v178,
+  body.sdc-v289-mobile-search-force.capture-clean .catalog-control-v189,
+  body.sdc-v289-mobile-search-force .catalog-control-v178,
+  body.sdc-v289-mobile-search-force .catalog-control-v189{
+    display:grid!important;
+    visibility:visible!important;
+    opacity:1!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    position:relative!important;
+    top:auto!important;
+    left:auto!important;
+    right:auto!important;
+    transform:none!important;
+    z-index:5!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    margin:10px 0 12px!important;
+    padding:12px!important;
+    border-radius:24px!important;
+    background:#fff!important;
+    border:1px solid #d9e7f5!important;
+    box-shadow:0 10px 22px rgba(12,58,112,.07)!important;
+    backdrop-filter:none!important;
+  }
+
+  body.sdc-v289-mobile-search-force.capture-clean .catalog-search-v178,
+  body.sdc-v289-mobile-search-force.capture-clean .catalog-search-v189,
+  body.sdc-v289-mobile-search-force .catalog-search-v178,
+  body.sdc-v289-mobile-search-force .catalog-search-v189{
+    display:grid!important;
+    grid-template-columns:38px minmax(0,1fr)!important;
+    align-items:center!important;
+    width:100%!important;
+    min-height:54px!important;
+    border-radius:18px!important;
+    padding:0 12px!important;
+    background:#f8fbff!important;
+    border:1px solid #d8e6f4!important;
+    box-shadow:none!important;
+  }
+  body.sdc-v289-mobile-search-force .catalog-search-v178 input,
+  body.sdc-v289-mobile-search-force .catalog-search-v189 input{
+    width:100%!important;
+    min-width:0!important;
+    font-size:14px!important;
+    font-weight:850!important;
+    color:#0a2850!important;
+  }
+
+  body.sdc-v289-mobile-search-force.capture-clean .catalog-filter-row-v178,
+  body.sdc-v289-mobile-search-force.capture-clean .catalog-filter-row-v189,
+  body.sdc-v289-mobile-search-force.capture-clean .catalog-filter-row-v235,
+  body.sdc-v289-mobile-search-force .catalog-filter-row-v178,
+  body.sdc-v289-mobile-search-force .catalog-filter-row-v189,
+  body.sdc-v289-mobile-search-force .catalog-filter-row-v235{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-areas:'cat'!important;
+    gap:0!important;
+    width:100%!important;
+  }
+
+  body.sdc-v289-mobile-search-force.capture-clean .catalog-categories-v235,
+  body.sdc-v289-mobile-search-force .catalog-categories-v235{
+    grid-area:cat!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:10px!important;
+    width:100%!important;
+    min-height:54px!important;
+    border-radius:18px!important;
+    background:linear-gradient(135deg,#0b3978 0%,#1677ed 100%)!important;
+    color:#fff!important;
+    border:0!important;
+    box-shadow:0 10px 20px rgba(16,96,210,.18)!important;
+  }
+  body.sdc-v289-mobile-search-force .catalog-categories-v235 span,
+  body.sdc-v289-mobile-search-force .catalog-categories-v235 b{
+    color:#fff!important;
+  }
+
+  /* Mantener oculta la parte pesada; solo buscador + categorías */
+  body.sdc-v289-mobile-search-force .catalog-category-v178,
+  body.sdc-v289-mobile-search-force .catalog-category-v189,
+  body.sdc-v289-mobile-search-force .catalog-add-v178,
+  body.sdc-v289-mobile-search-force .catalog-add-v189,
+  body.sdc-v289-mobile-search-force .catalog-insights-v190,
+  body.sdc-v289-mobile-search-force .catalog-view-row-v189,
+  body.sdc-v289-mobile-search-force .catalog-utility-row-v178,
+  body.sdc-v289-mobile-search-force .catalog-utility-row-v189{
+    display:none!important;
+  }
+
+  /* Separación limpia antes de productos */
+  body.sdc-v289-mobile-search-force .products-screen-v178,
+  body.sdc-v289-mobile-search-force .products-screen-v189,
+  body.sdc-v289-mobile-search-force .products-screen-v190{
+    gap:10px!important;
+  }
+}

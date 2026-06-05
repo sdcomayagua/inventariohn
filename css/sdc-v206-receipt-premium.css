@@ -1,0 +1,188 @@
+/* =========================================================
+   SD Comayagua · v206 Recibo Premium
+   Apariencia tipo ticket/factura premium para WhatsApp.
+   ========================================================= */
+body.sdc-v95-light-default #modalRoot .short-receipt-head{
+  background:linear-gradient(180deg,#ffffff,#f4f9ff)!important;
+  border-bottom:1px solid #dbe8f6!important;
+}
+body.sdc-v95-light-default #modalRoot .short-receipt-head h3{
+  font-size:27px!important;
+  line-height:.98!important;
+  letter-spacing:-.045em!important;
+}
+body.sdc-v95-light-default #modalRoot .short-receipt-screen{
+  background:linear-gradient(180deg,#eaf3ff 0%,#f8fbff 100%)!important;
+}
+body.sdc-v95-light-default #modalRoot .short-receipt-grid-v147{
+  gap:18px!important;
+}
+body.sdc-v95-light-default #modalRoot .short-receipt-variant-v147,
+body.sdc-v95-light-default #modalRoot .short-receipt-variant-v157,
+body.sdc-v95-light-default #modalRoot .short-receipt-variant-v158{
+  border-radius:30px!important;
+  border:1px solid #d6e7f8!important;
+  background:rgba(255,255,255,.74)!important;
+  padding:12px!important;
+  box-shadow:0 16px 36px rgba(7,26,53,.06)!important;
+}
+body.sdc-v95-light-default #modalRoot .short-receipt-preview-wrap{
+  border-radius:28px!important;
+  background:#edf5ff!important;
+  padding:12px!important;
+  overflow:visible!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.82)!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc-short-v205{
+  position:relative!important;
+  max-width:720px!important;
+  border-radius:30px!important;
+  padding:16px!important;
+  background:#ffffff!important;
+  border:1px solid #d8e8f7!important;
+  box-shadow:0 24px 60px rgba(7,26,53,.10)!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc-short-v205::before{
+  content:""!important;
+  display:block!important;
+  height:8px!important;
+  margin:-16px -16px 16px!important;
+  border-radius:30px 30px 0 0!important;
+  background:linear-gradient(90deg,#071a35 0%,#0b63ce 58%,#19b7ff 100%)!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-head{
+  background:linear-gradient(135deg,#071a35 0%,#0b63ce 78%,#0a7cf2 100%)!important;
+  border:0!important;
+  color:#fff!important;
+  padding:16px!important;
+  border-radius:24px!important;
+  box-shadow:0 18px 36px rgba(11,99,206,.18)!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-brand{
+  grid-template-columns:62px minmax(0,1fr)!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-logo{
+  width:62px!important;
+  height:62px!important;
+  background:#fff!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+  box-shadow:0 14px 30px rgba(0,0,0,.14)!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-logo img{
+  width:50px!important;
+  height:50px!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-title span{
+  color:#bfe0ff!important;
+  font-size:11px!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-title h2{
+  color:#fff!important;
+  font-size:27px!important;
+  text-wrap:balance!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-title p{
+  color:#dbeafe!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-badge{
+  background:#fff!important;
+  color:#0b63ce!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+  box-shadow:none!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-meta{
+  margin:14px 0!important;
+  grid-template-columns:minmax(0,1fr) 100px!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-meta>div,
+body.sdc-v95-light-default #modalRoot .sdc204-client-box>div{
+  background:#f7fbff!important;
+  border-color:#dce9f7!important;
+  box-shadow:0 8px 20px rgba(7,26,53,.035)!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-section-title{
+  margin:6px 0 10px!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-section-title span{
+  padding:8px 10px!important;
+  border-radius:999px!important;
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  border:1px solid #d5e7fa!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-items{
+  gap:10px!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc204-receipt-item{
+  grid-template-columns:40px minmax(0,1fr) auto!important;
+  padding:13px!important;
+  border-radius:22px!important;
+  background:#fff!important;
+  border:1px solid #dbe8f6!important;
+  box-shadow:0 12px 26px rgba(7,26,53,.045)!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc204-item-num{
+  width:40px!important;
+  height:40px!important;
+  border-radius:15px!important;
+  background:linear-gradient(135deg,#edf6ff,#dfefff)!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc204-item-info b{
+  font-size:16px!important;
+  line-height:1.12!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc204-item-info span,
+body.sdc-v95-light-default #modalRoot .sdc204-item-info em{
+  font-size:12px!important;
+  color:#637d96!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc204-receipt-item strong{
+  color:#d61c3b!important;
+  font-size:21px!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-summary{
+  background:#f2f8ff!important;
+  border-color:#dbe8f6!important;
+  border-radius:22px!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-summary>div{
+  min-height:52px!important;
+  border-radius:17px!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-total{
+  min-height:82px!important;
+  border-radius:24px!important;
+  background:linear-gradient(135deg,#06172d,#0b63ce 72%,#0a7cf2)!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-total b{
+  font-size:38px!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-footer span{
+  background:#fff!important;
+  border-color:#cfe3fb!important;
+}
+body.sdc-v95-light-default #modalRoot .sdc205-footer b{
+  background:#071a35!important;
+  border-radius:20px!important;
+}
+body.sdc-v95-light-default #modalRoot .short-receipt-variant-v147>.btn,
+body.sdc-v95-light-default #modalRoot .short-receipt-variant-v157>.btn,
+body.sdc-v95-light-default #modalRoot .short-receipt-variant-v158>.btn{
+  min-height:56px!important;
+  border-radius:20px!important;
+  margin-top:12px!important;
+  font-weight:950!important;
+}
+@media(max-width:430px){
+  body.sdc-v95-light-default #modalRoot .sdc-short-v205{padding:12px!important;border-radius:26px!important;}
+  body.sdc-v95-light-default #modalRoot .sdc-short-v205::before{margin:-12px -12px 12px!important;}
+  body.sdc-v95-light-default #modalRoot .sdc205-head{padding:13px!important;border-radius:22px!important;}
+  body.sdc-v95-light-default #modalRoot .sdc205-brand{grid-template-columns:54px minmax(0,1fr)!important;gap:10px!important;}
+  body.sdc-v95-light-default #modalRoot .sdc205-logo{width:54px!important;height:54px!important;}
+  body.sdc-v95-light-default #modalRoot .sdc205-logo img{width:44px!important;height:44px!important;}
+  body.sdc-v95-light-default #modalRoot .sdc205-title h2{font-size:22px!important;}
+  body.sdc-v95-light-default #modalRoot .sdc205-meta{grid-template-columns:1fr 86px!important;}
+  body.sdc-v95-light-default #modalRoot .sdc204-receipt-item{grid-template-columns:34px minmax(0,1fr)!important;}
+  body.sdc-v95-light-default #modalRoot .sdc204-receipt-item strong{grid-column:2!important;justify-self:end!important;}
+  body.sdc-v95-light-default #modalRoot .sdc205-total b{font-size:31px!important;}
+}

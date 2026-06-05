@@ -1,0 +1,190 @@
+
+/* SD Comayagua · v251 tienda/catálogo profesional */
+body.sdc-v251-store-pro{
+  background:
+    radial-gradient(circle at 0% 0%, rgba(19,111,238,.10), transparent 32%),
+    radial-gradient(circle at 100% 8%, rgba(71,199,255,.09), transparent 28%),
+    linear-gradient(180deg,#f7fbff 0%,#eef6ff 55%,#f8fbff 100%)!important;
+}
+body.sdc-v251-store-pro .catalog-cover-v178,
+body.sdc-v251-store-pro .catalog-cover-v189{
+  border-radius:34px!important;
+  background:
+    radial-gradient(circle at 91% 9%, rgba(94,210,255,.22), transparent 22%),
+    linear-gradient(135deg,#ffffff 0%,#f4fbff 52%,#e6f8ff 100%)!important;
+  border:1px solid #d5e6f7!important;
+  box-shadow:0 20px 54px rgba(8,31,63,.09)!important;
+}
+body.sdc-v251-store-pro .catalog-cover-v178 h2,
+body.sdc-v251-store-pro .catalog-cover-v189 h2{
+  letter-spacing:-.055em!important;
+}
+body.sdc-v251-store-pro .catalog-mini-summary-v195 > *{
+  box-shadow:0 14px 34px rgba(8,31,63,.06)!important;
+  border-color:#d8e6f7!important;
+}
+body.sdc-v251-store-pro .catalog-control-v178,
+body.sdc-v251-store-pro .catalog-control-v189{
+  border-radius:30px!important;
+  border:1px solid #d5e6f7!important;
+  box-shadow:0 20px 52px rgba(8,31,63,.08)!important;
+}
+body.sdc-v251-store-pro .catalog-search-v178,
+body.sdc-v251-store-pro .catalog-search-v189,
+body.sdc-v251-store-pro .catalog-category-v178,
+body.sdc-v251-store-pro .catalog-category-v189{
+  border-radius:20px!important;
+}
+
+body.sdc-v251-store-pro .product-card-v235{
+  border:1px solid #d8e6f7!important;
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)!important;
+  box-shadow:0 18px 42px rgba(8,31,63,.075)!important;
+}
+body.sdc-v251-store-pro .product-card-v235::before{
+  height:5px!important;
+  background:linear-gradient(90deg,#072653 0%,#0f62ca 52%,#35c0ff 100%)!important;
+}
+body.sdc-v251-store-pro .product-main-price-v246{
+  box-shadow:0 12px 28px rgba(228,31,79,.055)!important;
+}
+body.sdc-v251-store-pro .delivery-panel-v246{
+  border-color:#d5e3f5!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 12px 28px rgba(8,31,63,.045)!important;
+}
+body.sdc-v251-store-pro .delivery-tabs-v245 button.active,
+body.sdc-v251-store-pro .v250-detail-route-switch button.active,
+body.sdc-v251-store-pro .quote-route-switch-v250 button.active{
+  background:linear-gradient(135deg,#06204b 0%,#0b58bd 70%,#1085ff 100%)!important;
+}
+body.sdc-v251-store-pro .delivery-prices-v245 article,
+body.sdc-v251-store-pro .v250-price-cards .v164-price-option{
+  border-color:#d8e6f7!important;
+  background:linear-gradient(180deg,#fff 0%,#fafdff 100%)!important;
+}
+
+body.sdc-v251-store-pro #modalRoot .modal{
+  border-radius:30px!important;
+}
+body.sdc-v251-store-pro #modalRoot .product-detail-modal-v221 .v49-detail-hero,
+body.sdc-v251-store-pro #modalRoot .product-detail-modal-v221 .v141-detail-hero,
+body.sdc-v251-store-pro #modalRoot .product-detail-modal-v221 .v163-detail-hero{
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%)!important;
+  box-shadow:0 16px 38px rgba(8,31,63,.06)!important;
+}
+body.sdc-v251-store-pro #modalRoot .product-detail-modal-v221 .v49-detail-image,
+body.sdc-v251-store-pro #modalRoot .product-detail-modal-v221 .v141-detail-image,
+body.sdc-v251-store-pro #modalRoot .product-detail-modal-v221 .v163-detail-image{
+  background:linear-gradient(135deg,#167af1 0%,#4ac3ff 100%)!important;
+  border:0!important;
+}
+body.sdc-v251-store-pro #modalRoot .quote-head-v176{
+  background:linear-gradient(135deg,#061934 0%,#0b52ad 68%,#1686ff 100%)!important;
+}
+body.sdc-v251-store-pro #modalRoot .quote-body-v176{
+  background:linear-gradient(180deg,#f7fbff 0%,#eff6ff 100%)!important;
+}
+body.sdc-v251-store-pro #modalRoot #currentDocBox,
+body.sdc-v251-store-pro #modalRoot #calcCardBox,
+body.sdc-v251-store-pro #modalRoot #pickerCardBox,
+body.sdc-v251-store-pro #modalRoot .preview-card-v176,
+body.sdc-v251-store-pro #modalRoot .gift-card-box-v176{
+  border-color:#d8e6f7!important;
+  box-shadow:0 18px 40px rgba(8,31,63,.065)!important;
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)!important;
+}
+
+@media (min-width:701px){
+  body.sdc-v251-store-pro .inventory-content .grid.two-col,
+  body.sdc-v251-store-pro .grid.two-col{
+    gap:20px!important;
+  }
+  body.sdc-v251-store-pro .product-card-v235:hover{
+    transform:translateY(-2px)!important;
+    box-shadow:0 24px 58px rgba(8,31,63,.105)!important;
+  }
+}
+
+@media (max-width:700px){
+  body.sdc-v251-store-pro #app,
+  body.sdc-v251-store-pro #app.app{
+    padding-left:9px!important;
+    padding-right:9px!important;
+  }
+  body.sdc-v251-store-pro .catalog-cover-v178,
+  body.sdc-v251-store-pro .catalog-cover-v189{
+    border-radius:26px!important;
+    padding:16px!important;
+  }
+  body.sdc-v251-store-pro .catalog-cover-v178 h2,
+  body.sdc-v251-store-pro .catalog-cover-v189 h2{
+    font-size:clamp(38px,12vw,54px)!important;
+    margin-bottom:6px!important;
+  }
+  body.sdc-v251-store-pro .catalog-mini-summary-v195{
+    gap:9px!important;
+  }
+  body.sdc-v251-store-pro .catalog-mini-summary-v195 > *{
+    min-height:76px!important;
+    border-radius:18px!important;
+  }
+  body.sdc-v251-store-pro .catalog-control-v178,
+  body.sdc-v251-store-pro .catalog-control-v189{
+    border-radius:24px!important;
+    padding:12px!important;
+  }
+
+  body.sdc-v251-store-pro .product-card-v235{
+    border-radius:28px!important;
+    padding:15px!important;
+  }
+  body.sdc-v251-store-pro .product-photo-v246{
+    height:235px!important;
+    border-radius:25px!important;
+  }
+  body.sdc-v251-store-pro .product-copy-v246 h3{
+    font-size:25px!important;
+    line-height:1.03!important;
+  }
+  body.sdc-v251-store-pro .product-main-price-v246{
+    border-radius:23px!important;
+    padding:15px!important;
+  }
+  body.sdc-v251-store-pro .product-main-price-v246 strong{
+    font-size:34px!important;
+  }
+  body.sdc-v251-store-pro .delivery-panel-v246{
+    border-radius:24px!important;
+    padding:15px!important;
+  }
+  body.sdc-v251-store-pro .delivery-tabs-v245 button{
+    min-height:48px!important;
+  }
+  body.sdc-v251-store-pro .delivery-qty-box-v245 button,
+  body.sdc-v251-store-pro .delivery-qty-box-v245 input{
+    height:52px!important;
+  }
+  body.sdc-v251-store-pro .delivery-prices-v245 article{
+    border-radius:20px!important;
+    padding:15px!important;
+  }
+  body.sdc-v251-store-pro .delivery-prices-v245 b{
+    font-size:25px!important;
+  }
+
+  body.sdc-v251-store-pro #modalRoot .product-detail-modal-v221 .v49-detail-image,
+  body.sdc-v251-store-pro #modalRoot .product-detail-modal-v221 .v141-detail-image,
+  body.sdc-v251-store-pro #modalRoot .product-detail-modal-v221 .v163-detail-image{
+    min-height:240px!important;
+  }
+  body.sdc-v251-store-pro .v250-price-cards .v164-price-option{
+    border-radius:20px!important;
+    padding:15px!important;
+  }
+  body.sdc-v251-store-pro #modalRoot .quote-actions-v176{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body.sdc-v251-store-pro #modalRoot .quote-actions-v176 .sdc-action-btn-v176{
+    min-height:68px!important;
+  }
+}

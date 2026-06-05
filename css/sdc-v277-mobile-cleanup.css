@@ -1,0 +1,135 @@
+/* SD Comayagua · v277 enfoque celular limpio */
+
+@media (max-width:700px){
+  /* 1) Logo móvil: quitar caja blanca / ocultar logo para que no se vea mal */
+  body.sdc-v277-mobile-cleanup .sdc-brand-v178,
+  body.sdc-v277-mobile-cleanup .sdc-brand-v235{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  body.sdc-v277-mobile-cleanup .sdc-logo-v178,
+  body.sdc-v277-mobile-cleanup .sdc-logo-v235{
+    display:none!important;
+  }
+  body.sdc-v277-mobile-cleanup .sdc-brand-text-v178,
+  body.sdc-v277-mobile-cleanup .sdc-brand-text-v235{
+    width:100%!important;
+    min-width:0!important;
+  }
+  body.sdc-v277-mobile-cleanup .sdc-brand-text-v178 h1,
+  body.sdc-v277-mobile-cleanup .sdc-brand-text-v235 h1{
+    font-size:clamp(28px,8.2vw,42px)!important;
+    line-height:.95!important;
+    margin:4px 0 6px!important;
+  }
+
+  /* 2) Resumen catálogo: 3 cajas en una sola fila */
+  body.sdc-v277-mobile-cleanup .catalog-mini-summary-v195{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:10px!important;
+    align-items:stretch!important;
+  }
+  body.sdc-v277-mobile-cleanup .catalog-mini-summary-v195 > *{
+    min-width:0!important;
+    width:100%!important;
+    padding:12px 8px!important;
+    border-radius:20px!important;
+  }
+  body.sdc-v277-mobile-cleanup .catalog-mini-summary-v195 .mini-stat-v195 span,
+  body.sdc-v277-mobile-cleanup .catalog-mini-summary-v195 .mini-cloud-v195 span{
+    font-size:10px!important;
+    line-height:1!important;
+  }
+  body.sdc-v277-mobile-cleanup .catalog-mini-summary-v195 .mini-stat-v195 b,
+  body.sdc-v277-mobile-cleanup .catalog-mini-summary-v195 .mini-cloud-v195 b{
+    font-size:16px!important;
+    line-height:1.05!important;
+    margin-top:5px!important;
+  }
+  body.sdc-v277-mobile-cleanup .catalog-mini-summary-v195 .mini-stat-v195 small,
+  body.sdc-v277-mobile-cleanup .catalog-mini-summary-v195 .mini-cloud-v195 small{
+    font-size:9px!important;
+    line-height:1.05!important;
+    margin-top:3px!important;
+  }
+  body.sdc-v277-mobile-cleanup .catalog-mini-summary-v195 .mini-cloud-v195{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    gap:3px!important;
+  }
+  body.sdc-v277-mobile-cleanup .catalog-mini-summary-v195 .mini-cloud-v195 i{
+    width:12px!important;
+    height:12px!important;
+    min-width:12px!important;
+    margin:0 0 2px!important;
+  }
+
+  /* 3) Tarjeta móvil limpia con stock visible */
+  body.sdc-v277-mobile-cleanup .product-card-v235{
+    grid-template-columns:96px minmax(0,1fr)!important;
+    gap:12px!important;
+    align-items:center!important;
+    min-height:126px!important;
+    padding:14px!important;
+  }
+  body.sdc-v277-mobile-cleanup .product-card-v235 .product-photo-v246{
+    width:96px!important;
+    min-width:96px!important;
+    max-width:96px!important;
+    height:96px!important;
+    min-height:96px!important;
+    max-height:96px!important;
+    border-radius:20px!important;
+  }
+  body.sdc-v277-mobile-cleanup .product-card-v235 .product-photo-v246 img{
+    margin:6px!important;
+    width:calc(100% - 12px)!important;
+    height:calc(100% - 12px)!important;
+  }
+  body.sdc-v277-mobile-cleanup .product-card-v235 .product-availability-v178{
+    display:none!important;
+  }
+  body.sdc-v277-mobile-cleanup .product-card-v235 .product-copy-v246{
+    gap:8px!important;
+  }
+  body.sdc-v277-mobile-cleanup .product-card-v235 .product-copy-v246 h3{
+    font-size:17px!important;
+    line-height:1.12!important;
+    -webkit-line-clamp:3!important;
+  }
+  body.sdc-v277-mobile-cleanup .product-card-v235 .product-mobile-meta-v277{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:8px!important;
+    align-items:center!important;
+  }
+  body.sdc-v277-mobile-cleanup .product-card-v235 .product-summary-status-v268,
+  body.sdc-v277-mobile-cleanup .product-card-v235 .product-stock-pill-v277{
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:7px!important;
+    min-height:30px!important;
+    padding:7px 10px!important;
+    border-radius:999px!important;
+    font-size:11px!important;
+    line-height:1!important;
+    font-weight:900!important;
+    white-space:nowrap!important;
+  }
+  body.sdc-v277-mobile-cleanup .product-card-v235 .product-stock-pill-v277{
+    border:1px solid #cfe0f0!important;
+    background:#eef5fd!important;
+    color:#23496e!important;
+  }
+  body.sdc-v277-mobile-cleanup .product-card-v235.is-agotado .product-stock-pill-v277{
+    color:#b22a46!important;
+    background:#fff1f4!important;
+    border-color:#f2cdd6!important;
+  }
+
+  /* ocultar CTA extra en la tarjeta simple */
+  body.sdc-v277-mobile-cleanup .product-card-v235 .product-mobile-hint-v269{display:none!important;}
+}

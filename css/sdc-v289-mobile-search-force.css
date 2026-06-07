@@ -1,7 +1,17 @@
-/* SD Comayagua · v289: Forzar buscador y categorías en celular */
-@media (max-width:700px){
-  /* Aunque esté en Captura Limpia, mostrar herramientas básicas */
-  body.sdc-v289-mobile-search-force.capture-clean .catalog-control-v178,
-  body.sdc-v289-mobile-search-force.capture-clean .catalog-control-v189,
-  body.sdc-v289-mobile-search-force .catalog-control-v178,
-  body.sdc-v289-mobile-search-force .catalog-control
+/* SD Comayagua · v289: buscador visible + retoques profesionales finales */
+
+:root{
+  --sdc-bg:#f4f7fb;
+  --sdc-card:#ffffff;
+  --sdc-text:#0f172a;
+  --sdc-muted:#64748b;
+  --sdc-line:#e5e7eb;
+  --sdc-brand:#111827;
+  --sdc-soft:#f8fafc;
+  --sdc-radius:22px;
+  --sdc-shadow:0 16px 42px rgba(15,23,42,.10);
+  --sdc-shadow-soft:0 10px 26px rgba(15,23,42,.08);
+}
+
+html,body{
+  background:linear-gradient(180deg,#eef4fb

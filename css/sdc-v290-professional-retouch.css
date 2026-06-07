@@ -1,0 +1,6 @@
+/* SD Comayagua v290 - Professional Retouch */
+:root{--pro-bg:#f4f7fb;--pro-card:#fff;--pro-text:#0f172a;--pro-muted:#64748b;--pro-line:#e5e7eb;--pro-shadow:0 14px 34px rgba(15,23,42,.10)}
+html,body{background:var(--pro-bg)!important;color:var(--pro-text)}
+#app{width:100%;max-width:1240px;margin:0 auto;padding:14px}
+.card,.panel,.producto-card,.product-card,.metric-card,.quote-card,.receipt-card{background:var(--pro-card)!important;border:1px solid var(--pro-line)!important;border-radius:20px!important;box-shadow:var(--pro-shadow)!important}
+button,.btn,.nav-btn,.action-btn{border

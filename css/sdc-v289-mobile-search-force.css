@@ -2,8 +2,5 @@
 @import url('./sdc-v292-mobile-products.css?v=292');
 @import url('./sdc-v293-mobile-controls.css?v=293');
 @import url('./sdc-v294-mobile-nav.css?v=294');
-/* SD Comayagua v291 base movil segura */
 html,body{max-width:100%;overflow-x:hidden!important}
-body{background:#f4f8ff!important;color:#061b33!important}
-@media(max-width:760px){
-body{font-size:15px!important;padding
+@media(max-width:760px){body{font-size:15px!important}}

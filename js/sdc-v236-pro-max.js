@@ -5,9 +5,7 @@ window.__sdcV296StructureFix = true;
   if(window.__sdcKeepCategoryPngOpen) return;
   window.__sdcKeepCategoryPngOpen = true;
   document.addEventListener('click', function(ev){
-    const btn = ev.target && ev.target.closest ? ev.target.closest('[data-catcapture-v199]') : null;
+    var btn = ev.target && ev.target.closest ? ev.target.closest('[data-catcapture-v199]') : null;
     if(!btn) return;
     setTimeout(function(){
-      const openBtn = document.querySelector('[data-action="categoriesSheet"]');
-      const hasCategoryModal = document.querySelector('#modalRoot .category-sheet-v199');
-      if(!hasCategoryModal && openBtn) open
+      var trigger

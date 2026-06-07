@@ -1,9 +1,11 @@
-document.documentElement.dataset.sdcV257='stable-no-freeze';
-/*
-  Modo estable temporal.
-  Se desactivan los parches v297-v300 porque varios observadores y timers
-  estaban corriendo al mismo tiempo y podían congelar la página en celular.
-*/
+document.documentElement.dataset.sdcV257='stable-share-v302';
 (function(){
-  console.info('SDC: modo estable activo. Parches pesados desactivados para evitar freeze.');
+  console.info('SDC: modo estable activo con botones livianos v302.');
+  if(!document.getElementById('sdc-v302-share-safe-loader')){
+    var s=document.createElement('script');
+    s.id='sdc-v302-share-safe-loader';
+    s.defer=true;
+    s.src='js/sdc-v302-share-safe.js?v=302-safe-1';
+    document.head.appendChild(s);
+  }
 })();

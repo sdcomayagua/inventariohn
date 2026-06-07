@@ -1,15 +1,7 @@
-/* SD Comayagua v289 · retoque profesional SOLO CELULAR */
-:root{
-  --sdc291-ink:#071b33;
-  --sdc291-muted:#64758b;
-  --sdc291-line:#dce8f5;
-  --sdc291-soft:#f5f9fe;
-  --sdc291-blue:#0b63ce;
-  --sdc291-blue2:#1684ff;
-  --sdc291-card:#ffffff;
-}
-html,body{max-width:100%;overflow-x:hidden!important;}
-body{background:#f4f7fb!important;color:var(--sdc291-ink)!important;}
-button,input,select,textarea{font-family:inherit!important;}
-
-@media(max-width:700
+/* SD Comayagua v289 · profesional móvil seguro */
+:root{--ink:#071b33;--muted:#66758a;--line:#dce7f4;--blue:#0b63ce;--bg:#f4f7fb;--card:#fff}
+html,body{max-width:100%;overflow-x:hidden!important}
+body{background:var(--bg)!important;color:var(--ink)!important}
+button,input,select,textarea{font-family:inherit!important}
+@media(max-width:700px){
+ body{font-size:15px!important;padding-bottom:88

@@ -1,5 +1,9 @@
-/* v289 fijo */
+/* v289 fijo + retoque profesional */
 body{background:#f4f7fb!important;color:#0f172a;overflow-x:hidden}
 #app{max-width:1240px;margin:auto;padding:14px}
+.card,.panel{border-radius:20px!important}
+.product-card,.producto-card{border-radius:20px!important}
+.metric-card{border-radius:20px!important}
 button{border-radius:14px!important;font-weight:800!important}
 input{border-radius:14px!important}
+@media(min-width:900px){#app{padding:24

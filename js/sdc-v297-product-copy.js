@@ -10,6 +10,11 @@
   const productCode=p=>clean(p.id||p.codigo||'SDC');
   const productPrice=p=>Number(p.price||p.precio||p.precio_venta||0)||0;
   const productImg=p=>clean(p.image||p.imagen||p.foto||'');
+  function injectStyle(){
+    if(document.getElementById('sdc-v297-product-copy-style')) return;
+    const css='.sdc-v297-copy-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.sdc-v297-copy-actions button{min-height:60px!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;text-align:left!important;gap:2px!important}.sdc-v297-copy-actions button b{font-size:13px!important;line-height:1.1!important;color:#fff!important}.sdc-v297-copy-actions button span{font-size:11px!important;line-height:1.1!important;color:rgba(255,255,255,.86)!important}.sdc-v297-copy-status{background:#f97316!important}.sdc-v297-copy-group{background:#7c3aed!important}.sdc-v297-copy-short{background:#14b8a6!important}.sdc-v297-copy-img{background:#475569!important}@media(max-width:520px){.sdc-v297-copy-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.sdc-v297-copy-actions button{min-height:58px!important;padding:11px 9px!important}.sdc-v297-copy-actions button b{font-size:12px!important}.sdc-v297-copy-actions button span{font-size:10px!important}}';
+    const st=document.createElement('style'); st.id='sdc-v297-product-copy-style'; st.textContent=css; document.head.appendChild(st);
+  }
   const stock=p=>{
     const rows=Array.isArray(p.colors)?p.colors:(Array.isArray(p.colores)?p.colores:[]);
     if(rows.length) return rows.reduce((a,r)=>a+(Number(r.qty||r.cantidad||r.stock||0)||0),0);
@@ -65,15 +70,8 @@
     return `${productName(p)} - ${L(productPrice(p))}\n${autoDesc(p)}\nCódigo: ${productCode(p)}${colors?`\nColores: ${colors}`:''}\nSD Comayagua · WhatsApp +504 ${PHONE}`;
   }
   async function copyText(text,label){
-    try{
-      await navigator.clipboard.writeText(text);
-      showToast(`${label} copiado ✅`);
-    }catch(e){
-      const ta=document.createElement('textarea');
-      ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.select();
-      try{document.execCommand('copy');showToast(`${label} copiado ✅`);}catch(err){prompt('Copia este texto:',text);}
-      ta.remove();
-    }
+    try{ await navigator.clipboard.writeText(text); showToast(`${label} copiado ✅`); }
+    catch(e){ const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');showToast(`${label} copiado ✅`);}catch(err){prompt('Copia este texto:',text);} ta.remove(); }
   }
   function showToast(msg){
     const old=document.querySelector('.sdc-v297-mini-toast'); if(old) old.remove();
@@ -86,10 +84,7 @@
     const p=currentDetailProduct();
     const img=productImg(p||{});
     if(!img) return showToast('Este producto no tiene imagen');
-    const a=document.createElement('a');
-    a.href=img;
-    a.download=`producto-${productCode(p)}.png`;
-    document.body.appendChild(a); a.click(); a.remove();
+    const a=document.createElement('a'); a.href=img; a.download=`producto-${productCode(p)}.png`; document.body.appendChild(a); a.click(); a.remove();
     showToast('Imagen descargada');
   }
   function enhanceCategoryShare(){
@@ -97,30 +92,22 @@
       if(card.dataset.v297ShareClean==='1') return;
       card.dataset.v297ShareClean='1';
       const summary=card.querySelector('.categoryShareSummary-v199'); if(summary) summary.remove();
-      const p=card.querySelector('.categoryShareBrand-v199 p');
-      if(p) p.textContent='Catálogo visual para cliente · productos seleccionados de SD Comayagua.';
+      const p=card.querySelector('.categoryShareBrand-v199 p'); if(p) p.textContent='Catálogo visual para cliente · productos seleccionados de SD Comayagua.';
       const box=card.querySelector('.categoryShareBrand-v199 > div');
-      if(box && !box.querySelector('.sdc-v297-share-desc')){
-        const desc=document.createElement('p');
-        desc.className='sdc-v297-share-desc';
-        desc.textContent='Consulta por WhatsApp para confirmar disponibilidad, colores y entrega según tu zona.';
-        box.appendChild(desc);
-      }
+      if(box && !box.querySelector('.sdc-v297-share-desc')){ const desc=document.createElement('p'); desc.className='sdc-v297-share-desc'; desc.textContent='Consulta por WhatsApp para confirmar disponibilidad, colores y entrega según tu zona.'; box.appendChild(desc); }
     });
   }
   function addButton(parent,cls,label,sub,handler){
-    const b=document.createElement('button');
-    b.type='button'; b.className=cls;
-    b.innerHTML=`<b>${label}</b><span>${sub}</span>`;
+    const b=document.createElement('button'); b.type='button'; b.className=cls; b.innerHTML=`<b>${label}</b><span>${sub}</span>`;
     b.addEventListener('click',()=>{const p=currentDetailProduct(); if(!p && cls!=='sdc-v297-copy-img') return showToast('No encontré el producto'); handler(p);});
     parent.appendChild(b);
   }
   function enhanceDetail(){
+    injectStyle();
     const modal=document.querySelector('#modalRoot .v49-product-detail, #modalRoot .v141-product-detail, #modalRoot .v163-product-detail');
     if(!modal || modal.querySelector('.sdc-v297-copy-panel')) return;
     const host=modal.querySelector('[data-panel="cliente"]') || modal.querySelector('.v141-detail-shell') || modal;
-    const panel=document.createElement('section');
-    panel.className='sdc-v297-copy-panel';
+    const panel=document.createElement('section'); panel.className='sdc-v297-copy-panel';
     panel.innerHTML=`<div class="sdc-v297-copy-head"><div><b>Publicar producto</b><span>Textos listos para copiar en WhatsApp Business, estados, grupos y Facebook Marketplace.</span></div><i>↗</i></div><div class="sdc-v297-copy-actions"></div>`;
     host.appendChild(panel);
     const actions=panel.querySelector('.sdc-v297-copy-actions');
@@ -131,9 +118,8 @@
     addButton(actions,'sdc-v297-copy-short','Descripción corta','Nombre + precio',p=>copyText(shortDescText(p),'Descripción corta'));
     addButton(actions,'sdc-v297-copy-img','Descargar imagen','PNG del producto',()=>downloadImage());
   }
-  function run(){enhanceCategoryShare(); enhanceDetail();}
-  const obs=new MutationObserver(run);
-  obs.observe(document.documentElement,{childList:true,subtree:true});
+  function run(){injectStyle(); enhanceCategoryShare(); enhanceDetail();}
+  const obs=new MutationObserver(run); obs.observe(document.documentElement,{childList:true,subtree:true});
   document.addEventListener('click',()=>setTimeout(run,80),true);
   document.addEventListener('DOMContentLoaded',run);
   setInterval(run,900);

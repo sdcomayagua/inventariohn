@@ -1,17 +1,3 @@
-/* SD Comayagua · v289: buscador visible + retoques profesionales finales */
-
-:root{
-  --sdc-bg:#f4f7fb;
-  --sdc-card:#ffffff;
-  --sdc-text:#0f172a;
-  --sdc-muted:#64748b;
-  --sdc-line:#e5e7eb;
-  --sdc-brand:#111827;
-  --sdc-soft:#f8fafc;
-  --sdc-radius:22px;
-  --sdc-shadow:0 16px 42px rgba(15,23,42,.10);
-  --sdc-shadow-soft:0 10px 26px rgba(15,23,42,.08);
-}
-
-html,body{
-  background:linear-gradient(180deg,#eef4fb
+/* SD Comayagua v289 - ajuste visual final */
+:root{--sdc-bg:#f4f7fb;--sdc-card:#fff;--sdc-text:#0f172a;--sdc-muted:#64748b;--sdc-line:#e5e7eb;--sdc-radius:20px;--sdc-shadow:0 14px 36px rgba(15,23,42,.10)}
+html,body{background:#f4f7fb!important;color:var(--sdc-text);overflow-x:hidden}#app{width:100%;max-width:1240px;margin:0 auto;padding:14px}.app-shell,.page-shell,.main-shell,.view,.screen,.section,.panel,.card,.

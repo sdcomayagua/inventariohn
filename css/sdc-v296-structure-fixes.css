@@ -1,0 +1,284 @@
+/* SDC v296 - Correcciones de estructura movil
+   Categorias 2 columnas, productos compactos, precios parejos y recibos mas limpios. */
+
+@media (max-width: 768px){
+  html,body{max-width:100%;overflow-x:hidden;}
+  #app{background:#eaf4fc;}
+
+  /* CATEGORIAS: convierte las tarjetas en 2 columnas cuando el contenedor sea de categorias */
+  .sdc-v241-category-premium .category-grid,
+  .sdc-v241-category-premium .categories-grid,
+  .sdc-v241-category-premium .category-share-grid,
+  .sdc-v241-category-premium .category-client-grid,
+  .sdc-v241-category-premium .category-list,
+  .sdc-v241-category-premium .categories-list,
+  .sdc-v241-category-premium .print-category-grid,
+  .sdc-v241-category-premium .share-category-grid,
+  .sdc-v241-category-premium [class*="categorias"] [class*="grid"],
+  .sdc-v241-category-premium [class*="categoria"] [class*="grid"],
+  .sdc-v241-category-premium [class*="category"] [class*="grid"]{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+    align-items:stretch!important;
+  }
+
+  .sdc-v241-category-premium [class*="category"] [class*="card"],
+  .sdc-v241-category-premium [class*="categoria"] [class*="card"],
+  .sdc-v241-category-premium .category-card,
+  .sdc-v241-category-premium .categoria-card,
+  .sdc-v241-category-premium .category-share-card,
+  .sdc-v241-category-premium .print-category-card{
+    width:auto!important;
+    min-width:0!important;
+    min-height:178px!important;
+    padding:14px!important;
+    border-radius:22px!important;
+    background:#fff!important;
+    border:1px solid rgba(130,164,195,.28)!important;
+    box-shadow:0 10px 24px rgba(13,58,105,.08)!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:space-between!important;
+  }
+
+  .sdc-v241-category-premium [class*="category"] h3,
+  .sdc-v241-category-premium [class*="categoria"] h3,
+  .sdc-v241-category-premium .category-card h3,
+  .sdc-v241-category-premium .categoria-card h3{
+    font-size:16px!important;
+    line-height:1.12!important;
+    min-height:36px!important;
+    margin:0 0 4px!important;
+    color:#09254a!important;
+  }
+
+  .sdc-v241-category-premium [class*="category"] .count,
+  .sdc-v241-category-premium [class*="categoria"] .count,
+  .sdc-v241-category-premium [class*="category"] .total,
+  .sdc-v241-category-premium [class*="categoria"] .total,
+  .sdc-v241-category-premium .category-count,
+  .sdc-v241-category-premium .categoria-count{
+    font-size:40px!important;
+    line-height:.95!important;
+    margin:2px 0 5px!important;
+    font-weight:900!important;
+    color:#0870df!important;
+  }
+
+  .sdc-v241-category-premium [class*="category"] p,
+  .sdc-v241-category-premium [class*="categoria"] p,
+  .sdc-v241-category-premium [class*="category"] small,
+  .sdc-v241-category-premium [class*="categoria"] small{
+    font-size:13px!important;
+    line-height:1.18!important;
+    color:#6b7d91!important;
+    margin:0 0 10px!important;
+  }
+
+  .sdc-v241-category-premium [class*="category"] .actions,
+  .sdc-v241-category-premium [class*="categoria"] .actions,
+  .sdc-v241-category-premium [class*="category"] [class*="actions"],
+  .sdc-v241-category-premium [class*="categoria"] [class*="actions"]{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    margin-top:auto!important;
+  }
+
+  .sdc-v241-category-premium [class*="category"] button,
+  .sdc-v241-category-premium [class*="categoria"] button,
+  .sdc-v241-category-premium [class*="category"] a,
+  .sdc-v241-category-premium [class*="categoria"] a{
+    min-height:42px!important;
+    border-radius:15px!important;
+    font-size:14px!important;
+    font-weight:800!important;
+    padding:0 10px!important;
+  }
+
+  /* PRODUCTOS: se conserva el estilo, pero mas compacto y alineado */
+  .sdc-v249-catalog-app .product-card,
+  .sdc-v249-catalog-app .product-card-v235,
+  .sdc-v249-catalog-app .catalog-product-card,
+  .sdc-v249-catalog-app .producto-card,
+  .sdc-v249-catalog-app [class*="product"][class*="card"],
+  .sdc-v249-catalog-app [class*="producto"][class*="card"]{
+    border-radius:26px!important;
+    padding:14px!important;
+    min-height:120px!important;
+    background:#fff!important;
+    border:1px solid rgba(130,164,195,.24)!important;
+    box-shadow:0 12px 28px rgba(7,45,84,.07)!important;
+    gap:14px!important;
+  }
+
+  .sdc-v249-catalog-app .product-card img,
+  .sdc-v249-catalog-app .product-card-v235 img,
+  .sdc-v249-catalog-app .catalog-product-card img,
+  .sdc-v249-catalog-app .producto-card img,
+  .sdc-v249-catalog-app [class*="product"][class*="card"] img,
+  .sdc-v249-catalog-app [class*="producto"][class*="card"] img{
+    width:92px!important;
+    height:92px!important;
+    max-width:92px!important;
+    object-fit:contain!important;
+    border-radius:18px!important;
+    background:#f7fbff!important;
+  }
+
+  .sdc-v249-catalog-app .product-card h3,
+  .sdc-v249-catalog-app .product-card-v235 h3,
+  .sdc-v249-catalog-app .catalog-product-card h3,
+  .sdc-v249-catalog-app .producto-card h3,
+  .sdc-v249-catalog-app [class*="product"][class*="card"] h3,
+  .sdc-v249-catalog-app [class*="producto"][class*="card"] h3{
+    font-size:18px!important;
+    line-height:1.13!important;
+    color:#08274f!important;
+    margin:0!important;
+    letter-spacing:-.2px!important;
+  }
+
+  .sdc-v249-catalog-app [class*="badge"],
+  .sdc-v249-catalog-app [class*="pill"]{
+    border-radius:999px!important;
+    min-height:32px!important;
+    padding:0 12px!important;
+    font-size:13px!important;
+    font-weight:800!important;
+  }
+
+  /* DETALLE DE PRODUCTO: precios Honduras y Comayagua alineados */
+  .sdc-v270-detail-modal-premium [class*="price"],
+  .sdc-v270-detail-modal-premium [class*="precio"],
+  .sdc-v270-detail-modal-premium [class*="delivery"],
+  .sdc-v270-detail-modal-premium [class*="envio"],
+  .sdc-v270-detail-modal-premium [class*="shipping"]{
+    box-sizing:border-box!important;
+  }
+
+  .sdc-v270-detail-modal-premium [class*="price-card"],
+  .sdc-v270-detail-modal-premium [class*="precio-card"],
+  .sdc-v270-detail-modal-premium [class*="delivery-card"],
+  .sdc-v270-detail-modal-premium [class*="envio-card"],
+  .sdc-v270-detail-modal-premium [class*="shipping-card"],
+  .sdc-v270-detail-modal-premium .local-price-card,
+  .sdc-v270-detail-modal-premium .honduras-price-card,
+  .sdc-v270-detail-modal-premium .comayagua-price-card{
+    width:100%!important;
+    max-width:none!important;
+    min-height:112px!important;
+    padding:16px 18px!important;
+    border-radius:24px!important;
+    background:#fff!important;
+    border:1px solid rgba(130,164,195,.30)!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:12px!important;
+    margin:0 0 12px!important;
+    transform:none!important;
+  }
+
+  .sdc-v270-detail-modal-premium [class*="price-card"] * ,
+  .sdc-v270-detail-modal-premium [class*="precio-card"] * ,
+  .sdc-v270-detail-modal-premium [class*="delivery-card"] * ,
+  .sdc-v270-detail-modal-premium [class*="envio-card"] *{
+    max-width:100%!important;
+  }
+
+  .sdc-v270-detail-modal-premium [class*="price-card"] b,
+  .sdc-v270-detail-modal-premium [class*="precio-card"] b,
+  .sdc-v270-detail-modal-premium [class*="delivery-card"] b,
+  .sdc-v270-detail-modal-premium [class*="envio-card"] b,
+  .sdc-v270-detail-modal-premium [class*="price-card"] strong,
+  .sdc-v270-detail-modal-premium [class*="precio-card"] strong{
+    font-size:clamp(32px,8vw,44px)!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    text-align:right!important;
+    color:#0859b7!important;
+  }
+
+  .sdc-v270-detail-modal-premium [class*="price-card"] span,
+  .sdc-v270-detail-modal-premium [class*="precio-card"] span,
+  .sdc-v270-detail-modal-premium [class*="delivery-card"] span,
+  .sdc-v270-detail-modal-premium [class*="envio-card"] span,
+  .sdc-v270-detail-modal-premium [class*="price-card"] p,
+  .sdc-v270-detail-modal-premium [class*="precio-card"] p{
+    line-height:1.18!important;
+    word-break:normal!important;
+    overflow:visible!important;
+  }
+
+  .sdc-v270-detail-modal-premium [class*="normal"],
+  .sdc-v270-detail-modal-premium [class*="recibir"],
+  .sdc-v270-detail-modal-premium [class*="comayagua"]{
+    overflow:visible!important;
+  }
+
+  /* Colores mas ordenados */
+  .sdc-v270-detail-modal-premium [class*="color"] [class*="chip"],
+  .sdc-v270-detail-modal-premium [class*="color"] [class*="pill"],
+  .sdc-v270-detail-modal-premium [class*="color"] button{
+    min-height:52px!important;
+    border-radius:999px!important;
+    padding:0 14px!important;
+  }
+
+  /* RECIBOS / COMPARATIVA */
+  .sdc-v258-mobile-compare-polish [class*="compare"],
+  .sdc-v258-mobile-compare-polish [class*="comparativa"],
+  .sdc-v258-mobile-compare-polish [class*="receipt"],
+  .sdc-v258-mobile-compare-polish [class*="recibo"]{
+    box-sizing:border-box!important;
+  }
+
+  .sdc-v258-mobile-compare-polish [class*="compare"][class*="grid"],
+  .sdc-v258-mobile-compare-polish [class*="comparativa"][class*="grid"],
+  .sdc-v258-mobile-compare-polish [class*="receipt"][class*="grid"],
+  .sdc-v258-mobile-compare-polish [class*="recibo"][class*="grid"]{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+  }
+
+  .sdc-v258-mobile-compare-polish [class*="compare"][class*="card"],
+  .sdc-v258-mobile-compare-polish [class*="comparativa"][class*="card"],
+  .sdc-v258-mobile-compare-polish [class*="receipt"][class*="card"],
+  .sdc-v258-mobile-compare-polish [class*="recibo"][class*="card"]{
+    border-radius:24px!important;
+    padding:14px!important;
+    background:#fff!important;
+    border:1px solid rgba(130,164,195,.24)!important;
+  }
+}
+
+@media (max-width:390px){
+  .sdc-v241-category-premium .category-grid,
+  .sdc-v241-category-premium .categories-grid,
+  .sdc-v241-category-premium .category-share-grid,
+  .sdc-v241-category-premium .category-client-grid,
+  .sdc-v241-category-premium .category-list,
+  .sdc-v241-category-premium .categories-list,
+  .sdc-v241-category-premium .print-category-grid,
+  .sdc-v241-category-premium .share-category-grid,
+  .sdc-v241-category-premium [class*="categorias"] [class*="grid"],
+  .sdc-v241-category-premium [class*="categoria"] [class*="grid"],
+  .sdc-v241-category-premium [class*="category"] [class*="grid"]{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media (min-width:769px){
+  .sdc-v258-mobile-compare-polish [class*="compare"][class*="grid"],
+  .sdc-v258-mobile-compare-polish [class*="comparativa"][class*="grid"],
+  .sdc-v258-mobile-compare-polish [class*="receipt"][class*="grid"],
+  .sdc-v258-mobile-compare-polish [class*="recibo"][class*="grid"]{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:18px!important;
+    align-items:start!important;
+  }
+}

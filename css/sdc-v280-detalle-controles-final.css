@@ -88,3 +88,82 @@
   body.sdc-v280-detail-final .v250-price-cards [data-v49-card="cod"]{background:#fff8ed!important;border:1px solid #efd3a1!important;}
   body.sdc-v280-detail-final .v250-price-cards [data-v49-card="cod"] b{color:#c57900!important;}
 }
+
+/* v297 ajuste puntual pedido por Salman: controles y precios a todo lo ancho */
+@media (max-width:700px){
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-qty-line{
+    width:100%!important;
+    box-sizing:border-box!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-qty-line .v49-qty-stepper{
+    width:100%!important;
+    grid-template-columns:64px minmax(0,1fr) 64px!important;
+    gap:12px!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-qty-line .v49-qty-stepper button,
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-qty-line .v49-qty-stepper b{
+    width:100%!important;
+    min-height:58px!important;
+    border-radius:18px!important;
+  }
+
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:12px!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards .v164-price-option{
+    width:100%!important;
+    max-width:none!important;
+    min-height:104px!important;
+    box-sizing:border-box!important;
+    margin:0!important;
+    padding:16px 20px!important;
+    border-radius:24px!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:"label price" "sub price"!important;
+    align-items:center!important;
+    justify-self:stretch!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards .v164-price-option b{
+    font-size:clamp(32px,9vw,46px)!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards .v164-price-option span{
+    font-size:14px!important;
+    line-height:1.08!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards .v164-price-option small{
+    font-size:13px!important;
+    line-height:1.16!important;
+  }
+
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards [data-v49-card="normal"]{
+    background:#fff!important;
+    border:2px solid #cfe2f8!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards [data-v49-card="normal"] span,
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards [data-v49-card="normal"] small{
+    color:#6f8195!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards [data-v49-card="normal"] b{
+    color:#075fbd!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards [data-v49-card="cod"]{
+    background:#fff!important;
+    border:1px solid #dce8f5!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards [data-v49-card="cod"] b{
+    color:#075fbd!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards [data-v49-card="local"]{
+    background:linear-gradient(135deg,#0b3978,#1977e8)!important;
+    border:1px solid #126cd8!important;
+    color:#fff!important;
+  }
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards [data-v49-card="local"] span,
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards [data-v49-card="local"] small,
+  body.sdc-v280-detail-final #modalRoot .product-detail-modal-v221 .v250-price-cards [data-v49-card="local"] b{
+    color:#fff!important;
+  }
+}

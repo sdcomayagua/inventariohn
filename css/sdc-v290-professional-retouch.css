@@ -1,9 +1,9 @@
 /* SD Comayagua v290 */
-html,body{background:#f4f7fb!important;color:#0f172a}
-#app{width:100%;max-width:1240px;margin:0 auto;padding:14px}
+body{background:#f4f7fb!important;color:#0f172a}
+#app{max-width:1240px;margin:0 auto;padding:14px}
 .card{border-radius:20px!important}
 .panel{border-radius:20px!important}
-.producto-card{border-radius:20px!important}
 .product-card{border-radius:20px!important}
-.metric-card{border-radius:20px!important}
-.card,.panel,.producto-card,.product-card,.metric-card{background:#fff!important;border:1px solid #e5e7eb!important;box-shadow:0 12
+.producto-card{border-radius:20px!important}
+button{border-radius:14px!important}
+input{border-radius:14px!important}

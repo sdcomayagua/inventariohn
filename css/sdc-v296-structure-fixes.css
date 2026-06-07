@@ -1,10 +1,7 @@
-/* SDC v296/v298/v299 ajustes seguros con clases reales.
-   Solo corrige categorías, PNG/compartir e impresión de catálogo. */
+/* SDC v296/v299 ajustes seguros con clases reales */
 
-@media (max-width:700px){
-  body.sdc-v296-structure-fixes #modalRoot .category-sheet-v199{
-    padding:18px 18px 24px!important;
-    background:linear-gradient(180deg,#f4f9ff 0%,#edf6ff 100%)!important;
-  }
-  body.sdc-v296-structure-fixes #modalRoot .category-sheet-copy-v191{
-    display
+@media(max-width:700px){
+  body.sdc-v296-structure-fixes #modalRoot .category-sheet-copy-v191{display:none!important;}
+  body.sdc-v296-structure-fixes #modalRoot .category-sheet-v199{padding:18px!important;background:#edf6ff!important;}
+  body.sdc-v296-structure-fixes #modalRoot .category-sheet-grid-v199{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important;}
+  body.sdc-v296-structure-fixes #modalRoot .category-sheet-card-v199{min-height:164px!important;padding:14px!important;border-radius:24px!important;background:#fff

@@ -1,4 +1,4 @@
-/* SD Comayagua v289 movil base estable */
+/* SD Comayagua v289 movil pro estable */
 html,body{max-width:100%;overflow-x:hidden!important}
 body{background:#f4f7fb!important;color:#071b33!important}
-@media(max-width:700px){body{font-size:15px!important;padding-bottom:86px!important}}
+@media(max-width:700px){body{font-size:15px!important;padding:0 10px 86px!important}button{border-radius:14px!important;font-weight:800!important}.card,.panel{border-radius:18px!important}.product-card-v235{border-radius:18px!important}}

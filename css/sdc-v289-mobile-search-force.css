@@ -1,32 +1,8 @@
-/* SD Comayagua v291 mobile pro final */
-:root{
-  --m-ink:#061b33;
-  --m-muted:#647892;
-  --m-line:#d9e6f4;
-  --m-soft:#f3f8ff;
-  --m-blue:#0b66d8;
-  --m-card:#ffffff;
-}
-html,body{
-  max-width:100%;
-  overflow-x:hidden!important;
-  -webkit-tap-highlight-color:transparent;
-}
-body{
-  color:var(--m-ink)!important;
-  background:linear-gradient(180deg,#f8fbff,#eef6ff)!important;
-}
+/* SD Comayagua v291 movil estable */
+html,body{max-width:100%;overflow-x:hidden!important;-webkit-tap-highlight-color:transparent}
+body{background:linear-gradient(180deg,#f8fbff,#eef6ff)!important;color:#061b33!important}
 @media(max-width:760px){
-  body{font-size:15px!important;}
-  #app{
-    width:100%!important;
-    padding:10px 10px 118px!important;
-  }
-  .sdc-hero-v178,.sdc-hero-v235,
-  .catalog-cover-v178,.catalog-cover-v189{
-    border-radius:26px!important;
-    padding:16px!important;
-    box-shadow:0 16px 36px rgba(6,27,51,.10)!important;
-  }
-  .sdc-brand-text-v178 h1,
- 
+body{font-size:15px!important;padding-bottom:110px!important}
+#app{width:100%!important;padding:10px 10px 112px!important}
+.card,.panel,.section,.box{border-radius:20px!important;box-shadow:0 12px 30px rgba(6,27,51,.08)!important;border:1px solid #dbe7f5!important;background:#fff!important}
+button,.btn,.action-btn,.primary

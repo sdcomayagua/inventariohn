@@ -1,5 +1,5 @@
-/* SD Comayagua v289 - retoque profesional seguro */
-:root{--sdc-bg:#f4f7fb;--sdc-card:#fff;--sdc-text:#0f172a;--sdc-line:#e5e7eb;--sdc-shadow:0 12px 30px rgba(15,23,42,.10)}
-html,body{background:var(--sdc-bg)!important;color:var(--sdc-text);overflow-x:hidden}
-#app{width:100%;max-width:1240px;margin:auto;padding:14px}
-.card,.panel,.producto-card,.product-card,.metric-card,.receipt-card,.quote-card{background:var(--sdc-card)!important;border:1px solid var(--sdc-line)!important;border-radius:18px!important;box-shadow:var(--
+/* SD Comayagua v289 - estable */
+html,body{background:#f4f7fb!important;color:#0f172a;overflow-x:hidden}
+#app{width:100%;max-width:1240px;margin:0 auto;padding:14px}
+.card,.panel,.producto-card,.product-card,.metric-card{background:#fff!important;border:1px solid #e5e7eb!important;border-radius:18px!important;box-shadow:0 10px 24px rgba(15,23,42,.08)!important}
+button,.btn,.nav-btn,.action-btn{border-radius:14px!important;font-weight:800!important;

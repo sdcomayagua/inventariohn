@@ -1,12 +1,11 @@
 /* SD Comayagua v291 shell movil */
 @media(max-width:760px){
-body{background:#f3f8ff!important}
-#app{padding:12px 12px 118px!important}
+html,body{background:#edf6ff!important;overflow-x:hidden!important}
+body{color:#08203d!important}
+#app{padding:10px 10px 112px!important}
 main{max-width:100%!important}
-.sdc-hero-v178{border-radius:26px!important}
-.sdc-hero-v235{border-radius:26px!important}
-.card{background:#fff!important}
-.panel{background:#fff!important}
-.card{border:1px solid #dbe7f5!important}
-.panel{border:1px solid #dbe7f5!important}
-}
+.card,.panel{background:#fff!important}
+.card,.panel{border:1px solid #dbe7f5!important}
+.card,.panel{border-radius:22px!important}
+button,.btn{border-radius:16px!important}
+input,select,textarea

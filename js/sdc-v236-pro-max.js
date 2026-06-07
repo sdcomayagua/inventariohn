@@ -7,8 +7,7 @@ window.__sdcV296StructureFix = true;
   document.addEventListener('click', function(ev){
     const btn = ev.target && ev.target.closest ? ev.target.closest('[data-catcapture-v199]') : null;
     if(!btn) return;
-    window.__sdcReopenCategorySheet = true;
     setTimeout(function(){
-      if(!window.__sdcReopenCategorySheet) return;
-      window.__sdcReopenCategorySheet = false;
-      const modalRoot = document
+      const openBtn = document.querySelector('[data-action="categoriesSheet"]');
+      const hasCategoryModal = document.querySelector('#modalRoot .category-sheet-v199');
+      if(!hasCategoryModal && openBtn) open

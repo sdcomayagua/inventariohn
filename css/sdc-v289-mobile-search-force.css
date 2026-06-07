@@ -1,4 +1,8 @@
 /* SD Comayagua v289 movil profesional */
 html,body{max-width:100%;overflow-x:hidden!important}
 body{background:#f4f7fb!important;color:#071b33!important}
-@media(max-width:700px){body{font-size:15px!important;padding:0 10px 86px!important}.app,.main,.container{max-width:100%!important}.card,.panel,.product-card-v235{border-radius:18px!important}}
+button,input,select,textarea{font-family:inherit!important}
+@media(max-width:700px){
+body{font-size:15px!important;padding:0 10px 86px!important}
+.app,.main,.container,#app{max-width:100%!important;margin:auto!important}
+.card,.panel,.box,.product-card-v235{border:1px solid #dce7f4!important;border-radius:20px!important

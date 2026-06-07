@@ -8,10 +8,4 @@ document.documentElement.dataset.sdcV257='1';
     document.head.appendChild(s);
   }
   if(!document.getElementById('sdc-v298-fixes-loader')){
-    var f=document.createElement('script');
-    f.id='sdc-v298-fixes-loader';
-    f.defer=true;
-    f.src='js/sdc-v298-fixes-salman.js?v=298-fixes-1';
-    document.head.appendChild(f);
-  }
-})();
+    var f=document.createElement('script

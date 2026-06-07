@@ -1,0 +1,15 @@
+/* SD Comayagua v295 · correcciones móviles finales */
+:root{
+  --sdc-blue:#0b5fd3;
+  --sdc-navy:#06264f;
+  --sdc-soft:#eef6ff;
+  --sdc-border:#d9e7f6;
+  --sdc-text:#08203d;
+  --sdc-muted:#66798e;
+  --sdc-green:#119c63;
+  --sdc-gold:#b26d00;
+}
+@media(max-width:760px){
+  html,body{background:#edf6ff!important;overflow-x:hidden!important;}
+  body{font-family:Barlow,system-ui,sans-serif!important;color:var(--sdc-text)!important;}
+  #app{padding:10px 10px 108px!important;max

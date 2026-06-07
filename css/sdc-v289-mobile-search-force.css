@@ -2,5 +2,6 @@
 @import url('./sdc-v292-mobile-products.css?v=292');
 @import url('./sdc-v293-mobile-controls.css?v=293');
 @import url('./sdc-v294-mobile-nav.css?v=294');
+@import url('./sdc-v296-structure-fixes.css?v=296');
 html,body{max-width:100%;overflow-x:hidden!important}
 @media(max-width:760px){body{font-size:15px!important}}

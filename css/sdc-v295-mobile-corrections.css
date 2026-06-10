@@ -1,6 +1,0 @@
-@media(max-width:760px){
-html,body{overflow-x:hidden!important}
-#app{padding-bottom:112px!important}
-button,.btn{border-radius:16px!important}
-.card,.panel{border-radius:22px!important}
-}

@@ -1,0 +1,19 @@
+SD Comayagua · v305 optimizado para celular
+
+Cambios aplicados:
+1. index.html ahora carga 1 CSS principal y 1 JS principal en lugar de decenas de archivos separados.
+2. Se eliminó node_modules del paquete final porque GitHub Pages no lo necesita.
+3. html2canvas ya no carga al abrir la página; carga solo cuando se descarga/compartir imagen.
+4. XLSX ya no carga al abrir la página; carga solo si se importa Excel.
+5. La vista previa de cotización/recibo se actualiza con espera corta para que los botones +, -, cantidades y productos no se peguen en celular.
+6. Al descargar imagen/PDF se fuerza la vista previa actualizada antes de capturar, para no descargar datos viejos.
+7. En celular se limita el listado inicial de productos en Cotizar a 36 resultados y se recomienda usar categoría/buscador.
+8. Las imágenes del selector de productos y regalos usan carga diferida.
+9. Se redujo la escala de captura de imagen en celular para evitar congelamientos, manteniendo buena calidad.
+10. La sincronización automática con Firebase se retrasa un poco más en celular para no competir con la carga inicial.
+11. Se eliminaron cargas a archivos antiguos faltantes que provocaban llamadas 404.
+12. Se quitaron metas de no-cache del HTML para permitir que el navegador aproveche caché; la versión se controla con ?v=305-opt.
+
+Para probar en GitHub Pages:
+- Subir/reemplazar el contenido de esta carpeta.
+- Abrir la página con: ?v=305-opt

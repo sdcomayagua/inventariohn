@@ -1,0 +1,156 @@
+/* SD Comayagua · v275 foco celular: tarjeta simple y limpia */
+
+@media (max-width:700px){
+  body.sdc-v275-mobile-simple-focus .inventory-content,
+  body.sdc-v275-mobile-simple-focus .inventory-content .grid.two-col,
+  body.sdc-v275-mobile-simple-focus .grid.two-col{
+    gap:14px!important;
+  }
+
+  body.sdc-v275-mobile-simple-focus .product-card-v235{
+    position:relative!important;
+    display:grid!important;
+    grid-template-columns:108px minmax(0,1fr)!important;
+    grid-template-areas:
+      'photo copy'
+      'hint hint'!important;
+    gap:12px!important;
+    align-items:start!important;
+    padding:14px!important;
+    border-radius:24px!important;
+    background:#fff!important;
+    border:1px solid #dbe7f4!important;
+    box-shadow:0 12px 26px rgba(15,63,120,.08)!important;
+    cursor:pointer!important;
+  }
+
+  body.sdc-v275-mobile-simple-focus .product-photo-v246{
+    grid-area:photo!important;
+    width:108px!important;
+    min-width:108px!important;
+    height:108px!important;
+    border-radius:22px!important;
+    overflow:hidden!important;
+    background:linear-gradient(180deg,#f7fbff 0%,#eef5fc 100%)!important;
+    border:1px solid #dce8f5!important;
+    box-shadow:none!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-photo-v246 img{
+    width:calc(100% - 14px)!important;
+    height:calc(100% - 14px)!important;
+    margin:7px!important;
+    padding:8px!important;
+    border-radius:16px!important;
+    background:#fff!important;
+    object-fit:contain!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-availability-v178{
+    top:8px!important;
+    left:8px!important;
+    right:auto!important;
+    bottom:auto!important;
+    padding:7px 11px!important;
+    border-radius:999px!important;
+    font-size:11px!important;
+    font-weight:900!important;
+    box-shadow:0 8px 16px rgba(0,0,0,.08)!important;
+  }
+
+  body.sdc-v275-mobile-simple-focus .product-copy-v246{
+    grid-area:copy!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:flex-start!important;
+    gap:8px!important;
+    min-width:0!important;
+    padding-top:0!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-code-row-v246,
+  body.sdc-v275-mobile-simple-focus .product-main-price-v246,
+  body.sdc-v275-mobile-simple-focus .delivery-panel-v246,
+  body.sdc-v275-mobile-simple-focus .product-pills-v235,
+  body.sdc-v275-mobile-simple-focus .product-actions-v235,
+  body.sdc-v275-mobile-simple-focus .product-out-note-v180,
+  body.sdc-v275-mobile-simple-focus .stockout-ribbon-v181{
+    display:none!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-copy-v246 h3{
+    margin:0!important;
+    font-size:22px!important;
+    line-height:1.06!important;
+    color:#0a2850!important;
+    display:-webkit-box!important;
+    -webkit-line-clamp:2!important;
+    -webkit-box-orient:vertical!important;
+    overflow:hidden!important;
+    text-wrap:pretty!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-copy-v246 .product-summary-status-v268{
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:8px!important;
+    min-height:36px!important;
+    padding:8px 12px!important;
+    border-radius:999px!important;
+    border:1px solid rgba(34,197,94,.22)!important;
+    background:rgba(34,197,94,.08)!important;
+    color:#138a57!important;
+    font-size:12px!important;
+    font-weight:900!important;
+    line-height:1!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-card-v235.is-agotado .product-copy-v246 .product-summary-status-v268{
+    border-color:rgba(244,63,94,.18)!important;
+    background:rgba(244,63,94,.08)!important;
+    color:#d33958!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-copy-v246 .product-summary-status-v268 i{
+    width:8px!important;
+    height:8px!important;
+    border-radius:50%!important;
+    background:currentColor!important;
+    display:inline-block!important;
+    box-shadow:0 0 0 4px color-mix(in srgb, currentColor 18%, transparent)!important;
+  }
+
+  body.sdc-v275-mobile-simple-focus .product-mobile-hint-v269{
+    grid-area:hint!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:10px!important;
+    min-height:46px!important;
+    padding:10px 12px!important;
+    border-radius:16px!important;
+    background:linear-gradient(135deg,#0b3978 0%,#1f7bef 100%)!important;
+    color:#fff!important;
+    box-shadow:0 12px 22px rgba(18,92,186,.18)!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-mobile-hint-v269 div{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:2px!important;
+    min-width:0!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-mobile-hint-v269 span{
+    font-size:14px!important;
+    font-weight:900!important;
+    line-height:1!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-mobile-hint-v269 small{
+    font-size:11px!important;
+    line-height:1.1!important;
+    color:rgba(255,255,255,.84)!important;
+  }
+  body.sdc-v275-mobile-simple-focus .product-mobile-hint-v269 b{
+    width:28px!important;
+    height:28px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:999px!important;
+    background:rgba(255,255,255,.18)!important;
+    font-size:18px!important;
+    line-height:1!important;
+  }
+}

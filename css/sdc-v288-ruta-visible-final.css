@@ -1,0 +1,86 @@
+/* SD Comayagua · v288 ruta final: Comayagua y Honduras muestran solo lo correcto */
+@media (max-width:700px){
+  body.sdc-v288-ruta-visible-final .v250-price-cards{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card].is-hidden,
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card][hidden]{
+    display:none!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card].is-visible{
+    display:grid!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards[data-v49-route-wrap="local"] [data-v49-card="normal"],
+  body.sdc-v288-ruta-visible-final .v250-price-cards[data-v49-route-wrap="local"] [data-v49-card="cod"]{
+    display:none!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards[data-v49-route-wrap="hn"] [data-v49-card="local"]{
+    display:none!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards[data-v49-route-wrap="hn"]{
+    grid-template-columns:1fr!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards .v164-price-option{
+    grid-template-columns:1fr auto!important;
+    grid-template-areas:'label price' 'sub price'!important;
+    align-items:center!important;
+    column-gap:10px!important;
+    min-height:82px!important;
+    padding:14px!important;
+    border-radius:20px!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards .v164-price-option span{
+    grid-area:label!important;
+    font-size:11px!important;
+    line-height:1.05!important;
+    letter-spacing:.08em!important;
+    text-transform:uppercase!important;
+    white-space:normal!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards .v164-price-option small{
+    grid-area:sub!important;
+    font-size:11px!important;
+    line-height:1.15!important;
+    white-space:normal!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards .v164-price-option b{
+    grid-area:price!important;
+    justify-self:end!important;
+    white-space:nowrap!important;
+    font-size:clamp(23px,7vw,32px)!important;
+    line-height:1!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card="local"]{
+    background:linear-gradient(135deg,#0c4086,#1678ea)!important;
+    border:1px solid #126bd0!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card="local"] span,
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card="local"] small,
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card="local"] b{
+    color:#fff!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card="normal"]{
+    background:#fff!important;
+    border:1px solid #d8e6f5!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card="normal"] b{
+    color:#0c4f9f!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card="cod"]{
+    background:linear-gradient(180deg,#fffefa,#fff4dd)!important;
+    border:1px solid #efcf92!important;
+  }
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card="cod"] b{
+    color:#c77900!important;
+  }
+}
+@media (min-width:701px){
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card].is-hidden,
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card][hidden]{display:none!important;}
+  body.sdc-v288-ruta-visible-final .v250-price-cards [data-v49-card].is-visible{display:grid!important;}
+  body.sdc-v288-ruta-visible-final .v250-price-cards[data-v49-route-wrap="local"] [data-v49-card="normal"],
+  body.sdc-v288-ruta-visible-final .v250-price-cards[data-v49-route-wrap="local"] [data-v49-card="cod"]{display:none!important;}
+  body.sdc-v288-ruta-visible-final .v250-price-cards[data-v49-route-wrap="hn"] [data-v49-card="local"]{display:none!important;}
+}

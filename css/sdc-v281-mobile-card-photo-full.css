@@ -1,0 +1,132 @@
+/* SD Comayagua · v281 tarjeta móvil simple con foto protagonista */
+@media (max-width:700px){
+  body.sdc-v281-mobile-card-photo-full .inventory-grid,
+  body.sdc-v281-mobile-card-photo-full .inventory-content,
+  body.sdc-v281-mobile-card-photo-full .products-grid,
+  body.sdc-v281-mobile-card-photo-full .product-grid,
+  body.sdc-v281-mobile-card-photo-full .grid.two-col{
+    gap:14px!important;
+  }
+
+  body.sdc-v281-mobile-card-photo-full .product-card-v235{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-areas:
+      'photo'
+      'copy'!important;
+    gap:12px!important;
+    align-items:start!important;
+    padding:14px!important;
+    border-radius:24px!important;
+    background:#fff!important;
+    border:1px solid #dbe6f2!important;
+    box-shadow:0 10px 24px rgba(16,57,110,.08)!important;
+    overflow:hidden!important;
+  }
+
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-photo-v246{
+    grid-area:photo!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    aspect-ratio:1 / 1!important;
+    border-radius:22px!important;
+    overflow:hidden!important;
+    border:1px solid #dce8f5!important;
+    background:linear-gradient(180deg,#f8fbff 0%,#eef5fb 100%)!important;
+    box-shadow:none!important;
+  }
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-photo-v246 img{
+    width:100%!important;
+    height:100%!important;
+    margin:0!important;
+    padding:10px!important;
+    border-radius:22px!important;
+    object-fit:contain!important;
+    background:#fff!important;
+  }
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-availability-v178{
+    display:none!important;
+  }
+
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-copy-v246{
+    grid-area:copy!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    gap:10px!important;
+    min-width:0!important;
+    padding:0!important;
+  }
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-code-row-v246,
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-main-price-v246,
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .delivery-panel-v246,
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-pills-v235,
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-actions-v235,
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-mobile-hint-v269,
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-out-note-v180,
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .stockout-ribbon-v181{
+    display:none!important;
+  }
+
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-copy-v246 h3{
+    width:100%!important;
+    margin:0!important;
+    font-size:24px!important;
+    line-height:1.08!important;
+    color:#0a2950!important;
+    text-wrap:balance!important;
+    display:block!important;
+  }
+
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-mobile-meta-v277{
+    width:100%!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
+    align-items:center!important;
+    gap:8px!important;
+  }
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-summary-status-v268,
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-stock-pill-v277{
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:7px!important;
+    min-height:34px!important;
+    padding:8px 12px!important;
+    border-radius:999px!important;
+    font-size:12px!important;
+    line-height:1!important;
+    font-weight:900!important;
+    white-space:nowrap!important;
+  }
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-summary-status-v268{
+    border:1px solid rgba(34,197,94,.22)!important;
+    background:rgba(34,197,94,.08)!important;
+    color:#138a57!important;
+  }
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-summary-status-v268 i{
+    width:8px!important;
+    height:8px!important;
+    border-radius:50%!important;
+    background:currentColor!important;
+    display:inline-block!important;
+    box-shadow:0 0 0 4px color-mix(in srgb, currentColor 18%, transparent)!important;
+  }
+  body.sdc-v281-mobile-card-photo-full .product-card-v235 .product-stock-pill-v277{
+    border:1px solid #d6e5f2!important;
+    background:#eef5fd!important;
+    color:#264b70!important;
+  }
+
+  body.sdc-v281-mobile-card-photo-full .product-card-v235.is-agotado .product-summary-status-v268{
+    border-color:rgba(244,63,94,.18)!important;
+    background:rgba(244,63,94,.08)!important;
+    color:#d33958!important;
+  }
+  body.sdc-v281-mobile-card-photo-full .product-card-v235.is-agotado .product-stock-pill-v277{
+    color:#b22a46!important;
+    background:#fff1f4!important;
+    border-color:#f2cdd6!important;
+  }
+}

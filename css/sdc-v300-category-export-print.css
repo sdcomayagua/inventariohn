@@ -1,0 +1,19 @@
+/* SDC v300 - categorias, PNG e impresion */
+@media(max-width:700px){
+#modalRoot .category-sheet-grid-v199{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:14px!important}
+#modalRoot .category-sheet-card-v199{min-height:166px!important;padding:14px!important;border-radius:24px!important;display:grid!important;grid-template-rows:1fr auto!important}
+#modalRoot .category-sheet-main-v199{text-align:center!important;justify-items:center!important;display:grid!important;gap:6px!important}
+#modalRoot .category-sheet-main-v199 span{font-size:16px!important;line-height:1.1!important;min-height:36px!important;display:grid!important;place-items:center!important}
+#modalRoot .category-sheet-main-v199 b{width:72px!important;height:72px!important;border-radius:22px!important;background:#eef7ff!important;color:#0771df!important;display:grid!important;place-items:center!important;margin:2px auto!important;font-size:38px!important}
+#modalRoot .category-sheet-main-v199 small{text-align:center!important;font-size:12px!important;line-height:1.15!important}
+#modalRoot .category-sheet-actions-v199{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+#modalRoot .category-sheet-actions-v199 button{min-height:42px!important;border-radius:14px!important;font-size:13px!important}
+}
+.categoryShareHead-v199{grid-template-columns:1fr!important;gap:14px!important;min-height:0!important;padding:22px!important}
+.categoryShareBrand-v199{grid-template-columns:86px 1fr!important;gap:16px!important}
+.categoryShareBrand-v199 h2{font-size:46px!important;line-height:.95!important}
+.categoryShareSummary-v199{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:10px!important}
+.categoryShareSummary-v199 article,.categoryShareSummary-v199 article.wide{grid-column:auto!important;min-height:72px!important;text-align:center!important;justify-items:center!important}
+.categoryShareSummary-v199 b{font-size:26px!important;white-space:normal!important}
+.categoryShareSummary-v199 span{font-size:10px!important;text-align:center!important}
+@media print{body{background:#fff!important}.categoryShareClean-v199{width:100%!important;box-shadow:none!important;border-radius:0!important;padding:8mm!important}.categoryShareHead-v199{grid-template-columns:1fr!important}.categoryShareGrid-v199{grid-template-columns:repeat(2,1fr)!important;gap:8mm!important}.categoryShareItem-v199{break-inside:avoid!important;page-break-inside:avoid!important}.categoryPrintActions-v199,.modal-head,.no-print{display:none!important}@page{size:landscape;margin:8mm}}

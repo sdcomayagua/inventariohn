@@ -1,0 +1,145 @@
+/* =========================================================
+   SD Comayagua · v227 Quote Free Scroll
+   Soluciona el bloqueo del scroll en Cotización/Venta.
+   ========================================================= */
+
+@media(max-width:760px){
+  /* El modal de cotización ya no intenta hacer scroll por piezas internas.
+     Se desplaza completo dentro del fondo del modal. */
+  body.sdc-v95-light-default.modal-open #modalRoot .modal-backdrop:has(.quote-modal-v176),
+  body.sdc-v210-s24.modal-open #modalRoot .modal-backdrop:has(.quote-modal-v176),
+  body.sdc-v95-light-default.modal-open #modalRoot .modal-backdrop.sdc-v227-quote-backdrop,
+  body.sdc-v210-s24.modal-open #modalRoot .modal-backdrop.sdc-v227-quote-backdrop{
+    position:fixed!important;
+    inset:0!important;
+    display:block!important;
+    place-items:unset!important;
+    align-items:flex-start!important;
+    justify-content:initial!important;
+    width:100vw!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    overflow-y:scroll!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+    touch-action:pan-y pinch-zoom!important;
+    padding:7px 7px calc(28px + env(safe-area-inset-bottom,0px))!important;
+  }
+
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176.sdc-v227-quote-modal,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176.sdc-v227-quote-modal{
+    display:block!important;
+    width:min(calc(100vw - 14px),540px)!important;
+    max-width:min(calc(100vw - 14px),540px)!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    margin:0 auto 26px!important;
+    transform:none!important;
+    touch-action:pan-y pinch-zoom!important;
+  }
+
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .quote-head-v176,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .quote-head-v176{
+    position:relative!important;
+    top:auto!important;
+    flex:none!important;
+  }
+
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .quote-body-v176,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .quote-body-v176,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .modal-body,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .modal-body{
+    display:block!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    overflow-y:visible!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-y pinch-zoom!important;
+    padding-bottom:22px!important;
+  }
+
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .quote-grid-v176,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .quote-grid-v176{
+    display:block!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .sdc210-wizard-mode,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .sdc210-wizard-mode{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .card-box,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .preview-card-v176,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .card-box,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .preview-card-v176{
+    margin-bottom:12px!important;
+  }
+
+  /* Quitar scroll interno que atrapaba el dedo */
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .picker-list-v200,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .quote-category-list-v201,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .cart-list,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .gift-list-v176,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .gift-picker-list,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 #docPreview,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .picker-list-v200,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .quote-category-list-v201,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .cart-list,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .gift-list-v176,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .gift-picker-list,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 #docPreview{
+    max-height:none!important;
+    height:auto!important;
+    overflow:visible!important;
+    overscroll-behavior:auto!important;
+    touch-action:pan-y pinch-zoom!important;
+  }
+
+  /* Mantener cerrada la lista de categorías cuando no está abierta */
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .quote-category-list-v201:not(.is-open),
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .quote-category-list-v201:not(.is-open){
+    display:none!important;
+  }
+
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .quote-category-list-v201.is-open,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .quote-category-list-v201.is-open{
+    display:grid!important;
+  }
+
+  /* Botones de siguiente/anterior siempre quedan dentro del flujo, nunca flotantes */
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .sdc210-step-controls,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .sdc210-step-controls,
+  body.sdc-v95-light-default #modalRoot .modal.quote-modal-v176 .sdc210-smart-cart,
+  body.sdc-v210-s24 #modalRoot .modal.quote-modal-v176 .sdc210-smart-cart{
+    position:static!important;
+    bottom:auto!important;
+    left:auto!important;
+    right:auto!important;
+    transform:none!important;
+  }
+
+  /* Ocultar la barra duplicada de categorías en Productos */
+  body.sdc-v95-light-default .products-screen-v178 .category-selector-v195,
+  body.sdc-v95-light-default .products-screen-v189 .category-selector-v195,
+  body.sdc-v95-light-default .products-screen-v190 .category-selector-v195,
+  body.sdc-v210-s24 .products-screen-v178 .category-selector-v195,
+  body.sdc-v210-s24 .products-screen-v189 .category-selector-v195,
+  body.sdc-v210-s24 .products-screen-v190 .category-selector-v195{
+    display:none!important;
+  }
+}

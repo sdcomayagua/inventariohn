@@ -1,0 +1,204 @@
+/* SD Comayagua · v270 detalle de producto móvil premium */
+
+@media (max-width:700px){
+  body.sdc-v270-detail-modal-premium #modalRoot .product-detail-modal-v221 .modal-body,
+  body.sdc-v270-detail-modal-premium #modalRoot .product-detail-modal-v221 .v49-product-detail{
+    gap:14px!important;
+  }
+
+  body.sdc-v270-detail-modal-premium #modalRoot .product-detail-modal-v221 [data-panel="cliente"].v49-tab.active{
+    display:grid!important;
+    gap:12px!important;
+  }
+
+  body.sdc-v270-detail-modal-premium .v250-detail-route-switch{
+    margin-top:2px!important;
+    padding:5px!important;
+    border-radius:22px!important;
+    background:linear-gradient(180deg,#edf4fc 0%,#e8f0fa 100%)!important;
+    border:1px solid #d9e6f5!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.8)!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-detail-route-switch button{
+    min-height:48px!important;
+    border-radius:18px!important;
+    font-size:15px!important;
+    letter-spacing:-.01em!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-detail-route-switch button.active{
+    background:linear-gradient(135deg,#0b3a79 0%,#1b7cf6 100%)!important;
+    box-shadow:0 12px 24px rgba(20,98,200,.24)!important;
+  }
+
+  body.sdc-v270-detail-modal-premium .v250-detail-route-note{
+    margin:0!important;
+    padding:12px 14px!important;
+    border-radius:18px!important;
+    background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%)!important;
+    color:#67819d!important;
+    border:1px solid #d8e5f4!important;
+    box-shadow:0 8px 16px rgba(18,64,116,.04)!important;
+    font-size:13px!important;
+    line-height:1.34!important;
+  }
+
+  body.sdc-v270-detail-modal-premium .v250-qty-line{
+    padding:14px!important;
+    border-radius:24px!important;
+    background:linear-gradient(180deg,#f8fbff 0%,#f3f8fe 100%)!important;
+    border:1px solid #d8e6f5!important;
+    box-shadow:0 14px 26px rgba(20,68,119,.05)!important;
+    gap:12px!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-qty-line .v49-qty-wrap{
+    display:grid!important;
+    gap:10px!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-qty-line .v49-qty-wrap > span{
+    text-transform:uppercase!important;
+    letter-spacing:.08em!important;
+    font-size:12px!important;
+    color:#7088a2!important;
+    font-weight:900!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-qty-line .v49-qty-stepper{
+    display:grid!important;
+    grid-template-columns:64px minmax(0,1fr) 64px!important;
+    gap:10px!important;
+    align-items:center!important;
+    background:transparent!important;
+    border:0!important;
+    padding:0!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-qty-line .v49-qty-stepper button{
+    min-height:54px!important;
+    width:64px!important;
+    border-radius:18px!important;
+    border:1px solid #d1e2f3!important;
+    background:#fff!important;
+    color:#082b58!important;
+    font-size:20px!important;
+    box-shadow:0 8px 16px rgba(18,63,112,.06)!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-qty-line .v49-qty-stepper b{
+    min-height:54px!important;
+    border-radius:18px!important;
+    border:1px solid #d1e2f3!important;
+    background:#fff!important;
+    display:grid!important;
+    place-items:center!important;
+    font-size:21px!important;
+    color:#082b58!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7)!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-qty-line em[data-v49-offer]{
+    margin:0!important;
+    padding:12px 14px!important;
+    border-radius:18px!important;
+    background:linear-gradient(180deg,#fff8e9 0%,#fff4de 100%)!important;
+    border:1px solid #efcf8f!important;
+    color:#b26e00!important;
+    font-size:13px!important;
+    line-height:1.28!important;
+    font-weight:900!important;
+  }
+
+  body.sdc-v270-detail-modal-premium .v250-price-cards{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    grid-template-areas:'local normal' 'cod cod'!important;
+    gap:10px!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="local"]{grid-area:local!important;}
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="normal"]{grid-area:normal!important;}
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="cod"]{grid-area:cod!important;}
+
+  body.sdc-v270-detail-modal-premium .v250-price-cards .v164-price-option{
+    display:grid!important;
+    align-content:start!important;
+    gap:5px!important;
+    min-height:116px!important;
+    padding:14px 14px 13px!important;
+    border-radius:22px!important;
+    border:1px solid #d8e5f4!important;
+    background:linear-gradient(180deg,#ffffff 0%,#f9fbff 100%)!important;
+    box-shadow:0 12px 22px rgba(17,58,106,.05)!important;
+    text-align:left!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-price-cards .v164-price-option span{
+    font-size:11px!important;
+    line-height:1.15!important;
+    text-transform:uppercase!important;
+    letter-spacing:.1em!important;
+    color:#6f879f!important;
+    font-weight:900!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-price-cards .v164-price-option b{
+    font-size:20px!important;
+    line-height:1!important;
+    letter-spacing:-.03em!important;
+    color:#082b58!important;
+    margin-top:2px!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-price-cards .v164-price-option small{
+    font-size:11px!important;
+    line-height:1.22!important;
+    color:#7088a2!important;
+    font-weight:800!important;
+  }
+
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="local"]{
+    background:linear-gradient(180deg,#ffffff 0%,#f9fdfb 100%)!important;
+    border-color:#d9ebe0!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="local"] b{
+    color:#124a8c!important;
+  }
+
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="normal"]{
+    background:linear-gradient(135deg,#0b3978 0%,#1e78ea 100%)!important;
+    border-color:#1369d6!important;
+    box-shadow:0 16px 28px rgba(18,85,180,.18)!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="normal"] span,
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="normal"] small{
+    color:rgba(255,255,255,.82)!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="normal"] b{
+    color:#fff!important;
+  }
+
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="cod"]{
+    background:linear-gradient(180deg,#fffdfa 0%,#fff6ea 100%)!important;
+    border-color:#f0d39f!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-price-cards [data-v49-card="cod"] b{
+    color:#c77800!important;
+  }
+  body.sdc-v270-detail-modal-premium .v250-price-cards .v164-price-option.is-current{
+    transform:none!important;
+    box-shadow:0 16px 28px rgba(13,54,102,.10)!important;
+    outline:2px solid rgba(18,114,235,.18)!important;
+  }
+
+  body.sdc-v270-detail-modal-premium .v141-color-card,
+  body.sdc-v270-detail-modal-premium .v163-color-card,
+  body.sdc-v270-detail-modal-premium .v164-color-card{
+    border-radius:22px!important;
+    border:1px solid #d8e5f4!important;
+    background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%)!important;
+    box-shadow:0 10px 22px rgba(18,63,112,.04)!important;
+  }
+
+  body.sdc-v270-detail-modal-premium .v141-detail-actions,
+  body.sdc-v270-detail-modal-premium .v163-detail-actions,
+  body.sdc-v270-detail-modal-premium .v49-detail-actions{
+    gap:10px!important;
+  }
+  body.sdc-v270-detail-modal-premium .v141-detail-actions .btn,
+  body.sdc-v270-detail-modal-premium .v163-detail-actions .btn,
+  body.sdc-v270-detail-modal-premium .v49-detail-actions .btn{
+    min-height:52px!important;
+    border-radius:18px!important;
+  }
+}

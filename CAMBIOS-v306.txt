@@ -1,0 +1,13 @@
+SD Comayagua · v306 Cotizar rápido y botones corregidos
+
+Cambios aplicados:
+- Botones de Cotizar/Factura reforzados: Guardar, Facturar, Enviar WhatsApp y Descargar imagen quedan enlazados de forma directa.
+- Botones de acciones en Cotizar forzados a 2 por fila en celular.
+- Vista previa del recibo pausada en celular: no se genera automáticamente mientras se está cotizando.
+- La vista previa se genera solo al tocar Vista previa, Ver vista previa o Descargar imagen.
+- Selector de productos más liviano en móvil: muestra menos tarjetas y busca con pausa corta.
+- Regalos también cargan menos productos en móvil.
+- html2canvas sigue cargando solo al descargar imagen/recibo.
+- Menos sombras/blur en el área pesada de cotización para mejorar el scroll en celular.
+
+Para probar en GitHub Pages, usar ?v=306-cotizar al final de la URL.

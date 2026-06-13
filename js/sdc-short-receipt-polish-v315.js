@@ -1,6 +1,7 @@
-/* v316: etiquetas y explicaciones claras para recibos cortos.
+/* v317: etiquetas y explicaciones claras para recibos cortos.
    Azul: ENVÍO NORMAL.
-   Anaranjado: PAGAR A RECIBIR. */
+   Anaranjado: PAGAR A RECIBIR.
+   La explicación va debajo del encabezado para no deformarlo. */
 (function(){
   'use strict';
 
@@ -21,14 +22,21 @@
   function ensureExplanation(card,isCod){
     var head = card.querySelector('.sdc208-head');
     if(!head) return;
-    var note = head.querySelector('.sdc315-method-explain');
+
+    var note = card.querySelector(':scope > .sdc315-method-explain');
+    var oldInside = head.querySelector('.sdc315-method-explain');
+
+    if(oldInside){
+      note = oldInside;
+      head.insertAdjacentElement('afterend', note);
+    }
+
     if(!note){
       note = document.createElement('p');
       note.className = 'sdc315-method-explain';
-      var mode = head.querySelector('.sdc208-mode');
-      if(mode && mode.parentNode === head) mode.insertAdjacentElement('afterend', note);
-      else head.appendChild(note);
+      head.insertAdjacentElement('afterend', note);
     }
+
     note.textContent = noteText(isCod);
   }
 

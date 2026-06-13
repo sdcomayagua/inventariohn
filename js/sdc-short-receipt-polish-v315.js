@@ -1,21 +1,39 @@
-/* v315: etiquetas claras para recibos cortos.
-   Reemplaza "Recibo corto" por:
-   - ENVÍO NORMAL en el recibo azul
-   - PAGAR A RECIBIR en el recibo anaranjado */
+/* v316: etiquetas y explicaciones claras para recibos cortos.
+   Azul: ENVÍO NORMAL.
+   Anaranjado: PAGAR A RECIBIR. */
 (function(){
   'use strict';
 
   var NORMAL_TITLE = 'ENVÍO NORMAL';
   var COD_TITLE = 'PAGAR A RECIBIR';
+  var NORMAL_NOTE = 'Aquí deberá depositar o transferir el dinero por banco o Tigo Money.';
+  var COD_NOTE = 'Aquí podrá pagar en efectivo una vez reciba el paquete en sus manos.';
 
   function isCodCard(card){
     if(!card) return false;
     return card.getAttribute('data-variant') === 'cod' || card.classList.contains('sdc208-cod');
   }
 
+  function noteText(isCod){
+    return isCod ? COD_NOTE : NORMAL_NOTE;
+  }
+
+  function ensureExplanation(card,isCod){
+    var head = card.querySelector('.sdc208-head');
+    if(!head) return;
+    var note = head.querySelector('.sdc315-method-explain');
+    if(!note){
+      note = document.createElement('p');
+      note.className = 'sdc315-method-explain';
+      var mode = head.querySelector('.sdc208-mode');
+      if(mode && mode.parentNode === head) mode.insertAdjacentElement('afterend', note);
+      else head.appendChild(note);
+    }
+    note.textContent = noteText(isCod);
+  }
+
   function polishCard(card){
-    if(!card || card.__sdc315Polished) return;
-    card.__sdc315Polished = true;
+    if(!card) return;
     var title = card.querySelector('.sdc208-head-copy h2');
     var mode = card.querySelector('.sdc208-mode');
     var isCod = isCodCard(card);
@@ -26,13 +44,16 @@
     }
 
     if(mode){
-      var desired = isCod ? 'Pagar al recibir' : 'Envío normal';
-      if(!mode.textContent || /recibo corto/i.test(mode.textContent)) mode.textContent = desired;
+      mode.textContent = isCod ? 'Pagar al recibir' : 'Envío normal';
     }
+
+    ensureExplanation(card,isCod);
+    card.dataset.sdc315Polished = '1';
   }
 
   function polishAll(root){
     var scope = root && root.querySelectorAll ? root : document;
+    if(scope.matches && scope.matches('.short-receipt.sdc208-ticket, .sdc208-ticket.short-receipt')) polishCard(scope);
     scope.querySelectorAll('.short-receipt.sdc208-ticket, .sdc208-ticket.short-receipt').forEach(polishCard);
   }
 
@@ -42,7 +63,6 @@
       mutations.forEach(function(m){
         m.addedNodes && m.addedNodes.forEach(function(node){
           if(!node || node.nodeType !== 1) return;
-          if(node.matches && node.matches('.short-receipt.sdc208-ticket, .sdc208-ticket.short-receipt')) polishCard(node);
           polishAll(node);
         });
       });

@@ -1,0 +1,163 @@
+/* v315: mejora visual de recibos cortos/comparativo.
+   Cambia "Recibo corto" por el nombre claro del método:
+   Azul = ENVÍO NORMAL, Anaranjado = PAGAR A RECIBIR. */
+
+.short-receipt.sdc208-ticket,
+.shortReceiptExportHost .short-receipt.sdc208-ticket{
+  border-radius:34px !important;
+  box-shadow:0 22px 58px rgba(7,26,53,.12) !important;
+}
+
+.short-receipt .sdc208-head,
+.shortReceiptExportHost .short-receipt .sdc208-head{
+  position:relative !important;
+  overflow:hidden !important;
+  grid-template-columns:72px minmax(0,1fr) !important;
+  gap:15px !important;
+  padding:20px !important;
+  min-height:150px !important;
+  border-radius:28px !important;
+  isolation:isolate !important;
+}
+
+.short-receipt .sdc208-head::after,
+.shortReceiptExportHost .short-receipt .sdc208-head::after{
+  content:"";
+  position:absolute;
+  inset:auto -40px -72px auto;
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  background:rgba(255,255,255,.13);
+  z-index:-1;
+}
+
+.short-receipt .sdc208-logo,
+.shortReceiptExportHost .short-receipt .sdc208-logo{
+  width:72px !important;
+  height:72px !important;
+  border-radius:22px !important;
+  box-shadow:0 14px 30px rgba(0,0,0,.15) !important;
+}
+
+.short-receipt .sdc208-logo img,
+.shortReceiptExportHost .short-receipt .sdc208-logo img{
+  width:56px !important;
+  height:56px !important;
+}
+
+.short-receipt .sdc208-head-copy span,
+.shortReceiptExportHost .short-receipt .sdc208-head-copy span{
+  color:rgba(255,255,255,.88) !important;
+  font-size:12px !important;
+  letter-spacing:.18em !important;
+}
+
+.short-receipt .sdc208-head-copy h2,
+.shortReceiptExportHost .short-receipt .sdc208-head-copy h2{
+  margin:7px 0 5px !important;
+  color:#fff !important;
+  font-size:33px !important;
+  line-height:.94 !important;
+  letter-spacing:-.035em !important;
+  text-transform:uppercase !important;
+  text-wrap:balance;
+  max-width:360px;
+}
+
+.short-receipt.sdc208-cod .sdc208-head-copy h2,
+.shortReceiptExportHost .short-receipt.sdc208-cod .sdc208-head-copy h2{
+  font-size:31px !important;
+  letter-spacing:-.03em !important;
+}
+
+.short-receipt .sdc208-head-copy p,
+.shortReceiptExportHost .short-receipt .sdc208-head-copy p{
+  font-size:14px !important;
+  opacity:.94 !important;
+}
+
+.short-receipt .sdc208-mode,
+.shortReceiptExportHost .short-receipt .sdc208-mode{
+  min-height:40px !important;
+  padding:0 17px !important;
+  font-size:14px !important;
+  letter-spacing:.01em !important;
+}
+
+.short-receipt.sdc208-normal .sdc208-head,
+.shortReceiptExportHost .short-receipt.sdc208-normal .sdc208-head{
+  background:linear-gradient(135deg,#07234f 0%,#0b63ce 68%,#1484ff 100%) !important;
+}
+
+.short-receipt.sdc208-normal .sdc208-mode,
+.shortReceiptExportHost .short-receipt.sdc208-normal .sdc208-mode{
+  color:#075fc7 !important;
+  background:#ffffff !important;
+}
+
+.short-receipt.sdc208-cod .sdc208-head,
+.shortReceiptExportHost .short-receipt.sdc208-cod .sdc208-head{
+  background:linear-gradient(135deg,#9b5700 0%,#dc8500 58%,#f4b51f 100%) !important;
+}
+
+.short-receipt.sdc208-cod .sdc208-mode,
+.shortReceiptExportHost .short-receipt.sdc208-cod .sdc208-mode{
+  color:#945100 !important;
+  background:#fff7df !important;
+}
+
+.short-receipt .sdc208-meta,
+.shortReceiptExportHost .short-receipt .sdc208-meta{
+  margin-top:16px !important;
+}
+
+.short-receipt .sdc208-section span,
+.shortReceiptExportHost .short-receipt .sdc208-section span{
+  letter-spacing:.14em !important;
+}
+
+.short-receipt .sdc208-line,
+.shortReceiptExportHost .short-receipt .sdc208-line{
+  border-radius:24px !important;
+}
+
+.short-receipt .sdc208-grand,
+.shortReceiptExportHost .short-receipt .sdc208-grand{
+  border-radius:28px !important;
+}
+
+.short-receipt.sdc208-cod .sdc208-variant-note,
+.shortReceiptExportHost .short-receipt.sdc208-cod .sdc208-variant-note{
+  margin-top:16px !important;
+  border-radius:22px !important;
+}
+
+.short-receipt.sdc208-cod .sdc208-variant-note b,
+.shortReceiptExportHost .short-receipt.sdc208-cod .sdc208-variant-note b{
+  letter-spacing:-.035em !important;
+}
+
+.short-receipt-grid-v147 .short-receipt-variant-v147,
+.short-receipt-grid-v147 .short-receipt-variant-v157,
+.short-receipt-grid-v147 .short-receipt-variant-v158{
+  align-self:start;
+}
+
+.short-receipt-screen .short-receipt-tip-v156{
+  border:1px solid rgba(11,99,206,.16) !important;
+  background:linear-gradient(135deg,#f7fbff,#eef6ff) !important;
+  color:#183859 !important;
+  font-weight:850 !important;
+}
+
+@media (max-width:640px){
+  .short-receipt .sdc208-head-copy h2,
+  .shortReceiptExportHost .short-receipt .sdc208-head-copy h2{
+    font-size:30px !important;
+  }
+  .short-receipt.sdc208-cod .sdc208-head-copy h2,
+  .shortReceiptExportHost .short-receipt.sdc208-cod .sdc208-head-copy h2{
+    font-size:28px !important;
+  }
+}

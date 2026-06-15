@@ -1,4 +1,4 @@
-/* v321 · Mejora estética móvil + botones rápidos para redes.
+/* v322 · Mejora estética móvil + redes SOLO dentro del detalle del producto.
    No cambia inventario, precios ni cálculos. */
 
 :root{
@@ -11,6 +11,18 @@
   --sdc321-photo:#0f172a;
   --sdc321-soft:#f5f8fc;
   --sdc321-line:rgba(9,30,55,.12);
+}
+
+/* Nunca mostrar botones de redes en la pantalla principal del catálogo. */
+body.sdc-v319-quality-polish #inventario .sdc321-social-row,
+body.sdc-v319-quality-polish #inventario .sdc321-detail-social-wrap{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
 }
 
 /* Productos: más presencia sin deformar fotos. */
@@ -36,66 +48,99 @@ body.sdc-v319-quality-polish #inventario .product-photo-v246 img{
   height:100%!important;
   object-fit:contain!important;
   object-position:center!important;
-  transform:scale(1.055);
+  transform:scale(1.035);
   transition:transform .22s ease, filter .22s ease;
 }
 
 body.sdc-v319-quality-polish #inventario .product-card-v235:active .product-photo-v178 img,
 body.sdc-v319-quality-polish #inventario .product-card-v235:active .product-photo-v246 img{
-  transform:scale(1.02);
+  transform:scale(1.01);
 }
 
-/* Botones sociales inyectados por v321. */
-body.sdc-v319-quality-polish .sdc321-social-row{
-  display:grid;
+/* Botones sociales: solo se usan dentro del modal de detalle. */
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-detail-social-wrap{
+  display:block!important;
+  visibility:visible!important;
+  height:auto!important;
+  margin:16px 0 14px!important;
+  padding:14px!important;
+  border:1px solid rgba(9,30,55,.10)!important;
+  border-radius:22px!important;
+  background:rgba(255,255,255,.94)!important;
+  box-shadow:0 12px 28px rgba(9,30,55,.08)!important;
+  overflow:visible!important;
+}
+
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-detail-social-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-detail-social-head b{
+  color:#061b34;
+  font-size:17px;
+  line-height:1.1;
+}
+
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-detail-social-head span{
+  color:#64748b;
+  font-size:12px;
+  font-weight:900;
+}
+
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-row{
+  display:grid!important;
   grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:7px;
+  gap:9px;
   width:100%;
-  margin:8px 0 2px;
+  margin:0;
 }
 
-body.sdc-v319-quality-polish .sdc321-social-row button{
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-row button{
   min-width:0;
-  min-height:38px;
+  min-height:46px;
   border:1px solid rgba(9,30,55,.10);
-  border-radius:14px;
-  padding:7px 5px;
+  border-radius:15px;
+  padding:9px 7px;
   background:#fff;
   color:var(--sdc321-blue-dark);
   box-shadow:0 8px 18px rgba(9,30,55,.07);
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:4px;
-  font-size:11px;
+  gap:6px;
+  font-size:12px;
   font-weight:950;
   letter-spacing:-.02em;
   line-height:1;
 }
 
-body.sdc-v319-quality-polish .sdc321-social-row button i{
-  width:18px;
-  height:18px;
-  border-radius:7px;
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-row button i{
+  width:22px;
+  height:22px;
+  border-radius:8px;
   display:grid;
   place-items:center;
   color:#fff;
   font-style:normal;
-  font-size:11px;
+  font-size:12px;
   flex:0 0 auto;
 }
 
-body.sdc-v319-quality-polish .sdc321-social-wa i{background:var(--sdc321-wa)}
-body.sdc-v319-quality-polish .sdc321-social-fb i{background:var(--sdc321-fb)}
-body.sdc-v319-quality-polish .sdc321-social-ig i{background:linear-gradient(135deg,#f97316,#c13584,#6d28d9)}
-body.sdc-v319-quality-polish .sdc321-social-photo i{background:var(--sdc321-photo)}
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-wa i{background:var(--sdc321-wa)}
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-fb i{background:var(--sdc321-fb)}
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-ig i{background:linear-gradient(135deg,#f97316,#c13584,#6d28d9)}
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-photo i{background:var(--sdc321-photo)}
 
-body.sdc-v319-quality-polish .sdc321-social-wa{background:#ecfdf5!important;color:#075e54!important;border-color:rgba(18,140,126,.16)!important}
-body.sdc-v319-quality-polish .sdc321-social-fb{background:#eff6ff!important;color:#0b4fa8!important;border-color:rgba(24,119,242,.16)!important}
-body.sdc-v319-quality-polish .sdc321-social-ig{background:#fff1f8!important;color:#9d174d!important;border-color:rgba(193,53,132,.16)!important}
-body.sdc-v319-quality-polish .sdc321-social-photo{background:#f8fafc!important;color:#0f172a!important;border-color:rgba(15,23,42,.14)!important}
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-wa{background:#ecfdf5!important;color:#075e54!important;border-color:rgba(18,140,126,.16)!important}
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-fb{background:#eff6ff!important;color:#0b4fa8!important;border-color:rgba(24,119,242,.16)!important}
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-ig{background:#fff1f8!important;color:#9d174d!important;border-color:rgba(193,53,132,.16)!important}
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-photo{background:#f8fafc!important;color:#0f172a!important;border-color:rgba(15,23,42,.14)!important}
 
-/* La fila de acciones normal queda más ordenada debajo de la fila de redes. */
+/* La fila de acciones normal queda más ordenada. */
 body.sdc-v319-quality-polish #inventario .product-actions-v235{
   gap:8px!important;
 }
@@ -173,26 +218,26 @@ body.sdc-v319-quality-polish #inventario .product-actions-v235 button{
     letter-spacing:-.06em!important;
   }
 
-  body.sdc-v319-quality-polish .sdc321-social-row{
-    gap:6px;
-    margin-top:9px;
-  }
-
-  body.sdc-v319-quality-polish .sdc321-social-row button{
-    min-height:36px;
-    font-size:10.5px;
-    border-radius:13px;
-  }
-
-  body.sdc-v319-quality-polish .sdc321-social-row button i{
-    width:17px;
-    height:17px;
-    font-size:10px;
-  }
-
   body.sdc-v319-quality-polish #inventario .product-actions-v235{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
     margin-top:8px!important;
+  }
+
+  body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-row{
+    gap:7px;
+  }
+
+  body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-row button{
+    min-height:42px;
+    font-size:11px;
+    border-radius:13px;
+    padding-inline:5px;
+  }
+
+  body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc321-social-row button i{
+    width:18px;
+    height:18px;
+    font-size:10px;
   }
 }
 

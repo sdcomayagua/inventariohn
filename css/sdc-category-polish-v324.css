@@ -1,4 +1,4 @@
-/* v325 · Corrección fuerte de Categorías y PNG de categoría.
+/* v326 · Corrección fuerte de Categorías y PNG de categoría.
    No cambia inventario, precios ni cálculos. */
 
 :root{
@@ -152,9 +152,10 @@ body.sdc-v319-quality-polish .category-sheet-actions-v199 button{
   }
 }
 
-/* PNG / VISTA CLIENTE DE CATEGORÍA: título arriba, header limpio y precios más balanceados. */
+/* PNG / VISTA CLIENTE DE CATEGORÍA */
 .sdc324-category-capture,
-.sdc325-category-capture{
+.sdc325-category-capture,
+.sdc326-category-capture{
   position:relative!important;
   background:#eef6ff!important;
   color:#061b34!important;
@@ -164,12 +165,14 @@ body.sdc-v319-quality-polish .category-sheet-actions-v199 button{
 }
 
 .sdc324-category-capture *,
-.sdc325-category-capture *{
+.sdc325-category-capture *,
+.sdc326-category-capture *{
   box-sizing:border-box!important;
 }
 
 .sdc324-category-capture-title,
-.sdc325-category-capture-title{
+.sdc325-category-capture-title,
+.sdc326-category-capture-title{
   width:100%!important;
   margin:0 0 20px!important;
   padding:0!important;
@@ -183,7 +186,8 @@ body.sdc-v319-quality-polish .category-sheet-actions-v199 button{
 }
 
 .sdc324-category-capture-title small,
-.sdc325-category-capture-title small{
+.sdc325-category-capture-title small,
+.sdc326-category-capture-title small{
   display:block!important;
   margin-top:9px!important;
   color:#5f7894!important;
@@ -193,20 +197,30 @@ body.sdc-v319-quality-polish .category-sheet-actions-v199 button{
   letter-spacing:.10em!important;
 }
 
+/* Encabezado del PNG: título más arriba, sin pisar la fecha. */
 .sdc324-category-capture-header,
-.sdc325-category-capture-header{
-  min-height:170px!important;
+.sdc325-category-capture-header,
+.sdc326-category-capture-header{
+  min-height:190px!important;
   border-radius:34px!important;
   overflow:hidden!important;
   background:linear-gradient(135deg,#061b34 0%,#0b63ce 72%,#2b96ff 100%)!important;
   box-shadow:none!important;
   border:0!important;
   margin-bottom:24px!important;
+  display:grid!important;
+  grid-template-columns:122px minmax(0,1fr)!important;
+  grid-template-rows:auto 1fr auto!important;
+  column-gap:22px!important;
+  align-items:start!important;
+  padding:28px 34px 22px!important;
 }
 
 .sdc324-category-capture-header img,
-.sdc325-category-capture-header img{
+.sdc325-category-capture-header img,
+.sdc326-category-capture-header img{
   object-fit:contain!important;
+  align-self:start!important;
 }
 
 .sdc324-category-capture-header h1,
@@ -214,11 +228,18 @@ body.sdc-v319-quality-polish .category-sheet-actions-v199 button{
 .sdc324-category-capture-header h3,
 .sdc325-category-capture-header h1,
 .sdc325-category-capture-header h2,
-.sdc325-category-capture-header h3{
+.sdc325-category-capture-header h3,
+.sdc326-category-capture-header h1,
+.sdc326-category-capture-header h2,
+.sdc326-category-capture-header h3{
   color:#fff!important;
-  line-height:.95!important;
-  letter-spacing:-.055em!important;
-  margin:0!important;
+  line-height:.84!important;
+  letter-spacing:-.065em!important;
+  margin:2px 0 0!important;
+  align-self:start!important;
+  transform:translateY(-12px)!important;
+  font-size:72px!important;
+  max-width:100%!important;
 }
 
 .sdc324-category-capture-header p,
@@ -228,12 +249,17 @@ body.sdc-v319-quality-polish .category-sheet-actions-v199 button{
 .sdc325-category-capture-header p,
 .sdc325-category-capture-header span,
 .sdc325-category-capture-header small,
-.sdc325-category-capture-header b{
+.sdc325-category-capture-header b,
+.sdc326-category-capture-header p,
+.sdc326-category-capture-header span,
+.sdc326-category-capture-header small,
+.sdc326-category-capture-header b{
   color:#eaf4ff!important;
 }
 
 .sdc324-category-capture-price,
-.sdc325-category-capture-price{
+.sdc325-category-capture-price,
+.sdc326-category-capture-price{
   color:#d61c3b!important;
   font-weight:950!important;
   line-height:.92!important;
@@ -245,17 +271,24 @@ body.sdc-v319-quality-polish .category-sheet-actions-v199 button{
 
 .sdc324-category-capture .sdc324-category-product-card,
 .sdc325-category-capture .sdc325-category-product-card,
-.sdc325-category-capture .sdc324-category-product-card{
+.sdc325-category-capture .sdc324-category-product-card,
+.sdc326-category-capture .sdc326-category-product-card,
+.sdc326-category-capture .sdc325-category-product-card,
+.sdc326-category-capture .sdc324-category-product-card{
   border-radius:28px!important;
   overflow:hidden!important;
   background:#fff!important;
   border:1px solid #d8e7f6!important;
   box-shadow:none!important;
+  position:relative!important;
 }
 
 .sdc324-category-capture .sdc324-category-product-card img,
 .sdc325-category-capture .sdc325-category-product-card img,
-.sdc325-category-capture .sdc324-category-product-card img{
+.sdc325-category-capture .sdc324-category-product-card img,
+.sdc326-category-capture .sdc326-category-product-card img,
+.sdc326-category-capture .sdc325-category-product-card img,
+.sdc326-category-capture .sdc324-category-product-card img{
   object-fit:contain!important;
 }
 
@@ -264,14 +297,47 @@ body.sdc-v319-quality-polish .category-sheet-actions-v199 button{
 .sdc324-category-capture .sdc324-category-product-card h4,
 .sdc325-category-capture .sdc325-category-product-card h3,
 .sdc325-category-capture .sdc325-category-product-card h2,
-.sdc325-category-capture .sdc325-category-product-card h4{
+.sdc325-category-capture .sdc325-category-product-card h4,
+.sdc326-category-capture .sdc326-category-product-card h3,
+.sdc326-category-capture .sdc326-category-product-card h2,
+.sdc326-category-capture .sdc326-category-product-card h4{
   color:#07192f!important;
   line-height:1.02!important;
   letter-spacing:-.05em!important;
 }
 
 .sdc325-category-capture [class*="price"],
+.sdc326-category-capture [class*="price"],
 .sdc325-category-capture strong,
-.sdc325-category-capture b{
+.sdc326-category-capture strong,
+.sdc325-category-capture b,
+.sdc326-category-capture b{
   text-shadow:none!important;
+}
+
+/* Cantidad disponible: más ancho y separada del precio. */
+.sdc326-stock-pill,
+.sdc326-category-capture [class*="stock"],
+.sdc326-category-capture [class*="disp"],
+.sdc326-category-capture .sdc326-category-stock-pill{
+  min-width:82px!important;
+  width:auto!important;
+  height:auto!important;
+  min-height:30px!important;
+  padding:8px 14px!important;
+  border-radius:999px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  letter-spacing:-.01em!important;
+  color:#0b63ce!important;
+  background:#eef6ff!important;
+  border:1px solid #cfe4ff!important;
+  overflow:visible!important;
+  transform:none!important;
 }

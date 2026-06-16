@@ -1,4 +1,4 @@
-/* v326 · Pulido dinámico fuerte para modal y PNG de categorías.
+/* v327 · Pulido dinámico fuerte para modal y PNG de categorías.
    No cambia inventario, precios ni cálculos. */
 (function(){
   'use strict';
@@ -16,14 +16,15 @@
     if(styleInjected) return;
     styleInjected=true;
     var st=document.createElement('style');
-    st.id='sdc326-category-runtime-style';
+    st.id='sdc327-category-runtime-style';
     st.textContent='\n'
       +'body.sdc-v319-quality-polish .category-sheet-grid-v199{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important;width:100%!important;min-width:0!important}\n'
       +'body.sdc-v319-quality-polish .category-sheet-grid-v199>.category-sheet-card-v199{min-width:0!important;width:100%!important;max-width:none!important;margin:0!important}\n'
       +'body.sdc-v319-quality-polish .category-sheet-grid-v199>.category-sheet-card-v199:first-child{grid-column:1/-1!important}\n'
       +'body.sdc-v319-quality-polish .category-sheet-actions-v199{grid-template-columns:1fr 1fr!important;gap:5px!important}\n'
       +'body.sdc-v319-quality-polish .category-sheet-actions-v199 button{min-width:0!important;width:100%!important;font-size:10px!important;padding-inline:4px!important}\n'
-      +'.sdc326-stock-pill{min-width:82px!important;padding:8px 14px!important;white-space:nowrap!important;font-size:13px!important;line-height:1!important}\n';
+      +'.sdc327-clean-header-title{position:absolute!important;left:150px!important;top:72px!important;right:34px!important;color:#fff!important;font-size:60px!important;line-height:.9!important;font-weight:950!important;letter-spacing:-.06em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;z-index:4!important}\n'
+      +'.sdc327-stock-pill{min-width:86px!important;padding:8px 14px!important;white-space:nowrap!important;font-size:13px!important;line-height:1!important}\n';
     document.head.appendChild(st);
   }
 
@@ -46,9 +47,9 @@
   }
 
   function addTitle(root){
-    if(!root || root.querySelector('.sdc326-category-capture-title,.sdc325-category-capture-title,.sdc324-category-capture-title')) return;
+    if(!root || root.querySelector('.sdc327-category-capture-title,.sdc326-category-capture-title,.sdc325-category-capture-title,.sdc324-category-capture-title')) return;
     var title=document.createElement('div');
-    title.className='sdc326-category-capture-title';
+    title.className='sdc327-category-capture-title';
     title.innerHTML='SD COMAYAGUA · CATÁLOGO<small>Productos disponibles para cotizar</small>';
     root.insertBefore(title, root.firstChild);
   }
@@ -57,7 +58,7 @@
     if(!head) return null;
     var candidates=Array.from(head.querySelectorAll('h1,h2,h3,b,strong,span,div')).filter(function(el){
       var t=txt(el);
-      return /^[A-ZÁÉÍÓÚÑ0-9\s]{4,24}$/.test(t) && !/SD\s*COMAYAGUA|Vista|Cliente|jun|a\.\s*m\.|p\.\s*m\./i.test(t);
+      return /^[A-ZÁÉÍÓÚÑ0-9\s]{4,28}$/.test(t) && !/SD\s*COMAYAGUA|Vista|Cliente|jun|a\.\s*m\.|p\.\s*m\./i.test(t);
     });
     return candidates.find(function(el){ return /DEDAL|AUDIO|GAMER|CABLE|ADAPTADOR|ACCESORIO|MICRO|HOGAR|COCINA/i.test(txt(el)); }) || candidates[0];
   }
@@ -70,28 +71,26 @@
     });
     var head=candidates.find(function(el){ return (el.offsetHeight||0)>70 && (el.offsetWidth||0)>400; }) || candidates[0];
     if(head){
-      head.classList.add('sdc326-category-capture-header','sdc325-category-capture-header','sdc324-category-capture-header');
+      head.classList.add('sdc327-category-capture-header','sdc326-category-capture-header','sdc325-category-capture-header','sdc324-category-capture-header');
       setImp(head,'background','linear-gradient(135deg,#061b34 0%,#0b63ce 72%,#2b96ff 100%)');
       setImp(head,'border-radius','34px');
       setImp(head,'margin-bottom','24px');
-      setImp(head,'display','grid');
-      setImp(head,'grid-template-columns','122px minmax(0,1fr)');
-      setImp(head,'grid-template-rows','auto 1fr auto');
-      setImp(head,'column-gap','22px');
-      setImp(head,'align-items','start');
-      setImp(head,'padding','28px 34px 22px');
+      setImp(head,'position','relative');
       setImp(head,'min-height','190px');
-      var title=findCategoryTitle(head);
-      if(title){
-        title.classList.add('sdc326-category-header-title');
-        setImp(title,'color','#fff');
-        setImp(title,'font-size','72px');
-        setImp(title,'line-height','.84');
-        setImp(title,'letter-spacing','-.065em');
-        setImp(title,'margin','2px 0 0');
-        setImp(title,'transform','translateY(-12px)');
-        setImp(title,'align-self','start');
-        setImp(title,'white-space','nowrap');
+      setImp(head,'padding','28px 34px 22px');
+      setImp(head,'overflow','hidden');
+
+      var originalTitle=findCategoryTitle(head);
+      var label=originalTitle ? txt(originalTitle) : '';
+      if(originalTitle){
+        originalTitle.classList.add('sdc327-hidden-original-category-title');
+        setImp(originalTitle,'display','none');
+      }
+      if(label && !head.querySelector('.sdc327-clean-header-title')){
+        var clean=document.createElement('div');
+        clean.className='sdc327-clean-header-title';
+        clean.textContent=label;
+        head.appendChild(clean);
       }
     }
   }
@@ -101,7 +100,7 @@
     root.querySelectorAll('b,strong,span,div,h2,h3').forEach(function(el){
       var t=txt(el);
       if(/^Lps\.\s*\d+/i.test(t) && t.length<18){
-        el.classList.add('sdc326-category-capture-price','sdc325-category-capture-price','sdc324-category-capture-price');
+        el.classList.add('sdc327-category-capture-price','sdc326-category-capture-price','sdc325-category-capture-price','sdc324-category-capture-price');
         setImp(el,'color','#d61c3b');
         setImp(el,'font-size','40px');
         setImp(el,'font-weight','950');
@@ -116,8 +115,8 @@
     root.querySelectorAll('b,strong,span,small,em,div').forEach(function(el){
       var t=txt(el);
       if(/^\d+\s*(disp\.?|unid\.?|unidades)$/i.test(t) || /^\d+\s*disp\.?$/i.test(t)){
-        el.classList.add('sdc326-stock-pill','sdc326-category-stock-pill');
-        setImp(el,'min-width','82px');
+        el.classList.add('sdc327-stock-pill','sdc326-stock-pill','sdc326-category-stock-pill');
+        setImp(el,'min-width','86px');
         setImp(el,'width','auto');
         setImp(el,'min-height','30px');
         setImp(el,'height','auto');
@@ -140,10 +139,45 @@
     });
   }
 
+  function polishProductText(card){
+    if(!card) return;
+    Array.from(card.querySelectorAll('h1,h2,h3,h4')).forEach(function(h){
+      var t=txt(h);
+      if(!t || /^Lps\./i.test(t) || /DISPONIBLE/i.test(t)) return;
+      h.classList.add('sdc327-product-name-clean');
+      setImp(h,'display','block');
+      setImp(h,'position','relative');
+      setImp(h,'transform','none');
+      setImp(h,'margin','10px 0 14px');
+      setImp(h,'padding','0');
+      setImp(h,'font-size','25px');
+      setImp(h,'line-height','1.08');
+      setImp(h,'letter-spacing','-.045em');
+      setImp(h,'color','#07192f');
+      setImp(h,'z-index','2');
+      setImp(h,'clear','both');
+    });
+    Array.from(card.querySelectorAll('span,small,b,strong')).forEach(function(el){
+      var t=txt(el);
+      if(/^[A-ZÁÉÍÓÚÑ]+\s*·\s*[A-Z0-9-]{3,}/.test(t) || /[A-Z0-9]{8,}/.test(t)){
+        el.classList.add('sdc327-product-code-clean');
+        setImp(el,'display','block');
+        setImp(el,'margin','0 0 8px');
+        setImp(el,'font-size','12px');
+        setImp(el,'line-height','1.15');
+        setImp(el,'letter-spacing','.08em');
+        setImp(el,'color','#647d98');
+        setImp(el,'white-space','nowrap');
+        setImp(el,'overflow','hidden');
+        setImp(el,'text-overflow','ellipsis');
+      }
+    });
+  }
+
   function polishProductCards(root){
     if(!root) return;
     var cards=Array.from(root.querySelectorAll('article,section,div')).filter(function(el){
-      if(el.classList.contains('sdc326-category-capture-header') || el.classList.contains('sdc325-category-capture-header') || el.classList.contains('sdc324-category-capture-header')) return false;
+      if(el.classList.contains('sdc327-category-capture-header') || el.classList.contains('sdc326-category-capture-header') || el.classList.contains('sdc325-category-capture-header') || el.classList.contains('sdc324-category-capture-header')) return false;
       var t=txt(el);
       return /^DISPONIBLE/i.test(t) || (/Lps\.\s*\d+/i.test(t) && el.querySelector('img') && t.length>20);
     });
@@ -151,18 +185,19 @@
       var w=card.offsetWidth || 0;
       var h=card.offsetHeight || 0;
       if(w>180 && h>160){
-        card.classList.add('sdc326-category-product-card','sdc325-category-product-card','sdc324-category-product-card');
+        card.classList.add('sdc327-category-product-card','sdc326-category-product-card','sdc325-category-product-card','sdc324-category-product-card');
         setImp(card,'background','#fff');
         setImp(card,'border','1px solid #d8e7f6');
         setImp(card,'border-radius','28px');
         setImp(card,'overflow','hidden');
+        polishProductText(card);
       }
     });
   }
 
   function polishCapture(root){
     if(!root) return;
-    root.classList.add('sdc326-category-capture','sdc325-category-capture','sdc324-category-capture');
+    root.classList.add('sdc327-category-capture','sdc326-category-capture','sdc325-category-capture','sdc324-category-capture');
     setImp(root,'background','#eef6ff');
     setImp(root,'padding','28px');
     setImp(root,'overflow','hidden');
@@ -273,7 +308,7 @@
   }
 
   function patchCanvasCapture(){
-    if(!window.html2canvas || window.html2canvas.__sdc326Patched) return;
+    if(!window.html2canvas || window.html2canvas.__sdc327Patched) return;
     var original=window.html2canvas;
     var patched=function(node, opts){
       try{
@@ -283,6 +318,7 @@
       }catch(e){}
       return original.call(this,node,opts);
     };
+    patched.__sdc327Patched=true;
     patched.__sdc326Patched=true;
     patched.__sdc325Patched=true;
     window.html2canvas=patched;

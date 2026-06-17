@@ -1,4 +1,4 @@
-/* v331 · Correcciones puntuales finales.
+/* v332 · Correcciones puntuales finales.
    No cambia precios, inventario ni cálculos. */
 (function(){
   'use strict';
@@ -140,10 +140,28 @@
 
   function fixColorNumbers(root){
     var scope=root && root.querySelectorAll ? root : document;
-    scope.querySelectorAll('.product-detail-modal-v221 [class*="color"] b,.product-detail-modal-v221 [class*="color"] em,.product-detail-modal-v221 [class*="color"] strong').forEach(function(el){
-      if(/^\d+$/.test(txt(el)) || /^[0-9]+\s*(u|und|disp)?\.?$/i.test(txt(el))){
+    var colorNames=['Azul','Rojo','Negro','Blanco','Verde','Rosado','Morado','Amarillo','Gris','Dorado','Plateado'];
+    scope.querySelectorAll('.product-detail-modal-v221 [class*="color"] *').forEach(function(el){
+      var t=txt(el);
+      if(!t) return;
+      if(/^\d+$/.test(t) || /^[0-9]+\s*(u|und|disp)?\.?$/i.test(t)){
+        el.classList.add('sdc332-color-number');
         setImp(el,'color','#fff');
         setImp(el,'text-shadow','0 1px 2px rgba(0,0,0,.24)');
+        return;
+      }
+      if(colorNames.some(function(name){ return t.toLowerCase()===name.toLowerCase(); })){
+        el.classList.add('sdc332-color-name');
+        setImp(el,'color','#061b34');
+        setImp(el,'text-shadow','none');
+        setImp(el,'font-weight','950');
+      }
+    });
+    scope.querySelectorAll('.product-detail-modal-v221 [class*="color"]').forEach(function(el){
+      var t=txt(el);
+      if(colorNames.some(function(name){ return t.indexOf(name)!==-1; })){
+        setImp(el,'color','#061b34');
+        setImp(el,'text-shadow','none');
       }
     });
   }

@@ -65,12 +65,26 @@ function colorTextFromVariants(rows){
     return (rows || []).map(r => `${r.nombre || r.name || 'General'}:${Math.max(0, Math.floor(asNumber(r.stock ?? r.qty ?? r.cantidad ?? 0)))}`).join(' | ');
 }
 
+function isSampleProduct(producto = {}){
+    return producto.muestra === true || producto.soloMuestra === true || producto.sample === true || producto.demo === true || producto.tipoInventario === 'muestra' || producto.inventoryType === 'sample';
+}
+
+function productStatus(producto = {}, stockTotal = 0){
+    const raw = cleanString(producto.estado || producto.status || producto.estatus || '').toLowerCase();
+    if(raw) return raw;
+    if(producto.agotado === true || producto.soldOut === true || stockTotal <= 0) return 'agotado';
+    return 'disponible';
+}
+
 function productoFirestorePayload(producto = {}){
     const codigo = cleanString(producto.id || producto.codigo || producto.sku || producto.nombre || producto.name || `SDC-${Date.now()}`).replace(/[\/\s]+/g, '-').slice(0, 90);
     const variantes = normalizeVariantRows(producto);
     const stockTotal = variantes.reduce((sum, row) => sum + Math.max(0, Math.floor(asNumber(row.stock))), 0);
     const categorias = cleanString(producto.categories || producto.categorias || producto.categoria || producto.category || 'General', 'General');
     const img = cleanString(producto.img || producto.image || producto.imagen || '');
+    const muestra = isSampleProduct(producto);
+    const estado = productStatus(producto, stockTotal);
+    const activo = producto.activo !== false && producto.active !== false;
     return {
         codigo,
         nombre: cleanString(producto.nombre || producto.name || 'Producto sin nombre', 'Producto sin nombre'),
@@ -88,8 +102,17 @@ function productoFirestorePayload(producto = {}){
         stock_inicial: stockTotal,
         stock: stockTotal,
         promos: producto.promos || producto.promociones || '',
-        activo: producto.activo !== false && producto.active !== false,
-        active: producto.activo !== false && producto.active !== false,
+        activo,
+        active: activo,
+        estado,
+        status: estado,
+        agotado: estado === 'agotado' || stockTotal <= 0,
+        muestra,
+        soloMuestra: muestra,
+        sample: muestra,
+        tipoInventario: muestra ? 'muestra' : 'inventario',
+        inventoryType: muestra ? 'sample' : 'stock',
+        cotizable: producto.cotizable !== false,
         actualizadoEn: new Date().toISOString()
     };
 }
@@ -97,6 +120,8 @@ function productoFirestorePayload(producto = {}){
 function productoDesdeFirestore(id, data = {}){
     const variantes = normalizeVariantRows(data);
     const stockTotal = variantes.reduce((sum, row) => sum + Math.max(0, Math.floor(asNumber(row.stock))), 0);
+    const muestra = isSampleProduct(data);
+    const estado = productStatus(data, stockTotal);
     return {
         id: cleanString(data.codigo || id),
         codigo: cleanString(data.codigo || id),
@@ -111,9 +136,19 @@ function productoDesdeFirestore(id, data = {}){
         descripcion: cleanString(data.descripcion || data.description || ''),
         variantes,
         colores: cleanString(data.colores || colorTextFromVariants(variantes)),
-        stock: stockTotal,
+        stock: muestra ? 0 : stockTotal,
+        stockReal: stockTotal,
         promos: data.promos || data.promociones || '',
         activo: data.activo !== false && data.active !== false,
+        estado,
+        status: estado,
+        agotado: estado === 'agotado' || stockTotal <= 0,
+        muestra,
+        soloMuestra: muestra,
+        sample: muestra,
+        tipoInventario: muestra ? 'muestra' : 'inventario',
+        inventoryType: muestra ? 'sample' : 'stock',
+        cotizable: data.cotizable !== false,
         updatedAt: cleanString(data.actualizadoEn || data.updatedAt || '')
     };
 }
@@ -151,12 +186,62 @@ window.ocultarProductoFirebase = async function(idProducto) {
 
 window.actualizarStockFirebase = async function(idProducto, producto) {
     if(!idProducto) return false;
-    const payload = productoFirestorePayload({ ...(producto || {}), id: idProducto });
+    const payload = productoFirestorePayload({ ...(producto || {}), id: idProducto, codigo: idProducto });
     await setDoc(doc(db, "productos", payload.codigo), {
         variantes: payload.variantes,
         colores: payload.colores,
         stock_inicial: payload.stock_inicial,
         stock: payload.stock,
+        estado: payload.estado,
+        status: payload.status,
+        agotado: payload.agotado,
+        activo: payload.activo,
+        active: payload.active,
+        muestra: payload.muestra,
+        soloMuestra: payload.soloMuestra,
+        sample: payload.sample,
+        tipoInventario: payload.tipoInventario,
+        inventoryType: payload.inventoryType,
+        actualizadoEn: new Date().toISOString()
+    }, { merge: true });
+    return true;
+};
+
+window.marcarProductoEstadoFirebase = async function(idProducto, estado = 'disponible', producto = {}) {
+    if(!idProducto) return false;
+    const cleanEstado = cleanString(estado, 'disponible').toLowerCase();
+    const muestra = isSampleProduct(producto) || cleanEstado === 'muestra';
+    const patch = {
+        estado: cleanEstado,
+        status: cleanEstado,
+        agotado: cleanEstado === 'agotado',
+        muestra,
+        soloMuestra: muestra,
+        sample: muestra,
+        tipoInventario: muestra ? 'muestra' : 'inventario',
+        inventoryType: muestra ? 'sample' : 'stock',
+        actualizadoEn: new Date().toISOString()
+    };
+    if(cleanEstado === 'agotado'){
+        patch.stock = 0;
+        patch.stock_inicial = 0;
+        patch.variantes = normalizeVariantRows(producto).map(row => ({ ...row, stock: 0 }));
+        patch.colores = colorTextFromVariants(patch.variantes);
+    }
+    await setDoc(doc(db, "productos", String(idProducto)), patch, { merge: true });
+    return true;
+};
+
+window.marcarProductoMuestraFirebase = async function(idProducto, producto = {}, muestra = true) {
+    if(!idProducto) return false;
+    await setDoc(doc(db, "productos", String(idProducto)), {
+        muestra: !!muestra,
+        soloMuestra: !!muestra,
+        sample: !!muestra,
+        tipoInventario: muestra ? 'muestra' : 'inventario',
+        inventoryType: muestra ? 'sample' : 'stock',
+        estado: muestra ? 'muestra' : (producto.estado || producto.status || 'disponible'),
+        status: muestra ? 'muestra' : (producto.estado || producto.status || 'disponible'),
         actualizadoEn: new Date().toISOString()
     }, { merge: true });
     return true;
@@ -171,7 +256,10 @@ window.guardarNuevoFirebase = async function(nombre, categoria, costo, precio, i
 
 window.actualizarFirebase = async function(idProducto, datosNuevos) {
     const referenciaDocumento = doc(db, "productos", idProducto);
-    await updateDoc(referenciaDocumento, datosNuevos);
+    await updateDoc(referenciaDocumento, {
+        ...datosNuevos,
+        actualizadoEn: new Date().toISOString()
+    });
 };
 
 window.registrarVentaFirebase = async function(datosOrden) {

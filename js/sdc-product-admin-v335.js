@@ -1,9 +1,8 @@
-/* v335 · Crear producto, Muestra, Agotado persistente y retoques del detalle.
+/* v336 · Crear producto, Muestra, Agotado persistente y retoques del detalle.
    Diseñado como capa de compatibilidad sobre la app actual. */
 (function(){
   'use strict';
   var scheduled=false;
-  var uiReady=false;
 
   function txt(el){ return (el && el.textContent || '').replace(/\s+/g,' ').trim(); }
   function setImp(el, prop, value){ if(el && el.style) el.style.setProperty(prop,value,'important'); }
@@ -17,7 +16,6 @@
   }
   function slug(s){ return String(s||'producto').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/gi,'-').replace(/^-+|-+$/g,'').toUpperCase().slice(0,70) || ('SDC-'+Date.now()); }
   function moneyToNumber(v){ var n=Number(String(v||'').replace(/[^0-9.-]/g,'')); return Number.isFinite(n)?n:0; }
-  function isMobile(){ return matchMedia('(max-width: 760px)').matches; }
 
   function ensureFirebaseLoaded(){
     return new Promise(function(resolve){
@@ -25,7 +23,7 @@
       try{ window.sdcLoadFirebaseNow && window.sdcLoadFirebaseNow(); }catch(e){}
       var tries=0;
       var timer=setInterval(function(){
-        if(window.guardarProductoFirebase || ++tries>50){ clearInterval(timer); resolve(!!window.guardarProductoFirebase); }
+        if(window.guardarProductoFirebase || ++tries>60){ clearInterval(timer); resolve(!!window.guardarProductoFirebase); }
       },120);
     });
   }
@@ -109,7 +107,7 @@
         await window.guardarProductoFirebase(producto);
         toast('Producto guardado en Firebase.');
         overlay.remove();
-        setTimeout(function(){ location.href=location.pathname+'?v=335-'+Date.now(); },700);
+        setTimeout(function(){ location.href=location.pathname+'?v=336-'+Date.now(); },700);
       }catch(error){
         console.error(error);
         toast('No se pudo guardar el producto.');
@@ -139,27 +137,31 @@
     }
   }
 
-  function detailProductId(modal){
+  function detailProductInfo(modal){
     var small=txt(modal.querySelector('.v141-head-copy small,.v49-detail-main small,.v163-detail-main small,small'));
+    var title=txt(modal.querySelector('.v141-head-copy h3,.v49-detail-main h3,.v163-detail-main h3,.modal-head h3,h3,h2'));
+    var code='';
     if(small.indexOf('·')!==-1){
       var parts=small.split('·').map(function(x){return x.trim();}).filter(Boolean);
-      return parts[parts.length-1];
+      code=parts[parts.length-1] || '';
+    }else{
+      code=small || slug(title);
     }
-    var title=txt(modal.querySelector('h1,h2,h3'));
-    return slug(title);
+    return { id: code || slug(title), codigo: code || slug(title), sku: code || slug(title), nombre:title, name:title };
   }
 
   async function setProductState(modal,state){
-    var id=detailProductId(modal);
-    if(!id) return toast('No pude detectar el código del producto.');
+    var info=detailProductInfo(modal);
+    var id=info.id;
+    if(!id && !info.nombre) return toast('No pude detectar el producto.');
     var ready=await ensureFirebaseLoaded();
     if(!ready) return toast('Firebase no está listo.');
     try{
-      if(state==='muestra') await window.marcarProductoMuestraFirebase(id, {}, true);
-      else if(state==='normal') await window.marcarProductoMuestraFirebase(id, {}, false);
-      else await window.marcarProductoEstadoFirebase(id, state, {});
+      if(state==='muestra') await window.marcarProductoMuestraFirebase(id, info, true);
+      else if(state==='normal') await window.marcarProductoMuestraFirebase(id, info, false);
+      else await window.marcarProductoEstadoFirebase(id, state, info);
       toast(state==='agotado'?'Producto guardado como AGOTADO.':state==='muestra'?'Producto guardado como MUESTRA.':'Producto volvió a inventario normal.');
-      setTimeout(function(){ location.href=location.pathname+'?v=335-'+Date.now(); },700);
+      setTimeout(function(){ location.href=location.pathname+'?v=336-'+Date.now(); },700);
     }catch(error){ console.error(error); toast('No se pudo actualizar Firebase.'); }
   }
 

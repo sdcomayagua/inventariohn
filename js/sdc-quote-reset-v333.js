@@ -1,18 +1,30 @@
-/* v333 · Limpia entrega local COMAYAGUA y cantidad pegada de cotización anterior.
-   No cambia inventario ni precios base. */
+/* v334 · Limpia entrega local COMAYAGUA y fuerza cantidad a 1 al abrir producto.
+   Evita que quede pegada la cantidad de la cotización anterior. */
 (function(){
   'use strict';
   var scheduled=false;
-  var lastModal=null;
-  var lastProductKey='';
+  var lastSeenKey='';
+  var resetWindowUntil=0;
 
   function txt(el){ return (el && el.textContent || '').replace(/\s+/g,' ').trim(); }
   function setImp(el, prop, value){ if(el && el.style) el.style.setProperty(prop,value,'important'); }
 
+  function isMinus(btn){
+    var t=txt(btn);
+    var aria=(btn && btn.getAttribute && (btn.getAttribute('aria-label')||btn.title||'') || '').toLowerCase();
+    return t==='-' || t==='−' || /menos|restar|disminuir|decrease/i.test(aria);
+  }
+
+  function isPlus(btn){
+    var t=txt(btn);
+    var aria=(btn && btn.getAttribute && (btn.getAttribute('aria-label')||btn.title||'') || '').toLowerCase();
+    return t==='+' || /m[aá]s|sumar|aumentar|increase|plus/i.test(aria);
+  }
+
   function modalKey(modal){
     if(!modal) return '';
-    var title=txt(modal.querySelector('h1,h2,h3,.modal-title,.v49-title,.v141-head-copy h3'));
-    var code=txt(modal.querySelector('small,.v49-detail-main small,.v141-head-copy small'));
+    var title=txt(modal.querySelector('h1,h2,h3,.modal-title,.v49-title,.v141-head-copy h3,.v49-detail-main h3'));
+    var code=txt(modal.querySelector('.v141-head-copy small,.v49-detail-main small,small'));
     return title+'|'+code;
   }
 
@@ -43,61 +55,92 @@
     }
   }
 
-  function findQtyText(modal){
-    if(!modal) return null;
-    var candidates=Array.from(modal.querySelectorAll('input, b, strong, span, div')).filter(function(el){
-      if(el.offsetParent === null && el.tagName !== 'INPUT') return false;
-      var t=el.tagName === 'INPUT' ? String(el.value || '') : txt(el);
-      return /^\d{1,3}$/.test(t);
-    });
-    var inQty=candidates.find(function(el){
-      var parent=el.closest('[class*="qty"], [class*="cantidad"], .v49-qty-stepper, .v141-qty-stepper, .v163-qty-stepper');
-      return !!parent;
-    });
-    return inQty || null;
-  }
-
-  function findMinusButton(modal){
+  function findQtyStepper(modal){
     if(!modal) return null;
     var buttons=Array.from(modal.querySelectorAll('button'));
-    return buttons.find(function(btn){
-      var t=txt(btn);
-      var aria=(btn.getAttribute('aria-label') || '').toLowerCase();
-      return t === '-' || t === '−' || /menos|restar|disminuir/i.test(aria);
-    }) || null;
+    var minus=buttons.find(isMinus);
+    var plus=buttons.find(isPlus);
+    if(!minus || !plus) return null;
+
+    var common=minus.parentElement;
+    for(var i=0;i<7 && common;i++,common=common.parentElement){
+      if(common.contains(plus)) break;
+    }
+    if(!common) common=minus.parentElement || modal;
+
+    var qtyEls=Array.from(common.querySelectorAll('input,b,strong,span,div')).filter(function(el){
+      if(el===minus || el===plus || minus.contains(el) || plus.contains(el)) return false;
+      var value=el.tagName==='INPUT' ? String(el.value||'') : txt(el);
+      return /^\d{1,3}$/.test(value);
+    });
+
+    var qtyEl=qtyEls.find(function(el){
+      var r=el.getBoundingClientRect ? el.getBoundingClientRect() : {width:0,height:0};
+      return r.width>20 && r.height>20;
+    }) || qtyEls[0];
+
+    return {wrap:common, minus:minus, plus:plus, qty:qtyEl};
   }
 
-  function currentQty(modal){
-    var el=findQtyText(modal);
-    if(!el) return NaN;
-    return parseInt(el.tagName === 'INPUT' ? el.value : txt(el),10);
+  function readQty(step){
+    if(!step || !step.qty) return NaN;
+    return parseInt(step.qty.tagName==='INPUT' ? step.qty.value : txt(step.qty),10);
   }
 
-  function resetQtyToOne(modal){
-    if(!modal || modal.dataset.sdc333QtyReset === '1') return;
-    modal.dataset.sdc333QtyReset='1';
-    var key=modalKey(modal);
-    lastProductKey=key;
+  function directSetOne(step){
+    if(!step || !step.qty) return;
+    if(step.qty.tagName==='INPUT'){
+      step.qty.value='1';
+      step.qty.dispatchEvent(new Event('input',{bubbles:true}));
+      step.qty.dispatchEvent(new Event('change',{bubbles:true}));
+    }else{
+      step.qty.textContent='1';
+    }
+  }
 
-    var q=currentQty(modal);
-    if(!Number.isFinite(q) || q <= 1) return;
+  function clickMinus(step){
+    if(!step || !step.minus) return;
+    try{ step.minus.click(); }catch(e){}
+    try{ step.minus.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window})); }catch(e){}
+  }
 
-    var minus=findMinusButton(modal);
-    if(!minus) return;
+  function resetStepperToOne(modal){
+    var step=findQtyStepper(modal);
+    if(!step) return;
+    var q=readQty(step);
+    if(!Number.isFinite(q) || q<=1) return;
 
-    modal.classList.add('sdc333-qty-resetting');
     var guard=0;
-    function step(){
-      var now=currentQty(modal);
-      if(!Number.isFinite(now) || now <= 1 || guard > 80){
-        modal.classList.remove('sdc333-qty-resetting');
+    function loop(){
+      step=findQtyStepper(modal);
+      q=readQty(step);
+      if(!Number.isFinite(q) || q<=1 || guard>=50){
+        if(Number.isFinite(q) && q>1) directSetOne(step);
         return;
       }
       guard++;
-      try{ minus.click(); }catch(e){}
-      setTimeout(step,18);
+      clickMinus(step);
+      setTimeout(loop,24);
     }
-    step();
+    loop();
+  }
+
+  function isProductDetail(modal){
+    var t=txt(modal);
+    return /CANTIDAD/i.test(t) && (/ENV[IÍ]O NORMAL/i.test(t) || /PAGAR A RECIBIR/i.test(t) || /Colores/i.test(t));
+  }
+
+  function markOpenWindow(modal){
+    var key=modalKey(modal);
+    if(key && key!==lastSeenKey){
+      lastSeenKey=key;
+      resetWindowUntil=Date.now()+2200;
+      modal.dataset.sdc333QtyReset='0';
+      setTimeout(function(){ resetStepperToOne(modal); },40);
+      setTimeout(function(){ resetStepperToOne(modal); },160);
+      setTimeout(function(){ resetStepperToOne(modal); },420);
+      setTimeout(function(){ resetStepperToOne(modal); },900);
+    }
   }
 
   function markQuoteFinishedClicks(){
@@ -105,39 +148,26 @@
       var btn=ev.target.closest && ev.target.closest('button,a');
       if(!btn) return;
       var t=txt(btn);
-      if(/facturar|guardar|descargar|imagen|enviar|whatsapp|finalizar|cerrar\s+pedido/i.test(t)){
+      if(/agregar|cotizar|quitar|facturar|guardar|descargar|imagen|enviar|whatsapp|finalizar|cerrar\s+pedido/i.test(t)){
+        resetWindowUntil=Date.now()+2600;
         try{
           sessionStorage.setItem('sdc333_last_quote_done','1');
           sessionStorage.setItem('sdc333_last_quote_done_at',String(Date.now()));
         }catch(e){}
+        setTimeout(function(){
+          document.querySelectorAll('.product-detail-modal-v221,.modal').forEach(function(m){ if(isProductDetail(m)) resetStepperToOne(m); });
+        },80);
       }
     },true);
   }
 
-  function shouldResetModal(modal){
-    if(!modal) return false;
-    if(modal.dataset.sdc333QtyReset === '1') return false;
-    var key=modalKey(modal);
-    if(modal !== lastModal) return true;
-    if(key && key !== lastProductKey) return true;
-    try{
-      var done=sessionStorage.getItem('sdc333_last_quote_done') === '1';
-      var at=parseInt(sessionStorage.getItem('sdc333_last_quote_done_at') || '0',10);
-      if(done && Date.now() - at < 1000*60*60) return true;
-    }catch(e){}
-    return false;
-  }
-
   function polish(){
     document.querySelectorAll('.product-detail-modal-v221,.modal').forEach(function(modal){
-      var t=txt(modal);
-      if(!/CANTIDAD|ENV[IÍ]O NORMAL|PAGAR A RECIBIR|COMAYAGUA/i.test(t)) return;
+      if(!isProductDetail(modal)) return;
       hideLocalDelivery(modal);
       clickNormalIfNeeded(modal);
-      if(shouldResetModal(modal)){
-        lastModal=modal;
-        setTimeout(function(){ resetQtyToOne(modal); },60);
-      }
+      markOpenWindow(modal);
+      if(Date.now()<resetWindowUntil) resetStepperToOne(modal);
     });
   }
 
@@ -154,7 +184,7 @@
     markQuoteFinishedClicks();
     polish();
     new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
-    document.addEventListener('click',function(){ setTimeout(schedule,50); },true);
+    document.addEventListener('click',function(){ setTimeout(schedule,60); setTimeout(schedule,250); },true);
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true});

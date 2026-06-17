@@ -1,12 +1,15 @@
-/* v332 · Correcciones puntuales finales.
+/* v337 · Correcciones puntuales finales.
    No cambia precios, inventario ni cálculos. */
 (function(){
   'use strict';
   var scheduled=false;
   var patchedDownload=false;
+  var RED_RE=/SI\s+USAS\s+ENV[IÍ]O\s+NORMAL\s+TE\s+AHORRAS/i;
+  var RED='#d61c3b';
 
   function txt(el){ return (el && el.textContent || '').replace(/\s+/g,' ').trim(); }
   function setImp(el, prop, value){ if(el && el.style) el.style.setProperty(prop,value,'important'); }
+  function clearInlineColor(el){ if(el && el.style){ el.style.removeProperty('color'); el.style.removeProperty('text-shadow'); } }
   function slug(s){ return String(s||'sdc').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/gi,'-').replace(/^-+|-+$/g,'').toLowerCase().slice(0,60) || 'sdc'; }
   function stamp(){ var d=new Date(); return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0')+String(d.getSeconds()).padStart(2,'0'); }
 
@@ -124,17 +127,31 @@
     });
   }
 
+  function smallestSavingsNodes(receipt){
+    var all=Array.from(receipt.querySelectorAll('small,span,b,strong,p,div')).filter(function(el){ return RED_RE.test(txt(el)); });
+    return all.filter(function(el){ return !Array.from(el.children || []).some(function(child){ return RED_RE.test(txt(child)); }); });
+  }
+
   function forceSavingsRed(root){
     var scope=root && root.querySelectorAll ? root : document;
-    scope.querySelectorAll('.sdc208-variant-note small, small, span, div').forEach(function(el){
-      var t=txt(el);
-      if(/SI\s+USAS\s+ENV[IÍ]O\s+NORMAL\s+TE\s+AHORRAS/i.test(t)){
-        el.classList.add('sdc331-saving-red');
-        setImp(el,'color','#d61c3b');
+    scope.querySelectorAll('.short-receipt,.shortReceiptExportHost .short-receipt').forEach(function(receipt){
+      receipt.querySelectorAll('.sdc331-saving-red').forEach(function(el){
+        el.classList.remove('sdc331-saving-red');
+        clearInlineColor(el);
+        el.querySelectorAll('*').forEach(clearInlineColor);
+      });
+      receipt.querySelectorAll('[style]').forEach(function(el){
+        var color=(el.style.color || '').toLowerCase().replace(/\s+/g,'');
+        if((color===RED || color==='rgb(214,28,59)' || color==='#d61c3b') && !RED_RE.test(txt(el))) clearInlineColor(el);
+      });
+      smallestSavingsNodes(receipt).forEach(function(el){
+        el.classList.add('sdc337-saving-red');
+        setImp(el,'color',RED);
         setImp(el,'font-weight','950');
         setImp(el,'text-align','center');
-        el.querySelectorAll('*').forEach(function(c){ setImp(c,'color','#d61c3b'); });
-      }
+        setImp(el,'text-shadow','none');
+        el.querySelectorAll('*').forEach(function(c){ setImp(c,'color',RED); });
+      });
     });
   }
 
@@ -248,7 +265,7 @@
     interceptWhatsAppClicks();
     patchDownloadNames();
     polish(document);
-    new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+    new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class','style']});
     document.addEventListener('click',function(){ setTimeout(schedule,40); setTimeout(schedule,180); },true);
   }
 

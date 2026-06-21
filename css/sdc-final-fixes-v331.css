@@ -1,0 +1,249 @@
+/* v338 · Correcciones puntuales finales.
+   No cambia precios, inventario ni cálculos. */
+
+/* 1) Colores del detalle: nombre oscuro, número blanco. */
+body.sdc-v319-quality-polish .product-detail-modal-v221 :is(.v86-color-client,.v141-color-card,.v163-color-card,.v164-color-card,[class*="color"]),
+body.sdc-v319-quality-polish .product-detail-modal-v221 :is(.v86-color-client,.v141-color-card,.v163-color-card,.v164-color-card,[class*="color"]) button{
+  color:#061b34!important;
+  text-shadow:none!important;
+}
+
+body.sdc-v319-quality-polish .product-detail-modal-v221 :is(.v86-color-client,.v141-color-card,.v163-color-card,.v164-color-card,[class*="color"]) :is(span,small,label,p,i):not(:has(*)){
+  color:#061b34!important;
+  text-shadow:none!important;
+}
+
+body.sdc-v319-quality-polish .product-detail-modal-v221 :is(.v86-color-client,.v141-color-card,.v163-color-card,.v164-color-card,[class*="color"]) :is(b,em,strong),
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc332-color-number{
+  color:#ffffff!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.24)!important;
+}
+
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc332-color-name{
+  color:#061b34!important;
+  text-shadow:none!important;
+  font-weight:950!important;
+}
+
+/* 3) Ahorro de pagar normal en rojo. */
+.short-receipt.sdc208-cod .sdc208-variant-note small,
+.shortReceiptExportHost .short-receipt.sdc208-cod .sdc208-variant-note small,
+.sdc331-saving-red,
+.sdc337-saving-red{
+  color:#d61c3b!important;
+  font-weight:950!important;
+  letter-spacing:.015em!important;
+  text-align:center!important;
+  text-shadow:none!important;
+}
+
+.short-receipt.sdc208-cod .sdc208-variant-note small b,
+.shortReceiptExportHost .short-receipt.sdc208-cod .sdc208-variant-note small b,
+.sdc331-saving-red b,
+.sdc337-saving-red b{
+  color:#d61c3b!important;
+}
+
+/* 4) Miniatura real del producto dentro del comparativo/factura. */
+.short-receipt .sdc208-line.sdc331-has-thumb,
+.shortReceiptExportHost .short-receipt .sdc208-line.sdc331-has-thumb{
+  display:grid!important;
+  grid-template-columns:44px 78px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:12px!important;
+  min-height:90px!important;
+  padding:12px 14px!important;
+}
+
+.short-receipt .sdc331-receipt-thumb,
+.shortReceiptExportHost .short-receipt .sdc331-receipt-thumb{
+  width:76px!important;
+  height:76px!important;
+  min-width:76px!important;
+  border-radius:16px!important;
+  object-fit:contain!important;
+  background:#ffffff!important;
+  border:1px solid rgba(11,99,206,.18)!important;
+  padding:5px!important;
+  box-shadow:0 7px 16px rgba(6,31,63,.10)!important;
+}
+
+.short-receipt .sdc208-line.sdc331-has-thumb > :first-child,
+.shortReceiptExportHost .short-receipt .sdc208-line.sdc331-has-thumb > :first-child{
+  grid-column:1!important;
+}
+
+/* v338: orden correcto del producto dentro del recibo/comparativo. */
+.short-receipt .sdc208-line.sdc338-line,
+.shortReceiptExportHost .short-receipt .sdc208-line.sdc338-line{
+  display:grid!important;
+  grid-template-columns:42px 78px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:12px!important;
+  min-height:92px!important;
+  padding:12px 14px!important;
+}
+
+.short-receipt .sdc338-qty,
+.shortReceiptExportHost .short-receipt .sdc338-qty{
+  grid-column:1!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  border-radius:12px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  font-size:15px!important;
+  font-weight:950!important;
+  text-shadow:none!important;
+}
+
+.short-receipt .sdc338-thumb,
+.shortReceiptExportHost .short-receipt .sdc338-thumb{
+  grid-column:2!important;
+  width:76px!important;
+  height:76px!important;
+  min-width:76px!important;
+  border-radius:16px!important;
+  object-fit:contain!important;
+  background:#fff!important;
+  border:1px solid rgba(11,99,206,.18)!important;
+  padding:5px!important;
+}
+
+.short-receipt .sdc338-info,
+.shortReceiptExportHost .short-receipt .sdc338-info{
+  grid-column:3!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  text-align:left!important;
+  gap:2px!important;
+}
+
+.short-receipt .sdc338-name,
+.shortReceiptExportHost .short-receipt .sdc338-name{
+  color:#061b34!important;
+  font-size:16px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  letter-spacing:-.025em!important;
+  text-align:left!important;
+  max-width:100%!important;
+}
+
+.short-receipt .sdc338-meta,
+.shortReceiptExportHost .short-receipt .sdc338-meta{
+  color:#5f7895!important;
+  font-size:12px!important;
+  line-height:1.12!important;
+  font-weight:850!important;
+  text-align:left!important;
+}
+
+.short-receipt .sdc338-price,
+.shortReceiptExportHost .short-receipt .sdc338-price{
+  grid-column:4!important;
+  justify-self:end!important;
+  align-self:center!important;
+  color:#d61c3b!important;
+  font-size:18px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  margin-left:10px!important;
+}
+
+/* Stock/disp. en recibos y PNG: más ancho y legible. */
+.short-receipt [class*="disp"],
+.shortReceiptExportHost [class*="disp"],
+.sdc331-stock-readable,
+.sdc327-stock-pill,
+.sdc326-stock-pill{
+  min-width:86px!important;
+  width:auto!important;
+  padding:8px 14px!important;
+  white-space:nowrap!important;
+  color:#0b63ce!important;
+  background:#eef6ff!important;
+  border:1px solid #cfe4ff!important;
+  font-size:13px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:-.01em!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+
+/* 5) PNG de categoría: título del encabezado visible y mejor contraste. */
+.sdc331-category-capture-header,
+.sdc327-category-capture-header,
+.sdc326-category-capture-header,
+.sdc325-category-capture-header,
+.sdc324-category-capture-header{
+  min-height:190px!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+
+.sdc331-category-capture-header :is(h1,h2,h3,.sdc331-clean-category-title,.sdc327-clean-header-title){
+  color:#ffffff!important;
+  text-shadow:0 2px 4px rgba(0,0,0,.22)!important;
+}
+
+.sdc331-clean-category-title{
+  position:absolute!important;
+  left:150px!important;
+  top:72px!important;
+  right:34px!important;
+  color:#fff!important;
+  font-size:56px!important;
+  line-height:.92!important;
+  font-weight:950!important;
+  letter-spacing:-.055em!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  z-index:6!important;
+}
+
+.sdc331-hidden-bad-title{
+  visibility:hidden!important;
+  opacity:0!important;
+}
+
+.sdc331-category-capture-header p,
+.sdc331-category-capture-header small,
+.sdc331-category-capture-header span{
+  color:#ffffff!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.16)!important;
+}
+
+.sdc331-product-name-clean{
+  display:block!important;
+  margin:12px 0 16px!important;
+  color:#07192f!important;
+  font-size:25px!important;
+  line-height:1.08!important;
+  font-weight:950!important;
+  letter-spacing:-.045em!important;
+  transform:none!important;
+  clear:both!important;
+}
+
+.sdc331-product-code-clean{
+  display:block!important;
+  margin:0 0 8px!important;
+  color:#647d98!important;
+  font-size:12px!important;
+  line-height:1.15!important;
+  letter-spacing:.08em!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}

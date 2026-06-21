@@ -1,0 +1,32 @@
+/* v333 · Oculta entrega local COMAYAGUA y evita residuos visuales de cotización anterior.
+   No cambia inventario ni precios base. */
+
+/* Ocultar tarjeta/local de COMAYAGUA en el detalle del producto. */
+body.sdc-v319-quality-polish .product-detail-modal-v221 [data-v49-card="local"],
+body.sdc-v319-quality-polish .product-detail-modal-v221 [data-v49-card="pickup"],
+body.sdc-v319-quality-polish .product-detail-modal-v221 [data-v49-card="comayagua"],
+body.sdc-v319-quality-polish .product-detail-modal-v221 [data-delivery="local"],
+body.sdc-v319-quality-polish .product-detail-modal-v221 [data-delivery="pickup"],
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc333-hide-local-delivery{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+/* Si queda el grupo de envíos con una sola opción visible, evita espacios raros. */
+body.sdc-v319-quality-polish .product-detail-modal-v221 .v49-price-cards,
+body.sdc-v319-quality-polish .product-detail-modal-v221 .v141-price-cards,
+body.sdc-v319-quality-polish .product-detail-modal-v221 .v163-price-cards{
+  gap:14px!important;
+}
+
+/* Cantidad inicial limpia. */
+body.sdc-v319-quality-polish .product-detail-modal-v221 .sdc333-qty-resetting{
+  opacity:.72;
+  pointer-events:none;
+}

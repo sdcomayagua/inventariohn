@@ -1,0 +1,78 @@
+/* v341 · Corrección de tarjetas y barra de filtros.
+   No cambia precios, inventario ni Firebase. */
+
+/* La barra de búsqueda/filtros no debe quedarse encima tapando productos. */
+.catalog-control-v178,
+.catalog-control-v189,
+.catalog-control-v178.catalog-control-v189,
+.catalog-filter-row-v178,
+.catalog-filter-row-v189,
+.catalog-filter-row-v235,
+.products-screen-v178 .catalog-control-v178,
+.products-screen-v189 .catalog-control-v189{
+  position:relative!important;
+  top:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  right:auto!important;
+  z-index:5!important;
+  transform:none!important;
+  margin-bottom:18px!important;
+}
+
+/* Evita que algún contenedor reserve poco espacio debajo de la barra. */
+.products-screen-v178,
+.products-screen-v189,
+.products-screen-v190{
+  overflow:visible!important;
+}
+
+/* Elementos de cotización NO deben salir dentro de tarjetas del catálogo. */
+.product-card .sdc341-hide-card-quote,
+article.product-card .sdc341-hide-card-quote,
+[class*="product-card"] .sdc341-hide-card-quote{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+/* Restaurar visibilidad normal de contenido principal de la tarjeta. */
+.product-card h1,
+.product-card h2,
+.product-card h3,
+.product-card h4,
+.product-card [class*="price"],
+.product-card [class*="stock"],
+.product-card [class*="badge"],
+.product-card [class*="meta"],
+.product-card [class*="tag"],
+.product-card .product-actions,
+.product-card button{
+  visibility:visible!important;
+  opacity:1!important;
+}
+
+/* Botón flotante de crear producto solo para móvil; en PC queda el botón propio + Producto. */
+@media (min-width:761px){
+  .sdc335-create-fab,
+  .sdc335-create-btn{
+    display:none!important;
+  }
+}
+
+@media (max-width:760px){
+  .sdc335-create-fab{
+    position:fixed!important;
+    left:16px!important;
+    right:16px!important;
+    bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;
+    width:auto!important;
+    z-index:2147482500!important;
+  }
+}

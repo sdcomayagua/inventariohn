@@ -1,0 +1,170 @@
+/* v339 · Limpieza visual: botón producto, tarjetas y fila del recibo.
+   No cambia precios, inventario ni Firebase. */
+
+/* Quitar botón duplicado/feo en escritorio. En PC ya existe el botón + Producto. */
+@media (min-width:761px){
+  .sdc335-create-fab,
+  .sdc335-create-btn{
+    display:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+}
+
+/* En celular el botón flotante se mantiene, pero abajo y compacto. */
+@media (max-width:760px){
+  .sdc335-create-fab{
+    position:fixed!important;
+    left:18px!important;
+    right:18px!important;
+    bottom:calc(16px + env(safe-area-inset-bottom,0px))!important;
+    width:auto!important;
+    min-height:50px!important;
+    border-radius:18px!important;
+    justify-content:center!important;
+    z-index:2147482500!important;
+  }
+  .sdc335-create-btn{display:none!important;}
+}
+
+/* Evitar que la barra superior se rompa por el botón nuevo. */
+.catalog-filter-row-v235,
+.catalog-filter-row-v178,
+.catalog-control-v178,
+.catalog-control-v189{
+  align-items:center!important;
+  gap:12px!important;
+}
+
+/* Ocultar el bloque local Comayagua/Producto sin envío cuando queda pegado en tarjetas. */
+.sdc339-hide-local,
+.product-card .sdc339-hide-local,
+article .sdc339-hide-local{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  max-height:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+/* Si quedan filas de envío dentro de tarjetas, que respiren y no se peguen. */
+.product-card [class*="delivery"],
+.product-card [class*="envio"],
+.product-card [class*="shipping"]{
+  gap:8px!important;
+  white-space:normal!important;
+  line-height:1.22!important;
+}
+
+/* Fila del producto en recibo/comparativo: cantidad | foto | datos | precio. */
+.short-receipt .sdc208-line.sdc339-line,
+.shortReceiptExportHost .short-receipt .sdc208-line.sdc339-line{
+  display:grid!important;
+  grid-template-columns:44px 90px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:14px!important;
+  min-height:112px!important;
+  padding:14px 16px!important;
+  overflow:visible!important;
+}
+
+.short-receipt .sdc339-qty,
+.shortReceiptExportHost .short-receipt .sdc339-qty{
+  grid-column:1!important;
+  width:36px!important;
+  height:36px!important;
+  border-radius:13px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  font-size:15px!important;
+  font-weight:950!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+
+.short-receipt .sdc339-thumb,
+.shortReceiptExportHost .short-receipt .sdc339-thumb{
+  grid-column:2!important;
+  width:88px!important;
+  height:88px!important;
+  min-width:88px!important;
+  object-fit:contain!important;
+  border-radius:17px!important;
+  background:#fff!important;
+  border:1px solid rgba(11,99,206,.18)!important;
+  padding:6px!important;
+  box-shadow:0 8px 18px rgba(6,31,63,.10)!important;
+}
+
+.short-receipt .sdc339-info,
+.shortReceiptExportHost .short-receipt .sdc339-info{
+  grid-column:3!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  text-align:left!important;
+  gap:4px!important;
+}
+
+.short-receipt .sdc339-name,
+.shortReceiptExportHost .short-receipt .sdc339-name{
+  color:#061b34!important;
+  font-size:17px!important;
+  line-height:1.08!important;
+  font-weight:950!important;
+  letter-spacing:-.03em!important;
+  text-align:left!important;
+}
+
+.short-receipt .sdc339-meta,
+.shortReceiptExportHost .short-receipt .sdc339-meta{
+  color:#607993!important;
+  font-size:12.5px!important;
+  line-height:1.18!important;
+  font-weight:850!important;
+  text-align:left!important;
+}
+
+.short-receipt .sdc339-price,
+.shortReceiptExportHost .short-receipt .sdc339-price{
+  grid-column:4!important;
+  justify-self:end!important;
+  align-self:center!important;
+  color:#d61c3b!important;
+  font-size:20px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  margin-left:12px!important;
+}
+
+@media (max-width:760px){
+  .short-receipt .sdc208-line.sdc339-line,
+  .shortReceiptExportHost .short-receipt .sdc208-line.sdc339-line{
+    grid-template-columns:34px 66px minmax(0,1fr) auto!important;
+    gap:9px!important;
+    min-height:86px!important;
+    padding:10px!important;
+  }
+  .short-receipt .sdc339-thumb,
+  .shortReceiptExportHost .short-receipt .sdc339-thumb{
+    width:64px!important;
+    height:64px!important;
+    min-width:64px!important;
+  }
+  .short-receipt .sdc339-name,
+  .shortReceiptExportHost .short-receipt .sdc339-name{font-size:14px!important;}
+  .short-receipt .sdc339-meta,
+  .shortReceiptExportHost .short-receipt .sdc339-meta{font-size:11px!important;}
+  .short-receipt .sdc339-price,
+  .shortReceiptExportHost .short-receipt .sdc339-price{font-size:16px!important;}
+}

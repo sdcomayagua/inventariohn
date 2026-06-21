@@ -1,12 +1,11 @@
-/* v339 · Limpieza visual de controles, tarjetas y recibos.
-   No cambia precios, inventario ni Firebase. */
+/* v340 · Limpieza visual de controles y recibos.
+   No oculta contenido principal de tarjetas. No cambia precios, inventario ni Firebase. */
 (function(){
   'use strict';
   var scheduled=false;
 
   function txt(el){ return (el && el.textContent || '').replace(/\s+/g,' ').trim(); }
   function setImp(el,prop,value){ if(el && el.style) el.style.setProperty(prop,value,'important'); }
-  function isPrice(t){ return /^Lps\.\s*[0-9.,]+$/i.test(String(t||'').trim()); }
   function allPrices(t){ return String(t||'').match(/Lps\.\s*[0-9.,]+/gi) || []; }
   function clean(s){ return String(s||'').replace(/\s+/g,' ').trim(); }
 
@@ -25,29 +24,29 @@
     }
   }
 
-  function hideBadLocalBlocks(){
-    var bad=/Producto\s+sin\s+env[ií]o|entrega\s+local\s+seg[uú]n\s+zona|Comayagua\s*Lps\./i;
+  function restoreCardText(){
     document.querySelectorAll('article.product-card, .product-card, [class*="product-card"]').forEach(function(card){
-      Array.from(card.querySelectorAll('div,p,span,section,article')).forEach(function(el){
+      card.querySelectorAll('.sdc339-hide-local').forEach(function(el){
+        /* Restaurar cualquier bloque que pudo ocultarse de más en v339. */
+        el.classList.remove('sdc339-hide-local');
+        ['display','visibility','height','min-height','max-height','padding','margin','border','overflow'].forEach(function(p){
+          if(el.style) el.style.removeProperty(p);
+        });
+      });
+      /* Si el producto tiene precio/nombre oculto por estilo inline, volverlo visible. */
+      card.querySelectorAll('[style]').forEach(function(el){
         var t=txt(el);
-        if(!bad.test(t)) return;
-        var target=el;
-        for(var i=0;i<3 && target.parentElement && target.parentElement!==card;i++){
-          var pt=txt(target.parentElement);
-          if(bad.test(pt) && pt.length < 220) target=target.parentElement;
+        if(/Lps\.\s*\d+|Admin|Cotizar|Vender|Detalle|Cantidad|Env[ií]o normal|Pagar al recibir/i.test(t)){
+          if(el.style.display === 'none') el.style.removeProperty('display');
+          if(el.style.visibility === 'hidden') el.style.removeProperty('visibility');
+          if(el.style.height === '0px' || el.style.height === '0') el.style.removeProperty('height');
+          if(el.style.maxHeight === '0px' || el.style.maxHeight === '0') el.style.removeProperty('max-height');
         }
-        target.classList.add('sdc339-hide-local');
-        setImp(target,'display','none');
-        setImp(target,'height','0');
-        setImp(target,'padding','0');
-        setImp(target,'margin','0');
       });
     });
   }
 
-  function productImage(line){
-    return line.querySelector('img');
-  }
+  function productImage(line){ return line.querySelector('img'); }
 
   function parseLine(line){
     var raw=clean(txt(line));
@@ -63,8 +62,6 @@
       var idx=body.lastIndexOf(price);
       if(idx >= 0) body=clean(body.slice(0,idx));
     }
-
-    /* Si quedó un precio de unidad antes del nombre por versiones anteriores, lo removemos del texto. */
     body=clean(body.replace(/^Lps\.\s*[0-9.,]+\s*/i,''));
 
     var name=body;
@@ -82,7 +79,7 @@
   }
 
   function rebuildReceiptLine(line){
-    if(!line || line.dataset.sdc339Done==='1') return;
+    if(!line || line.dataset.sdc340Done==='1') return;
     var img=productImage(line);
     var parsed=parseLine(line);
     if(!img || !parsed.price || !parsed.name) return;
@@ -119,7 +116,7 @@
     line.appendChild(price);
     line.classList.add('sdc339-line');
     line.classList.remove('sdc338-line');
-    line.dataset.sdc339Done='1';
+    line.dataset.sdc340Done='1';
   }
 
   function fixReceiptRows(root){
@@ -128,19 +125,19 @@
   }
 
   function patchCanvasCapture(){
-    if(!window.html2canvas || window.html2canvas.__sdc339Patch) return;
+    if(!window.html2canvas || window.html2canvas.__sdc340Patch) return;
     var original=window.html2canvas;
     var patched=function(node,opts){
       try{ polish(); if(node && node.querySelectorAll) fixReceiptRows(node); }catch(e){}
       return original.call(this,node,opts);
     };
-    patched.__sdc339Patch=true;
+    patched.__sdc340Patch=true;
     window.html2canvas=patched;
   }
 
   function polish(){
     hideDuplicateCreateButtons();
-    hideBadLocalBlocks();
+    restoreCardText();
     fixReceiptRows(document);
     patchCanvasCapture();
   }
@@ -156,7 +153,7 @@
 
   function start(){
     polish();
-    new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+    new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class','style']});
     document.addEventListener('click',function(){ setTimeout(schedule,40); setTimeout(schedule,200); },true);
     var tries=0;
     var timer=setInterval(function(){ polish(); if(++tries>18) clearInterval(timer); },250);

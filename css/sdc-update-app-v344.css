@@ -1,0 +1,95 @@
+/* v344 · Botón Actualizar app.
+   Limpia caché y recarga la versión más nueva sin afectar inventario/Firebase. */
+
+.sdc344-update-app-btn{
+  min-height:48px!important;
+  border:1px solid rgba(11,99,206,.18)!important;
+  border-radius:16px!important;
+  padding:0 16px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  background:#ffffff!important;
+  color:#075bbb!important;
+  font-weight:950!important;
+  font-size:15px!important;
+  line-height:1!important;
+  letter-spacing:-.015em!important;
+  box-shadow:0 10px 22px rgba(6,31,63,.08)!important;
+  cursor:pointer!important;
+  white-space:nowrap!important;
+  user-select:none!important;
+}
+
+.sdc344-update-app-btn:hover{
+  transform:translateY(-1px)!important;
+  box-shadow:0 14px 28px rgba(6,31,63,.12)!important;
+}
+
+.sdc344-update-app-btn:active{
+  transform:translateY(0)!important;
+}
+
+.sdc344-update-app-btn[disabled]{
+  opacity:.72!important;
+  cursor:wait!important;
+}
+
+.sdc344-update-app-btn .sdc344-icon{
+  width:28px!important;
+  height:28px!important;
+  border-radius:999px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  font-size:17px!important;
+  font-weight:950!important;
+}
+
+.sdc344-update-app-btn.sdc344-injected-top{
+  margin-left:8px!important;
+}
+
+.sdc344-update-app-slot{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:10px!important;
+}
+
+@media (max-width:760px){
+  .sdc344-update-app-btn{
+    width:100%!important;
+    min-height:50px!important;
+    border-radius:18px!important;
+    font-size:15px!important;
+  }
+
+  .sdc344-update-app-btn.sdc344-injected-top{
+    margin-left:0!important;
+    margin-top:10px!important;
+  }
+
+  .sdc344-update-app-slot{
+    width:100%!important;
+    justify-content:stretch!important;
+  }
+}
+
+.sdc344-refresh-toast{
+  position:fixed!important;
+  left:50%!important;
+  bottom:calc(22px + env(safe-area-inset-bottom,0px))!important;
+  transform:translateX(-50%)!important;
+  z-index:2147483000!important;
+  min-width:min(340px,calc(100vw - 28px))!important;
+  padding:14px 16px!important;
+  border-radius:18px!important;
+  background:#061b34!important;
+  color:#ffffff!important;
+  font-weight:900!important;
+  text-align:center!important;
+  box-shadow:0 18px 40px rgba(2,12,27,.28)!important;
+}

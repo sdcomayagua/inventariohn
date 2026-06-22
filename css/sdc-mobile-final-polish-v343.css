@@ -1,0 +1,315 @@
+/* v343 · Pulido final móvil y facturas.
+   No modifica precios, stock ni Firebase. */
+
+/* El botón flotante + estaba tapando tarjetas, modales y facturas. */
+.sdc335-create-fab{
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+@media (max-width:760px){
+  body{padding-bottom:20px!important;}
+
+  /* Encabezado principal más compacto. */
+  .app-hero,
+  .main-hero,
+  .sdc-hero,
+  [class*="hero"]{
+    max-width:100%!important;
+  }
+
+  /* Zona de Productos: más limpia y con menos aire perdido. */
+  [class*="catalog"][class*="hero"],
+  [class*="products"][class*="hero"],
+  .catalog-summary,
+  .products-summary{
+    padding:18px!important;
+    border-radius:26px!important;
+  }
+
+  [class*="catalog"][class*="hero"] h1,
+  [class*="products"][class*="hero"] h1,
+  .catalog-summary h1,
+  .products-summary h1{
+    font-size:clamp(40px,10vw,58px)!important;
+    line-height:.94!important;
+    letter-spacing:-.06em!important;
+    margin:8px 0 8px!important;
+  }
+
+  /* Barra de búsqueda/filtros en celular: una columna ordenada. */
+  .catalog-control-v178,
+  .catalog-control-v189,
+  .catalog-filter-row-v178,
+  .catalog-filter-row-v189,
+  .catalog-filter-row-v235{
+    position:relative!important;
+    top:auto!important;
+    z-index:5!important;
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    padding:12px!important;
+    margin:0 0 16px!important;
+    border-radius:24px!important;
+    transform:none!important;
+  }
+
+  .catalog-control-v178 > *,
+  .catalog-control-v189 > *,
+  .catalog-filter-row-v178 > *,
+  .catalog-filter-row-v189 > *,
+  .catalog-filter-row-v235 > *{
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  /* Botón nativo + Producto más presentable. */
+  .catalog-control-v178 button,
+  .catalog-control-v189 button,
+  .catalog-filter-row-v178 button,
+  .catalog-filter-row-v189 button,
+  .catalog-filter-row-v235 button{
+    min-height:48px!important;
+    border-radius:16px!important;
+    font-weight:950!important;
+  }
+
+  /* Tarjetas móviles: imagen izquierda, información derecha, botones abajo. */
+  article.product-card,
+  .product-card,
+  [class*="product-card"]{
+    min-height:0!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:16px!important;
+    border-radius:26px!important;
+    box-shadow:0 14px 32px rgba(6,31,63,.08)!important;
+  }
+
+  article.product-card :is(h1,h2,h3,h4),
+  .product-card :is(h1,h2,h3,h4),
+  [class*="product-card"] :is(h1,h2,h3,h4){
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    color:#061b34!important;
+    font-size:clamp(19px,5vw,28px)!important;
+    line-height:1.08!important;
+    font-weight:950!important;
+    letter-spacing:-.035em!important;
+    margin:8px 0 8px!important;
+    text-align:left!important;
+    max-height:none!important;
+    overflow:visible!important;
+    text-shadow:none!important;
+  }
+
+  article.product-card img,
+  .product-card img,
+  [class*="product-card"] img{
+    object-fit:contain!important;
+    max-width:132px!important;
+    max-height:132px!important;
+  }
+
+  /* Estado y stock visibles. */
+  article.product-card [class*="stock"],
+  article.product-card [class*="badge"],
+  article.product-card [class*="status"],
+  .product-card [class*="stock"],
+  .product-card [class*="badge"],
+  .product-card [class*="status"],
+  [class*="product-card"] [class*="stock"],
+  [class*="product-card"] [class*="badge"],
+  [class*="product-card"] [class*="status"]{
+    visibility:visible!important;
+    opacity:1!important;
+    white-space:nowrap!important;
+    font-weight:900!important;
+  }
+
+  /* Botones de tarjeta en dos columnas con mejor separación. */
+  article.product-card button,
+  .product-card button,
+  [class*="product-card"] button{
+    min-height:48px!important;
+    border-radius:15px!important;
+    font-size:15px!important;
+    font-weight:950!important;
+  }
+}
+
+/* Modal de producto: botón + oculto y cantidad legible. */
+.product-detail-modal-v221 .sdc335-create-fab,
+.modal .sdc335-create-fab,
+.short-receipt-modal .sdc335-create-fab{
+  display:none!important;
+}
+
+.product-detail-modal-v221 input,
+.product-detail-modal-v221 [class*="qty"] input,
+.product-detail-modal-v221 [class*="stepper"] input,
+.product-detail-modal-v221 [class*="qty"] :is(span,b,strong,div),
+.product-detail-modal-v221 [class*="stepper"] :is(span,b,strong,div){
+  color:#061b34!important;
+  text-shadow:none!important;
+  font-weight:950!important;
+}
+
+@media (max-width:760px){
+  .product-detail-modal-v221,
+  .modal{
+    border-radius:28px!important;
+  }
+
+  .product-detail-modal-v221 h1,
+  .product-detail-modal-v221 h2,
+  .product-detail-modal-v221 h3{
+    line-height:1.02!important;
+  }
+
+  /* Tarjetas de envío dentro del detalle más parejas. */
+  .product-detail-modal-v221 [class*="price-card"],
+  .product-detail-modal-v221 [data-v49-card]{
+    border-radius:22px!important;
+    min-height:112px!important;
+  }
+
+  /* Compartir producto: no apretado. */
+  .product-detail-modal-v221 [class*="share"],
+  .product-detail-modal-v221 [class*="social"]{
+    flex-wrap:wrap!important;
+    gap:10px!important;
+  }
+}
+
+/* Factura/comparativo: fila del producto profesional. */
+.short-receipt .sdc208-line.sdc343-line,
+.shortReceiptExportHost .short-receipt .sdc208-line.sdc343-line{
+  display:grid!important;
+  grid-template-columns:42px 82px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:12px!important;
+  min-height:108px!important;
+  padding:14px 16px!important;
+  overflow:visible!important;
+}
+
+.short-receipt .sdc343-qty,
+.shortReceiptExportHost .short-receipt .sdc343-qty{
+  grid-column:1!important;
+  width:34px!important;
+  height:34px!important;
+  border-radius:13px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  font-size:15px!important;
+  font-weight:950!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+
+.short-receipt .sdc343-thumb,
+.shortReceiptExportHost .short-receipt .sdc343-thumb{
+  grid-column:2!important;
+  width:80px!important;
+  height:80px!important;
+  min-width:80px!important;
+  object-fit:contain!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  border:1px solid rgba(11,99,206,.18)!important;
+  padding:6px!important;
+  box-shadow:0 8px 18px rgba(6,31,63,.10)!important;
+}
+
+.short-receipt .sdc343-info,
+.shortReceiptExportHost .short-receipt .sdc343-info{
+  grid-column:3!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:4px!important;
+  text-align:left!important;
+}
+
+.short-receipt .sdc343-name,
+.shortReceiptExportHost .short-receipt .sdc343-name{
+  color:#061b34!important;
+  font-size:17px!important;
+  line-height:1.08!important;
+  font-weight:950!important;
+  letter-spacing:-.03em!important;
+  text-align:left!important;
+}
+
+.short-receipt .sdc343-meta,
+.shortReceiptExportHost .short-receipt .sdc343-meta{
+  color:#607993!important;
+  font-size:12px!important;
+  line-height:1.18!important;
+  font-weight:850!important;
+  text-align:left!important;
+}
+
+.short-receipt .sdc343-price,
+.shortReceiptExportHost .short-receipt .sdc343-price{
+  grid-column:4!important;
+  justify-self:end!important;
+  align-self:center!important;
+  color:#d61c3b!important;
+  font-size:20px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  margin-left:10px!important;
+}
+
+@media (max-width:760px){
+  .short-receipt .sdc208-line.sdc343-line,
+  .shortReceiptExportHost .short-receipt .sdc208-line.sdc343-line{
+    grid-template-columns:32px 62px minmax(0,1fr) auto!important;
+    gap:8px!important;
+    min-height:92px!important;
+    padding:10px!important;
+  }
+
+  .short-receipt .sdc343-qty,
+  .shortReceiptExportHost .short-receipt .sdc343-qty{
+    width:30px!important;
+    height:30px!important;
+    font-size:13px!important;
+  }
+
+  .short-receipt .sdc343-thumb,
+  .shortReceiptExportHost .short-receipt .sdc343-thumb{
+    width:60px!important;
+    height:60px!important;
+    min-width:60px!important;
+    padding:4px!important;
+  }
+
+  .short-receipt .sdc343-name,
+  .shortReceiptExportHost .short-receipt .sdc343-name{
+    font-size:13.5px!important;
+    line-height:1.08!important;
+  }
+
+  .short-receipt .sdc343-meta,
+  .shortReceiptExportHost .short-receipt .sdc343-meta{
+    font-size:10.5px!important;
+  }
+
+  .short-receipt .sdc343-price,
+  .shortReceiptExportHost .short-receipt .sdc343-price{
+    font-size:15px!important;
+  }
+}

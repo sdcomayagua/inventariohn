@@ -1,0 +1,99 @@
+/* v347 · Limpieza de tarjetas en COMPUTADORA.
+   Oculta precios de envío dentro del catálogo y deja la tarjeta más limpia.
+   No cambia precios, stock, ventas ni Firebase. */
+
+/* Quitar líneas de envío/precio extra dentro de tarjetas del catálogo. */
+.product-card .sdc346-shipping-extra,
+article.product-card .sdc346-shipping-extra,
+[class*="product-card"] .sdc346-shipping-extra,
+.product-card .sdc347-card-shipping,
+article.product-card .sdc347-card-shipping,
+[class*="product-card"] .sdc347-card-shipping,
+.product-card .sdc347-duplicate-local-price,
+article.product-card .sdc347-duplicate-local-price,
+[class*="product-card"] .sdc347-duplicate-local-price{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+@media (min-width:761px){
+  /* Tarjeta más limpia y menos cargada en escritorio. */
+  article.product-card,
+  .product-card,
+  [class*="product-card"]{
+    border-radius:24px!important;
+    overflow:hidden!important;
+  }
+
+  article.product-card :is(h1,h2,h3,h4),
+  .product-card :is(h1,h2,h3,h4),
+  [class*="product-card"] :is(h1,h2,h3,h4){
+    color:#061b34!important;
+    font-weight:950!important;
+    letter-spacing:-.035em!important;
+    line-height:1.08!important;
+    margin:8px 0 10px!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+  }
+
+  /* Precio principal grande y limpio. */
+  article.product-card [class*="price"],
+  .product-card [class*="price"],
+  [class*="product-card"] [class*="price"]{
+    opacity:1!important;
+    visibility:visible!important;
+  }
+
+  /* Los botones sí se quedan en escritorio, pero más ordenados. */
+  article.product-card button,
+  .product-card button,
+  [class*="product-card"] button{
+    min-height:48px!important;
+    border-radius:14px!important;
+    font-weight:950!important;
+  }
+
+  /* Si hay fila de acciones, que quede en 2 columnas limpias. */
+  article.product-card .card-actions,
+  .product-card .card-actions,
+  article.product-card .action-grid,
+  .product-card .action-grid,
+  [class*="product-card"] .card-actions,
+  [class*="product-card"] .action-grid{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+    margin-top:14px!important;
+  }
+
+  /* Etiquetas/chips más compactas. */
+  article.product-card [class*="badge"],
+  article.product-card [class*="chip"],
+  article.product-card [class*="tag"],
+  .product-card [class*="badge"],
+  .product-card [class*="chip"],
+  .product-card [class*="tag"],
+  [class*="product-card"] [class*="badge"],
+  [class*="product-card"] [class*="chip"],
+  [class*="product-card"] [class*="tag"]{
+    max-width:100%!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  /* Imagen bien contenida. */
+  article.product-card img,
+  .product-card img,
+  [class*="product-card"] img{
+    object-fit:contain!important;
+  }
+}

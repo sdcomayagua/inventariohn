@@ -1,8 +1,6 @@
-/* v347 · Limpieza de tarjetas en COMPUTADORA.
-   Oculta precios de envío dentro del catálogo y deja la tarjeta más limpia.
-   No cambia precios, stock, ventas ni Firebase. */
+/* v347/v363 · Tarjetas de productos en COMPUTADORA.
+   Muestra nombre y precio siempre; mantiene acciones ordenadas. */
 
-/* Quitar líneas de envío/precio extra dentro de tarjetas del catálogo. */
 .product-card .sdc346-shipping-extra,
 article.product-card .sdc346-shipping-extra,
 [class*="product-card"] .sdc346-shipping-extra,
@@ -24,35 +22,78 @@ article.product-card .sdc347-duplicate-local-price,
 }
 
 @media (min-width:761px){
-  /* Tarjeta más limpia y menos cargada en escritorio. */
   article.product-card,
   .product-card,
   [class*="product-card"]{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
     border-radius:24px!important;
-    overflow:hidden!important;
+    padding-bottom:16px!important;
   }
 
   article.product-card :is(h1,h2,h3,h4),
   .product-card :is(h1,h2,h3,h4),
-  [class*="product-card"] :is(h1,h2,h3,h4){
+  [class*="product-card"] :is(h1,h2,h3,h4),
+  article.product-card [class*="name"],
+  .product-card [class*="name"],
+  [class*="product-card"] [class*="name"],
+  article.product-card [class*="title"],
+  .product-card [class*="title"],
+  [class*="product-card"] [class*="title"]{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:10px 0 6px!important;
+    padding:0!important;
     color:#061b34!important;
+    font-size:20px!important;
+    line-height:1.12!important;
     font-weight:950!important;
     letter-spacing:-.035em!important;
-    line-height:1.08!important;
-    margin:8px 0 10px!important;
+    text-align:left!important;
+    overflow:visible!important;
+    white-space:normal!important;
     overflow-wrap:anywhere!important;
     word-break:break-word!important;
   }
 
-  /* Precio principal grande y limpio. */
   article.product-card [class*="price"],
   .product-card [class*="price"],
-  [class*="product-card"] [class*="price"]{
-    opacity:1!important;
+  [class*="product-card"] [class*="price"],
+  article.product-card [class*="precio"],
+  .product-card [class*="precio"],
+  [class*="product-card"] [class*="precio"],
+  article.product-card [class*="amount"],
+  .product-card [class*="amount"],
+  [class*="product-card"] [class*="amount"]{
+    display:block!important;
     visibility:visible!important;
+    opacity:1!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:4px 0 12px!important;
+    color:#0072e8!important;
+    font-size:22px!important;
+    line-height:1.05!important;
+    font-weight:1000!important;
+    text-align:left!important;
+    overflow:visible!important;
+    white-space:normal!important;
   }
 
-  /* Los botones sí se quedan en escritorio, pero más ordenados. */
+  article.product-card img,
+  .product-card img,
+  [class*="product-card"] img{
+    object-fit:contain!important;
+    max-height:260px!important;
+  }
+
   article.product-card button,
   .product-card button,
   [class*="product-card"] button{
@@ -61,7 +102,6 @@ article.product-card .sdc347-duplicate-local-price,
     font-weight:950!important;
   }
 
-  /* Si hay fila de acciones, que quede en 2 columnas limpias. */
   article.product-card .card-actions,
   .product-card .card-actions,
   article.product-card .action-grid,
@@ -74,7 +114,6 @@ article.product-card .sdc347-duplicate-local-price,
     margin-top:14px!important;
   }
 
-  /* Etiquetas/chips más compactas. */
   article.product-card [class*="badge"],
   article.product-card [class*="chip"],
   article.product-card [class*="tag"],
@@ -88,12 +127,5 @@ article.product-card .sdc347-duplicate-local-price,
     white-space:nowrap!important;
     overflow:hidden!important;
     text-overflow:ellipsis!important;
-  }
-
-  /* Imagen bien contenida. */
-  article.product-card img,
-  .product-card img,
-  [class*="product-card"] img{
-    object-fit:contain!important;
   }
 }

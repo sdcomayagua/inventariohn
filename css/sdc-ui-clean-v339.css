@@ -1,0 +1,244 @@
+/* v342 · Pulido visual móvil: tarjetas completas, texto visible y botón crear sin tapar.
+   No cambia precios, inventario ni Firebase. */
+
+/* En PC se usa el botón propio + Producto. */
+@media (min-width:761px){
+  .sdc335-create-fab,
+  .sdc335-create-btn{
+    display:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+}
+
+/* En celular el botón crear queda pequeño y no tapa las tarjetas. */
+@media (max-width:760px){
+  body{padding-bottom:92px!important;}
+  .sdc335-create-fab{
+    position:fixed!important;
+    right:14px!important;
+    left:auto!important;
+    bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+    width:58px!important;
+    height:58px!important;
+    min-height:58px!important;
+    padding:0!important;
+    border-radius:999px!important;
+    justify-content:center!important;
+    align-items:center!important;
+    z-index:2147482500!important;
+    box-shadow:0 14px 28px rgba(6,31,63,.24)!important;
+  }
+  .sdc335-create-fab b{display:none!important;}
+  .sdc335-create-fab span{font-size:28px!important;line-height:1!important;}
+  .sdc335-create-btn{display:none!important;}
+}
+
+/* Barra superior: no debe tapar las tarjetas. */
+.catalog-filter-row-v235,
+.catalog-filter-row-v178,
+.catalog-control-v178,
+.catalog-control-v189{
+  position:relative!important;
+  top:auto!important;
+  z-index:5!important;
+  transform:none!important;
+  align-items:center!important;
+  gap:12px!important;
+  margin-bottom:18px!important;
+}
+
+/* Restaura cualquier bloque que versiones anteriores hayan ocultado dentro de tarjetas. */
+.product-card .sdc339-hide-local,
+.product-card .sdc341-off,
+article.product-card .sdc339-hide-local,
+article.product-card .sdc341-off,
+[class*="product-card"] .sdc339-hide-local,
+[class*="product-card"] .sdc341-off{
+  visibility:visible!important;
+  opacity:1!important;
+}
+
+/* Solo se ocultan etiquetas pequeñas de cotización, no contenido del producto. */
+.product-card .sdc342-small-quote-off,
+article.product-card .sdc342-small-quote-off,
+[class*="product-card"] .sdc342-small-quote-off{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+
+/* Tarjetas móviles: estructura más bonita y con texto visible. */
+@media (max-width:760px){
+  article.product-card,
+  .product-card,
+  [class*="product-card"]{
+    min-height:0!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:16px!important;
+    border-radius:24px!important;
+  }
+
+  article.product-card :is(h1,h2,h3,h4),
+  .product-card :is(h1,h2,h3,h4),
+  [class*="product-card"] :is(h1,h2,h3,h4){
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    color:#061b34!important;
+    font-size:19px!important;
+    line-height:1.12!important;
+    font-weight:950!important;
+    margin:10px 0 8px!important;
+    text-align:left!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  article.product-card :is([class*="price"], .price, b),
+  .product-card :is([class*="price"], .price, b),
+  [class*="product-card"] :is([class*="price"], .price, b){
+    visibility:visible!important;
+    opacity:1!important;
+  }
+
+  article.product-card img,
+  .product-card img,
+  [class*="product-card"] img{
+    max-width:100%!important;
+    object-fit:contain!important;
+  }
+
+  .product-card [class*="photo"],
+  article.product-card [class*="photo"],
+  [class*="product-card"] [class*="photo"]{
+    margin-bottom:12px!important;
+  }
+
+  /* Botones más respirados. */
+  article.product-card button,
+  .product-card button,
+  [class*="product-card"] button{
+    min-height:48px!important;
+    border-radius:14px!important;
+    font-size:15px!important;
+    font-weight:950!important;
+  }
+}
+
+/* Fila del producto en recibo/comparativo: cantidad | foto | datos | precio. */
+.short-receipt .sdc208-line.sdc339-line,
+.shortReceiptExportHost .short-receipt .sdc208-line.sdc339-line{
+  display:grid!important;
+  grid-template-columns:44px 90px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:14px!important;
+  min-height:112px!important;
+  padding:14px 16px!important;
+  overflow:visible!important;
+}
+
+.short-receipt .sdc339-qty,
+.shortReceiptExportHost .short-receipt .sdc339-qty{
+  grid-column:1!important;
+  width:36px!important;
+  height:36px!important;
+  border-radius:13px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  font-size:15px!important;
+  font-weight:950!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+
+.short-receipt .sdc339-thumb,
+.shortReceiptExportHost .short-receipt .sdc339-thumb{
+  grid-column:2!important;
+  width:88px!important;
+  height:88px!important;
+  min-width:88px!important;
+  object-fit:contain!important;
+  border-radius:17px!important;
+  background:#fff!important;
+  border:1px solid rgba(11,99,206,.18)!important;
+  padding:6px!important;
+  box-shadow:0 8px 18px rgba(6,31,63,.10)!important;
+}
+
+.short-receipt .sdc339-info,
+.shortReceiptExportHost .short-receipt .sdc339-info{
+  grid-column:3!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  text-align:left!important;
+  gap:4px!important;
+}
+
+.short-receipt .sdc339-name,
+.shortReceiptExportHost .short-receipt .sdc339-name{
+  color:#061b34!important;
+  font-size:17px!important;
+  line-height:1.08!important;
+  font-weight:950!important;
+  letter-spacing:-.03em!important;
+  text-align:left!important;
+}
+
+.short-receipt .sdc339-meta,
+.shortReceiptExportHost .short-receipt .sdc339-meta{
+  color:#607993!important;
+  font-size:12.5px!important;
+  line-height:1.18!important;
+  font-weight:850!important;
+  text-align:left!important;
+}
+
+.short-receipt .sdc339-price,
+.shortReceiptExportHost .short-receipt .sdc339-price{
+  grid-column:4!important;
+  justify-self:end!important;
+  align-self:center!important;
+  color:#d61c3b!important;
+  font-size:20px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  margin-left:12px!important;
+}
+
+@media (max-width:760px){
+  .short-receipt .sdc208-line.sdc339-line,
+  .shortReceiptExportHost .short-receipt .sdc208-line.sdc339-line{
+    grid-template-columns:34px 66px minmax(0,1fr) auto!important;
+    gap:9px!important;
+    min-height:86px!important;
+    padding:10px!important;
+  }
+  .short-receipt .sdc339-thumb,
+  .shortReceiptExportHost .short-receipt .sdc339-thumb{
+    width:64px!important;
+    height:64px!important;
+    min-width:64px!important;
+  }
+  .short-receipt .sdc339-name,
+  .shortReceiptExportHost .short-receipt .sdc339-name{font-size:14px!important;}
+  .short-receipt .sdc339-meta,
+  .shortReceiptExportHost .short-receipt .sdc339-meta{font-size:11px!important;}
+  .short-receipt .sdc339-price,
+  .shortReceiptExportHost .short-receipt .sdc339-price{font-size:16px!important;}
+}

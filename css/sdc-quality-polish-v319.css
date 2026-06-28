@@ -1,0 +1,393 @@
+/* v319 · Pulido general de calidad visual, móvil y escritorio.
+   Capa segura: se carga al final y no cambia datos ni inventario. */
+:root{
+  --sdc319-bg:#f4f7fb;
+  --sdc319-card:#ffffff;
+  --sdc319-card-soft:#f8fafc;
+  --sdc319-text:#102033;
+  --sdc319-muted:#607086;
+  --sdc319-line:rgba(15,35,55,.12);
+  --sdc319-primary:#0f766e;
+  --sdc319-primary-2:#0b5f59;
+  --sdc319-accent:#f59e0b;
+  --sdc319-danger:#dc2626;
+  --sdc319-shadow:0 18px 46px rgba(15,35,55,.10);
+  --sdc319-shadow-soft:0 10px 28px rgba(15,35,55,.08);
+  --sdc319-radius:24px;
+  --sdc319-radius-sm:16px;
+}
+
+html{
+  background:var(--sdc319-bg);
+  scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+}
+
+body.sdc-v319-quality-polish{
+  margin:0;
+  color:var(--sdc319-text);
+  background:
+    radial-gradient(circle at top left, rgba(15,118,110,.10), transparent 32rem),
+    radial-gradient(circle at top right, rgba(245,158,11,.12), transparent 34rem),
+    linear-gradient(180deg,#f9fbff 0%,var(--sdc319-bg) 42%,#edf3f8 100%);
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-height:100dvh;
+  overflow-x:hidden;
+}
+
+body.sdc-v319-quality-polish *{
+  box-sizing:border-box;
+}
+
+body.sdc-v319-quality-polish #app{
+  width:min(100%,1440px);
+  min-height:100dvh;
+  margin-inline:auto;
+  padding-inline:clamp(10px,2.2vw,26px);
+  padding-bottom:max(22px,env(safe-area-inset-bottom));
+  overflow-x:hidden;
+}
+
+body.sdc-v319-quality-polish .skip-link{
+  position:absolute;
+  left:12px;
+  top:12px;
+  z-index:10000;
+  transform:translateY(-140%);
+  background:#071827;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:999px;
+  text-decoration:none;
+  box-shadow:var(--sdc319-shadow-soft);
+}
+body.sdc-v319-quality-polish .skip-link:focus{transform:translateY(0)}
+
+body.sdc-v319-quality-polish .boot-loading{
+  min-height:100dvh;
+  display:grid;
+  place-items:center;
+  padding:24px;
+}
+body.sdc-v319-quality-polish .boot-loading-card{
+  width:min(100%,390px);
+  padding:30px 24px;
+  border:1px solid var(--sdc319-line);
+  border-radius:28px;
+  background:rgba(255,255,255,.92);
+  box-shadow:var(--sdc319-shadow);
+  text-align:center;
+  color:var(--sdc319-text);
+  backdrop-filter:blur(14px);
+}
+body.sdc-v319-quality-polish .boot-loading-card img{
+  width:78px;
+  height:78px;
+  object-fit:contain;
+  filter:drop-shadow(0 10px 20px rgba(15,35,55,.12));
+}
+body.sdc-v319-quality-polish .boot-loading-card h1{
+  margin:14px 0 4px;
+  font-size:clamp(28px,7vw,42px);
+  letter-spacing:-.05em;
+}
+body.sdc-v319-quality-polish .boot-loading-card p{margin:0;color:var(--sdc319-muted);font-weight:800}
+
+/* Tarjetas, paneles y bloques comunes */
+body.sdc-v319-quality-polish :where(.card,.card-box,.panel,.box,.stat-card,.metric-card,.product-card,.client-card-v22,.cart-row,.empty-state,.cash-stats>div,.short-receipt,.category-sheet-card-v199,.product-detail-modal-v221,.productPhotoClean){
+  border:1px solid var(--sdc319-line);
+  border-radius:var(--sdc319-radius-sm);
+  background:rgba(255,255,255,.94);
+  color:var(--sdc319-text);
+  box-shadow:var(--sdc319-shadow-soft);
+}
+
+body.sdc-v319-quality-polish :where(.card-box,.panel,.box,.empty-state){
+  padding:clamp(14px,2vw,20px);
+}
+
+body.sdc-v319-quality-polish :where(h1,h2,h3,h4){
+  color:var(--sdc319-text);
+  letter-spacing:-.035em;
+}
+body.sdc-v319-quality-polish :where(p,span,small,label,li,td,th){
+  text-wrap:pretty;
+}
+body.sdc-v319-quality-polish :where(.muted,.subtitle,.label,small,.empty-state span,.card-box span){
+  color:var(--sdc319-muted);
+}
+
+/* Mejor contraste para textos que antes podían quedar blancos sobre fondos claros. */
+body.sdc-v319-quality-polish [style*="color:#b8c8d8"],
+body.sdc-v319-quality-polish [style*="color: #b8c8d8"],
+body.sdc-v319-quality-polish [style*="color:#fff"],
+body.sdc-v319-quality-polish [style*="color: #fff"],
+body.sdc-v319-quality-polish [style*="color:white"],
+body.sdc-v319-quality-polish [style*="color: white"]{
+  color:var(--sdc319-text)!important;
+}
+
+/* Remueve el aspecto morado y lo cambia por un verde/azul más serio. */
+body.sdc-v319-quality-polish [style*="#7c3aed"],
+body.sdc-v319-quality-polish [style*="#8b5cf6"],
+body.sdc-v319-quality-polish [style*="#a855f7"],
+body.sdc-v319-quality-polish [style*="purple"]{
+  color:var(--sdc319-primary)!important;
+  border-color:rgba(15,118,110,.28)!important;
+}
+
+/* Formularios con mejor lectura en celular. */
+body.sdc-v319-quality-polish :where(input,select,textarea){
+  width:100%;
+  max-width:100%;
+  min-height:46px;
+  border:1px solid rgba(15,35,55,.16);
+  border-radius:16px;
+  background:#fff;
+  color:var(--sdc319-text);
+  font:inherit;
+  font-size:16px;
+  outline:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+}
+body.sdc-v319-quality-polish :where(input,select,textarea):focus{
+  border-color:rgba(15,118,110,.55);
+  box-shadow:0 0 0 4px rgba(15,118,110,.12);
+}
+body.sdc-v319-quality-polish textarea{
+  min-height:150px;
+  line-height:1.45;
+  resize:vertical;
+}
+
+/* Botones más limpios, con área táctil cómoda. */
+body.sdc-v319-quality-polish :where(.btn,button){
+  min-height:44px;
+  border-radius:15px;
+  font-weight:900;
+  letter-spacing:-.01em;
+  touch-action:manipulation;
+}
+body.sdc-v319-quality-polish :where(.btn:not(.secondary):not(.ghost):not(.danger),button.btn:not(.secondary):not(.ghost):not(.danger)){
+  background:linear-gradient(135deg,var(--sdc319-primary),var(--sdc319-primary-2));
+  border-color:transparent;
+  color:#fff;
+  box-shadow:0 10px 22px rgba(15,118,110,.22);
+}
+body.sdc-v319-quality-polish :where(.btn.secondary,button.secondary){
+  background:#eef6f5;
+  border-color:rgba(15,118,110,.18);
+  color:#0f5f59;
+}
+body.sdc-v319-quality-polish :where(.btn.ghost,button.ghost){
+  background:#fff;
+  border-color:var(--sdc319-line);
+  color:var(--sdc319-text);
+}
+body.sdc-v319-quality-polish :where(.btn.danger,button.danger){
+  background:#fff1f2;
+  border-color:rgba(220,38,38,.20);
+  color:var(--sdc319-danger);
+}
+body.sdc-v319-quality-polish :where(.btn.small,button.small){
+  min-height:38px;
+  border-radius:12px;
+  padding-inline:12px;
+}
+body.sdc-v319-quality-polish :where(button,.btn):focus-visible{
+  outline:3px solid rgba(245,158,11,.38);
+  outline-offset:2px;
+}
+
+/* Acciones inferiores: ya no se sienten pegadas ni desordenadas. */
+body.sdc-v319-quality-polish :where(.modal-actions,.client-actions-v22,.category-sheet-actions-v199,.quote-actions,.receipt-actions,.cart-actions,.form-actions,.sdc-actions,.action-row){
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  width:100%;
+  position:static!important;
+  margin-top:14px;
+}
+body.sdc-v319-quality-polish :where(.modal-actions,.client-actions-v22,.category-sheet-actions-v199,.quote-actions,.receipt-actions,.cart-actions,.form-actions,.sdc-actions,.action-row)>*{
+  min-width:0;
+  width:100%;
+}
+
+/* Modal / hojas: arregla scroll vertical y evita secciones pegadas. */
+body.sdc-v319-quality-polish #modalRoot{
+  color:var(--sdc319-text);
+}
+body.sdc-v319-quality-polish :where(.modal,.modal-card,.modal-shell,.sheet,.drawer,.product-detail-modal-v221){
+  max-width:min(100%,1120px);
+  color:var(--sdc319-text);
+}
+body.sdc-v319-quality-polish :where(.modal-body,.sheet-body,.drawer-body,.receipts-v22,.clients-v22,.quick-sale-v26,.daily-close-v26){
+  max-height:min(82dvh,820px);
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding-bottom:calc(18px + env(safe-area-inset-bottom));
+  scrollbar-width:thin;
+}
+body.sdc-v319-quality-polish .modal-head{
+  position:sticky;
+  top:0;
+  z-index:4;
+  background:rgba(255,255,255,.96);
+  color:var(--sdc319-text);
+  border-bottom:1px solid var(--sdc319-line);
+  backdrop-filter:blur(14px);
+}
+body.sdc-v319-quality-polish .modal-head h3{margin:0;color:var(--sdc319-text)}
+
+/* Estadísticas y resumen: más aprovechamiento del ancho en PC y móvil. */
+body.sdc-v319-quality-polish :where(.cash-stats,.stats-grid,.metrics-grid,.summary-grid,.home-stats,.dashboard-grid){
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  width:100%;
+}
+body.sdc-v319-quality-polish :where(.cash-stats>div,.stats-grid>*,.metrics-grid>*,.summary-grid>*,.home-stats>*,.dashboard-grid>*){
+  min-width:0;
+}
+body.sdc-v319-quality-polish .cash-stats b,
+body.sdc-v319-quality-polish :where(.stat-card,.metric-card) b{
+  color:var(--sdc319-text);
+  line-height:1.1;
+}
+
+/* Catálogo/productos: fotos cuadradas sin deformar, tarjetas más parejas. */
+body.sdc-v319-quality-polish :where(.product-card,.catalog-card,[class*="product-card"],[class*="productCard"]){
+  overflow:hidden;
+}
+body.sdc-v319-quality-polish :where(.product-card,.catalog-card,[class*="product-card"],[class*="productCard"]) img,
+body.sdc-v319-quality-polish :where(.productPhotoImageWrap,.productPhotoImageWrap-v147,.productPhotoImageWrap-v163) img{
+  width:100%;
+  max-width:100%;
+  aspect-ratio:1/1;
+  object-fit:contain!important;
+  object-position:center;
+  background:#f5f8fb;
+  border-radius:18px;
+}
+body.sdc-v319-quality-polish img{
+  max-width:100%;
+  height:auto;
+}
+body.sdc-v319-quality-polish :where(.product-card,.catalog-card,[class*="product-card"],[class*="productCard"]) h3,
+body.sdc-v319-quality-polish :where(.product-card,.catalog-card,[class*="product-card"],[class*="productCard"]) h4{
+  line-height:1.14;
+  min-height:auto;
+}
+
+/* Categorías: dos columnas en móvil y tres/cuatro en pantallas grandes. */
+body.sdc-v319-quality-polish :where(.category-sheet-grid-v191,.category-sheet-grid-v199,.category-grid,.categories-grid){
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+  width:100%!important;
+  align-items:stretch;
+}
+body.sdc-v319-quality-polish .category-sheet-card-v199{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+}
+body.sdc-v319-quality-polish .category-sheet-main-v199{
+  min-height:112px;
+  display:grid;
+  place-items:center;
+  text-align:center;
+}
+
+/* Recibos y comparación: mejor separación y lectura. */
+body.sdc-v319-quality-polish .short-receipt{
+  color:var(--sdc319-text);
+  overflow:hidden;
+}
+body.sdc-v319-quality-polish .short-receipt.sdc208-normal{
+  border-color:rgba(15,118,110,.22);
+}
+body.sdc-v319-quality-polish .short-receipt.sdc208-cod{
+  border-color:rgba(245,158,11,.34);
+}
+body.sdc-v319-quality-polish .short-receipt.sdc208-cod :where(.sdc208-mode,.sdc208-head-copy h2){
+  color:#9a5b00;
+}
+body.sdc-v319-quality-polish .short-receipt>.sdc315-method-explain,
+body.sdc-v319-quality-polish .shortReceiptExportHost .short-receipt>.sdc315-method-explain{
+  border-radius:18px;
+  line-height:1.35;
+}
+
+/* Botón subir: discreto, útil y sin tapar contenido. */
+body.sdc-v319-quality-polish .go-top{
+  right:max(14px,env(safe-area-inset-right));
+  bottom:max(14px,env(safe-area-inset-bottom));
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  border:1px solid rgba(15,35,55,.14);
+  background:rgba(255,255,255,.94);
+  color:var(--sdc319-text);
+  box-shadow:var(--sdc319-shadow-soft);
+  backdrop-filter:blur(12px);
+}
+
+/* Mejoras por tamaño */
+@media (min-width:760px){
+  body.sdc-v319-quality-polish :where(.cash-stats,.stats-grid,.metrics-grid,.summary-grid,.home-stats,.dashboard-grid){
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  body.sdc-v319-quality-polish :where(.category-sheet-grid-v191,.category-sheet-grid-v199,.category-grid,.categories-grid){
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  body.sdc-v319-quality-polish :where(.modal-actions,.quote-actions,.receipt-actions,.cart-actions,.form-actions,.sdc-actions,.action-row){
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+}
+
+@media (min-width:1120px){
+  body.sdc-v319-quality-polish #app{
+    padding-inline:32px;
+  }
+  body.sdc-v319-quality-polish :where(.cash-stats,.stats-grid,.metrics-grid,.summary-grid,.home-stats,.dashboard-grid){
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+  body.sdc-v319-quality-polish :where(.category-sheet-grid-v191,.category-sheet-grid-v199,.category-grid,.categories-grid){
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  body.sdc-v319-quality-polish :where(.modal-body,.sheet-body,.drawer-body){
+    max-height:min(84dvh,880px);
+  }
+}
+
+@media (max-width:480px){
+  body.sdc-v319-quality-polish #app{
+    padding-inline:10px;
+  }
+  body.sdc-v319-quality-polish :where(.modal-actions,.client-actions-v22,.category-sheet-actions-v199,.quote-actions,.receipt-actions,.cart-actions,.form-actions,.sdc-actions,.action-row){
+    gap:8px;
+  }
+  body.sdc-v319-quality-polish :where(.btn,button){
+    min-height:42px;
+    font-size:13px;
+    padding-inline:10px;
+  }
+  body.sdc-v319-quality-polish :where(.cash-stats,.stats-grid,.metrics-grid,.summary-grid,.home-stats,.dashboard-grid){
+    gap:10px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  body.sdc-v319-quality-polish *,
+  body.sdc-v319-quality-polish *::before,
+  body.sdc-v319-quality-polish *::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}

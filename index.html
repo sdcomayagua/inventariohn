@@ -1,25 +1,92 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#071324">
-  <title>SD COMAYAGUA · POS Privado</title>
-  <link rel="icon" href="assets/logo-sdc-2026.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/app.css?v=sdc-pos-v8">
-</head>
-<body class="mode-gamer">
-  <div id="app"></div>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <meta name="theme-color" content="#f4f7fb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="SDC POS">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="Panel principal de SD Comayagua para inventario, cotizaciones, ventas y catálogo digital.">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest?v=401-stable">
+  <title>SD Comayagua · Panel estable v401</title>
+  <link rel="icon" href="assets/logo-sdc-2026.png?v=401-stable">
 
-  <script defer src="js/config.js?v=sdc-pos-v8"></script>
-  <script defer src="js/demo-data.js?v=sdc-pos-v8"></script>
-  <script defer src="js/api.js?v=sdc-pos-v8"></script>
-  <script defer src="js/hn-data.js?v=sdc-pos-v8"></script>
-  <script defer src="js/app.js?v=sdc-pos-v8"></script>
-  <script async src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="css/sdc-bundle-optimized-v314.css?v=314-comparativo">
+  <link rel="stylesheet" href="css/sdc-fixes-v317.css?v=318-final-fixes">
+  <link rel="stylesheet" href="css/sdc-quality-polish-v319.css?v=319-quality-polish">
+  <link rel="stylesheet" href="css/sdc-screenshot-fixes-v320.css?v=320-screenshot-fixes">
+  <link rel="stylesheet" href="css/sdc-mobile-social-polish-v321.css?v=323-compact-mobile-cards">
+  <link rel="stylesheet" href="css/sdc-category-polish-v324.css?v=327-category-png-clean-title">
+  <link rel="stylesheet" href="css/sdc-desktop-catalog-clean-v330.css?v=330-desktop-catalog-clean">
+  <link rel="stylesheet" href="css/sdc-final-fixes-v331.css?v=338-receipt-item-layout">
+  <link rel="stylesheet" href="css/sdc-quote-reset-v333.css?v=336-agotado-persistente">
+  <link rel="stylesheet" href="css/sdc-product-admin-v335.css?v=336-agotado-persistente">
+  <link rel="stylesheet" href="css/sdc-ui-clean-v339.css?v=342-textos-movil">
+  <link rel="stylesheet" href="css/sdc-mobile-final-polish-v343.css?v=343-mobile-final-polish">
+  <link rel="stylesheet" href="css/sdc-update-app-v344.css?v=344-update-app">
+  <link rel="stylesheet" href="css/sdc-final-hotfix-v345.css?v=345-final-hotfix">
+  <link rel="stylesheet" href="css/sdc-mobile-clean-v346.css?v=346-mobile-clean">
+  <link rel="stylesheet" href="css/sdc-desktop-card-clean-v347.css?v=401-stable">
+  <link rel="stylesheet" href="css/sdc-pc-receipt-clean-v348.css?v=348-pc-receipt-clean">
+  <link rel="stylesheet" href="css/sdc-stable-v400.css?v=401-stable">
+</head>
+<body class="sdc-v400-stable sdc-v60-pos sdc-v61-clean sdc-v95-light-default sdc-theme-light sdc-v99-home-clean sdc-v319-quality-polish sdc-v320-screenshot-fixes sdc-v321-mobile-social-polish sdc-v322-social-detail-only sdc-v323-compact-mobile-cards sdc-v324-category-polish sdc-v325-category-force sdc-v326-category-png-header-stock sdc-v327-category-png-clean-title sdc-v329-desktop-rollback sdc-v330-desktop-catalog-clean sdc-v331-final-fixes sdc-v332-color-readable sdc-v333-quote-reset sdc-v335-product-admin sdc-v336-agotado-persistente sdc-v337-red-factura sdc-v338-receipt-item-layout sdc-v339-ui-clean sdc-v340-restaurar-tarjetas sdc-v341-limpieza-segura sdc-v342-textos-movil sdc-v343-mobile-final-polish sdc-v344-update-app sdc-v345-final-hotfix sdc-v346-mobile-clean sdc-v347-desktop-card-clean sdc-v348-pc-receipt-clean">
+  <a class="skip-link" href="#app">Saltar al contenido</a>
+  <main id="app" role="main" aria-label="Panel principal" tabindex="-1">
+    <section class="boot-loading" data-sdc-loading="1">
+      <div class="boot-loading-card">
+        <img src="assets/logo-sdc-2026.png" alt="SD Comayagua" width="96" height="96" decoding="async">
+        <h1>SDC POS</h1>
+        <p>Cargando panel principal.</p>
+      </div>
+    </section>
+  </main>
+  <div id="modalRoot"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <button id="goTop" class="go-top" aria-label="Subir">↑</button>
+
+  <script>
+    localStorage.setItem('sdc_v83_theme','light');
+    document.documentElement.setAttribute('data-theme','light');
+  </script>
+  <script defer src="js/sdc-bundle-optimized-v314.js?v=314-comparativo"></script>
+  <script defer src="js/sdc-short-receipt-polish-v315.js?v=318-category-red-saving"></script>
+  <script defer src="js/sdc-quality-polish-v319.js?v=319-quality-polish"></script>
+  <script defer src="js/sdc-screenshot-fixes-v320.js?v=320-screenshot-fixes"></script>
+  <script defer src="js/sdc-mobile-social-polish-v321.js?v=323-compact-mobile-cards"></script>
+  <script defer src="js/sdc-category-polish-v324.js?v=327-category-png-clean-title"></script>
+  <script defer src="js/sdc-final-fixes-v331.js?v=338-receipt-item-layout"></script>
+  <script defer src="js/sdc-receipt-item-layout-v338.js?v=338-receipt-item-layout"></script>
+  <script defer src="js/sdc-quote-reset-v333.js?v=336-agotado-persistente"></script>
+  <script defer src="js/sdc-product-admin-v335.js?v=336-agotado-persistente"></script>
+  <script defer src="js/sdc-ui-clean-v339.js?v=342-textos-movil"></script>
+  <script defer src="js/sdc-receipt-mobile-polish-v343.js?v=343-mobile-final-polish"></script>
+  <script defer src="js/sdc-update-app-v344.js?v=344-update-app"></script>
+  <script defer src="js/sdc-final-hotfix-v345.js?v=345-final-hotfix"></script>
+  <script defer src="js/sdc-mobile-clean-v346.js?v=346-mobile-clean"></script>
+  <script defer src="js/sdc-desktop-card-clean-v347.js?v=401-stable"></script>
+  <script defer src="js/sdc-pc-receipt-clean-v348.js?v=348-pc-receipt-clean"></script>
+  <script defer src="js/sdc-stable-v400.js?v=401-stable"></script>
+  <script>
+    (function(){
+      function loadFirebase(){
+        if(window.__sdcFirebaseDelayedLoaded) return;
+        window.__sdcFirebaseDelayedLoaded=true;
+        var s=document.createElement('script');
+        s.type='module';
+        s.src='js/sdc-firebase.js?v=401-stable';
+        document.head.appendChild(s);
+      }
+      var delay=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)?2600:900;
+      if('requestIdleCallback' in window){
+        window.addEventListener('load',function(){setTimeout(function(){requestIdleCallback(loadFirebase,{timeout:3500});},delay);},{once:true});
+      }else{
+        window.addEventListener('load',function(){setTimeout(loadFirebase,delay);},{once:true});
+      }
+      window.sdcLoadFirebaseNow=loadFirebase;
+    })();
+  </script>
 </body>
 </html>

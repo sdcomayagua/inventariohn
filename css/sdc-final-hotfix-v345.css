@@ -1,0 +1,316 @@
+/* v345 · Hotfix final móvil, actualización y facturas.
+   No cambia precios, stock, ventas ni Firebase. */
+
+/* =========================
+   1) Botón Actualizar app
+   ========================= */
+@media (max-width:760px){
+  .sdc345-update-wrap{
+    width:calc(100% - 28px)!important;
+    margin:10px auto 14px!important;
+    display:block!important;
+    position:relative!important;
+    z-index:20!important;
+  }
+
+  .sdc345-update-wrap .sdc344-update-app-btn{
+    width:100%!important;
+    max-width:100%!important;
+    min-height:48px!important;
+    margin:0!important;
+    border-radius:18px!important;
+    font-size:15px!important;
+    justify-content:center!important;
+    box-shadow:0 10px 22px rgba(6,31,63,.10)!important;
+  }
+
+  .sdc344-update-app-btn.sdc344-injected-top{
+    position:static!important;
+    margin:0!important;
+  }
+
+  /* Si todavía quedó en el encabezado, que no se monte encima de Firebase. */
+  .sdc344-update-app-btn:not(.sdc345-ready){
+    width:100%!important;
+    max-width:100%!important;
+    margin-top:10px!important;
+  }
+}
+
+/* =========================
+   2) Panel de búsqueda/categorías
+   ========================= */
+@media (max-width:760px){
+  .catalog-control-v178,
+  .catalog-control-v189,
+  .catalog-filter-row-v178,
+  .catalog-filter-row-v189,
+  .catalog-filter-row-v235{
+    position:relative!important;
+    top:auto!important;
+    transform:none!important;
+    z-index:5!important;
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:12px!important;
+    padding:14px!important;
+    margin:0 0 18px!important;
+    border-radius:26px!important;
+    overflow:visible!important;
+  }
+
+  .catalog-control-v178 > *,
+  .catalog-control-v189 > *,
+  .catalog-filter-row-v178 > *,
+  .catalog-filter-row-v189 > *,
+  .catalog-filter-row-v235 > *{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+
+  .sdc345-create-compact{
+    min-height:52px!important;
+    width:100%!important;
+    border-radius:18px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:10px!important;
+    font-size:16px!important;
+    font-weight:950!important;
+  }
+
+  /* Menos aire entre el resumen y los filtros. */
+  [class*="catalog"][class*="hero"],
+  [class*="products"][class*="hero"],
+  .catalog-summary,
+  .products-summary{
+    margin-bottom:18px!important;
+  }
+}
+
+/* =========================
+   3) Tarjetas de producto
+   ========================= */
+@media (max-width:760px){
+  article.product-card,
+  .product-card,
+  [class*="product-card"]{
+    min-height:0!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:16px!important;
+    border-radius:26px!important;
+  }
+
+  article.product-card :is(h1,h2,h3,h4),
+  .product-card :is(h1,h2,h3,h4),
+  [class*="product-card"] :is(h1,h2,h3,h4){
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    color:#061b34!important;
+    font-size:clamp(18px,4.8vw,25px)!important;
+    line-height:1.12!important;
+    font-weight:950!important;
+    letter-spacing:-.035em!important;
+    margin:8px 0!important;
+    text-align:left!important;
+    max-height:none!important;
+    overflow:visible!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+  }
+
+  article.product-card img,
+  .product-card img,
+  [class*="product-card"] img{
+    object-fit:contain!important;
+    max-width:126px!important;
+    max-height:126px!important;
+  }
+
+  article.product-card button,
+  .product-card button,
+  [class*="product-card"] button{
+    min-height:48px!important;
+    border-radius:15px!important;
+    font-size:15px!important;
+    font-weight:950!important;
+  }
+}
+
+/* =========================
+   4) Detalle de producto
+   ========================= */
+@media (max-width:760px){
+  .product-detail-modal-v221,
+  .modal{
+    border-radius:28px!important;
+  }
+
+  .product-detail-modal-v221 [class*="share"],
+  .product-detail-modal-v221 [class*="social"]{
+    flex-wrap:wrap!important;
+    gap:10px!important;
+  }
+
+  .product-detail-modal-v221 [class*="share"] > *,
+  .product-detail-modal-v221 [class*="social"] > *{
+    min-width:calc(50% - 8px)!important;
+    flex:1 1 calc(50% - 8px)!important;
+  }
+}
+
+.product-detail-modal-v221 input,
+.product-detail-modal-v221 [class*="qty"] input,
+.product-detail-modal-v221 [class*="stepper"] input,
+.product-detail-modal-v221 [class*="qty"] :is(span,b,strong,div),
+.product-detail-modal-v221 [class*="stepper"] :is(span,b,strong,div){
+  color:#061b34!important;
+  text-shadow:none!important;
+  font-weight:950!important;
+}
+
+/* =========================
+   5) Facturas: fila producto definitiva
+   ========================= */
+.short-receipt .sdc208-line.sdc345-line,
+.shortReceiptExportHost .short-receipt .sdc208-line.sdc345-line{
+  display:grid!important;
+  grid-template-columns:42px 84px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:12px!important;
+  min-height:110px!important;
+  padding:14px 16px!important;
+  overflow:hidden!important;
+}
+
+.short-receipt .sdc345-qty,
+.shortReceiptExportHost .short-receipt .sdc345-qty{
+  width:34px!important;
+  height:34px!important;
+  border-radius:13px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#eef6ff!important;
+  color:#0b63ce!important;
+  font-size:15px!important;
+  font-weight:950!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+
+.short-receipt .sdc345-thumb,
+.shortReceiptExportHost .short-receipt .sdc345-thumb{
+  width:82px!important;
+  height:82px!important;
+  min-width:82px!important;
+  object-fit:contain!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  border:1px solid rgba(11,99,206,.18)!important;
+  padding:6px!important;
+  box-shadow:0 8px 18px rgba(6,31,63,.10)!important;
+}
+
+.short-receipt .sdc345-info,
+.shortReceiptExportHost .short-receipt .sdc345-info{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:4px!important;
+  text-align:left!important;
+  overflow:hidden!important;
+}
+
+.short-receipt .sdc345-name,
+.shortReceiptExportHost .short-receipt .sdc345-name{
+  color:#061b34!important;
+  font-size:17px!important;
+  line-height:1.12!important;
+  font-weight:950!important;
+  letter-spacing:-.03em!important;
+  text-align:left!important;
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+
+.short-receipt .sdc345-meta,
+.shortReceiptExportHost .short-receipt .sdc345-meta{
+  color:#607993!important;
+  font-size:12px!important;
+  line-height:1.18!important;
+  font-weight:850!important;
+  text-align:left!important;
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+
+.short-receipt .sdc345-price,
+.shortReceiptExportHost .short-receipt .sdc345-price{
+  justify-self:end!important;
+  align-self:center!important;
+  color:#d61c3b!important;
+  font-size:20px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  margin-left:8px!important;
+}
+
+@media (max-width:760px){
+  .short-receipt .sdc208-line.sdc345-line,
+  .shortReceiptExportHost .short-receipt .sdc208-line.sdc345-line{
+    grid-template-columns:30px 62px minmax(0,1fr) 62px!important;
+    gap:8px!important;
+    min-height:94px!important;
+    padding:10px!important;
+  }
+
+  .short-receipt .sdc345-qty,
+  .shortReceiptExportHost .short-receipt .sdc345-qty{
+    width:28px!important;
+    height:28px!important;
+    font-size:13px!important;
+  }
+
+  .short-receipt .sdc345-thumb,
+  .shortReceiptExportHost .short-receipt .sdc345-thumb{
+    width:60px!important;
+    height:60px!important;
+    min-width:60px!important;
+    padding:4px!important;
+  }
+
+  .short-receipt .sdc345-name,
+  .shortReceiptExportHost .short-receipt .sdc345-name{
+    font-size:13px!important;
+    line-height:1.1!important;
+  }
+
+  .short-receipt .sdc345-meta,
+  .shortReceiptExportHost .short-receipt .sdc345-meta{
+    font-size:10.5px!important;
+  }
+
+  .short-receipt .sdc345-price,
+  .shortReceiptExportHost .short-receipt .sdc345-price{
+    font-size:15px!important;
+  }
+}

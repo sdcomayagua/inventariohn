@@ -215,6 +215,137 @@ body.sdc-v400-stable [data-sdc400-tabs="1"] > *{
   font-weight:950!important;
 }
 
+/* v402 · Header desktop ordenado: herramientas y estado sin amontonarse. */
+@media (min-width:1280px){
+  body.sdc-v400-stable .sdc-hero-v178,
+  body.sdc-v400-stable .sdc-hero-v235{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(360px,520px)!important;
+    grid-template-areas:"brand tools" "brand status"!important;
+    column-gap:26px!important;
+    row-gap:10px!important;
+    align-items:center!important;
+    min-height:142px!important;
+    padding:24px 34px!important;
+  }
+
+  body.sdc-v400-stable .sdc-brand-v178,
+  body.sdc-v400-stable .sdc-brand-v235{
+    grid-area:brand!important;
+    min-width:0!important;
+  }
+
+  body.sdc-v400-stable .sdc-brand-text-v178,
+  body.sdc-v400-stable .sdc-brand-text-v235{
+    min-width:0!important;
+  }
+
+  body.sdc-v400-stable .sdc-brand-text-v178 h1,
+  body.sdc-v400-stable .sdc-brand-text-v235 h1{
+    font-size:clamp(44px,3.5vw,70px)!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  body.sdc-v400-stable .sdc-hero-tools-v178,
+  body.sdc-v400-stable .sdc-hero-tools-v235{
+    grid-area:tools!important;
+    justify-self:end!important;
+    align-self:end!important;
+    width:100%!important;
+    max-width:520px!important;
+    margin:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:10px!important;
+    flex-wrap:nowrap!important;
+  }
+
+  body.sdc-v400-stable .sdc-hero-tools-v178 button,
+  body.sdc-v400-stable .sdc-hero-tools-v178 a,
+  body.sdc-v400-stable .sdc-hero-tools-v235 button,
+  body.sdc-v400-stable .sdc-hero-tools-v235 a,
+  body.sdc-v400-stable .sdc344-update-app-btn{
+    flex:1 1 0!important;
+    min-width:0!important;
+    max-width:176px!important;
+    min-height:46px!important;
+    height:46px!important;
+    padding:0 12px!important;
+    border-radius:16px!important;
+    font-size:14px!important;
+  }
+
+  body.sdc-v400-stable .sdc344-update-app-btn{
+    margin-left:0!important;
+    box-shadow:none!important;
+  }
+
+  body.sdc-v400-stable .sdc344-update-app-btn .sdc344-icon{
+    width:26px!important;
+    height:26px!important;
+    font-size:16px!important;
+    flex:0 0 auto!important;
+  }
+
+  body.sdc-v400-stable .sdc-status-v178,
+  body.sdc-v400-stable .sdc-status-v235{
+    grid-area:status!important;
+    justify-self:end!important;
+    align-self:start!important;
+    width:min(100%,360px)!important;
+    min-height:40px!important;
+    margin:0!important;
+    padding:7px 13px!important;
+    border-radius:16px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:12px!important;
+  }
+
+  body.sdc-v400-stable .sdc-status-v178 span,
+  body.sdc-v400-stable .sdc-status-v235 span{
+    flex:0 0 auto!important;
+    font-size:11px!important;
+  }
+
+  body.sdc-v400-stable .sdc-status-v178 b,
+  body.sdc-v400-stable .sdc-status-v235 b{
+    min-width:0!important;
+    text-align:right!important;
+    font-size:12px!important;
+  }
+}
+
+@media (min-width:761px) and (max-width:1279px){
+  body.sdc-v400-stable .sdc-hero-v178,
+  body.sdc-v400-stable .sdc-hero-v235{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:12px!important;
+  }
+
+  body.sdc-v400-stable .sdc-hero-tools-v178,
+  body.sdc-v400-stable .sdc-hero-tools-v235{
+    width:100%!important;
+    max-width:none!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+  }
+
+  body.sdc-v400-stable .sdc-status-v178,
+  body.sdc-v400-stable .sdc-status-v235{
+    width:100%!important;
+    margin-top:0!important;
+  }
+}
+
 /* Tarjetas de productos: nombre y precio siempre visibles en PC. */
 @media (min-width:761px){
   body.sdc-v400-stable article.product-card,

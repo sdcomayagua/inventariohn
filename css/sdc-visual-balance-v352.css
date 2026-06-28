@@ -1,0 +1,256 @@
+/* v352 · Pulido visual extra para que el panel se vea más balanceado.
+   No cambia datos, inventario, precios, ventas ni Firebase. */
+
+@media (min-width:761px){
+  body.sdc-v352-visual-balance .sdc352-hero-balanced,
+  body.sdc-v352-visual-balance .sdc349-premium-hero,
+  body.sdc-v352-visual-balance .sdc328-app-hero{
+    max-width:calc(100vw - 104px)!important;
+    min-height:168px!important;
+    margin:48px auto 32px!important;
+    padding:28px 32px!important;
+    border-radius:28px!important;
+    display:grid!important;
+    grid-template-columns:96px minmax(360px,1fr) minmax(520px,auto)!important;
+    grid-template-areas:"logo brand actions"!important;
+    gap:26px!important;
+    align-items:center!important;
+    overflow:hidden!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-logo,
+  body.sdc-v352-visual-balance .sdc349-brand-logo,
+  body.sdc-v352-visual-balance .sdc349-premium-hero img:first-of-type,
+  body.sdc-v352-visual-balance .sdc328-app-hero img:first-of-type{
+    grid-area:logo!important;
+    width:88px!important;
+    height:88px!important;
+    min-width:88px!important;
+    border-radius:23px!important;
+    padding:7px!important;
+    justify-self:center!important;
+    align-self:center!important;
+    position:relative!important;
+    z-index:4!important;
+    transform:none!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-brand-copy,
+  body.sdc-v352-visual-balance .sdc349-brand-block{
+    grid-area:brand!important;
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    position:relative!important;
+    z-index:2!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-badge,
+  body.sdc-v352-visual-balance .sdc349-private-badge{
+    margin:0 0 9px!important;
+    padding:6px 12px!important;
+    font-size:11px!important;
+    letter-spacing:.06em!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-brand-title,
+  body.sdc-v352-visual-balance .sdc349-brand-title,
+  body.sdc-v352-visual-balance .sdc349-premium-hero [data-sdc328-title="brand"],
+  body.sdc-v352-visual-balance .sdc328-app-hero [data-sdc328-title="brand"]{
+    font-size:clamp(42px,3.75vw,62px)!important;
+    line-height:.95!important;
+    letter-spacing:-.06em!important;
+    max-width:100%!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+    margin:0!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-subtitle,
+  body.sdc-v352-visual-balance .sdc349-brand-subtitle{
+    margin-top:9px!important;
+    font-size:clamp(12px,1.05vw,16px)!important;
+    line-height:1.25!important;
+    letter-spacing:.035em!important;
+    max-width:100%!important;
+    white-space:normal!important;
+    overflow:hidden!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-actions,
+  body.sdc-v352-visual-balance .sdc349-hero-actions,
+  body.sdc-v352-visual-balance .sdc328-hero-actions{
+    grid-area:actions!important;
+    width:auto!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    display:grid!important;
+    grid-template-columns:auto auto auto!important;
+    grid-template-areas:
+      "menu firebase update"
+      "status status status"!important;
+    justify-content:end!important;
+    align-items:center!important;
+    gap:10px!important;
+    position:relative!important;
+    z-index:5!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-actions > *,
+  body.sdc-v352-visual-balance .sdc349-hero-actions > *,
+  body.sdc-v352-visual-balance .sdc328-hero-actions > *{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    margin:0!important;
+    max-width:100%!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-btn-menu,
+  body.sdc-v352-visual-balance .sdc349-menu-btn{grid-area:menu!important;}
+
+  body.sdc-v352-visual-balance .sdc352-btn-firebase,
+  body.sdc-v352-visual-balance .sdc349-firebase-btn{grid-area:firebase!important;}
+
+  body.sdc-v352-visual-balance .sdc352-btn-update,
+  body.sdc-v352-visual-balance .sdc344-update-app-btn,
+  body.sdc-v352-visual-balance .sdc349-update-btn{grid-area:update!important;}
+
+  body.sdc-v352-visual-balance .sdc352-status,
+  body.sdc-v352-visual-balance .sdc349-status-pill{
+    grid-area:status!important;
+    justify-self:end!important;
+    min-width:260px!important;
+    max-width:100%!important;
+    min-height:58px!important;
+    padding-top:10px!important;
+    padding-bottom:10px!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc349-premium-hero button,
+  body.sdc-v352-visual-balance .sdc349-premium-hero a,
+  body.sdc-v352-visual-balance .sdc328-app-hero button,
+  body.sdc-v352-visual-balance .sdc328-app-hero a{
+    min-height:48px!important;
+    height:48px!important;
+    border-radius:16px!important;
+    padding:0 18px!important;
+    font-size:15px!important;
+    white-space:nowrap!important;
+    box-shadow:0 12px 26px rgba(0,28,82,.14)!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc344-update-app-btn,
+  body.sdc-v352-visual-balance .sdc349-update-btn,
+  body.sdc-v352-visual-balance .sdc352-btn-update{
+    min-width:190px!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-tabs-balanced,
+  body.sdc-v352-visual-balance .sdc349-premium-tabs,
+  body.sdc-v352-visual-balance .sdc328-main-tabs{
+    max-width:calc(100vw - 104px)!important;
+    margin:0 auto 30px!important;
+    min-height:98px!important;
+    padding:12px!important;
+    border-radius:24px!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc349-premium-tabs > *,
+  body.sdc-v352-visual-balance .sdc328-main-tabs > *,
+  body.sdc-v352-visual-balance .sdc349-tab-item{
+    min-height:74px!important;
+    border-radius:18px!important;
+    gap:6px!important;
+  }
+}
+
+@media (min-width:761px) and (max-width:1380px){
+  body.sdc-v352-visual-balance .sdc352-hero-balanced,
+  body.sdc-v352-visual-balance .sdc349-premium-hero,
+  body.sdc-v352-visual-balance .sdc328-app-hero{
+    max-width:calc(100vw - 52px)!important;
+    grid-template-columns:88px minmax(0,1fr)!important;
+    grid-template-areas:
+      "logo brand"
+      "logo actions"!important;
+    gap:16px 22px!important;
+    padding:26px!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-logo,
+  body.sdc-v352-visual-balance .sdc349-brand-logo,
+  body.sdc-v352-visual-balance .sdc349-premium-hero img:first-of-type,
+  body.sdc-v352-visual-balance .sdc328-app-hero img:first-of-type{
+    width:82px!important;
+    height:82px!important;
+    min-width:82px!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-brand-title,
+  body.sdc-v352-visual-balance .sdc349-brand-title,
+  body.sdc-v352-visual-balance .sdc349-premium-hero [data-sdc328-title="brand"],
+  body.sdc-v352-visual-balance .sdc328-app-hero [data-sdc328-title="brand"]{
+    font-size:clamp(36px,5.1vw,56px)!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-actions,
+  body.sdc-v352-visual-balance .sdc349-hero-actions,
+  body.sdc-v352-visual-balance .sdc328-hero-actions{
+    justify-content:start!important;
+    grid-template-columns:auto auto auto minmax(190px,auto)!important;
+    grid-template-areas:"menu firebase update status"!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-status,
+  body.sdc-v352-visual-balance .sdc349-status-pill{
+    justify-self:start!important;
+    min-width:210px!important;
+  }
+}
+
+@media (min-width:761px) and (max-width:1060px){
+  body.sdc-v352-visual-balance .sdc352-actions,
+  body.sdc-v352-visual-balance .sdc349-hero-actions,
+  body.sdc-v352-visual-balance .sdc328-hero-actions{
+    grid-template-columns:auto auto auto!important;
+    grid-template-areas:
+      "menu firebase update"
+      "status status status"!important;
+    gap:10px!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-status,
+  body.sdc-v352-visual-balance .sdc349-status-pill{
+    min-width:min(100%,360px)!important;
+  }
+}
+
+@media (max-width:760px){
+  body.sdc-v352-visual-balance .sdc352-hero-balanced,
+  body.sdc-v352-visual-balance .sdc349-premium-hero,
+  body.sdc-v352-visual-balance .sdc328-app-hero{
+    margin:12px 10px 14px!important;
+    padding:16px!important;
+    border-radius:22px!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-brand-title,
+  body.sdc-v352-visual-balance .sdc349-brand-title,
+  body.sdc-v352-visual-balance .sdc349-premium-hero [data-sdc328-title="brand"],
+  body.sdc-v352-visual-balance .sdc328-app-hero [data-sdc328-title="brand"]{
+    font-size:clamp(28px,7.2vw,38px)!important;
+    letter-spacing:-.05em!important;
+  }
+
+  body.sdc-v352-visual-balance .sdc352-subtitle,
+  body.sdc-v352-visual-balance .sdc349-brand-subtitle{
+    font-size:11.5px!important;
+  }
+}

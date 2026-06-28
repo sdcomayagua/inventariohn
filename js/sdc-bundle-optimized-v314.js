@@ -2264,13 +2264,14 @@ window.SDC_PLACEHOLDERS = {
       <img class="login-logo" src="${LOGO_SRC}" alt="Logo SD Comayagua">
       <h1 class="login-title">SDC VENTAS</h1>
       <div class="pill login-pill"><span class="dot"></span> Acceso administrativo</div>
-      <div class="form-box">
+      <form class="form-box" id="loginForm">
+        <input type="text" name="username" value="admin" autocomplete="username" hidden>
         <label class="label" for="keyInput">Clave de acceso</label>
         <input id="keyInput" class="input" type="password" inputmode="numeric" placeholder="Ingresa tu clave" autocomplete="current-password">
-        <button id="loginBtn" class="btn full" style="margin-top:14px">Entrar al panel</button>
-      </div>
+        <button id="loginBtn" class="btn full" type="submit" style="margin-top:14px">Entrar al panel</button>
+      </form>
     </section>`;
-    $('#loginBtn').onclick=unlock; $('#keyInput').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
+    $('#loginForm').addEventListener('submit',e=>{e.preventDefault();unlock()});
   }
   function unlock(){ if($('#keyInput').value.trim()===(state.settings.accessKey||'199311')){state.unlocked=true;save();render();bootFirebaseSync();toast('Acceso autorizado.')} else toast('Clave incorrecta.'); }
   function topbar(){

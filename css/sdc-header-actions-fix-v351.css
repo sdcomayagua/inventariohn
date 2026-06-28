@@ -1,0 +1,197 @@
+/* v351 · Corrige botones amontonados en el encabezado premium.
+   Solo ajusta presentación: no cambia inventario, ventas, precios ni Firebase. */
+
+@media (min-width:761px){
+  body.sdc-v349-premium .sdc349-premium-hero,
+  body.sdc-v349-premium .sdc328-app-hero{
+    display:grid!important;
+    grid-template-columns:auto minmax(360px,1fr) minmax(420px,auto)!important;
+    align-items:center!important;
+    gap:24px!important;
+    flex-wrap:initial!important;
+    min-height:176px!important;
+    padding:32px 36px!important;
+  }
+
+  body.sdc-v349-premium .sdc349-premium-hero > *,
+  body.sdc-v349-premium .sdc328-app-hero > *{
+    min-width:0!important;
+  }
+
+  body.sdc-v349-premium .sdc349-brand-logo,
+  body.sdc-v349-premium .sdc349-premium-hero img:first-of-type,
+  body.sdc-v349-premium .sdc328-app-hero img:first-of-type{
+    grid-column:1!important;
+    grid-row:1!important;
+    align-self:center!important;
+    justify-self:start!important;
+    position:relative!important;
+    z-index:2!important;
+  }
+
+  body.sdc-v349-premium .sdc349-brand-block{
+    grid-column:2!important;
+    grid-row:1!important;
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    position:relative!important;
+    z-index:1!important;
+  }
+
+  body.sdc-v349-premium .sdc349-brand-title,
+  body.sdc-v349-premium .sdc349-premium-hero [data-sdc328-title="brand"],
+  body.sdc-v349-premium .sdc328-app-hero [data-sdc328-title="brand"]{
+    white-space:nowrap!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+    font-size:clamp(44px,4.3vw,72px)!important;
+    line-height:.94!important;
+  }
+
+  body.sdc-v349-premium .sdc349-brand-subtitle{
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:normal!important;
+    font-size:clamp(13px,1.12vw,18px)!important;
+  }
+
+  body.sdc-v349-premium .sdc349-hero-actions,
+  body.sdc-v349-premium .sdc328-hero-actions{
+    grid-column:3!important;
+    grid-row:1!important;
+    width:auto!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    display:grid!important;
+    grid-template-columns:auto auto auto!important;
+    grid-template-areas:
+      "menu firebase update"
+      "status status status"!important;
+    justify-content:end!important;
+    align-items:center!important;
+    gap:12px!important;
+    position:relative!important;
+    z-index:4!important;
+  }
+
+  body.sdc-v349-premium .sdc349-hero-actions > *,
+  body.sdc-v349-premium .sdc328-hero-actions > *{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    margin:0!important;
+    max-width:100%!important;
+  }
+
+  body.sdc-v349-premium .sdc349-menu-btn{
+    grid-area:menu!important;
+  }
+
+  body.sdc-v349-premium .sdc349-firebase-btn{
+    grid-area:firebase!important;
+  }
+
+  body.sdc-v349-premium .sdc344-update-app-btn,
+  body.sdc-v349-premium .sdc349-update-btn{
+    grid-area:update!important;
+    margin:0!important;
+  }
+
+  body.sdc-v349-premium .sdc349-status-pill{
+    grid-area:status!important;
+    justify-self:end!important;
+    min-width:260px!important;
+    max-width:100%!important;
+    margin:0!important;
+  }
+
+  body.sdc-v349-premium .sdc349-premium-hero button,
+  body.sdc-v349-premium .sdc349-premium-hero a,
+  body.sdc-v349-premium .sdc328-app-hero button,
+  body.sdc-v349-premium .sdc328-app-hero a{
+    min-height:52px!important;
+    height:52px!important;
+    padding:0 20px!important;
+    border-radius:17px!important;
+    white-space:nowrap!important;
+  }
+}
+
+@media (min-width:761px) and (max-width:1380px){
+  body.sdc-v349-premium .sdc349-premium-hero,
+  body.sdc-v349-premium .sdc328-app-hero{
+    grid-template-columns:auto minmax(0,1fr)!important;
+    grid-template-rows:auto auto!important;
+    gap:18px 22px!important;
+    padding:28px!important;
+  }
+
+  body.sdc-v349-premium .sdc349-brand-logo,
+  body.sdc-v349-premium .sdc349-premium-hero img:first-of-type,
+  body.sdc-v349-premium .sdc328-app-hero img:first-of-type{
+    grid-column:1!important;
+    grid-row:1 / span 2!important;
+  }
+
+  body.sdc-v349-premium .sdc349-brand-block{
+    grid-column:2!important;
+    grid-row:1!important;
+  }
+
+  body.sdc-v349-premium .sdc349-brand-title,
+  body.sdc-v349-premium .sdc349-premium-hero [data-sdc328-title="brand"],
+  body.sdc-v349-premium .sdc328-app-hero [data-sdc328-title="brand"]{
+    font-size:clamp(40px,5.1vw,64px)!important;
+  }
+
+  body.sdc-v349-premium .sdc349-hero-actions,
+  body.sdc-v349-premium .sdc328-hero-actions{
+    grid-column:2!important;
+    grid-row:2!important;
+    grid-template-columns:auto auto auto auto!important;
+    grid-template-areas:"menu firebase update status"!important;
+    justify-content:start!important;
+    align-items:center!important;
+  }
+
+  body.sdc-v349-premium .sdc349-status-pill{
+    min-width:220px!important;
+  }
+}
+
+@media (min-width:761px) and (max-width:1120px){
+  body.sdc-v349-premium .sdc349-hero-actions,
+  body.sdc-v349-premium .sdc328-hero-actions{
+    grid-template-columns:auto auto auto!important;
+    grid-template-areas:
+      "menu firebase update"
+      "status status status"!important;
+    justify-content:start!important;
+  }
+
+  body.sdc-v349-premium .sdc349-status-pill{
+    justify-self:start!important;
+    min-width:min(100%,360px)!important;
+  }
+}
+
+@media (max-width:760px){
+  body.sdc-v349-premium .sdc349-hero-actions,
+  body.sdc-v349-premium .sdc328-hero-actions{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+
+  body.sdc-v349-premium .sdc349-hero-actions > *,
+  body.sdc-v349-premium .sdc328-hero-actions > *{
+    position:static!important;
+    transform:none!important;
+    margin:0!important;
+    width:100%!important;
+  }
+}

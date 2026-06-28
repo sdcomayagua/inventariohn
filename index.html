@@ -7,11 +7,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="SDC POS">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="description" content="Panel principal de SD Comayagua para inventario, cotizaciones y ventas rápidas.">
+  <meta name="description" content="Panel principal de SD Comayagua para inventario, cotizaciones, ventas y catálogo digital.">
   <meta name="format-detection" content="telephone=no">
-  <link rel="manifest" href="manifest.webmanifest?v=357-header-clean">
-  <title>SD Comayagua · Panel único v357</title>
-  <link rel="icon" href="assets/logo-sdc-2026.png?v=357-header-clean">
+  <link rel="manifest" href="manifest.webmanifest?v=400-stable">
+  <title>SD Comayagua · Panel estable v400</title>
+  <link rel="icon" href="assets/logo-sdc-2026.png?v=400-stable">
+
   <link rel="stylesheet" href="css/sdc-bundle-optimized-v314.css?v=314-comparativo">
   <link rel="stylesheet" href="css/sdc-fixes-v317.css?v=318-final-fixes">
   <link rel="stylesheet" href="css/sdc-quality-polish-v319.css?v=319-quality-polish">
@@ -27,15 +28,11 @@
   <link rel="stylesheet" href="css/sdc-update-app-v344.css?v=344-update-app">
   <link rel="stylesheet" href="css/sdc-final-hotfix-v345.css?v=345-final-hotfix">
   <link rel="stylesheet" href="css/sdc-mobile-clean-v346.css?v=346-mobile-clean">
-  <link rel="stylesheet" href="css/sdc-desktop-card-clean-v347.css?v=347-desktop-card-clean">
+  <link rel="stylesheet" href="css/sdc-desktop-card-clean-v347.css?v=400-stable">
   <link rel="stylesheet" href="css/sdc-pc-receipt-clean-v348.css?v=348-pc-receipt-clean">
-  <link rel="stylesheet" href="css/sdc-premium-layout-v349.css?v=349-premium-layout">
-  <link rel="stylesheet" href="css/sdc-category-dropdown-fix-v350.css?v=350-category-dropdown-fix">
-  <link rel="stylesheet" href="css/sdc-header-actions-fix-v351.css?v=351-header-actions-fix">
-  <link rel="stylesheet" href="css/sdc-visual-balance-v352.css?v=352-visual-balance">
-  <link rel="stylesheet" href="css/sdc-header-rebuild-v353.css?v=353-header-rebuild">
+  <link rel="stylesheet" href="css/sdc-stable-v400.css?v=400-stable">
 </head>
-<body class="sdc-v60-pos sdc-v61-clean sdc-v95-light-default sdc-theme-light sdc-v99-home-clean sdc-v319-quality-polish sdc-v320-screenshot-fixes sdc-v321-mobile-social-polish sdc-v322-social-detail-only sdc-v323-compact-mobile-cards sdc-v324-category-polish sdc-v325-category-force sdc-v326-category-png-header-stock sdc-v327-category-png-clean-title sdc-v329-desktop-rollback sdc-v330-desktop-catalog-clean sdc-v331-final-fixes sdc-v332-color-readable sdc-v333-quote-reset sdc-v335-product-admin sdc-v336-agotado-persistente sdc-v337-red-factura sdc-v338-receipt-item-layout sdc-v339-ui-clean sdc-v340-restaurar-tarjetas sdc-v341-limpieza-segura sdc-v342-textos-movil sdc-v343-mobile-final-polish sdc-v344-update-app sdc-v345-final-hotfix sdc-v346-mobile-clean sdc-v347-desktop-card-clean sdc-v348-pc-receipt-clean sdc-v349-premium sdc-v350-category-dropdown-fix sdc-v351-header-actions-fix sdc-v352-visual-balance sdc-v353-header-rebuild sdc-v357-header-clean">
+<body class="sdc-v400-stable sdc-v60-pos sdc-v61-clean sdc-v95-light-default sdc-theme-light sdc-v99-home-clean sdc-v319-quality-polish sdc-v320-screenshot-fixes sdc-v321-mobile-social-polish sdc-v322-social-detail-only sdc-v323-compact-mobile-cards sdc-v324-category-polish sdc-v325-category-force sdc-v326-category-png-header-stock sdc-v327-category-png-clean-title sdc-v329-desktop-rollback sdc-v330-desktop-catalog-clean sdc-v331-final-fixes sdc-v332-color-readable sdc-v333-quote-reset sdc-v335-product-admin sdc-v336-agotado-persistente sdc-v337-red-factura sdc-v338-receipt-item-layout sdc-v339-ui-clean sdc-v340-restaurar-tarjetas sdc-v341-limpieza-segura sdc-v342-textos-movil sdc-v343-mobile-final-polish sdc-v344-update-app sdc-v345-final-hotfix sdc-v346-mobile-clean sdc-v347-desktop-card-clean sdc-v348-pc-receipt-clean">
   <a class="skip-link" href="#app">Saltar al contenido</a>
   <main id="app" role="main" aria-label="Panel principal" tabindex="-1">
     <section class="boot-loading" data-sdc-loading="1">
@@ -49,6 +46,7 @@
   <div id="modalRoot"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <button id="goTop" class="go-top" aria-label="Subir">↑</button>
+
   <script>
     localStorage.setItem('sdc_v83_theme','light');
     document.documentElement.setAttribute('data-theme','light');
@@ -68,30 +66,26 @@
   <script defer src="js/sdc-update-app-v344.js?v=344-update-app"></script>
   <script defer src="js/sdc-final-hotfix-v345.js?v=345-final-hotfix"></script>
   <script defer src="js/sdc-mobile-clean-v346.js?v=346-mobile-clean"></script>
-  <script defer src="js/sdc-desktop-card-clean-v347.js?v=347-desktop-card-clean"></script>
+  <script defer src="js/sdc-desktop-card-clean-v347.js?v=400-stable"></script>
   <script defer src="js/sdc-pc-receipt-clean-v348.js?v=348-pc-receipt-clean"></script>
-  <script defer src="js/sdc-premium-layout-v349.js?v=349-premium-layout"></script>
-  <script defer src="js/sdc-category-dropdown-fix-v350.js?v=350-category-dropdown-fix"></script>
-  <script defer src="js/sdc-visual-balance-v352.js?v=352-visual-balance"></script>
-  <script defer src="js/sdc-header-rebuild-v353.js?v=356-desktop-clean"></script>
-  <script defer src="js/sdc-header-clean-v357.js?v=357-header-clean"></script>
+  <script defer src="js/sdc-stable-v400.js?v=400-stable"></script>
   <script>
     (function(){
       function loadFirebase(){
         if(window.__sdcFirebaseDelayedLoaded) return;
-        window.__sdcFirebaseDelayedLoaded = true;
-        var s = document.createElement('script');
-        s.type = 'module';
-        s.src = 'js/sdc-firebase.js?v=336-agotado-persistente';
+        window.__sdcFirebaseDelayedLoaded=true;
+        var s=document.createElement('script');
+        s.type='module';
+        s.src='js/sdc-firebase.js?v=400-stable';
         document.head.appendChild(s);
       }
-      var delay = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 2600 : 900;
+      var delay=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)?2600:900;
       if('requestIdleCallback' in window){
-        window.addEventListener('load', function(){ setTimeout(function(){ requestIdleCallback(loadFirebase, {timeout: 3500}); }, delay); }, {once:true});
+        window.addEventListener('load',function(){setTimeout(function(){requestIdleCallback(loadFirebase,{timeout:3500});},delay);},{once:true});
       }else{
-        window.addEventListener('load', function(){ setTimeout(loadFirebase, delay); }, {once:true});
+        window.addEventListener('load',function(){setTimeout(loadFirebase,delay);},{once:true});
       }
-      window.sdcLoadFirebaseNow = loadFirebase;
+      window.sdcLoadFirebaseNow=loadFirebase;
     })();
   </script>
 </body>
